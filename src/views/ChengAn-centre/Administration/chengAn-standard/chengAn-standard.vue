@@ -134,13 +134,14 @@ export default {
       this.isopen = true;
     },
     deletefile(e) {
-      this.$message.warning("此功能暂未开启");
-      //   apideleteTemplate({
-      //     biz: e.hr_templatel_id,
-      //     hr_template_path: e.hr_template_path
-      //   }).then(res => {
-      //     console.log(res);
-      //   });
+      //this.$message.warning("此功能暂未开启");
+      apideleteTemplate({
+        biz: e.hr_templatel_id,
+        hr_template_path: e.hr_template_path
+      }).then(res => {
+        this.$message.success(res.Msg);
+        console.log(res);
+      });
     },
     download(e) {
       window.open(e.hr_template_path);

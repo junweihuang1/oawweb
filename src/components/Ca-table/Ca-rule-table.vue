@@ -73,7 +73,7 @@ export default {
     return {
       isselect: this.setselect,
       issummary: this.setsummary,
-      maxHeight: document.documentElement.scrollHeight * 0.77
+      maxHeight: document.body.scrollHeight * 0.77
     };
   },
   props: {
@@ -103,6 +103,7 @@ export default {
         return "";
       }
     },
+    //把选择的行返回给父组件
     handleSelectionChange(val) {
       this.$emit("setselect", val);
     },

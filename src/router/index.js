@@ -92,6 +92,12 @@ const router = new Router({
             import("@/views/ChengAn-headquarters/HRC/staff-information/staff-information.vue")
         },
         {
+          path: "leave-records",
+          name: "leave-records",
+          component: () =>
+            import("@/views/ChengAn-headquarters/HRC/leave-records/leave-records.vue")
+        },
+        {
           path: "company-record",
           name: "company-record",
           component: () =>

@@ -46,7 +46,12 @@
       @setlimit="getlimit"
       :total="total"
     ></paging>
-    <el-dialog :visible.sync="isadd" title="添加工资记录">
+    <el-dialog
+      :visible.sync="isadd"
+      title="添加工资记录"
+      width="35%"
+      :append-to-body="true"
+    >
       <Incoming-wages></Incoming-wages>
     </el-dialog>
   </div>

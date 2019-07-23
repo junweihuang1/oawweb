@@ -176,36 +176,41 @@ export default {
                 },
                 {
                   id: "4-2-2",
+                  title: "请假记录",
+                  route: "/leave-records"
+                },
+                {
+                  id: "4-2-3",
                   title: "职员信息",
                   route: "/staff-information"
                 },
                 {
-                  id: "4-2-3",
+                  id: "4-2-4",
                   title: "公司记录",
                   route: "/company-record"
                 },
                 {
-                  id: "4-2-4",
+                  id: "4-2-5",
                   title: "部门记录",
                   route: "/department-record"
                 },
                 {
-                  id: "4-2-5",
+                  id: "4-2-6",
                   title: "通知/公告",
                   route: "/notice-record"
                 },
                 {
-                  id: "4-2-6",
+                  id: "4-2-7",
                   title: "目标管理",
                   route: "/target-manage"
                 },
                 {
-                  id: "4-2-7",
+                  id: "4-2-8",
                   title: "中心记录",
                   route: "/center-record"
                 },
                 {
-                  id: "4-2-8",
+                  id: "4-2-9",
                   title: "打卡地址管理",
                   route: "/card-address-manage"
                 }

@@ -101,7 +101,6 @@ export default {
         }
       });
       this.$store.commit("changeActiveIndex", key);
-      console.log(this.navList);
       this.navList.map(item => {
         if (item.id === key) {
           tabs = item;

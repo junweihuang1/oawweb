@@ -117,6 +117,9 @@ export const apidelframeWork = data => Delete("save_frameWork", data);
 //保存总裁办信息
 export const apiaddframeWork = data => post("save_frameWork", data);
 
+//所有请假记录
+export const apiLeaveList2 = data => post("leaveList", data);
+
 //获取所有公司信息
 export const apigetAllCompanyInfo = data => get("getAllCompanyInfo", data);
 
@@ -233,3 +236,15 @@ export const apiuserWagesLibs = data => get("userWagesLibs", data);
 
 //财务中心 --> 人员成本汇总-->删除工资信息
 export const apidele_userWages = data => Delete("dele_userWages", data);
+
+//财务中心 --> 人员成本汇总-->查询出建设公司材料结算信息
+export const apibuild_settlements = data => get("build_settlements", data);
+
+//财务中心 --> 人员成本汇总-->查询项目列表信息
+export const apisettleConstructList = data => post("settleConstructList", data);
+
+//财务中心 --> 人员成本汇总-->查询出所有支出合同信息
+export const apicontractPayLists = data => get("contractPayLists", data);
+
+//财务中心 --> 人员成本汇总-->查询出年份信息
+export const apicontractPayList = data => get("contractPayList", data);

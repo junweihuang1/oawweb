@@ -12,6 +12,7 @@
       :DataList="StaffData"
       :header="header"
       :headle="headle"
+      @setselect="setselect"
       @checkleave="changePassW"
     ></Ca-rule-table>
     <paging
@@ -66,6 +67,9 @@ export default {
     ChangePass
   },
   methods: {
+    setselect(e) {
+      this.Idarr = e.map(item => item.userid);
+    },
     newChange() {
       this.isChange = false;
     },
@@ -74,16 +78,13 @@ export default {
       this.username = e.username;
       this.isChange = true;
     },
-    DeleteId(e) {
-      this.Idarr = e;
-    },
     deleteuser() {
-      this.$message.warning("此功能还没启用");
-      // apideleteUser({
-      //   cid: this.Idarr
-      // }).then(res => {
-      //   console.log(res);
-      // });
+      //this.$message.warning("此功能还没启用");
+      apideleteUser({
+        cid: this.Idarr
+      }).then(res => {
+        console.log(res);
+      });
     },
     getUserList() {
       apiuserLists({
