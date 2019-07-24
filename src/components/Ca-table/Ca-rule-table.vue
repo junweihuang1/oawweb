@@ -1,5 +1,5 @@
 <template>
-  <div id="table">
+  <div>
     <el-table
       :data="DataList"
       border
@@ -73,7 +73,7 @@ export default {
     return {
       isselect: this.setselect,
       issummary: this.setsummary,
-      maxHeight: document.body.scrollHeight * 0.77
+      maxHeight: document.documentElement.scrollHeight * 0.77
     };
   },
   props: {

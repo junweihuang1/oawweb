@@ -194,7 +194,6 @@ export default {
         if (valid) {
           apigoout(data)
             .then(res => {
-              console.log(res);
               if (res.msg == "办理完成") {
                 this.$message.success("办理成功！");
               } else {

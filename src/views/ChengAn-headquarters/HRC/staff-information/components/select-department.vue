@@ -5,7 +5,7 @@
       title="部门信息"
       @close="closewin"
       width="40%"
-      top="8vh"
+      top="6vh"
       class="abow_dialog"
     >
       <el-form label-width="80px" size="mini" inline>
@@ -17,7 +17,6 @@
         </el-form-item>
       </el-form>
       <Ca-rule-table
-        class="table"
         :DataList="departmentList"
         :header="header"
         @dblclick="dblclick"
@@ -74,10 +73,6 @@ export default {
         this.getdepartmentList();
       }
     }
-  },
-  mounted() {
-    document.getElementById("table").style.height =
-      document.body.scrollHeight * 0.5 + "px";
   },
   methods: {
     dblclick(row) {

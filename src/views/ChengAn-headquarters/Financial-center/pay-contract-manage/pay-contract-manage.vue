@@ -28,10 +28,14 @@
       <el-form-item>
         <el-button type="primary" @click="querygys">搜索</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="addcontract">新增</el-button>
+      </el-form-item>
     </el-form>
     <Ca-rule-table
       :DataList="contractList"
       :header="header"
+      @delete="delcontract"
       :headle="headle"
       @checkleave="checkDetails"
     ></Ca-rule-table>
@@ -42,38 +46,24 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" title="项目列表">
-      <el-form inline size="mini">
-        <el-form-item label="项目名称">
-          <el-input placeholder="请输入" v-model="projectName"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="queryproject">搜索</el-button>
-        </el-form-item>
-      </el-form>
-      <Ca-rule-table
-        style="height:400px;overflow:auto;"
-        :DataList="detailList"
-        :header="detailHeader"
-        :headle="detailHeadle"
-      ></Ca-rule-table>
-      <paging
-        :currentpage="currentpage2"
-        :currentlimit="currentlimit2"
-        :total="total2"
-        @setpage="getpage2"
-        @setlimit="getlimit2"
-      ></paging>
+
+    <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
+      <echarts :setform="contractform"></echarts>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import Echarts from "./components/echarts";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apicontractPayLists, apicontractPayList } from "@/request/api.js";
+import {
+  apicontractPayLists,
+  apicontractPayList,
+  apidelete_Contract
+} from "@/request/api.js";
 export default {
-  name: "scienceSettlement",
+  name: "payContractManage",
   data() {
     return {
       currentlimit: 15,
@@ -83,7 +73,7 @@ export default {
       total: 15,
       total2: 15,
       header: [
-        ["合同编号", "manage_contract_num"],
+        ["合同编号", "manage_contract_num", 100],
         ["公司名称", "company_name"],
         ["项目名称", "manage_contract_name"],
         ["发包方（甲方）", "manage_contract_firstParty"],
@@ -96,40 +86,42 @@ export default {
         ["备注", "manage_contract_remark"]
       ],
       contractList: [],
-      headle: ["查看"],
+      headle: ["查看", "删除"],
       isopen: false,
-      detailList: [],
-      detailHeader: [
-        ["项目编号", "projectId"],
-        ["项目名称", "construct_project_name"],
-        ["工程地址", "construct_project_addr"],
-        ["项目经理", "construct_project_leader"],
-        ["项目经理电话", "construct_project_leaderTel", 120],
-        ["共欠款", "total"],
-        ["已支付", ""],
-        ["未支付", ""]
-      ],
-      detailHeadle: ["付款列表"],
       yearMon: "",
       yearMonList: [],
       companyName: "",
-      projectName: ""
+      projectName: "",
+      contractform: {}
     };
   },
   components: {
     CaRuleTable,
-    paging
+    paging,
+    Echarts
   },
   mounted() {
     this.getPayList();
     this.getyears();
   },
   methods: {
+    //删除指定合同
+    delcontract(e) {
+      this.$confirm("确定删除" + e.manage_contract_num + "这份合同吗？").then(
+        _ => {
+          apidelete_Contract({
+            manage_contract_id: e.manage_contract_id
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.contractList = this.contractList.filter(
+              item => item.manage_contract_id != e.manage_contract_id
+            );
+          });
+        }
+      );
+    },
     querygys() {
       this.getPayList();
-    },
-    queryproject() {
-      this.getproject();
     },
     getpage(e) {
       this.currentpage = e;
@@ -151,20 +143,43 @@ export default {
         manage_contract_name: this.projectName,
         yearMon: this.yearMon
       }).then(res => {
-        console.log(res);
         this.contractList = res.rows;
       });
     },
     getyears() {
       apicontractPayList().then(res => {
         this.yearMonList = res.yearMon.map(item => item.yearMon);
-        console.log(this.yearMonList);
       });
     },
     checkDetails(row) {
+      this.contractform = {
+        manage_contract_num: row.manage_contract_num,
+        company_name: row.company_name,
+        manage_contract_name: row.manage_contract_name,
+        manage_contract_firstParty: row.manage_contract_firstParty,
+        manage_contract_address: row.manage_contract_address,
+        manage_contract_startTime: row.manage_contract_startTime,
+        manage_contract_endTime: row.manage_contract_endTime,
+        manage_contract_amount: row.manage_contract_amount,
+        manage_contract_visaAmount: row.manage_contract_visaAmount,
+        manage_contract_remark: row.manage_contract_remark
+      };
       this.isopen = true;
-      this.id = row.construct_supplier_id;
-      this.getproject();
+    },
+    addcontract() {
+      this.contractform = {
+        manage_contract_num: "",
+        company_name: "",
+        manage_contract_name: "",
+        manage_contract_firstParty: "",
+        manage_contract_address: "",
+        manage_contract_startTime: "",
+        manage_contract_endTime: "",
+        manage_contract_amount: 0,
+        manage_contract_visaAmount: 0,
+        manage_contract_remark: ""
+      };
+      this.isopen = true;
     }
   }
 };

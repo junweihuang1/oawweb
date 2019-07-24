@@ -260,7 +260,6 @@ export default {
   watch: {
     isopen(val) {
       this.myopen = val;
-      console.log(val);
       if (val) {
         apipersonalRecords({
           cid: this.userid,
@@ -361,7 +360,6 @@ export default {
         user_num: this.form[0].user_num,
         center_id: this.form[0].center_id
       };
-      console.log(data);
       apisavePersonalRecords(data).then(res => {
         console.log(res);
       });

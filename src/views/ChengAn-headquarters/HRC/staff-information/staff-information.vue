@@ -36,6 +36,7 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
+
     <modify-window
       v-if="isreload"
       :isopen="isadd"

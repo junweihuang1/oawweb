@@ -248,3 +248,12 @@ export const apicontractPayLists = data => get("contractPayLists", data);
 
 //财务中心 --> 人员成本汇总-->查询出年份信息
 export const apicontractPayList = data => get("contractPayList", data);
+
+//财务中心 --> 人员成本汇总-->删除指定合同信息
+export const apidelete_Contract = delId => Delete("delete_Contract", delId);
+
+//财务中心 --> 人员成本汇总-->查询指定合同详细信息
+export const apicontractPayNew = data => get("contractPayNew", data);
+
+//财务中心 --> 人员成本汇总-->新增支出合同
+export const apisaveContract = data => post("saveContract", data);
