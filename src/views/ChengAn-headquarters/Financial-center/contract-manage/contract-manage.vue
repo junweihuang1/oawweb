@@ -1,10 +1,207 @@
 <template>
-  <div></div>
+  <div>
+    <el-form size="mini" inline>
+      <el-form-item>
+        <el-input
+          placeholder="合同编号"
+          clearable
+          v-model="form.manage_contract_num"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          clearable
+          placeholder="项目名称"
+          v-model="form.manage_contract_name"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-date-picker
+          v-model="form.manage_contract_startTime"
+          type="year"
+          style="width:100%;"
+          placeholder="年份"
+          value-format="yyyy"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="query('')">搜索</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" @click="addcontract">新增</el-button>
+          <el-button
+            type="primary"
+            @click="query(item[0])"
+            v-for="item in companyList"
+            :key="item[0]"
+            >{{ item[1] }}</el-button
+          >
+        </el-button-group>
+      </el-form-item>
+    </el-form>
+    <Ca-rule-table
+      :DataList="contractList"
+      :header="header"
+      :headle="headle"
+      @checkleave="modifyitem"
+      @delete="deleteitem"
+    ></Ca-rule-table>
+    <paging
+      :currentlimit="currentlimit"
+      :currentpage="currentpage"
+      :total="263"
+      @setpage="getpage"
+      @setlimit="getlimit"
+    ></paging>
+    <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
+      <echarts :setform="contractform" @setDate="submit"></echarts>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import Echarts from "../pay-contract-manage/components/echarts";
+import paging from "@/components/paging/paging";
+import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
+import {
+  apicontractLists,
+  apisaveContract,
+  apidelete_Contract
+} from "@/request/api.js";
 export default {
-  name: "contractManage"
+  name: "contractManage",
+  data() {
+    return {
+      currentlimit: 15,
+      currentpage: 1,
+      isopen: false,
+      form: {
+        manage_contract_num: "",
+        manage_contract_name: "",
+        manage_contract_firstParty: "",
+        manage_contract_startTime: "",
+        manage_contract_company: ""
+      },
+      contractform: {},
+      companyList: [
+        ["1", "建设公司"],
+        ["2", "科技公司"],
+        ["11", "教育公司"],
+        ["3", "加盟合作"],
+        ["", "诚安时代"]
+      ],
+      header: [
+        ["合同编号", "manage_contract_num", 100],
+        ["发包方（甲方）", "manage_contract_firstParty"],
+        ["项目名称", "manage_contract_name"],
+        ["合同开始时间", "manage_contract_startTime", 120],
+        ["合同金额", "manage_contract_amount", 100],
+        ["签证金额", "manage_contract_visaAmount", 100],
+        ["合同总金额", "totalAmount", 110],
+        ["收款金额", "receiveAmount", 100],
+        ["未收款金额", "unreceiveAmount", 110]
+      ],
+      headle: ["修改", "删除"],
+      contractList: []
+    };
+  },
+  components: {
+    CaRuleTable,
+    paging,
+    Echarts
+  },
+  mounted() {
+    this.getContractList();
+  },
+  methods: {
+    addcontract() {
+      this.contractform = {
+        manage_contract_num: "",
+        company_name: "",
+        manage_contract_name: "",
+        manage_contract_firstParty: "",
+        manage_contract_address: "",
+        manage_contract_startTime: "",
+        manage_contract_endTime: "",
+        manage_contract_amount: 0,
+        manage_contract_visaAmount: 0,
+        manage_contract_remark: ""
+      };
+      this.isopen = true;
+    },
+    submit(data) {
+      apisaveContract(data).then(res => {
+        console.log(res);
+      });
+      console.log(data);
+    },
+    getlimit(e) {
+      this.currentlimit = e;
+      this.getContractList();
+    },
+    getpage(e) {
+      this.currentpage = e;
+      this.getContractList();
+    },
+    modifyitem(row) {
+      this.contractform = {
+        manage_contract_num: row.manage_contract_num,
+        company_name: row.company_name,
+        manage_contract_name: row.manage_contract_name,
+        manage_contract_firstParty: row.manage_contract_firstParty,
+        manage_contract_address: row.manage_contract_address,
+        manage_contract_startTime: row.manage_contract_startTime,
+        manage_contract_endTime: row.manage_contract_endTime,
+        manage_contract_amount: row.manage_contract_amount,
+        manage_contract_visaAmount: row.manage_contract_visaAmount,
+        manage_contract_remark: row.manage_contract_remark
+      };
+      this.isopen = true;
+    },
+    deleteitem(e) {
+      this.$confirm("确定删除" + e.manage_contract_num + "这份合同吗？")
+        .then(() => {
+          apidelete_Contract({
+            manage_contract_id: e.manage_contract_id
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.contractList = this.contractList.filter(
+              item => item.manage_contract_id != e.manage_contract_id
+            );
+          });
+        })
+        .catch(() => {});
+    },
+    query(e) {
+      this.form.manage_contract_company = e;
+      this.getContractList();
+    },
+    getContractList() {
+      let data = {
+        limit: this.currentlimit,
+        page: this.currentpage,
+        manage_contract_num: this.form.manage_contract_num,
+        manage_contract_name: this.form.manage_contract_name,
+        manage_contract_firstParty: this.form.manage_contract_firstParty,
+        manage_contract_startTime: this.form.manage_contract_startTime,
+        manage_contract_company: this.form.manage_contract_company
+      };
+      apicontractLists(data).then(res => {
+        this.contractList = res.data.map(item => {
+          if (item.receiveAmount) {
+            item.unreceiveAmount = (
+              item.totalAmount - item.receiveAmount
+            ).toFixed(2);
+          } else {
+            item.unreceiveAmount = item.totalAmount.toFixed(2);
+          }
+          return item;
+        });
+      });
+    }
+  }
 };
 </script>
 

@@ -1,5 +1,5 @@
 import { get, post, Delete, put } from "./http";
-import { publicDecrypt } from "crypto";
+// import { publicDecrypt } from "crypto";
 
 // new接口
 // export const apiTheme = theme => get("api/v1/theme", theme);
@@ -243,17 +243,29 @@ export const apibuild_settlements = data => get("build_settlements", data);
 //财务中心 --> 人员成本汇总-->查询项目列表信息
 export const apisettleConstructList = data => post("settleConstructList", data);
 
-//财务中心 --> 人员成本汇总-->查询出所有支出合同信息
+//财务中心 --> 支出合同管理-->查询出所有支出合同信息
 export const apicontractPayLists = data => get("contractPayLists", data);
 
-//财务中心 --> 人员成本汇总-->查询出年份信息
+//财务中心 --> 支出合同管理-->查询出年份信息
 export const apicontractPayList = data => get("contractPayList", data);
 
-//财务中心 --> 人员成本汇总-->删除指定合同信息
+//财务中心 --> 支出合同管理-->删除指定合同信息
 export const apidelete_Contract = delId => Delete("delete_Contract", delId);
 
-//财务中心 --> 人员成本汇总-->查询指定合同详细信息
+//财务中心 --> 支出合同管理-->查询指定合同详细信息
 export const apicontractPayNew = data => get("contractPayNew", data);
 
-//财务中心 --> 人员成本汇总-->新增支出合同
+//财务中心 --> 支出合同管理-->新增支出合同
 export const apisaveContract = data => post("saveContract", data);
+
+//财务中心 --> 合同管理-->查出所有合同信息
+export const apicontractLists = data => get("contractLists", data);
+
+//财务中心 --> 合同审批-->查出所有合同审批
+export const apicontractapprove = data => get("contractapproveLists", data);
+
+//财务中心 --> 合同审批-->删除指定审批
+export const apideleteContract = Did => Delete("delete_Contractapprove", Did);
+
+//财务中心 --> 合同审批-->查询指定审批详细信息
+export const apicontractapproveNew = data => get("contractapproveNew", data);

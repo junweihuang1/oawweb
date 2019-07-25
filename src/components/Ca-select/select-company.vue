@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-select v-model="company_id" placeholder="请选择">
+    <el-select v-model="company_id" placeholder="请选择公司" clearable>
       <el-option
         v-for="item in companyList"
         :key="item.company_id"
@@ -27,6 +27,7 @@ export default {
   watch: {
     company_id(val) {
       console.log(val);
+      this.$emit("selectId", val);
     }
   },
   mounted() {

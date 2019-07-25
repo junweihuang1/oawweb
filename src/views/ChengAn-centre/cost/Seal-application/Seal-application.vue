@@ -172,11 +172,10 @@ export default {
       this.isApplyOpen = true;
     },
     opanLeaveList(e) {
-      console.log(e);
       this.selectList = e;
-      // apiSealById({ own_seal_id: e.own_seal_id }).then(res => {
-      //   console.log(res);
-      // });
+      apiSealById({ own_seal_id: e.own_seal_id }).then(res => {
+        console.log(res);
+      });
       this.isopen = true;
     },
     tableRowClassName(e) {},

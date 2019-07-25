@@ -48,7 +48,7 @@
     ></paging>
 
     <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
-      <echarts :setform="contractform"></echarts>
+      <echarts :setform="contractform" @setDate="submit"></echarts>
     </el-dialog>
   </div>
 </template>
@@ -60,7 +60,8 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apicontractPayLists,
   apicontractPayList,
-  apidelete_Contract
+  apidelete_Contract,
+  apisaveContract
 } from "@/request/api.js";
 export default {
   name: "payContractManage",
@@ -105,10 +106,15 @@ export default {
     this.getyears();
   },
   methods: {
+    submit(data) {
+      apisaveContract(data).then(res => {
+        console.log(res);
+      });
+    },
     //删除指定合同
     delcontract(e) {
-      this.$confirm("确定删除" + e.manage_contract_num + "这份合同吗？").then(
-        _ => {
+      this.$confirm("确定删除" + e.manage_contract_num + "这份合同吗？")
+        .then(() => {
           apidelete_Contract({
             manage_contract_id: e.manage_contract_id
           }).then(res => {
@@ -117,8 +123,8 @@ export default {
               item => item.manage_contract_id != e.manage_contract_id
             );
           });
-        }
-      );
+        })
+        .catch(() => {});
     },
     querygys() {
       this.getPayList();

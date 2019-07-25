@@ -1,9 +1,9 @@
 import axios from "axios";
 import QS from "qs";
-import { Message, MessageBox } from "element-ui";
+import { Message } from "element-ui";
 
 // 默认请求地址
-axios.defaults.baseURL = "http://192.168.11.124:8081/casd2/admin/"; //"http://192.168.11.124:8081/casd2/admin/";//39.108.184.20:8080
+axios.defaults.baseURL = "http://39.108.184.20:8080/casd2/admin/"; //"http://192.168.11.124:8081/casd2/admin/";//39.108.184.20:8080
 
 // 请求超时时间
 axios.defaults.timeout = 10000;

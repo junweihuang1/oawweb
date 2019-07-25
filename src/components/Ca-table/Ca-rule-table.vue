@@ -20,6 +20,7 @@
         :label="item[0]"
         :prop="item[1]"
         sortable
+        :show-overflow-tooltip="item[3]"
         align="center"
         :key="index"
         :width="item[2]"
@@ -129,4 +130,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-tooltip__popper {
+  max-width: 400px;
+}
+</style>
