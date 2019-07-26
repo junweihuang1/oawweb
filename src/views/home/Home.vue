@@ -279,6 +279,28 @@ export default {
                   route: "/contract-approve"
                 }
               ]
+            },
+            {
+              id: "4-5",
+              title: "成本中心",
+              route: "",
+              children: [
+                {
+                  id: "4-5-1",
+                  title: "分供方台账",
+                  route: "/supplier-account"
+                },
+                {
+                  id: "4-5-2",
+                  title: "材料管理",
+                  route: "/material-manage"
+                },
+                {
+                  id: "4-5-3",
+                  title: "采购明细",
+                  route: "/Purchase-details"
+                }
+              ]
             }
           ]
         },

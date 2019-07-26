@@ -221,6 +221,24 @@ const router = new Router({
           name: "History",
           component: () =>
             import("@/views/ChengAn-headquarters/Financial-center/Labor-costs/components/History.vue")
+        },
+        {
+          path: "supplier-account",
+          name: "supplier-account",
+          component: () =>
+            import("@/views/ChengAn-headquarters/const-center/supplier-account/supplier-account.vue")
+        },
+        {
+          path: "Purchase-details",
+          name: "Purchase-details",
+          component: () =>
+            import("@/views/ChengAn-headquarters/const-center/Purchase-details/Purchase-details.vue")
+        },
+        {
+          path: "material-manage",
+          name: "material-manage",
+          component: () =>
+            import("@/views/ChengAn-headquarters/const-center/material-manage/material-manage.vue")
         }
       ]
     },

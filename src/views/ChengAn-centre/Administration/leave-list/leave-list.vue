@@ -10,6 +10,10 @@
       @RowClassName="tableRowClassName"
       @checkleave="opanLeaveList"
       :headle="headle"
+      :truestatus="3"
+      :falsestatus="1"
+      field="status"
+      :columnIndex="5"
     ></rule-table>
     <leave-table
       :isopen="isopen"
@@ -59,12 +63,17 @@ export default {
     })
       .then(res => {
         this.DataList = res.data.map(item => {
-          item.status2 =
-            item.status == 0
-              ? "待审批"
-              : item.status == 3
-              ? "审批通过"
-              : "不通过";
+          switch (item.status) {
+            case 0:
+              item.status2 = "待审批";
+              break;
+            case 1:
+              item.status2 = "不通过";
+              break;
+            case 3:
+              item.status2 = "审批通过";
+              break;
+          }
           item.leave_category =
             item.leave_category == 0
               ? "事假"

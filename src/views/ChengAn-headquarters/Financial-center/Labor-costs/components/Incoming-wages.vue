@@ -36,13 +36,13 @@
       :append-to-body="true"
       width="45%"
     >
-      <select-User></select-User>
+      <select-User @setuser="getuser"></select-User>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import selectUser from "./select-User";
+import selectUser from "@/components/Ca-select/select-User";
 export default {
   name: "IncomingWages",
   data() {
@@ -96,6 +96,11 @@ export default {
   props: {},
   watch: {},
   methods: {
+    //从子组件获取选择的用户信息（信息不完善）
+    getuser(row) {
+      this.isopenSelect = false;
+      console.log(row);
+    },
     closewin() {
       this.isopenSelect = false;
     },

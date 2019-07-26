@@ -55,16 +55,26 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="开始时间">
-            <el-input
+            <el-date-picker
               v-model="contractapprove.manage_contractapprove_startTime"
-            ></el-input>
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择时间"
+              style="width:100%;"
+            >
+            </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="结束时间">
-            <el-input
+            <el-date-picker
               v-model="contractapprove.manage_contractapprove_endTime"
-            ></el-input>
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择时间"
+              style="width:100%;"
+            >
+            </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -110,9 +120,29 @@
             ></Ca-picker-c> </el-form-item
         ></el-col>
         <el-col :span="8">
-          <div style="margin-left:20px;">
+          <!-- <div style="margin-left:20px;">
             <el-button type="primary" size="mini">立即提交</el-button>
-          </div>
+          </div> -->
+          <el-upload
+            style="margin-left:20px;"
+            ref="upload"
+            action="string"
+            :auto-upload="false"
+            :before-upload="beforeUpload"
+          >
+            <el-button
+              type="success"
+              style="margin-left: 10px;"
+              size="mini"
+              @click="submitUpload"
+              >立即提交</el-button
+            >
+            <el-button slot="trigger" size="mini" type="primary"
+              >选取文件</el-button
+            >
+            <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+          </el-upload>
         </el-col>
       </el-row>
       <el-form-item label="流程线">
@@ -141,13 +171,16 @@
 </template>
 
 <script>
+import axios from "axios";
+import { apisave_conApprove } from "@/request/api.js";
 import CaPickerC from "@/components/Ca-picker-c/Ca-picker-c";
+import { setTimeout } from "timers";
 export default {
   name: "dialogWindow",
   data() {
     return {
       HeaderList: [
-        ["步骤序号", ""],
+        ["序号", ""],
         ["步骤名称", "name_"],
         ["相关人员", "username"],
         ["开始时间", "starttime"],
@@ -167,9 +200,40 @@ export default {
     isnew: Boolean
   },
   methods: {
+    //文件上传前的钩子
+    beforeUpload(file) {
+      let fd = new FormData();
+      fd.append("file", file); //传文件
+      console.log(fd);
+      axios({
+        method: "post",
+        url: "http://192.168.11.124:8081/casd2/admin/uploadContractFile",
+        data: fd,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          token: localStorage.getItem("token")
+        }
+      })
+        .then(res => {
+          console.log(res);
+          this.contractapprove.manage_contractapprove_attachAddress = "";
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    //提交审批
+    submitUpload() {
+      apisave_conApprove(this.contractapprove).then(res => {
+        console.log(res);
+        this.$refs.upload.submit();
+        this.$message.success("提交成功！");
+        this.$emit("closewin");
+      });
+    },
+    //从子组件中获取下一审核人ID
     getSpprover(userid) {
       this.contractapprove.userid = userid;
-      console.log(this.contractapprove.userid);
     }
   }
 };

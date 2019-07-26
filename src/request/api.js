@@ -88,7 +88,7 @@ export const apiViewHisComment = data => get("getViewHisComment", data);
 export const apisaveLeave = data => post("saveLeave", data);
 
 //获取所有诚安标准模板
-export const apitemplatelList = data => get("templatelList", data);
+export const apitemplatelList = data => get("templatelLists", data);
 
 //删除诚安标准模板
 export const apideleteTemplate = data => Delete("deleteTemplate", data);
@@ -124,7 +124,7 @@ export const apiLeaveList2 = data => post("leaveList", data);
 export const apigetAllCompanyInfo = data => get("getAllCompanyInfo", data);
 
 //个人工资
-export const apiuserWagesLibs1 = data => post("userWagesLibs1", data);
+export const apiuserWagesLibs1 = data => get("userWagesLibs1", data);
 
 //发送邀请函
 export const apiemail = data => post("email", data);
@@ -269,3 +269,18 @@ export const apideleteContract = Did => Delete("delete_Contractapprove", Did);
 
 //财务中心 --> 合同审批-->查询指定审批详细信息
 export const apicontractapproveNew = data => get("contractapproveNew", data);
+
+//财务中心 --> 合同审批-->提交审批
+export const apisave_conApprove = data => post("save_conApprove", data);
+
+//成本中心-->分供方台账-->查询所有供应商信息、
+export const apisupplierList = data => post("supplierList", data);
+
+//成本中心-->分供方台账-->删除指定供应商信息、
+export const apideleSupplier = idarr => Delete("deleSupplier", idarr);
+
+//成本中心-->分供方台账-->保存供应商信息、
+export const apisaveSupplier = data => post("saveSupplier", data);
+
+//成本中心-->分供方台账-->查询指定供应商的台账
+export const apimaterialPrices = data => post("materialPrices", data);

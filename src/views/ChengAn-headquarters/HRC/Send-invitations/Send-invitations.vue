@@ -12,13 +12,21 @@
             trigger: 'blur'
           }
         ]"
-        ><el-input v-model="emailform.address" style="width:50%;"></el-input
+        ><el-input
+          v-model="emailform.address"
+          style="width:50%;"
+          clearable
+        ></el-input
       ></el-form-item>
       <el-form-item
         label="主题"
         prop="title"
         :rules="[{ required: true, message: '请输入主题', trigger: 'blur' }]"
-        ><el-input v-model="emailform.title" style="width:50%;"></el-input
+        ><el-input
+          v-model="emailform.title"
+          style="width:50%;"
+          clearable
+        ></el-input
       ></el-form-item>
       <el-form-item label="正文"
         ><el-input

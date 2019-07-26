@@ -6,6 +6,7 @@
       :height="maxHeight"
       :header-cell-style="getRowClass"
       size="mini"
+      :cell-style="getcellstyle"
       :show-summary="issummary"
       @row-click="clickline"
       @selection-change="handleSelectionChange"
@@ -29,7 +30,7 @@
         label="操作"
         align="center"
         v-if="headle"
-        :width="headle.length == 3 ? '270' : headle.length == 2 ? '180' : '90'"
+        :width="getwidth"
       >
         <template slot-scope="scope">
           <template v-for="(item, index) in headle">
@@ -74,13 +75,17 @@ export default {
     return {
       isselect: this.setselect,
       issummary: this.setsummary,
-      maxHeight: document.documentElement.scrollHeight * 0.77
+      maxHeight: document.documentElement.scrollHeight * this.setheight
     };
   },
   props: {
     DataList: Array,
     header: Array,
     headle: Array,
+    setheight: {
+      type: Number,
+      default: 0.77
+    },
     setselect: {
       type: Boolean,
       default: false
@@ -88,6 +93,32 @@ export default {
     setsummary: {
       type: Boolean,
       default: false
+    },
+    columnIndex: {
+      type: Number,
+      default: null
+    },
+    field: {
+      type: String,
+      default: null
+    },
+    truestatus: {
+      type: Number,
+      default: null
+    },
+    falsestatus: {
+      type: Number,
+      default: null
+    },
+    progressstatus: {
+      type: Number,
+      default: null
+    }
+  },
+  computed: {
+    getwidth() {
+      let width = this.headle.filter(item => item != "");
+      return width.length * 90;
     }
   },
   watch: {
@@ -96,7 +127,19 @@ export default {
     }
   },
   methods: {
-    // 给表单的表头添加背景颜色
+    getcellstyle({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex == this.columnIndex) {
+        switch (row[this.field]) {
+          case this.truestatus:
+            return "color:#67C23A;";
+          case this.falsestatus:
+            return "color:#F56C6C;";
+          case this.progressstatus:
+            return "color:#E6A23C;";
+        }
+      }
+    },
+    //给表单的表头添加背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
         return "background: #84C2B7;color:#fff; ";

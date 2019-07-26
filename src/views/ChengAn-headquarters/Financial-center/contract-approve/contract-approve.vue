@@ -32,6 +32,10 @@
       @checkleave="checkitem"
       @delete="deleteitem"
       @edit="downfile"
+      :columnIndex="8"
+      field="manage_status"
+      :truestatus="3"
+      :progressstatus="1"
     ></Ca-rule-table>
     <paging
       :currentpage="currentpage"
@@ -47,6 +51,7 @@
         :history="history"
         :contractapprove="contractapprove"
         :activityList="activityList"
+        @closewin="closewin"
       ></dialog-window>
     </el-dialog>
   </div>
@@ -88,7 +93,7 @@ export default {
         ["合同金额", "manage_contractapprove_amount", 100],
         ["附件地址", "manage_contractapprove_attachAddress", 100, true],
         ["备注", "manage_contractapprove_remark", 100, true],
-        ["状态", "manage_status", 80]
+        ["状态", "manage_status2", 80]
       ],
       headle: ["查看", "删除", "下载"],
       activityList: [],
@@ -106,9 +111,28 @@ export default {
     dialogWindow
   },
   methods: {
+    closewin() {
+      this.isopen = false;
+      this.isnew = false;
+      this.getContractApprove();
+    },
     additem() {
       this.isnew = true;
-      this.contractapprove = {};
+      this.contractapprove = {
+        userid: "",
+        manage_contractapprove_name: "",
+        manage_contractapprove_company: "",
+        manage_contractapprove_address: "",
+        manage_contractapprove_firstParty: "",
+        manage_contractapprove_amount: "",
+        manage_contractapprove_secondParty: "",
+        manage_contractapprove_startTime: "",
+        manage_contractapprove_endTime: "",
+        manage_contractapprove_payment: "",
+        category: "",
+        manage_contractapprove_remark: "",
+        manage_contractapprove_taxIncluded: ""
+      };
       this.activityList = [];
       this.history = [];
       this.isopen = true;
@@ -144,17 +168,20 @@ export default {
     deleteitem(row) {
       this.$confirm("是否删除？")
         .then(() => {
-          console.log(row.manage_contractapprove_id);
-          // apideleteContract({
-          //   manage_contractapprove_id: row.manage_contractapprove_id
-          // }).then(res => {
-          //   console.log(res);
-          // });
+          apideleteContract({
+            manage_contractapprove_id: row.manage_contractapprove_id
+          }).then(() => {
+            this.getContractApprove();
+          });
         })
         .catch(() => {});
     },
     downfile(row) {
-      window.open(row.manage_contractapprove_attachAddress);
+      if (row.manage_contractapprove_attachAddress) {
+        window.open(row.manage_contractapprove_attachAddress);
+      } else {
+        this.$message.warning("此合同没有附件");
+      }
     },
     getContractApprove() {
       console.log(this.company_id);
@@ -168,16 +195,16 @@ export default {
         this.approveList = res.data.map(item => {
           switch (item.manage_status) {
             case 0:
-              item.manage_status = "数据录入";
+              item.manage_status2 = "数据录入";
               break;
             case 1:
-              item.manage_status = "审核中";
+              item.manage_status2 = "审核中";
               break;
             case 3:
-              item.manage_status = "审核通过";
+              item.manage_status2 = "审核通过";
               break;
             default:
-              item.manage_status = "审核不通过";
+              item.manage_status2 = "审核不通过";
               break;
           }
           return item;

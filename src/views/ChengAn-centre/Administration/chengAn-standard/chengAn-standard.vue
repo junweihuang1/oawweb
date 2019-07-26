@@ -1,5 +1,16 @@
 <template>
   <div>
+    <el-form inline size="mini">
+      <el-form-item>
+        <el-radio-group @change="selectType" v-model="templateType">
+          <el-radio-button label="全部"></el-radio-button>
+          <el-radio-button label="合同标准"></el-radio-button>
+          <el-radio-button label="行政标准"></el-radio-button>
+          <el-radio-button label="财务标准"></el-radio-button>
+          <el-radio-button label="企业标准"></el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+    </el-form>
     <rule-table
       id="table"
       style="overflow:auto;"
@@ -11,6 +22,13 @@
       @delete="deletefile"
       @edit="download"
     ></rule-table>
+    <paging
+      :currentpage="currentpage"
+      :currentlimit="currentlimit"
+      :total="10"
+      @setpage="getpage"
+      @setlimit="getlimit"
+    ></paging>
     <el-dialog title="模板" :visible.sync="isopen" width="30%">
       <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="模板编号">
@@ -62,6 +80,7 @@
 </template>
 
 <script>
+import paging from "@/components/paging/paging";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import { apitemplatelList, apideleteTemplate } from "@/request/api.js";
 export default {
@@ -97,42 +116,56 @@ export default {
           label: "企业资质",
           value: 4
         }
-      ]
+      ],
+      currentpage: 1,
+      currentlimit: 15,
+      templateType: "全部",
+      templateTypeid: ""
     };
   },
   components: {
-    ruleTable
+    ruleTable,
+    paging
   },
-  created() {
-    apitemplatelList().then(res => {
-      console.log(res);
-      this.DataList = res.data.map(item => {
-        switch (item.hr_templatel_type) {
-          case 1:
-            item.type = "合同标准";
-            break;
-          case 2:
-            item.type = "行政标准";
-            break;
-          case 3:
-            item.type = "财务标准";
-            break;
-          case 4:
-            item.type = "企业资质";
-            break;
-          default:
-            break;
-        }
-        return item;
-      });
-    });
+  mounted() {
+    this.getStandardList();
   },
   methods: {
+    selectType(e) {
+      switch (e) {
+        case "全部":
+          this.templateTypeid = "";
+          break;
+        case "合同标准":
+          this.templateTypeid = 1;
+          break;
+        case "行政标准":
+          this.templateTypeid = 2;
+          break;
+        case "财务标准":
+          this.templateTypeid = 3;
+          break;
+        case "企业标准":
+          this.templateTypeid = 4;
+          break;
+      }
+      this.getStandardList();
+    },
+    //改变当前页
+    getpage(e) {
+      this.currentpage = e;
+      this.getStandardList();
+    },
+    getlimit(e) {
+      this.currentlimit = e;
+      this.getStandardList();
+    },
     tableRowClassName(e) {},
     opanLeaveList(e) {
       this.form = e;
       this.isopen = true;
     },
+    //删除文件
     deletefile(e) {
       //this.$message.warning("此功能暂未开启");
       apideleteTemplate({
@@ -158,6 +191,36 @@ export default {
         hr_templatel_describe: this.form.hr_templatel_describe
       };
       console.log(data);
+    },
+    getStandardList() {
+      let data = {
+        page: this.currentpage,
+        limit: this.currentlimit,
+        hr_templatel_type: this.templateTypeid
+      };
+      console.log(data);
+      apitemplatelList(data).then(res => {
+        console.log(res);
+        this.DataList = res.data.map(item => {
+          switch (item.hr_templatel_type) {
+            case 1:
+              item.type = "合同标准";
+              break;
+            case 2:
+              item.type = "行政标准";
+              break;
+            case 3:
+              item.type = "财务标准";
+              break;
+            case 4:
+              item.type = "企业资质";
+              break;
+            default:
+              break;
+          }
+          return item;
+        });
+      });
     }
   }
 };
