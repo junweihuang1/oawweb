@@ -5,8 +5,11 @@
         <Nav :nav-list="navList" :active-index="activeIndex" />
       </el-aside>
       <el-container>
-        <el-header height="50px" style="background:#0190a0;">
-          <el-radio-group size="mini" fill="#0190a0">
+        <el-header
+          height="50px"
+          :style="{ background: this.$store.state.theme }"
+        >
+          <el-radio-group size="mini" :fill="this.$store.state.theme">
             <!-- <el-radio-button :label="false">展开</el-radio-button>
             <el-radio-button :label="true">收起</el-radio-button> -->
           </el-radio-group>
@@ -306,9 +309,78 @@ export default {
         },
         {
           id: "5",
-          title: "补卡审批",
-          route: "/Approval",
-          children: []
+          title: "诚安教育",
+          route: "",
+          icon: "icon-tushu",
+          children: [
+            {
+              id: "5-3",
+              title: "汇总类",
+              route: "",
+              children: [
+                {
+                  id: "5-3-1",
+                  title: "供应商劳动力汇总",
+                  route: "/Supplier-labor-summary-education"
+                },
+                {
+                  id: "5-3-2",
+                  title: "劳动力费用汇总",
+                  route: "/Labor-costs-summary-education"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "6",
+          title: "诚安科技",
+          route: "",
+          icon: "icon-baobiao",
+          children: [
+            {
+              id: "6-3",
+              title: "汇总类",
+              route: "",
+              children: [
+                {
+                  id: "6-3-1",
+                  title: "供应商劳动力汇总",
+                  route: "/Supplier-labor-summary-science"
+                },
+                {
+                  id: "6-3-2",
+                  title: "劳动力费用汇总",
+                  route: "/Labor-costs-summary-science"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "7",
+          title: "诚安建设",
+          route: "",
+          icon: "icon-anzhuangshigong",
+          children: [
+            {
+              id: "7-3",
+              title: "汇总类",
+              route: "",
+              children: [
+                {
+                  id: "7-3-1",
+                  title: "供应商劳动力汇总",
+                  route: "/Supplier-labor-summary-build"
+                },
+                {
+                  id: "7-3-2",
+                  title: "劳动力费用汇总",
+                  route: "/Labor-costs-summary-build"
+                }
+              ]
+            }
+          ]
         }
       ]
     };

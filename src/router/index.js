@@ -3,7 +3,6 @@ import Router from "vue-router";
 import Home from "@/views/home/Home";
 import Main from "@/views/main/Main";
 import Login from "@/views/login/Login";
-import Approval from "@/views/process/Approval-Card";
 
 Vue.use(Router);
 
@@ -19,11 +18,6 @@ const router = new Router({
           path: "main",
           name: "main",
           component: Main
-        },
-        {
-          path: "Approval",
-          name: "Approval",
-          component: Approval
         },
         {
           path: "User-manage",
@@ -174,6 +168,7 @@ const router = new Router({
           component: () =>
             import("@/views/ChengAn-centre/task/chengan-dream/chengan-dream.vue")
         },
+        //诚安总部-->财务中心
         {
           path: "build-Material-settlement",
           name: "build-Material-settlement",
@@ -222,6 +217,7 @@ const router = new Router({
           component: () =>
             import("@/views/ChengAn-headquarters/Financial-center/Labor-costs/components/History.vue")
         },
+        //诚安总部-->成本中心
         {
           path: "supplier-account",
           name: "supplier-account",
@@ -239,6 +235,45 @@ const router = new Router({
           name: "material-manage",
           component: () =>
             import("@/views/ChengAn-headquarters/const-center/material-manage/material-manage.vue")
+        },
+        //诚安教育-->汇总类
+        {
+          path: "Labor-costs-summary-education",
+          name: "Labor-costs-summary-education",
+          component: () =>
+            import("@/views/ChengAn-education/summary-category/Labor-costs-summary/Labor-costs-summary.vue")
+        },
+        {
+          path: "Supplier-labor-summary-education",
+          name: "Supplier-labor-summary-education",
+          component: () =>
+            import("@/views/ChengAn-education/summary-category/Supplier-labor-summary/Supplier-labor-summary.vue")
+        },
+        //诚安建设-->汇总类
+        {
+          path: "Labor-costs-summary-build",
+          name: "Labor-costs-summary-build",
+          component: () =>
+            import("@/views/ChengAn-build/summary-category/Labor-costs-summary/Labor-costs-summary.vue")
+        },
+        {
+          path: "Supplier-labor-summary-build",
+          name: "Supplier-labor-summary-build",
+          component: () =>
+            import("@/views/ChengAn-build/summary-category/Supplier-labor-summary/Supplier-labor-summary.vue")
+        },
+        //诚安科技-->汇总类
+        {
+          path: "Labor-costs-summary-science",
+          name: "Labor-costs-summary-science",
+          component: () =>
+            import("@/views/ChengAn-science/summary-category/Labor-costs-summary/Labor-costs-summary.vue")
+        },
+        {
+          path: "Supplier-labor-summary-science",
+          name: "Supplier-labor-summary-science",
+          component: () =>
+            import("@/views/ChengAn-science/summary-category/Supplier-labor-summary/Supplier-labor-summary.vue")
         }
       ]
     },

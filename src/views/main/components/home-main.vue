@@ -114,7 +114,7 @@ export default {
         date: "",
         desc: ""
       },
-      screenHeight: document.documentElement.clientHeight
+      screenHeight: null
     };
   },
   components: {

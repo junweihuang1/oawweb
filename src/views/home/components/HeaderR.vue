@@ -14,7 +14,7 @@
         text-color="#fff"
         mode="horizontal"
         @select="handleSelect"
-        background-color="#0190a0"
+        :background-color="this.$store.state.theme"
         ><!--#409EFF-->
         <el-submenu index="1">
           <template slot="title">

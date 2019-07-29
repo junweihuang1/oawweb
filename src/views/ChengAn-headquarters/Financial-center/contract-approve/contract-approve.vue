@@ -168,13 +168,21 @@ export default {
     deleteitem(row) {
       this.$confirm("是否删除？")
         .then(() => {
+          console.log(123);
           apideleteContract({
-            manage_contractapprove_id: row.manage_contractapprove_id
-          }).then(() => {
-            this.getContractApprove();
-          });
+            manage_contractapprove_id: row.manage_contractapprove_id,
+            filePath: ""
+          })
+            .then(res => {
+              this.getContractApprove();
+            })
+            .catch(err => {
+              console.log(err);
+            });
         })
-        .catch(() => {});
+        .catch(err => {
+          console.log(err);
+        });
     },
     downfile(row) {
       if (row.manage_contractapprove_attachAddress) {

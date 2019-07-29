@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     openTabs: [],
-    activeIndex: "1"
+    activeIndex: "1",
+    theme: "#0190A0"
   },
   mutations: {
     addTabs(state, Tabs) {

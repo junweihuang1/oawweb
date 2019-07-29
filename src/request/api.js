@@ -284,3 +284,12 @@ export const apisaveSupplier = data => post("saveSupplier", data);
 
 //成本中心-->分供方台账-->查询指定供应商的台账
 export const apimaterialPrices = data => post("materialPrices", data);
+
+//成本中心-->材料管理-->查询所有材料信息
+export const apimaterialSeries = data => get("materialSeries", data);
+
+//汇总类-->供应商劳动力-->查询所有劳动力
+export const apifirmLaborCost = data => get("firmLaborCost", data);
+
+//汇总类-->供应商劳动力-->劳动力费用汇总表
+export const apilaborCostMon = data => get("laborCostMon", data);

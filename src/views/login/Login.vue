@@ -18,6 +18,7 @@
             v-model="formInline.checkUser"
             prefix-icon="iconfont iconpeople_fill"
             placeholder="请输入用户名"
+            clearable
           />
         </el-form-item>
         <el-form-item prop="checkPassword">
@@ -27,6 +28,7 @@
             prefix-icon="iconfont iconunlock_fill"
             @keyup.enter.native="submitForm('formInline')"
             placeholder="请输入密码"
+            clearable
           />
         </el-form-item>
         <el-form-item>

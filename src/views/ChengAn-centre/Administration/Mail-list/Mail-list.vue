@@ -7,16 +7,24 @@
       :on-preview="handlePreview"
       :before-upload="beforeUpload"
       :auto-upload="false"
+      v-if="isdisplay"
     >
-      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+      <el-button slot="trigger" size="mini" type="primary">选取文件</el-button>
       <el-button
         style="margin-left: 10px;"
-        size="small"
         type="success"
+        size="mini"
         @click="submitUpload"
         >上传到服务器</el-button
       >
     </el-upload>
+    <iframe
+      style="margin-top:20px;"
+      src="http://localhost:8000/public/file/address_list.pdf"
+      width="90%"
+      frameborder="0"
+      :height="boxheight"
+    ></iframe>
   </div>
 </template>
 
@@ -26,7 +34,10 @@ import { apiuploadPdf } from "@/request/api.js";
 export default {
   name: "Maillist",
   data() {
-    return {};
+    return {
+      isdisplay: true,
+      boxheight: document.documentElement.scrollHeight * 0.8
+    };
   },
   methods: {
     submitUpload() {

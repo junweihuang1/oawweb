@@ -6,6 +6,7 @@
       :height="maxHeight"
       :header-cell-style="getRowClass"
       size="mini"
+      :span-method="objectSpanMethod"
       :cell-style="getcellstyle"
       :show-summary="issummary"
       @row-click="clickline"
@@ -118,7 +119,7 @@ export default {
   computed: {
     getwidth() {
       let width = this.headle.filter(item => item != "");
-      return width.length * 90;
+      return width.length * 100;
     }
   },
   watch: {
@@ -127,6 +128,11 @@ export default {
     }
   },
   methods: {
+    //合并列
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      // console.log(row);
+    },
+    //改变单元格样色
     getcellstyle({ row, column, rowIndex, columnIndex }) {
       if (columnIndex == this.columnIndex) {
         switch (row[this.field]) {

@@ -21,8 +21,7 @@
       :DataList="supplierList"
       :header="header"
       :headle="headle"
-      :setselect="true"
-      @setselect="getselect"
+      @delete="deleteSupplier"
       @edit="modifySupplier"
       @checkleave="openAccount"
     ></Ca-rule-table>
@@ -72,7 +71,7 @@
       <selectUser @setuser="getuser"></selectUser>
     </el-dialog>
     <!-- 打开台账 -->
-    <el-dialog :visible.sync="isopenAccount">
+    <el-dialog :visible.sync="isopenAccount" width="60%">
       <account :accountid="accountid"></account>
     </el-dialog>
   </div>
@@ -104,8 +103,7 @@ export default {
       currentlimit: 15,
       currentpage: 1,
       supplierList: [],
-      headle: ["台账", "", "修改"],
-      idarr: [],
+      headle: ["台账", "删除", "修改"],
       isAdd: false,
       isopenselect: false,
       username: "",
@@ -169,16 +167,16 @@ export default {
       this.isAdd = true;
     },
     //删除指定供应商
-    deleteSupplier() {
-      apideleSupplier({ ids: this.idarr }).then(res => {
-        this.$message.success("删除成功");
-        this.getSupplierList();
-      });
-    },
-    //获取多选ID
-    getselect(row) {
-      this.idarr = row.map(item => item.construct_supplier_id);
-      console.log(this.idarr);
+    deleteSupplier(row) {
+      let id = row.construct_supplier_id + "";
+      this.$confirm(`确定删除${row.construct_supplier_name}的所有信息？`).then(
+        () => {
+          apideleSupplier({ ids: id }).then(() => {
+            this.$message.success("删除成功");
+            this.getSupplierList();
+          });
+        }
+      );
     },
     getlimit(e) {
       this.currentlimit = e;

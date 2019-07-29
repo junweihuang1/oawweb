@@ -9,7 +9,7 @@
         @select="handleSelect"
         text-color="#FFF"
         active-text-color="#FFD700"
-        background-color="#0190A0"
+        :background-color="this.$store.state.theme"
         unique-opened
       >
         <template v-for="item in navList">

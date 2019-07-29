@@ -174,7 +174,6 @@
 import axios from "axios";
 import { apisave_conApprove } from "@/request/api.js";
 import CaPickerC from "@/components/Ca-picker-c/Ca-picker-c";
-import { setTimeout } from "timers";
 export default {
   name: "dialogWindow",
   data() {
@@ -202,6 +201,7 @@ export default {
   methods: {
     //文件上传前的钩子
     beforeUpload(file) {
+      let Url = "http://192.168.11.124:8081/casd2/admin";
       let fd = new FormData();
       fd.append("file", file); //传文件
       console.log(fd);
@@ -216,7 +216,8 @@ export default {
       })
         .then(res => {
           console.log(res);
-          this.contractapprove.manage_contractapprove_attachAddress = "";
+          this.contractapprove.manage_contractapprove_attachAddress =
+            Url + res.data.data;
         })
         .catch(err => {
           console.log(err);

@@ -6,6 +6,7 @@
   >
     <div
       class="sidebar-logo-container"
+      :style="{ background: this.$store.state.theme }"
       :class="{ collapse: isCollapse }"
       @click="changecollapse"
     >
@@ -71,7 +72,6 @@ export default {
   width: 100%;
   height: 50px;
   line-height: 50px;
-  background: #0190a0;
   // text-align: center;
   overflow: hidden;
 
