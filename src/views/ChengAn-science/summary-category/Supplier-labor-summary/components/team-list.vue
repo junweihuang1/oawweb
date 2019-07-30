@@ -11,64 +11,47 @@
         >
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="项目">
-        <el-input
-          placeholder="请输入"
-          v-model="projectName"
-          clearable
-        ></el-input>
-      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getSummaryList">
+        <el-button type="primary" @click="getTeamList">
           查询
         </el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      :DataList="SummaryList"
+      :setheight="0.6"
+      :DataList="teamList"
       :header="header"
       :setsummary="true"
       :headle="headle"
-      @checkleave="checkcard"
+      @checkleave="opencardlist"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="70"
+      :total="15"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog
-      :visible.sync="isopen"
-      top="8vh"
-      width="85%"
-      @close="closedialog"
-      :append-to-body="true"
-    >
-      <dialog-tabs :departmentid="departmentid"></dialog-tabs>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apifirmLaborCost } from "@/request/api.js";
+import { apifirmLaborCostTeam } from "@/request/api.js";
 export default {
-  name: "SupplierLaborSummary",
+  name: "teamlist",
   data() {
     return {
-      queryYear: "",
-      projectName: "",
       currentlimit: 15,
       currentpage: 1,
-      SummaryList: [],
-      isopen: false,
+      queryYear: "",
+      teamList: [],
       header: [
-        ["项目部", "constuct_project_dep_name", 90],
-        ["项目负责人", "constuct_project_dep_leader"],
-        ["合同总金额", "conAmount", 110],
+        ["项目", "construct_project_name", 90],
+        ["施工项目", "construct_project_workTeam_category", 100],
+        ["班组", "username"],
+        ["合同总金额", "construct_project_workTeam_amount", 110],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["年度", "firmYear", 75],
         ["1月", "january", 75],
@@ -85,50 +68,59 @@ export default {
         ["12月", "december", 75],
         ["累计付款", "totalLaborCost", 100]
       ],
-      headle: ["查看打卡"],
-      departmentid: ""
+      headle: ["打卡列表"]
     };
   },
   components: {
     CaRuleTable,
-    paging,
-    dialogTabs
+    paging
+  },
+
+  props: {
+    projectId: Number
+  },
+  watch: {
+    projectId() {
+      this.getTeamList();
+    }
   },
   mounted() {
-    this.getSummaryList();
+    this.getTeamList();
   },
   methods: {
-    closedialog() {
-      this.isopen = false;
-      this.$store.state.dialog_openTabs = [false, false, false, false];
-    },
-    checkcard(row) {
-      this.departmentid = row.constuct_project_dep_id;
-      this.isopen = true;
-    },
-    getlimit(val) {
-      this.currentlimit = val;
-      this.getSummaryList();
+    opencardlist(row) {
+      this.$emit("opencardlist", row);
     },
     getpage(val) {
       this.currentpage = val;
-      this.getSummaryList();
+      this.getTeamList();
     },
-    getSummaryList() {
+    getlimit(val) {
+      this.currentlimit = val;
+      this.getTeamList();
+    },
+    getTeamList() {
       let data = {
-        companyId: 2,
         firmYear: this.queryYear,
-        constuct_project_dep_name: this.projectName,
+        projectId: this.projectId,
         pageSize: this.currentlimit,
         limit: this.currentpage
       };
-      apifirmLaborCost(data).then(res => {
+      apifirmLaborCostTeam(data).then(res => {
         console.log(res);
-        this.SummaryList = res.data;
+        this.teamList = res.data.map(item => {
+          item.construct_project_workTeam_category =
+            item.construct_project_workTeam_category == 2
+              ? "消防水"
+              : item.construct_project_workTeam_category == 3
+              ? "消防电"
+              : "防排烟";
+          return item;
+        });
       });
     }
   }
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

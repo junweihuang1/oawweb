@@ -3,6 +3,7 @@
     <el-table
       :data="DataList"
       border
+      @mousewheel.native="$event.preventDefault()"
       :height="maxHeight"
       :header-cell-style="getRowClass"
       size="mini"
@@ -119,7 +120,35 @@ export default {
   computed: {
     getwidth() {
       let width = this.headle.filter(item => item != "");
-      return width.length * 100;
+      return width.length == 3 ? "240" : width.length == 2 ? "160" : "100";
+    },
+    span() {
+      //listarr是分配每行中的每个键值的数量，例：[[3,2,1],[0,0,1],[0,1,1]]
+      let listarr = [];
+      //当前计数的下标的数组
+      let keyarr = [];
+      let valuearr = [];
+      this.DataList.forEach((item, index) => {
+        listarr[index] = [];
+        for (let i in item) {
+          //第一次给两个数组赋值为全部元素等于0
+          listarr[index][i] = 0;
+          if (index == 0) {
+            keyarr[i] = 0;
+            valuearr[i] = item[i];
+          }
+          //把keyarr中每个元素的值与item比较，相同则listarr中的值+1，不相同则
+          if (item[i] == valuearr[i]) {
+            listarr[keyarr[i]][i]++;
+          } else {
+            //否则，valuearr[i]=i,keyarr[i]=index
+            listarr[index][i] = 1;
+            valuearr[i] = item[i];
+            keyarr[i] = index;
+          }
+        }
+      });
+      return listarr;
     }
   },
   watch: {
@@ -128,9 +157,19 @@ export default {
     }
   },
   methods: {
-    //合并列
+    //相同的元素进行合并列
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      // console.log(row);
+      if (column.property && row[column.property]) {
+        return {
+          rowspan: this.span[rowIndex][column.property],
+          colspan: 1
+        };
+      } else {
+        return {
+          rowspan: 1,
+          colspan: 1
+        };
+      }
     },
     //改变单元格样色
     getcellstyle({ row, column, rowIndex, columnIndex }) {
@@ -182,5 +221,8 @@ export default {
 <style lang="scss">
 .el-tooltip__popper {
   max-width: 400px;
+}
+* {
+  touch-action: none;
 }
 </style>

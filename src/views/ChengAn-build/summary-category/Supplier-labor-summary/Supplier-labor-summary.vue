@@ -38,14 +38,20 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen">
-      <check-card :departmentid="departmentid"></check-card>
+    <el-dialog
+      :visible.sync="isopen"
+      top="8vh"
+      width="85%"
+      @close="closedialog"
+      :append-to-body="true"
+    >
+      <dialog-tabs :departmentid="departmentid"></dialog-tabs>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import CheckCard from "./components/check-card";
+import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apifirmLaborCost } from "@/request/api.js";
@@ -63,7 +69,7 @@ export default {
         ["项目部", "constuct_project_dep_name", 90],
         ["项目负责人", "constuct_project_dep_leader"],
         ["合同总金额", "conAmount", 110],
-        ["单价（天/人）", "construct_project_workTeam_price"],
+        ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["年度", "firmYear", 75],
         ["1月", "january", 75],
         ["2月", "february", 75],
@@ -86,14 +92,19 @@ export default {
   components: {
     CaRuleTable,
     paging,
-    CheckCard
+    dialogTabs
   },
   mounted() {
     this.getSummaryList();
   },
   methods: {
+    closedialog() {
+      this.isopen = false;
+      this.$store.state.dialog_openTabs = [false, false, false, false];
+    },
     checkcard(row) {
       this.departmentid = row.constuct_project_dep_id;
+      this.isopen = true;
     },
     getlimit(val) {
       this.currentlimit = val;
@@ -120,4 +131,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

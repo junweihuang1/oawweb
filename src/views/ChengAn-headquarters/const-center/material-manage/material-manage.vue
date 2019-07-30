@@ -2,11 +2,16 @@
   <div>
     <el-form size="mini" inline>
       <el-form-item label="材料系列">
-        <el-input v-model="seriesName"></el-input>
+        <el-input v-model="seriesName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">
+        <el-button type="primary" @click="getmaterialList">
           查询
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="addmaterial">
+          新增材料系列
         </el-button>
       </el-form-item>
     </el-form>
@@ -55,6 +60,7 @@ export default {
     paging
   },
   methods: {
+    addmaterial() {},
     getlimit(val) {
       this.currentlimit = val;
       this.getmaterialList();

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :visible="myopenSelect"
+      :visible.sync="myopenSelect"
       title="部门信息"
       @close="closewin"
       width="40%"

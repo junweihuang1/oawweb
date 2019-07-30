@@ -288,8 +288,23 @@ export const apimaterialPrices = data => post("materialPrices", data);
 //成本中心-->材料管理-->查询所有材料信息
 export const apimaterialSeries = data => get("materialSeries", data);
 
+//成本中心-->材料管理-->保存材料系列信息
+export const apisaveSeries = data => post("saveSeries", data);
+
 //汇总类-->供应商劳动力-->查询所有劳动力
 export const apifirmLaborCost = data => get("firmLaborCost", data);
 
 //汇总类-->供应商劳动力-->劳动力费用汇总表
 export const apilaborCostMon = data => get("laborCostMon", data);
+
+//汇总类-->供应商劳动力-->项目打卡信息
+export const apifirmLaborCostPro = data => get("firmLaborCostPro", data);
+
+//汇总类-->供应商劳动力-->获取班组列表
+export const apifirmLaborCostTeam = data => get("firmLaborCostTeam", data);
+
+//汇总类-->供应商劳动力-->获取班组中所有人打卡列表
+export const apifirmLaborCostPerson = data => get("firmLaborCostPerson", data);
+
+//汇总类-->供应商劳动力-->获取班组中个人详细列表
+export const apidetailedCard = data => get("firmLaborCostPersonDetails", data);
