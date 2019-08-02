@@ -135,6 +135,9 @@ export const apiuserTreeList = data => get("userTreeList", data);
 //职员信息--》查询职员信息
 export const apipmuserList = data => post("pmuserList", data);
 
+//职员信息-->获取所有未转正
+export const apibecomeList = data => get("becomeList", data);
+
 //职员信息--》新增或修改职员信息
 export const apisavePersonalRecords = data => post("savePersonalRecords", data);
 
@@ -291,6 +294,27 @@ export const apimaterialSeries = data => get("materialSeries", data);
 //成本中心-->材料管理-->保存材料系列信息
 export const apisaveSeries = data => post("saveSeries", data);
 
+//成本中心-->材料管理-->查询指定材料系列的详细
+export const apiselectData = data => get("selectData", data);
+
+//成本中心-->材料管理-->新增材料
+export const apimaterialset = data => post("materialset", data);
+
+//成本中心-->材料管理-->查询指定材料的规格信息
+export const apimaterialhome = data => get("materialhome", data);
+
+//成本中心-->材料管理-->查询指定材料系列信息
+export const apimaterialList = data => get("materialList", data);
+
+//成本中心-->材料管理-->新增或修改材料规格信息
+export const apieditMaterial = data => post("editMaterial", data);
+
+//成本中心-->材料管理-->删除指定型号规格
+export const apideleteMaterial = data => Delete("deleteMaterial", data);
+
+//成本中心-->采购明细-->查询所有采购明细
+export const apimatPurReports = data => get("matPurReports", data);
+
 //汇总类-->供应商劳动力-->查询所有劳动力
 export const apifirmLaborCost = data => get("firmLaborCost", data);
 
@@ -308,3 +332,12 @@ export const apifirmLaborCostPerson = data => get("firmLaborCostPerson", data);
 
 //汇总类-->供应商劳动力-->获取班组中个人详细列表
 export const apidetailedCard = data => get("firmLaborCostPersonDetails", data);
+
+//运营类-->甲方材料采购-->获取所有项目列表
+export const apiaPartyConList = data => get("aPartyConList", data);
+
+//运营类-->甲方材料采购-->获取材料列表信息
+export const apiaPartyMaterialList = data => get("aPartyMaterialList", data);
+
+//运营类-->甲方材料采购-->新增甲供材料
+export const apisaveAPartyMaterial = data => post("saveAPartyMaterial", data);

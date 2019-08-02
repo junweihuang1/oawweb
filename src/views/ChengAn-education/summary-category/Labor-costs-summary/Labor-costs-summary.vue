@@ -17,6 +17,7 @@ export default {
     };
   },
   mounted() {
+    console.log("data");
     this.getLaborList();
   },
   methods: {

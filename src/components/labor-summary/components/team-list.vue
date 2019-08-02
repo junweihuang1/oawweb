@@ -3,10 +3,10 @@
     <el-form size="mini" inline>
       <el-form-item label="年份">
         <el-date-picker
-          type="month"
-          value-format="yyyy-MM"
+          type="year"
+          value-format="yyyy"
           placeholder="请选择"
-          v-model="queryYearMonth"
+          v-model="queryYear"
           clearable
         >
         </el-date-picker>
@@ -22,6 +22,8 @@
       :DataList="teamList"
       :header="header"
       :setsummary="true"
+      :headle="headle"
+      @checkleave="opencardlist"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
@@ -36,28 +38,37 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apidetailedCard } from "@/request/api.js";
+import { apifirmLaborCostTeam } from "@/request/api.js";
 export default {
-  name: "detailedList",
+  name: "teamlist",
   data() {
     return {
       currentlimit: 15,
       currentpage: 1,
-      queryYearMonth: "",
+      queryYear: "",
       teamList: [],
       header: [
         ["项目", "construct_project_name", 90],
         ["施工项目", "construct_project_workTeam_category", 100],
-        ["打卡人", "labor", 100],
-        ["上班打卡日期", "hr_attend_date", 130],
-        ["上班打卡时间", "hr_attend_startWork", 130],
-        ["下班打卡时间", "hr_attend_knockOff", 130],
-        ["上班打卡地址", "hr_attend_workAddress"],
-        ["下班打卡地址", "hr_attend_offWorkAddress"],
-        ["上班打卡状态", "hr_attend_workingState", 130],
-        ["下班打卡状态", "hr_attend_restState", 130],
-        ["工作时长", "hr_attend_WTLength", 100]
-      ]
+        ["班组", "username"],
+        ["合同总金额", "construct_project_workTeam_amount", 110],
+        ["单价（天/人）", "construct_project_workTeam_price", 130],
+        ["年度", "firmYear", 75],
+        ["1月", "january", 75],
+        ["2月", "february", 75],
+        ["3月", "march", 75],
+        ["4月", "april", 75],
+        ["5月", "may", 75],
+        ["6月", "June", 75],
+        ["7月", "July", 75],
+        ["8月", "August", 75],
+        ["9月", "September", 75],
+        ["10月", "October", 75],
+        ["11月", "November", 75],
+        ["12月", "december", 75],
+        ["累计付款", "totalLaborCost", 100]
+      ],
+      headle: ["打卡列表"]
     };
   },
   components: {
@@ -66,11 +77,10 @@ export default {
   },
 
   props: {
-    workTeamId: Number,
-    userId: Number
+    projectId: String
   },
   watch: {
-    userId() {
+    projectId() {
       this.getTeamList();
     }
   },
@@ -78,6 +88,9 @@ export default {
     this.getTeamList();
   },
   methods: {
+    opencardlist(row) {
+      this.$emit("opencardlist", row);
+    },
     getpage(val) {
       this.currentpage = val;
       this.getTeamList();
@@ -88,14 +101,22 @@ export default {
     },
     getTeamList() {
       let data = {
-        attend_date: this.queryYearMonth,
-        userId: this.userId,
-        workTeam_id: this.workTeamId,
+        firmYear: this.queryYear,
+        projectId: this.projectId,
         pageSize: this.currentlimit,
         limit: this.currentpage
       };
-      apidetailedCard(data).then(res => {
-        this.teamList = res.data;
+      apifirmLaborCostTeam(data).then(res => {
+        console.log(res);
+        this.teamList = res.data.map(item => {
+          item.construct_project_workTeam_category =
+            item.construct_project_workTeam_category == 2
+              ? "消防水"
+              : item.construct_project_workTeam_category == 3
+              ? "消防电"
+              : "防排烟";
+          return item;
+        });
       });
     }
   }

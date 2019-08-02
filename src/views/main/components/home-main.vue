@@ -122,12 +122,15 @@ export default {
   },
   watch: {
     screenHeight(val) {
-      document.getElementsByClassName("panel-group")[1].style.height =
-        val - 290 + "px";
+      if (val && document.getElementsByClassName("panel-group").length != 0) {
+        document.getElementsByClassName("panel-group")[1].style.height =
+          val - 290 + "px";
+      }
     }
   },
   mounted() {
     var _this = this;
+    _this.screenHeight = document.documentElement.clientHeight;
     window.onresize = function() {
       // 定义窗口大小变更通知事件
       _this.screenHeight = document.documentElement.clientHeight; //窗口高度

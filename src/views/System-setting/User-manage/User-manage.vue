@@ -2,8 +2,14 @@
   <!--  用户管理页 -->
   <div>
     <el-form size="mini" inline>
-      <el-form-item
-        ><el-button type="danger" @click="deleteuser">删除用户</el-button>
+      <el-form-item>
+        <el-input v-model="inputName" placeholder="用户名"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" @click="getUserList">查询</el-button>
+          <el-button type="danger" @click="deleteuser">删除用户</el-button>
+        </el-button-group>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -16,8 +22,8 @@
       @checkleave="changePassW"
     ></Ca-rule-table>
     <paging
-      @setlimit="handleSizeChange"
-      @setpage="handleCurrentChange"
+      @setlimit="getlimit"
+      @setpage="getpage"
       :total="total"
       :currentpage="currentPage"
       :currentlimit="currentlimit"
@@ -45,6 +51,7 @@ export default {
       StaffData: [],
       currentPage: 1,
       currentlimit: 15,
+      inputName: "",
       total: 100,
       userid: "",
       username: "",
@@ -80,16 +87,22 @@ export default {
     },
     deleteuser() {
       //this.$message.warning("此功能还没启用");
-      apideleteUser({
-        cid: this.Idarr
-      }).then(res => {
-        console.log(res);
-      });
+      this.$confirm(`确定删除用户吗？`)
+        .then(() => {
+          apideleteUser({
+            cid: `[${this.Idarr.toString()}]`
+          }).then(() => {
+            this.$message.success("删除成功");
+            this.getUserList();
+          });
+        })
+        .catch(() => {});
     },
     getUserList() {
       apiuserLists({
         Limit: this.currentPage,
-        pageSize: this.currentlimit
+        pageSize: this.currentlimit,
+        inputName: this.inputName
       }).then(res => {
         console.log(res);
         this.StaffData = res.data.map(item => {
@@ -99,11 +112,11 @@ export default {
         });
       });
     },
-    handleSizeChange(e) {
+    getlimit(e) {
       this.currentlimit = e;
       this.getUserList();
     },
-    handleCurrentChange(e) {
+    getpage(e) {
       this.currentPage = e;
       this.getUserList();
     }

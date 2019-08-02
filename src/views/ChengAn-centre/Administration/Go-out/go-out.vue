@@ -16,11 +16,19 @@
       @checkleave="edit"
       @delete="deleteitem"
     ></Ca-rule-table>
+    <paging
+      :currentlimit="currentlimit"
+      :currentpage="currentpage"
+      :total="150"
+      @setpage="getpage"
+      @setlimit="getlimit"
+    ></paging>
     <go-out-table :isgoout="isgoout" @setmygoout="getmygoout"></go-out-table>
   </div>
 </template>
 
 <script>
+import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import GoOutTable from "./components/go-out-table";
 import {
@@ -33,6 +41,8 @@ export default {
   data() {
     return {
       isgoout: false,
+      currentlimit: 15,
+      currentpage: 1,
       goOutList: [],
       header: [
         ["申请人", "username", 90],
@@ -45,21 +55,52 @@ export default {
         ["外出事由", "field_personnel_cause"],
         ["开始时间", "start_time", 150],
         ["结束时间", "end_time", 150],
-        ["状态", "field_personnel_status", 100]
+        ["状态", "field_personnel_status", 80]
       ],
       headle: ["编辑", "删除"]
     };
   },
   components: {
     GoOutTable,
-    CaRuleTable
+    CaRuleTable,
+    paging
+  },
+  mounted() {
+    this.getFieldList();
   },
   methods: {
+    getlimit(val) {
+      this.currentlimit = val;
+      this.getFieldList();
+    },
+    getpage(val) {
+      this.currentpage = val;
+      this.getFieldList();
+    },
+    getFieldList() {
+      apiFieldPersonnelList({
+        pageSize: this.currentlimit,
+        limit: this.currentpage
+      })
+        .then(res => {
+          console.log(res);
+          this.goOutList = res.data.map(item => {
+            item.field_personnel_car =
+              item.field_personnel_car == 1 ? "否" : "是";
+            item.field_personnel_status =
+              item.field_personnel_status == 4 ? "外勤结束" : "外勤中";
+            return item;
+          });
+          console.log(this.goOutList);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     edit(e) {
       apigetField({ id: e.field_personnel_id }).then(res => {
         console.log(res);
       });
-      console.log(e);
     },
     deleteitem(e) {
       apidelFieldPersonnel({ field_personnel_id: e.field_personnel_id }).then(
@@ -67,7 +108,6 @@ export default {
           console.log(res);
         }
       );
-      console.log(e);
     },
     newgoout() {
       this.isgoout = true;
@@ -75,23 +115,6 @@ export default {
     getmygoout() {
       this.isgoout = false;
     }
-  },
-  mounted() {
-    apiFieldPersonnelList({ pageSize: "10", limit: "1" })
-      .then(res => {
-        console.log(res);
-        this.goOutList = res.data.map(item => {
-          item.field_personnel_car =
-            item.field_personnel_car == 1 ? "否" : "是";
-          item.field_personnel_status =
-            item.field_personnel_status == 4 ? "外勤结束" : "外勤中";
-          return item;
-        });
-        console.log(this.goOutList);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   }
 };
 </script>

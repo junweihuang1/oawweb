@@ -1,3 +1,4 @@
+// 竖向表头的table
 <template>
   <div style="text-align:center;">
     <el-dialog :visible.sync="myopen" @close="closewin" width="40%">

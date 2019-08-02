@@ -84,7 +84,8 @@ export default {
     paging
   },
   props: {
-    departmentid: Number
+    companyId: Number,
+    departmentid: String
   },
   watch: {
     departmentid() {
@@ -108,16 +109,14 @@ export default {
     },
     getCardList() {
       let data = {
-        companyId: 1,
+        companyId: this.companyId,
         firmYear: this.queryYear,
         constuct_project_name: this.projectName,
         projectDep: this.departmentid,
         pageSize: this.currentlimit,
         limit: this.currentpage
       };
-
       apifirmLaborCostPro(data).then(res => {
-        console.log(res);
         this.cardList = res.data;
       });
     }

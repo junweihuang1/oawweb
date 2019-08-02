@@ -31,8 +31,8 @@ axios.interceptors.response.use(
   error => {
     console.log(error);
     if (error.response.data.errorCode === "10002") {
-      localStorage.removeItem("token");
-      location.reload();
+      // localStorage.removeItem("token");
+      // location.reload();
     }
     if (error.response.status === "500") {
       Message.error("服务器内部错误");

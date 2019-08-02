@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="80px" inline="">
-      <el-form-item label="员工编号" size="mini">
+    <el-form ref="form" :model="form" inline="" size="mini">
+      <el-form-item label="员工编号">
         <el-input v-model="form.number" clearable></el-input>
       </el-form-item>
-      <el-form-item label="姓名" size="mini">
+      <el-form-item label="姓名">
         <el-input v-model="form.name" clearable></el-input>
       </el-form-item>
-      <el-form-item label="状态" size="mini">
+      <el-form-item label="状态">
         <el-select v-model="form.status" placeholder="请选择" clearable>
           <el-option
             v-for="item in statusList"
@@ -17,12 +17,18 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item size="mini">
-        <el-button type="success" @click="queryTable">查询</el-button>
-        <el-button type="success" @click="addstaff">新增员工</el-button>
+      <el-form-item>
+        <el-button type="success" @click="getpmuserList">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="success" @click="addstaff">新增员工</el-button>
+          <el-button type="primary" @click="openNotCorrected">未转正</el-button>
+        </el-button-group>
       </el-form-item>
     </el-form>
     <Ca-rule-table
+      style="width:90%;"
       :header="headerList"
       :DataList="staffList"
       :headle="headle"
@@ -45,10 +51,14 @@
       :department="department"
       :userid="setuseid"
     ></modify-window>
+    <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
+      <Not-Corrected></Not-Corrected>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import NotCorrected from "./components/Not-Corrected";
 import modifyWindow from "./components/modify-window";
 import Paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -77,17 +87,17 @@ export default {
       ],
       staffList: [],
       headerList: [
-        ["工号", "user_num", 70],
+        ["工号", "user_num", 80],
         ["姓名", "username", 80],
         ["电话号码", "phone_number", 120],
-        ["性别", "sex", 70],
-        ["邮箱", "email", 150],
+        ["性别", "sex", 80],
+        ["邮箱", "email", 160],
         ["公司", "company_name", 130],
         ["中心", "center_name", 130],
         ["部门", "department_name", 130],
         ["身份证号码", "user_card", 180],
         ["身份证地址", "card_address"],
-        ["状态", "status", 70]
+        ["状态", "status", 80]
       ],
       headle: ["编辑", "删除"],
       total: 400,
@@ -95,21 +105,23 @@ export default {
       currentlimit: 15,
       department: "",
       setuseid: 0,
-      roleList: []
+      roleList: [],
+      isopenNoCor: false
     };
   },
   components: {
     Paging,
     CaRuleTable,
-    modifyWindow
+    modifyWindow,
+    NotCorrected
   },
   mounted() {
     this.getpmuserList();
-    // apiuserTreeList().then(res => {
-    //   console.log(res);
-    // });
   },
   methods: {
+    openNotCorrected() {
+      this.isopenNoCor = true;
+    },
     deleteline(e) {
       console.log(e);
     },
@@ -160,9 +172,6 @@ export default {
           return item;
         });
       });
-    },
-    queryTable() {
-      this.getpmuserList();
     },
     addstaff() {
       this.isreload = false;

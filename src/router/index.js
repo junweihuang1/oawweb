@@ -274,6 +274,33 @@ const router = new Router({
           name: "Supplier-labor-summary-science",
           component: () =>
             import("@/views/ChengAn-science/summary-category/Supplier-labor-summary/Supplier-labor-summary.vue")
+        },
+        //诚安科技-->运营类
+        {
+          path: "project-operation-science",
+          name: "project-operation-science",
+          component: () =>
+            import("@/views/ChengAn-science/Operate-category/project-operation/project-operation.vue")
+        },
+        //诚安教育-->运营类
+        {
+          path: "project-operation-education",
+          name: "project-operation-education",
+          component: () =>
+            import("@/views/ChengAn-education/Operate-category/project-operation/project-operation.vue")
+        },
+        //诚安建设-->运营类
+        {
+          path: "project-operation-build",
+          name: "project-operation-build",
+          component: () =>
+            import("@/views/ChengAn-build/Operate-category/project-operation/project-operation.vue")
+        },
+        {
+          path: "Party-Material-Purchase",
+          name: "Party-Material-Purchase",
+          component: () =>
+            import("@/views/ChengAn-build/Operate-category/Party-Material-Purchase/Party-Material-Purchase.vue")
         }
       ]
     },

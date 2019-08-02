@@ -1,3 +1,4 @@
+// 折叠表格
 <template>
   <el-table
     :data="dataList"

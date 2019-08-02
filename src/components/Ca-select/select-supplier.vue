@@ -1,18 +1,22 @@
-// 选择用户组件
+// 选择供应商组件
 <template>
   <div>
     <el-form inline size="mini">
       <el-form-item>
-        <el-input v-model="username" placeholder="用户名" clearable></el-input>
+        <el-input
+          v-model="supplierName"
+          placeholder="供应商名称"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getUserList">搜索</el-button>
+        <el-button type="primary" @click="getSupplierList">搜索</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
       :setheight="0.5"
       :header="header"
-      :DataList="userList"
+      :DataList="supplierList"
       @dblclick="dblclick"
     ></Ca-rule-table>
     <paging
@@ -28,56 +32,51 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apiuserLists } from "@/request/api.js";
+import { apisupplierList } from "@/request/api.js";
 export default {
-  name: "selectUser",
+  name: "selectSupplier",
   data() {
     return {
       currentPage: 1,
       currentlimit: 15,
-      userList: [],
+      supplierList: [],
       header: [
-        ["员工编号", "userid"],
-        ["员工名称", "username"],
-        ["联系方式", "phone_number"],
-        ["员工职位", "major"],
-        ["部门", "department"],
-        ["中心", "center_id"],
-        ["公司", ""],
-        ["部门id", "department"]
+        ["供应商编号", "construct_supplier_id", 110],
+        ["供应商名称", "construct_supplier_name"],
+        ["供应商地址", "construct_supplier_addr", 110],
+        ["供应商电话", "construct_supplier_tel", 110]
       ],
-      username: ""
+      supplierName: ""
     };
   },
-  props: {},
   watch: {},
   components: {
     CaRuleTable,
     paging
   },
   mounted() {
-    this.getUserList();
+    this.getSupplierList();
   },
   methods: {
     getlimit(e) {
       this.currentlimit = e;
-      this.getUserList();
+      this.getSupplierList();
     },
     getpage(e) {
       this.currentPage = e;
-      this.getUserList();
+      this.getSupplierList();
     },
     //双击选择用户
     dblclick(row) {
-      this.$emit("setuser", row);
+      this.$emit("setSupplier", row);
     },
-    getUserList() {
-      apiuserLists({
-        Limit: this.currentPage,
-        pageSize: this.currentlimit,
-        inputName: this.username
+    getSupplierList() {
+      apisupplierList({
+        rows: this.currentlimit,
+        page: this.currentPage,
+        construct_suppliername: this.supplierName
       }).then(res => {
-        this.userList = res.data;
+        this.supplierList = res.rows;
       });
     }
   }

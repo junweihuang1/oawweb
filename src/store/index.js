@@ -9,7 +9,7 @@ export default new Vuex.Store({
     openTabs: [],
     activeIndex: "1",
     theme: "#0190A0",
-    dialog_openTabs: [false, false, false, false]
+    dialog_openTabs: [false, false, false]
   },
   mutations: {
     addTabs(state, Tabs) {

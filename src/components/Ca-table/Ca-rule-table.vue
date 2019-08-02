@@ -1,3 +1,5 @@
+//
+表格组件，传入header表头列表，DataList数据列表，有操作按钮就加入例如["查看","删除"]
 <template>
   <div>
     <el-table
@@ -9,6 +11,7 @@
       size="mini"
       :span-method="objectSpanMethod"
       :cell-style="getcellstyle"
+      :row-style="{ height: '35px' }"
       :show-summary="issummary"
       @row-click="clickline"
       @selection-change="handleSelectionChange"
@@ -27,12 +30,27 @@
         align="center"
         :key="index"
         :width="item[2]"
-      ></el-table-column>
+      >
+        <template v-if="item[4] != ''">
+          <el-table-column
+            v-for="(item2, index2) in item[4]"
+            :label="item2[0]"
+            :prop="item2[1]"
+            sortable
+            :show-overflow-tooltip="item[3]"
+            align="center"
+            :key="index2"
+            :width="item2[2]"
+          >
+          </el-table-column>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="center"
         v-if="headle"
         :width="getwidth"
+        fixed="right"
       >
         <template slot-scope="scope">
           <template v-for="(item, index) in headle">
@@ -120,7 +138,7 @@ export default {
   computed: {
     getwidth() {
       let width = this.headle.filter(item => item != "");
-      return width.length == 3 ? "240" : width.length == 2 ? "160" : "100";
+      return width.length == 3 ? "240" : width.length == 2 ? "200" : "100";
     },
     span() {
       //listarr是分配每行中的每个键值的数量，例：[[3,2,1],[0,0,1],[0,1,1]]
@@ -176,20 +194,21 @@ export default {
       if (columnIndex == this.columnIndex) {
         switch (row[this.field]) {
           case this.truestatus:
-            return "color:#67C23A;";
+            return "color:#67C23A;padding:0px;";
           case this.falsestatus:
-            return "color:#F56C6C;";
+            return "color:#F56C6C;padding:0px;";
           case this.progressstatus:
-            return "color:#E6A23C;";
+            return "color:#E6A23C;padding:0px;";
         }
       }
+      return "padding:0px;";
     },
     //给表单的表头添加背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return "background: #84C2B7;color:#fff; ";
+        return "background: #84C2B7;color:#fff;height:40px;padding:0px;";
       } else {
-        return "";
+        return "height:40px;padding:0px;";
       }
     },
     //把选择的行返回给父组件
@@ -218,11 +237,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.el-tooltip__popper {
-  max-width: 400px;
-}
-* {
-  touch-action: none;
-}
-</style>
+<style lang="scss"></style>

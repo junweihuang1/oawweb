@@ -314,18 +314,30 @@ export default {
           icon: "icon-tushu",
           children: [
             {
+              id: "5-2",
+              title: "运营类",
+              route: "",
+              children: [
+                {
+                  id: "5-2-1",
+                  title: "项目运营(教育)",
+                  route: "/project-operation-education"
+                }
+              ]
+            },
+            {
               id: "5-3",
               title: "汇总类",
               route: "",
               children: [
                 {
                   id: "5-3-1",
-                  title: "供应商劳动力汇总",
+                  title: "供应商劳动力汇总(教育)",
                   route: "/Supplier-labor-summary-education"
                 },
                 {
                   id: "5-3-2",
-                  title: "劳动力费用汇总",
+                  title: "劳动力费用汇总(教育)",
                   route: "/Labor-costs-summary-education"
                 }
               ]
@@ -339,18 +351,30 @@ export default {
           icon: "icon-baobiao",
           children: [
             {
+              id: "6-2",
+              title: "运营类",
+              route: "",
+              children: [
+                {
+                  id: "6-2-1",
+                  title: "项目运营(科技)",
+                  route: "/project-operation-secience"
+                }
+              ]
+            },
+            {
               id: "6-3",
               title: "汇总类",
               route: "",
               children: [
                 {
                   id: "6-3-1",
-                  title: "供应商劳动力汇总",
+                  title: "供应商劳动力汇总(科技)",
                   route: "/Supplier-labor-summary-science"
                 },
                 {
                   id: "6-3-2",
-                  title: "劳动力费用汇总",
+                  title: "劳动力费用汇总(科技)",
                   route: "/Labor-costs-summary-science"
                 }
               ]
@@ -364,18 +388,35 @@ export default {
           icon: "icon-anzhuangshigong",
           children: [
             {
+              id: "7-2",
+              title: "运营类",
+              route: "",
+              children: [
+                {
+                  id: "7-2-1",
+                  title: "项目运营(建设)",
+                  route: "/project-operation-build"
+                },
+                {
+                  id: "7-2-2",
+                  title: "甲方材料采购",
+                  route: "/Party-Material-Purchase"
+                }
+              ]
+            },
+            {
               id: "7-3",
               title: "汇总类",
               route: "",
               children: [
                 {
                   id: "7-3-1",
-                  title: "供应商劳动力汇总",
+                  title: "供应商劳动力汇总(建设)",
                   route: "/Supplier-labor-summary-build"
                 },
                 {
                   id: "7-3-2",
-                  title: "劳动力费用汇总",
+                  title: "劳动力费用汇总(建设)",
                   route: "/Labor-costs-summary-build"
                 }
               ]

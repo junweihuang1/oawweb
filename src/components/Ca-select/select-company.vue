@@ -1,3 +1,4 @@
+// 选择公司组件
 <template>
   <div>
     <el-select v-model="company_id" placeholder="请选择公司" clearable>

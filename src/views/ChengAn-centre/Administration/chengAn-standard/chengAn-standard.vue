@@ -12,8 +12,7 @@
       </el-form-item>
     </el-form>
     <rule-table
-      id="table"
-      style="overflow:auto;"
+      style="width:90%;"
       :header="headerList"
       :DataList="DataList"
       @RowClassName="tableRowClassName"
@@ -90,12 +89,12 @@ export default {
       isopen: false,
       DataList: [],
       headerList: [
-        ["模板号", "hr_templatel_id", 85],
+        ["模板号", "hr_templatel_id", 90],
         ["模板名称", "hr_template_name", 150],
         ["时间", "hr_templatel_time", 120],
-        ["路径", "hr_template_path", 500],
-        ["类型", "type", 180],
-        ["描述", "hr_templatel_describe"]
+        ["路径", "hr_template_path"],
+        ["类型", "type", 120],
+        ["描述", "hr_templatel_describe", 300]
       ],
       headle: ["编辑", "删除", "下载"],
       form: {},

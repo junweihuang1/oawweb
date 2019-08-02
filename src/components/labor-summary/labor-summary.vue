@@ -19,46 +19,54 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getCardList">
+        <el-button type="primary" @click="getSummaryList">
           查询
         </el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      :setheight="0.6"
-      :DataList="cardList"
+      :DataList="SummaryList"
       :header="header"
       :setsummary="true"
       :headle="headle"
-      @checkleave="openlist"
+      @checkleave="checkcard"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="70"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
+
+    <dialog-tabs
+      :companyId="companyId"
+      :departmentid="departmentid"
+      :isopen="isopen"
+      @closewin="closedialog"
+    ></dialog-tabs>
   </div>
 </template>
 
 <script>
+import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apifirmLaborCostPro } from "@/request/api.js";
+import { apifirmLaborCost } from "@/request/api.js";
 export default {
-  name: "CheckCard",
+  name: "SupplierLaborSummary",
   data() {
     return {
-      currentlimit: 15,
-      currentpage: 1,
       queryYear: "",
       projectName: "",
-      cardList: [],
+      currentlimit: 15,
+      currentpage: 1,
+      SummaryList: [],
+      isopen: false,
       header: [
-        ["项目", "construct_project_name", 90],
-        ["负责人", "construct_project_leader"],
-        ["合同总金额", "conAmount", 110],
+        ["项目部", "constuct_project_dep_name", 90],
+        ["项目负责人", "constuct_project_dep_leader"],
+        ["合同总金额", "conAmount", 120],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["年度", "firmYear", 75],
         ["1月", "january", 75],
@@ -75,54 +83,53 @@ export default {
         ["12月", "december", 75],
         ["累计付款", "totalLaborCost", 100]
       ],
-      headle: ["班组列表"],
-      projectId: ""
+      headle: ["查看打卡"],
+      departmentid: ""
     };
+  },
+  props: {
+    companyId: Number
   },
   components: {
     CaRuleTable,
-    paging
-  },
-  props: {
-    departmentid: Number
-  },
-  watch: {
-    departmentid() {
-      this.getCardList();
-    }
+    paging,
+    dialogTabs
   },
   mounted() {
-    this.getCardList();
+    this.getSummaryList();
   },
   methods: {
-    openlist(row) {
-      this.$emit("openTeamList", row);
+    closedialog() {
+      this.isopen = false;
+      this.$store.state.dialog_openTabs = [false, false, false];
     },
-    getpage(val) {
-      this.currentpage = val;
-      this.getCardList();
+    checkcard(row) {
+      this.departmentid = row.constuct_project_dep_id.toString();
+      this.isopen = true;
     },
     getlimit(val) {
       this.currentlimit = val;
-      this.getCardList();
+      this.getSummaryList();
     },
-    getCardList() {
+    getpage(val) {
+      this.currentpage = val;
+      this.getSummaryList();
+    },
+    getSummaryList() {
       let data = {
-        companyId: 11,
+        companyId: this.companyId,
         firmYear: this.queryYear,
-        constuct_project_name: this.projectName,
-        projectDep: this.departmentid,
+        constuct_project_dep_name: this.projectName,
         pageSize: this.currentlimit,
         limit: this.currentpage
       };
-
-      apifirmLaborCostPro(data).then(res => {
+      apifirmLaborCost(data).then(res => {
         console.log(res);
-        this.cardList = res.data;
+        this.SummaryList = res.data;
       });
     }
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

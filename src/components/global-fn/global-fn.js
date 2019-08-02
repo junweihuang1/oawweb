@@ -1,3 +1,4 @@
+// 全局方法
 export function changetime(time) {
   let date = new Date(time);
   let year = date.getFullYear();

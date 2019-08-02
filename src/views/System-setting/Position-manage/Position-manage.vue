@@ -1,35 +1,31 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="8">
-        <el-form label-width="60px" inline="">
-          <el-form-item label="职位名">
-            <el-input
-              placeholder="请输入"
-              style="width:40%;margin-right:30px;"
-              v-model="roleName"
-              clearable
-            />
-            <el-button type="primary" @click="searchRole">搜索</el-button>
-            <el-button type="success" @click="addNewRole">新增职位</el-button>
-          </el-form-item>
-        </el-form>
-        <Ca-rule-table
-          :header="headerList"
-          :DataList="roleList"
-          :headle="headle"
-          @checkleave="edit"
-          @delete="delRole"
-        ></Ca-rule-table>
-        <paging
-          @setlimit="handleSizeChange"
-          @setpage="handleCurrentChange"
-          :total="total"
-          :currentpage="currentPage"
-          :currentlimit="currentlimit"
-        ></paging>
-      </el-col>
-    </el-row>
+    <el-form size="mini" inline>
+      <el-form-item label="职位名">
+        <el-input placeholder="请输入" v-model="roleName" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-button-group>
+          <el-button type="primary" @click="searchRole">搜索</el-button>
+          <el-button type="success" @click="addNewRole">新增职位</el-button>
+        </el-button-group>
+      </el-form-item>
+    </el-form>
+    <Ca-rule-table
+      style="width:40%;"
+      :header="headerList"
+      :DataList="roleList"
+      :headle="headle"
+      @checkleave="edit"
+      @delete="delRole"
+    ></Ca-rule-table>
+    <paging
+      @setlimit="handleSizeChange"
+      @setpage="handleCurrentChange"
+      :total="total"
+      :currentpage="currentPage"
+      :currentlimit="currentlimit"
+    ></paging>
     <Permission-Tree
       :isPerTree="isPerTree"
       :TreeList="TreeList"

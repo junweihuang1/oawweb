@@ -66,8 +66,8 @@ export default {
   },
 
   props: {
-    workTeamId: Number,
-    userId: Number
+    workTeamId: String,
+    userId: String
   },
   watch: {
     userId() {
