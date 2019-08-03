@@ -340,4 +340,16 @@ export const apiaPartyConList = data => get("aPartyConList", data);
 export const apiaPartyMaterialList = data => get("aPartyMaterialList", data);
 
 //运营类-->甲方材料采购-->新增甲供材料
-export const apisaveAPartyMaterial = data => post("saveAPartyMaterial", data);
+export const apisaveAParty = data => post("saveAPartyMaterial", data);
+
+//运营类-->甲方材料采购-->修改甲供材料
+export const apiupdateAParty = data => post("updateAPartyMaterial", data);
+
+//运营类-->甲方材料采购-->删除甲供材料
+export const apideleteAParty = data => post("deleteAPartyMaterial", data);
+
+//运营类-->甲方材料采购-->增加合同工程量获取材料
+export const apiConMaterialList = data => get("getConMaterialList", data);
+
+//运营类-->甲方材料采购-->获取甲供材料
+export const apiaPartyMaterialCheck = data => get("aPartyMaterialCheck", data);

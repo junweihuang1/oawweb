@@ -34,13 +34,13 @@
       top="8vh"
       width="75%"
     >
-      <Party-material-list :projectId="projectId"></Party-material-list>
+      <dialog-tabs :projectList="projectList"></dialog-tabs>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import PartyMaterialList from "./components/Party-material-list";
+import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apiaPartyConList } from "@/request/api";
@@ -63,13 +63,13 @@ export default {
       ],
       headle: ["材料单", "", "申请采购"],
       isopenMaterial: false,
-      projectId: ""
+      projectList: {}
     };
   },
   components: {
     CaRuleTable,
     paging,
-    PartyMaterialList
+    dialogTabs
   },
   mounted() {
     this.getPartyConList();
@@ -80,9 +80,9 @@ export default {
       console.log(row);
     },
     openmaterial(row) {
+      console.log(row);
       this.isopenMaterial = true;
-      this.projectId = row.construct_project_id;
-      // console.log(row);
+      this.projectList = row;
     },
     getpage(val) {
       this.currentpage = val;
