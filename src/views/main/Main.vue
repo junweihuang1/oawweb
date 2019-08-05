@@ -114,6 +114,7 @@ export default {
         userId: ""
       })
         .then(res => {
+          console.log(res);
           this.processList = res;
         })
         .catch(err => {
@@ -121,6 +122,8 @@ export default {
             message: err.msg,
             type: "warning"
           });
+          localStorage.removeItem("token");
+          location.reload();
         });
     },
     handleApiNotAuditedCard() {

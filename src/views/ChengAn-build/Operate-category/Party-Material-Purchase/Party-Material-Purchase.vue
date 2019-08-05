@@ -34,7 +34,10 @@
       top="8vh"
       width="75%"
     >
-      <dialog-tabs :projectList="projectList"></dialog-tabs>
+      <dialog-tabs
+        :projectList="projectList"
+        v-if="isopenMaterial"
+      ></dialog-tabs>
     </el-dialog>
   </div>
 </template>

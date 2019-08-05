@@ -20,6 +20,9 @@
           <el-button type="primary" @click="openContract"
             >新增合同工程量申请</el-button
           >
+          <el-button type="primary" @click="openQuantityRecord">
+            新增合同工程量记录
+          </el-button>
         </el-button-group>
       </el-form-item>
     </el-form>
@@ -108,10 +111,17 @@
         </el-row>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="isopen_ContractRecord">
+      <Contract-record
+        :projectid="projectList.construct_project_id"
+        type="ASupply"
+      ></Contract-record>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ContractRecord from "./Contract-record";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
@@ -153,12 +163,14 @@ export default {
       diatitle: "",
       idarr: [],
       contractForm: {},
-      isopenContract: false
+      isopenContract: false,
+      isopen_ContractRecord: false
     };
   },
   components: {
     CaRuleTable,
-    paging
+    paging,
+    ContractRecord
   },
   props: {
     projectList: Object
@@ -174,9 +186,11 @@ export default {
     this.getMaterialList();
   },
   methods: {
+    openQuantityRecord() {
+      this.isopen_ContractRecord = false;
+    },
     //打开新增合同工程量
     openContract() {
-      // this.isopenContract = true;
       this.$emit("openContract");
     },
     getselect(e) {

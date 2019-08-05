@@ -5,7 +5,6 @@
     <el-table
       :data="DataList"
       border
-      @mousewheel.native="$event.preventDefault()"
       :height="maxHeight"
       :header-cell-style="getRowClass"
       size="mini"
@@ -95,7 +94,8 @@ export default {
     return {
       isselect: this.setselect,
       issummary: this.setsummary,
-      maxHeight: document.documentElement.scrollHeight * this.setheight
+      maxHeight: document.documentElement.scrollHeight * this.setheight,
+      isinput: false
     };
   },
   props: {

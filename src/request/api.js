@@ -353,3 +353,13 @@ export const apiConMaterialList = data => get("getConMaterialList", data);
 
 //运营类-->甲方材料采购-->获取甲供材料
 export const apiaPartyMaterialCheck = data => get("aPartyMaterialCheck", data);
+
+//运营类-->甲方材料采购-->启动增量流程
+export const apistart_record = data => post("start_record", data);
+
+//运营类-->甲方材料采购-->获取流程线和下一节点名称和审核人
+export const apiCostappProcessList = data => get("getCostappProcessList", data);
+
+//运营类-->甲方材料采购-->查询增量申请记录
+export const apiQuantityRecord = data =>
+  get("changeQuantityRecordRecord", data);
