@@ -5,6 +5,13 @@
       :header="header"
       :setheight="0.6"
     ></Ca-rule-table>
+    <paging
+      :currentlimit="currentlimit"
+      :currentpage="currentpage"
+      :total="15"
+      @setlimit="getlimit"
+      @setpage="getpage"
+    ></paging>
   </div>
 </template>
 
@@ -20,12 +27,12 @@ export default {
       currentpage: 1,
       NotCorList: [],
       header: [
-        ["用户编号", ""],
-        ["职位编号", ""],
-        ["姓名", ""],
-        ["角色名称", ""],
-        ["转正日期", ""],
-        ["状态", ""]
+        ["用户编号", "userid"],
+        ["职位编号", "role_id"],
+        ["姓名", "username"],
+        ["角色名称", "role_name"],
+        ["转正日期", "close_time"],
+        ["状态", "status"]
       ]
     };
   },
@@ -34,19 +41,28 @@ export default {
     this.getNotCorList();
   },
   methods: {
+    getlimit(val) {
+      this.currentlimit = val;
+      this.getNotCorList();
+    },
+    getpage(val) {
+      this.currentpage = val;
+      this.getNotCorList;
+    },
     getNotCorList() {
-      console.log("getNotCorList");
       apibecomeList({
         rows: this.currentlimit,
         page: this.currentpage
-      })
-        .then(res => {
-          console.log(res);
-          this.NotCorList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
+      }).then(res => {
+        this.NotCorList = res.data.map(item => {
+          switch (item.status) {
+            case 3:
+              item.status = "试用期";
+              break;
+          }
+          return item;
         });
+      });
     }
   }
 };

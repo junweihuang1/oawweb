@@ -236,6 +236,44 @@ const router = new Router({
           component: () =>
             import("@/views/ChengAn-headquarters/const-center/material-manage/material-manage.vue")
         },
+        //诚安总部-->供应商中心
+        {
+          path: "labor-bidding",
+          name: "labor-bidding",
+          component: () =>
+            import("@/views/ChengAn-headquarters/supplier-centre/labor-bidding/labor-bidding.vue")
+        },
+        {
+          path: "labor-distribution",
+          name: "labor-distribution",
+          component: () =>
+            import("@/views/ChengAn-headquarters/supplier-centre/labor-distribution/labor-distribution.vue")
+        },
+        {
+          path: "material-depa-infor",
+          name: "material-depa-infor",
+          component: () =>
+            import("@/views/ChengAn-headquarters/supplier-centre/material-depa-infor/material-depa-infor.vue")
+        },
+        {
+          path: "material-modify",
+          name: "material-modify",
+          component: () =>
+            import("@/views/ChengAn-headquarters/supplier-centre/material-modify/material-modify.vue")
+        },
+        {
+          path: "technical-depa-infor",
+          name: "technical-depa-infor",
+          component: () =>
+            import("@/views/ChengAn-headquarters/supplier-centre/technical-depa-infor/technical-depa-infor.vue")
+        },
+        //诚安总部-->外联中心
+        {
+          path: "outreach-centre",
+          name: "outreach-centre",
+          component: () =>
+            import("@/views/ChengAn-headquarters/outreach-centre/outreach-centre.vue")
+        },
         //诚安教育-->汇总类
         {
           path: "Labor-costs-summary-education",
@@ -274,6 +312,12 @@ const router = new Router({
           name: "Supplier-labor-summary-science",
           component: () =>
             import("@/views/ChengAn-science/summary-category/Supplier-labor-summary/Supplier-labor-summary.vue")
+        },
+        {
+          path: "Technical-purchase-details",
+          name: "Technical-purchase-details",
+          component: () =>
+            import("@/views/ChengAn-science/summary-category/Technical-purchase-details/Technical-purchase-details.vue")
         },
         //诚安科技-->运营类
         {

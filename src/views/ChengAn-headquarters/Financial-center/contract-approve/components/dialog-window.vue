@@ -140,8 +140,6 @@
             <el-button slot="trigger" size="mini" type="primary"
               >选取文件</el-button
             >
-            <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
           </el-upload>
         </el-col>
       </el-row>
@@ -225,12 +223,14 @@ export default {
     },
     //提交审批
     submitUpload() {
-      apisave_conApprove(this.contractapprove).then(res => {
-        console.log(res);
-        this.$refs.upload.submit();
-        this.$message.success("提交成功！");
-        this.$emit("closewin");
-      });
+      this.$refs.upload.submit();
+      console.log(this.contractapprove);
+      // apisave_conApprove(this.contractapprove).then(res => {
+      //   console.log(res);
+
+      //   this.$message.success("提交成功！");
+      //   this.$emit("closewin");
+      // });
     },
     //从子组件中获取下一审核人ID
     getSpprover(userid) {

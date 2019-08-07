@@ -10,6 +10,7 @@
       </el-tab-pane>
       <el-tab-pane label="型号规格" name="2" v-if="openContractwindow">
         <Contract-quantity
+          @close="closeContract"
           style="padding:10px;"
           :projectList="projectList"
         ></Contract-quantity>
@@ -46,6 +47,10 @@ export default {
     openContract() {
       this.currentActive = "2";
       this.openContractwindow = true;
+    },
+    closeContract() {
+      this.openContractwindow = false;
+      this.currentActive = "1";
     }
   }
 };

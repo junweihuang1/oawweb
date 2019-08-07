@@ -111,8 +111,13 @@
         </el-row>
       </el-form>
     </el-dialog>
-    <el-dialog :visible.sync="isopen_ContractRecord">
+    <el-dialog
+      :visible.sync="isopen_ContractRecord"
+      title="新增合同工程量记录"
+      :append-to-body="true"
+    >
       <Contract-record
+        v-if="isopen_ContractRecord"
         :projectid="projectList.construct_project_id"
         type="ASupply"
       ></Contract-record>
@@ -187,7 +192,7 @@ export default {
   },
   methods: {
     openQuantityRecord() {
-      this.isopen_ContractRecord = false;
+      this.isopen_ContractRecord = true;
     },
     //打开新增合同工程量
     openContract() {

@@ -81,6 +81,9 @@ export const apiLeaveData = data => get("getLeaveData", data);
 //获取所有请假信息
 export const apiLeaveList = data => get("getLeaveList", data);
 
+//删除指定请假记录
+export const apideleLeave = id => Delete("deleLeave", id);
+
 //获取请假的审批流程
 export const apiViewHisComment = data => get("getViewHisComment", data);
 
@@ -136,7 +139,7 @@ export const apiuserTreeList = data => get("userTreeList", data);
 export const apipmuserList = data => post("pmuserList", data);
 
 //职员信息-->获取所有未转正
-export const apibecomeList = data => get("becomeList", data);
+export const apibecomeList = data => post("becomeList", data);
 
 //职员信息--》新增或修改职员信息
 export const apisavePersonalRecords = data => post("savePersonalRecords", data);
@@ -363,3 +366,24 @@ export const apiCostappProcessList = data => get("getCostappProcessList", data);
 //运营类-->甲方材料采购-->查询增量申请记录
 export const apiQuantityRecord = data =>
   get("changeQuantityRecordRecord", data);
+
+//运营类-->甲方材料采购-->获取甲供材料采购信息
+export const apiaPartyPurList = data => get("aPartyPurList", data);
+
+//运营类-->甲方材料采购-->获取采购信息详情
+export const apigetAPartyPur = data => get("getAPartyPur", data);
+
+//运营类-->甲方材料采购-->删除甲供材料单
+export const apidel_apartyPur = data => post("del_apartyPur", data);
+
+//运营类-->甲方材料采购-->新增甲供材料采购单
+export const apisave_aPartyPur = data => post("save_aPartyPur", data);
+
+//运营类-->甲方材料采购-->修改甲供材料采购单
+export const apiupdateAPartyPur = data => post("updateAPartyPur", data);
+
+//汇总类 --> 科技采购明细
+export const apidevePurReport = data => get("devePurReport", data);
+
+//汇总类 --> 科技采购明细-->项目列表
+export const apideveConCheck = data => get("deveConCheck", data);

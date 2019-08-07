@@ -34,16 +34,19 @@
       top="8vh"
       width="75%"
     >
-      <dialog-tabs
-        :projectList="projectList"
-        v-if="isopenMaterial"
-      ></dialog-tabs>
+      <dialog-tabs :projectList="projectList" v-if="isopenMaterial">
+      </dialog-tabs>
+    </el-dialog>
+    <el-dialog :visible.sync="isopenRecord" top="8vh" width="75%">
+      <dialog-tabs-record :projectList="projectList" v-if="isopenRecord">
+      </dialog-tabs-record>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import dialogTabs from "./dialog-tabs";
+import dialogTabsRecord from "./dialog-tabs-record/dialog-tabs-record";
+import dialogTabs from "./dialog-tabs/dialog-tabs.vue";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apiaPartyConList } from "@/request/api";
@@ -66,21 +69,24 @@ export default {
       ],
       headle: ["材料单", "", "申请采购"],
       isopenMaterial: false,
-      projectList: {}
+      projectList: {},
+      isopenRecord: false
     };
   },
   components: {
     CaRuleTable,
     paging,
-    dialogTabs
+    dialogTabs,
+    dialogTabsRecord
   },
   mounted() {
     this.getPartyConList();
   },
   methods: {
     applyPurchase(row) {
-      console.log(`申请采购：`);
       console.log(row);
+      this.isopenRecord = true;
+      this.projectList = row;
     },
     openmaterial(row) {
       console.log(row);

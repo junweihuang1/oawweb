@@ -177,16 +177,16 @@ export default {
         delete item.id;
         return item;
       });
-      console.log();
       let data = {
         type: "ASupply",
         construct_project_id: this.projectList.construct_project_id,
         rows: JSON.stringify(rows),
         userid: "1054"
       };
-      console.log(data);
       apistart_record(data).then(res => {
         console.log(res);
+        this.$message.success("提交成功");
+        this.$emit("close");
       });
     },
     clickinp(row, column, cell, event) {

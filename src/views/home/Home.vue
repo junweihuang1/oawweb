@@ -304,6 +304,44 @@ export default {
                   route: "/Purchase-details"
                 }
               ]
+            },
+            {
+              id: "4-6",
+              title: "供应商中心",
+              route: "",
+              children: [
+                {
+                  id: "4-6-1",
+                  title: "材料部信息",
+                  route: "/material-depa-infor"
+                },
+                {
+                  id: "4-6-2",
+                  title: "材料(调价)",
+                  route: "/material-modify"
+                },
+                {
+                  id: "4-6-3",
+                  title: "技术部信息",
+                  route: "/technical-depa-infor"
+                },
+                {
+                  id: "4-6-4",
+                  title: "劳动力分配",
+                  route: "/labor-distribution"
+                },
+                {
+                  id: "4-6-5",
+                  title: "劳动力(投标)",
+                  route: "/labor-bidding"
+                }
+              ]
+            },
+            {
+              id: "4-7",
+              title: "外联中心",
+              route: "/outreach-centre",
+              children: []
             }
           ]
         },
@@ -376,6 +414,11 @@ export default {
                   id: "6-3-2",
                   title: "劳动力费用汇总(科技)",
                   route: "/Labor-costs-summary-science"
+                },
+                {
+                  id: "6-3-3",
+                  title: "科技采购明细",
+                  route: "/Technical-purchase-details"
                 }
               ]
             }

@@ -28,7 +28,6 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      style="width:90%;"
       :header="headerList"
       :DataList="staffList"
       :headle="headle"
@@ -52,7 +51,7 @@
       :userid="setuseid"
     ></modify-window>
     <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
-      <Not-Corrected></Not-Corrected>
+      <Not-Corrected v-if="isopenNoCor"></Not-Corrected>
     </el-dialog>
   </div>
 </template>
@@ -117,6 +116,7 @@ export default {
   },
   mounted() {
     this.getpmuserList();
+    this.getuserTree();
   },
   methods: {
     openNotCorrected() {
@@ -138,6 +138,11 @@ export default {
     getpage(e) {
       this.currentpage = e;
       this.getpmuserList();
+    },
+    getuserTree() {
+      apiuserTreeList().then(res => {
+        console.log(res);
+      });
     },
     getpmuserList() {
       let data = {

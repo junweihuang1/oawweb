@@ -1,0 +1,110 @@
+// 选择供应商组件
+<template>
+  <div>
+    <el-form inline size="mini">
+      <el-form-item label="材料类别">
+        <el-input v-model="material_category" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="材料名称">
+        <el-input v-model="material_name" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="材料规格">
+        <el-input v-model="material_model_name" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getQuantityList">查询</el-button>
+      </el-form-item>
+    </el-form>
+    <Ca-rule-table
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(255, 255, 255, 0.6)"
+      :setheight="0.5"
+      :header="header"
+      :DataList="QuantityList"
+      @dblclick="dblclick"
+    ></Ca-rule-table>
+    <paging
+      :currentpage="currentpage"
+      :currentlimit="currentlimit"
+      :total="200"
+      @setpage="getpage"
+      @setlimit="getlimit"
+    ></paging>
+  </div>
+</template>
+
+<script>
+import paging from "@/components/paging/paging";
+import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
+import { apiaPartyMaterialCheck } from "@/request/api.js";
+export default {
+  name: "selectSupplier",
+  data() {
+    return {
+      currentlimit: 15,
+      currentpage: 1,
+      QuantityList: [],
+      header: [
+        ["材料类别", "construct_Aparty_material_category", 100],
+        ["材料名称", "construct_Aparty_material_name", 100],
+        ["材料规格", "construct_Aparty_material_model"],
+        ["单位", "construct_Aparty_material_unit", 80],
+        ["合同量", "construct_Aparty_material_num", 90],
+        ["备注", "construct_Aparty_material_remark", 100]
+      ],
+      material_category: "",
+      material_name: "",
+      material_model_name: "",
+      loading: true
+    };
+  },
+  props: {
+    projectList: Object
+  },
+  watch: {
+    projectList() {
+      this.loading = false;
+    }
+  },
+  components: {
+    CaRuleTable,
+    paging
+  },
+  mounted() {
+    this.getQuantityList();
+  },
+  methods: {
+    getlimit(e) {
+      this.currentlimit = e;
+      this.getQuantityList();
+    },
+    getpage(e) {
+      this.currentpage = e;
+      this.getQuantityList();
+    },
+    //双击选择用户
+    dblclick(row) {
+      this.$emit("setQuantity", row);
+    },
+    getQuantityList() {
+      let data = {
+        construct_project_id: this.projectList.construct_project_id,
+        construct_Aparty_material_category: this.material_category,
+        construct_Aparty_material_name: this.material_name,
+        construct_Aparty_material_model: this.material_model_name,
+        pageSize: this.currentlimit,
+        limit: this.currentpage
+      };
+      apiaPartyMaterialCheck(data).then(res => {
+        console.log(res);
+        this.QuantityList = res.data;
+        this.loading = false;
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped></style>
