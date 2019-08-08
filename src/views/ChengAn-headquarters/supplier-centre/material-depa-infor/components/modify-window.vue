@@ -53,6 +53,7 @@
             <template v-else-if="item[2] == 'openselect'">
               <input
                 type="text"
+                v-if="isselect"
                 clearable
                 v-model="row[item[1]]"
                 @focus="selectDepartment"
@@ -63,6 +64,7 @@
             <template v-else>
               <input
                 type="text"
+                v-if="isselect"
                 clearable
                 v-model="row[item[1]]"
                 style="border:none;height:20px;width:100%;text-align:center;outline:none;"
@@ -72,7 +74,6 @@
         </el-table-column>
       </el-table>
     </template>
-    <Tabs @setJobChanges="getJobChanges" :DataList="recordList"></Tabs>
     <select-department
       :isopenSelect="isopenSelect"
       @closewin="closewin"
@@ -83,7 +84,6 @@
 
 <script>
 import selectDepartment from "./select-department";
-import Tabs from "./Tabs";
 import { apisavePersonalRecords } from "@/request/api.js";
 export default {
   name: "modifyWindow",
@@ -189,22 +189,27 @@ export default {
         ]
         // ["直属上级", "superiors"],
         // ["直属公司上级", "CompanySuperiors", 120]
-      ]
+      ],
+      isselect: true
     };
   },
   components: {
-    Tabs,
     selectDepartment
   },
   props: {
     userList: Object,
     roleList: Array,
-    recordList: Object,
     submitType: String
   },
   methods: {
+    //当出生日期发生改变，计算年龄
     selectDate(row) {
-      if (row == "birth_date") {
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
+      //当时间选择器是生日日期并且生日日期不为null时，计算年龄
+      if (row == "birth_date" && this.form[0].birth_date != null) {
         let now = new Date();
         let now_year = now.getFullYear();
         let now_month = now.getMonth() + 1;
@@ -222,8 +227,16 @@ export default {
           this.form[0].age = year_Differ - 1;
         }
       }
+      //当时间选择器是生日日期并且生日日期为null时，清空年龄为0
+      else if (row == "birth_date" && this.form[0].birth_date == null) {
+        this.form[0].age = 0;
+      }
     },
     setSelectName(row) {
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
       this.isopenSelect = false;
       this.form[0].department_name = row.department_name;
       this.form[0].department = row.department_id;
@@ -237,15 +250,11 @@ export default {
     closewin() {
       this.isopenSelect = false;
     },
-    getJobChanges(e) {
-      this.JobChanges = e;
-      console.log(e);
-    },
     submitForm() {
       let data = this.form[0];
-      console.log(this.recordList);
+      data.userid = 0;
       if (this.submitType == "new") {
-        data.userid = 0;
+        data.user_num = 0;
       }
       console.log(data);
       apisavePersonalRecords(data).then(res => {

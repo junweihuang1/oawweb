@@ -27,6 +27,7 @@
             <template slot-scope="{ row }">
               <input
                 type="text"
+                placeholder="请输入"
                 v-model="row[item[1]]"
                 style="border:none;outline:none;height:25px;width:100%;"
                 @change="inputVal"

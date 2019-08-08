@@ -387,3 +387,12 @@ export const apidevePurReport = data => get("devePurReport", data);
 
 //汇总类 --> 科技采购明细-->项目列表
 export const apideveConCheck = data => get("deveConCheck", data);
+
+//供应商中心 --> 材料部信息-->树菜单
+export const apiworkerUserTreeList = data => get("workerUserTreeList", data);
+
+//供应商中心 --> 材料部信息-->查询所有工人信息
+export const apiworkerUserList = data => get("workerUserList", data);
+
+//供应商中心 --> 材料部信息-->获取工人职位信息列表
+export const apiworkerUserNew = () => get("workerUserNew");

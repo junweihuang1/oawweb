@@ -41,15 +41,15 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
-
-    <modify-window
-      v-if="isreload"
-      :isopen="isadd"
-      :roleList="roleList"
-      @closewindow="closewindow"
-      :department="department"
-      :userid="setuseid"
-    ></modify-window>
+    <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh">
+      <modify-window
+        v-if="isadd"
+        :submitType="submitType"
+        :roleList="roleList"
+        :recordList="recordList"
+        :userList="userList"
+      ></modify-window>
+    </el-dialog>
     <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
       <Not-Corrected v-if="isopenNoCor"></Not-Corrected>
     </el-dialog>
@@ -64,14 +64,12 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apiuserTreeList,
   apipmuserList,
-  apisavePersonalRecords,
   apipersonalRecords
 } from "@/request/api.js";
 export default {
   name: "staffInformation",
   data() {
     return {
-      isreload: true,
       isadd: false,
       form: {
         number: "",
@@ -102,10 +100,11 @@ export default {
       total: 400,
       currentpage: 1,
       currentlimit: 15,
-      department: "",
-      setuseid: 0,
       roleList: [],
-      isopenNoCor: false
+      isopenNoCor: false,
+      userList: {},
+      recordList: {},
+      submitType: ""
     };
   },
   components: {
@@ -127,9 +126,21 @@ export default {
     },
     //编辑
     edit(e) {
-      this.department = e.department;
-      this.isadd = true;
-      this.setuseid = e.userid;
+      this.submitType = "";
+      apipersonalRecords({
+        cid: e.userid,
+        department: e.department ? e.department : ""
+      }).then(res => {
+        this.isadd = true;
+        this.userList = res.data.userDetail;
+        //如果职位列表为空则历遍获得职位列表数组
+        if (this.roleList == "") {
+          res.roles.forEach(item => {
+            this.roleList.push([item.role_id, item.role_name]);
+          });
+        }
+        this.recordList = res.data;
+      });
     },
     getlimit(e) {
       this.currentlimit = e;
@@ -179,23 +190,20 @@ export default {
       });
     },
     addstaff() {
-      this.isreload = false;
-      setTimeout(() => {
-        this.$nextTick(() => {
-          this.isadd = true;
-          this.isreload = true;
-        });
-      }, 50);
+      this.isadd = false;
+      this.$nextTick(() => {
+        this.isadd = true;
+      });
+      this.userList = {};
+      this.submitType = "new";
       if (this.roleList == "") {
         apipersonalRecords().then(res => {
+          //如果职位列表为空则历遍获得职位列表数组
           res.roles.forEach(item => {
-            this.roleList.push([item.role_id + "", item.role_name]);
+            this.roleList.push([item.role_id, item.role_name]);
           });
         });
       }
-    },
-    closewindow() {
-      this.isadd = false;
     }
   }
 };

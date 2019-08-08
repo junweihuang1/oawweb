@@ -396,7 +396,7 @@ export default {
                 {
                   id: "6-2-1",
                   title: "项目运营(科技)",
-                  route: "/project-operation-secience"
+                  route: "/project-operation-science"
                 }
               ]
             },
