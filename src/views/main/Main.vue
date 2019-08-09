@@ -54,7 +54,10 @@
     </el-row>
     <home-main></home-main>
     <el-dialog title="待办任务" :visible.sync="processTable">
-      <to-do-table :processList="processList"></to-do-table>
+      <to-do-table
+        :processList="processList"
+        @reload="handleApiFindTaskList"
+      ></to-do-table>
     </el-dialog>
     <el-dialog title="新消息" :visible.sync="messageTable"> </el-dialog>
     <el-dialog title="补卡审批" :visible.sync="newVisitisTable">
@@ -109,6 +112,7 @@ export default {
           });
       }
     },
+    //代办任务
     handleApiFindTaskList() {
       apiFindTaskList({
         userId: ""

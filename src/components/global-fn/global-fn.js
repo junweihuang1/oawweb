@@ -36,6 +36,15 @@ export function getDate_cn(time) {
   let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
   return year + "年" + month + "月" + day + "日";
 }
+export function getYearMonth_cn(time) {
+  let date = new Date(time);
+  let year = date.getFullYear();
+  let month =
+    date.getMonth() + 1 < 10
+      ? "0" + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+  return year + "年" + month + "月";
+}
 export function gettimes(time) {
   let date = new Date(time);
   let hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();

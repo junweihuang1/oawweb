@@ -5,7 +5,7 @@
       title="部门信息"
       @close="closewin"
       :append-to-body="true"
-      width="40%"
+      width="30%"
       top="6vh"
       class="abow_dialog"
     >
@@ -18,6 +18,7 @@
         </el-form-item>
       </el-form>
       <Ca-rule-table
+        :setheight="0.7"
         :DataList="departmentList"
         :header="header"
         @dblclick="dblclick"
@@ -36,7 +37,7 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apidepartmentList } from "@/request/api.js";
+import { apiorgChecks } from "@/request/api.js";
 export default {
   name: "selectCenter",
   data() {
@@ -50,10 +51,9 @@ export default {
       currentlimit: 15,
       total: 40,
       header: [
-        ["部门编号", "department_id"],
-        ["部门名称", "department_name"],
-        ["所属中心", "center_name"],
-        ["所属公司", "company_name"]
+        ["公司", "company_name"],
+        ["中心", "center_name"],
+        ["部门", "department_name"]
       ]
     };
   },
@@ -95,16 +95,13 @@ export default {
     },
     //获取项目名称
     getdepartmentList() {
-      apidepartmentList({
-        rows: this.currentlimit,
-        page: this.currentpage,
-        department_name: this.departmentName,
-        center_name: this.centerName,
-        company_name: this.companyName
+      apiorgChecks({
+        limit: this.currentlimit,
+        page: this.currentpage
       })
         .then(res => {
           console.log(res);
-          this.departmentList = res.rows;
+          this.departmentList = res.data;
         })
         .catch(err => {
           console.log(err);

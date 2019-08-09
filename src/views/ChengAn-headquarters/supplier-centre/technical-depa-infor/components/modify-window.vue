@@ -50,6 +50,16 @@
                 </el-option>
               </el-select>
             </template>
+            <template v-else-if="item[2] == 'openselect'">
+              <input
+                type="text"
+                v-if="isselect"
+                @focus="openselect"
+                clearable
+                v-model="row[item[1]]"
+                style="border:none;height:20px;width:100%;text-align:center;outline:none;"
+              />
+            </template>
             <template v-else>
               <input
                 type="text"
@@ -64,13 +74,18 @@
         </el-table-column>
       </el-table>
     </template>
+    <select-department
+      :isopenSelect="isopenSelect"
+      @setSelectName="getSelectName"
+    ></select-department>
   </div>
 </template>
 
 <script>
+import selectDepartment from "./select-department";
 import { apisavePersonalRecords } from "@/request/api.js";
 export default {
-  name: "modifyWindow",
+  name: "modifyWindow2",
   data() {
     return {
       JobChanges: [],
@@ -130,8 +145,8 @@ export default {
           ["转正工资", "worker"],
           ["入司日期", "incorporation_date", "date"],
           ["转正日期", "close_time", "date"],
-          ["部门", "department_name", "", "", true],
-          ["中心", "center_name", "", "", true],
+          ["部门", "department_name", "openselect", "", true],
+          ["中心", "center_name", "openselect", "", true],
           [
             "状态",
             "status",
@@ -166,7 +181,7 @@ export default {
           ["职业资格证", "profl_certificate"]
         ],
         [
-          ["公司", "company_name", "", "", true],
+          ["公司", "company_name", "openselect", "", true],
           ["年限", "age_limit"],
           ["签约时间", "sign", "date"],
           ["到期时间", "expiry", "date"],
@@ -181,6 +196,9 @@ export default {
       isselect: true
     };
   },
+  components: {
+    selectDepartment
+  },
   props: {
     userList: Array,
     roleList: Array,
@@ -192,6 +210,23 @@ export default {
     }
   },
   methods: {
+    getSelectName(row) {
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
+      this.isopenSelect = false;
+      this.form[0].department_name = row.department_name;
+      this.form[0].department = row.department_id;
+      this.form[0].center_name = row.center_name;
+      this.form[0].company_name = row.company_name;
+      this.form[0].center_id = row.center_id;
+      console.log(row);
+    },
+    openselect() {
+      this.isopenSelect = true;
+      console.log(this.isopenSelect);
+    },
     //当出生日期发生改变，计算年龄
     selectDate(row) {
       this.isselect = false;
@@ -221,19 +256,6 @@ export default {
       else if (row == "birth_date" && this.form[0].birth_date == null) {
         this.form[0].age = 0;
       }
-    },
-    setSelectName(row) {
-      this.isselect = false;
-      this.$nextTick(() => {
-        this.isselect = true;
-      });
-      this.isopenSelect = false;
-      this.form[0].department_name = row.department_name;
-      this.form[0].department = row.department_id;
-      this.form[0].center_name = row.center_name;
-      this.form[0].company_name = row.company_name;
-      this.form[0].center_id = row.center_id;
-      console.log(row);
     },
     selectDepartment() {
       this.isopenSelect = true;

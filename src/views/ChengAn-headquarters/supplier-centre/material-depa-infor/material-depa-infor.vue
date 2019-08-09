@@ -11,6 +11,7 @@
           菜单
         </div>
         <el-tree
+          @node-click="nodeClick"
           :data="TreeList"
           accordion
           :props="defaultProps"
@@ -81,7 +82,7 @@ export default {
         ["工号", "user_num"],
         ["姓名", "username"],
         ["电话号码", "phone_number"],
-        ["性别", "sex"],
+        ["性别", "sex2"],
         ["公司", "company_name"],
         ["中心", "center_name"],
         ["中心id", "center_id"],
@@ -91,7 +92,7 @@ export default {
       ],
       headle: ["编辑"],
       isopen: false,
-      userList: {},
+      userList: [],
       submitType: "",
       roleList: []
     };
@@ -106,6 +107,11 @@ export default {
     this.getWorkerList();
   },
   methods: {
+    nodeClick() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getWorkerList();
+    },
     //获取工人职位信息
     getWorkerpost() {
       apiworkerUserNew().then(res => {
@@ -115,8 +121,8 @@ export default {
       });
     },
     editItem(row) {
-      this.userList = row;
-      console.log(this.userList);
+      console.log(row);
+      this.userList = [row];
       if (this.roleList == "") {
         this.getWorkerpost();
       }
@@ -127,7 +133,18 @@ export default {
       if (this.roleList == "") {
         this.getWorkerpost();
       }
-      this.isopen = true;
+      this.userList = [
+        {
+          company_id: 17,
+          center_id: 38,
+          center_name: "材料分供方",
+          company_name: "分供方"
+        }
+      ];
+      this.isopen = false;
+      this.$nextTick(() => {
+        this.isopen = true;
+      });
       this.submitType = "new";
     },
     getpage(val) {
@@ -138,14 +155,15 @@ export default {
       this.currentlimit = val;
       this.getWorkerList();
     },
+    //获取菜单树列表
     getTreeList() {
       apiworkerUserTreeList({
         center_name: "材料分供方"
       }).then(res => {
-        console.log(res);
         this.TreeList = res.data;
       });
     },
+    //所有材料部信息
     getWorkerList() {
       let data = {
         rows: this.currentlimit,
@@ -156,7 +174,7 @@ export default {
       apiworkerUserList(data).then(res => {
         console.log(res);
         this.WorkerList = res.rows.map(item => {
-          item.sex = item.sex == 1 ? "男" : "女";
+          item.sex2 = item.sex == 1 ? "男" : "女";
           return item;
         });
       });

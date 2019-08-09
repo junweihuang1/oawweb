@@ -207,17 +207,26 @@ export const apiconstructCheck = data => get("constructCheck", data);
 //监察中心-->管理考评-->查询出所有管理考评信息
 export const apisupOpinionLists = data => get("supOpinionLists", data);
 
+//监察中心-->管理考评-->查询下一下审核用户信息
+export const apisupOpinionNew = () => get("supOpinionNew");
+
+//监察中心-->管理考评-->保存管理考评信息
+export const apisave_supOpinion = data => post("save_supOpinion", data);
+
 //监察中心-->管理考评-->查询指定管理考评的详细信息
 export const apisupOpinionView = id => get("supOpinionView", id);
 
 //监察中心-->管理考评-->删除指定管理考评信息
 export const apidelectsupOpinion = id => Delete("delect_supOpinion", id);
 
-//监察中心-->管理考评-->查询出所有绩效考评信息
+//监察中心-->绩效考评-->查询出所有绩效考评信息
 export const apiachReviewLists = data => get("achReviewLists", data);
 
-//监察中心-->管理考评-->查看指定绩效考评详情
+//监察中心-->绩效考评-->查看指定绩效考评详情
 export const apiachReviewView = id => get("achReviewView", id);
+
+//监察中心-->绩效考评-->保存绩效考评信息
+export const apisave_achReview = data => post("save_achReview", data);
 
 //监察中心 --> 劳动力供应商对比-->查询出所有劳动力供应商对比信息
 export const apisupplierformList = data => get("supplierformLists", data);
@@ -396,3 +405,9 @@ export const apiworkerUserList = data => get("workerUserList", data);
 
 //供应商中心 --> 材料部信息-->获取工人职位信息列表
 export const apiworkerUserNew = () => get("workerUserNew");
+
+//供应商中心 --> 材料部信息-->查询出所有中心信息
+export const apiorgChecks = data => get("orgChecks", data);
+
+//供应商中心 --> 材料调价-->查询出所有材料调价信息
+export const apisupplier_price = data => post("supplier_price", data);

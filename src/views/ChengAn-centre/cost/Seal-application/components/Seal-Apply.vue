@@ -10,27 +10,27 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="文件名称">
-              <el-input v-model="form.seal_fileName"></el-input>
+              <el-input v-model="form.own_seal_fileName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="预结算金额">
-              <el-input v-model="form.seal_settle"></el-input>
+              <el-input v-model="form.own_seal_settle"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="用章公司">
-              <el-input v-model="form.seal_company"></el-input>
+              <select-company @setCompanyName="getCompanyName"></select-company>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="主送单位">
-              <el-input v-model="form.seal_sender"></el-input>
+              <el-input v-model="form.own_seal_sender"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="用章类别">
-              <el-checkbox-group v-model="form.seal_chapCategory">
+              <el-checkbox-group v-model="form.own_seal_chapCategory">
                 <el-checkbox
                   v-for="Seal in Seals"
                   :label="Seal[0]"
@@ -43,7 +43,7 @@
           <el-col :span="24">
             <el-form-item label="盖章用途">
               <el-input
-                v-model="form.seal_remark"
+                v-model="form.own_seal_remark"
                 type="textarea"
                 :rows="3"
               ></el-input>
@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import selectCompany from "@/components/Ca-select/select-company";
 import PickerC from "@/components/Ca-picker-c/Ca-picker-c.vue";
 import { apisaveSeal } from "@/request/api.js";
 export default {
@@ -95,14 +96,14 @@ export default {
     return {
       myopen: this.isopen,
       form: {
-        seal_fileName: "", //文件名称
-        seal_settle: "", //预结算金额
-        seal_company: "", //用章公司
-        seal_sender: "", //主送单位
-        seal_chapCategory: [], //用章类别
-        seal_remark: "", //盖章用途
-        seal_approver: "",
-        seal_seal_filePath: ""
+        own_seal_fileName: "", //文件名称
+        own_seal_settle: "", //预结算金额
+        own_seal_company: "", //用章公司
+        own_seal_sender: "", //主送单位
+        own_seal_chapCategory: [], //用章类别
+        own_seal_remark: "", //盖章用途
+        userid: "",
+        own_seal_filePath: ""
       },
       Seals: [
         [1, "公章"],
@@ -117,7 +118,8 @@ export default {
     isopen: Boolean
   },
   components: {
-    PickerC
+    PickerC,
+    selectCompany
   },
   watch: {
     isopen(value) {
@@ -125,22 +127,20 @@ export default {
     }
   },
   methods: {
+    getCompanyName(val) {
+      this.form.own_seal_company = val;
+    },
     changefile(file) {
       console.log(file);
     },
     submitUpload() {
-      // let data = {
-      //   own_seal_fileName: this.form.seal_fileName,
-      //   own_seal_settle: this.form.seal_settle,
-      //   own_seal_company: this.form.seal_company,
-      //   own_seal_sender: this.form.seal_sender,
-      //   own_seal_chapCategory: this.form.seal_chapCategory,
-      //   own_seal_filePath: this.form.seal_seal_filePath,
-      //   own_seal_remark: this.form.seal_remark,
-      //   userid: this.form.seal_approver
-      // };
-      // apisaveSeal().then(res => {});
-      console.log(this.fileUploadPath);
+      // this.form.own_seal_chapCategory = JSON.stringify(
+      //   this.form.own_seal_chapCategory
+      // );
+      console.log(this.form);
+      apisaveSeal(this.form).then(res => {
+        console.log(res);
+      });
       //this.$refs.upload.submit();
     },
     handlePreview(e) {
@@ -150,7 +150,7 @@ export default {
       this.$emit("closewidow");
     },
     getApprover(e) {
-      this.form.seal_approver = e;
+      this.form.userid = e;
     }
   }
 };

@@ -134,6 +134,7 @@ export default {
             this.$router.replace("/");
             apiUserInf().then(res2 => {
               console.log(res2);
+              localStorage.setItem("userid", res2.data.userid);
               localStorage.setItem("role_name", res2.data.role_name);
               localStorage.setItem("center_name", res2.data.center_name);
               localStorage.setItem("company_name", res2.data.company_name);

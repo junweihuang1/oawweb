@@ -185,7 +185,8 @@ export default {
         end_time: this.form.end_time, //(必填)结束时间；
         userid: this.form.userid
       };
-
+      console.log(data.start_time);
+      console.log(data.end_time);
       if (data.start_time >= data.end_time) {
         this.$message.warning("结束时间应大于开始时间");
         return;
@@ -196,14 +197,16 @@ export default {
             .then(res => {
               if (res.msg == "办理完成") {
                 this.$message.success("办理成功！");
+                this.closegoouttable();
               } else {
                 this.$message.warning(res.msg);
+                this.closegoouttable();
               }
               setTimeout(() => {
                 this.reload();
               }, 1500);
             })
-            .catch(err => {
+            .catch(() => {
               this.$message.warning("请查看是否重复办理或联系开发人员");
               setTimeout(() => {
                 this.reload();

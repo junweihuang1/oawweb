@@ -103,11 +103,17 @@ export default {
       });
     },
     deleteitem(e) {
-      apidelFieldPersonnel({ field_personnel_id: e.field_personnel_id }).then(
-        res => {
-          console.log(res);
-        }
-      );
+      this.$confirm(`确定删除 { ${e.username} } 的外勤记录吗？`)
+        .then(() => {
+          apidelFieldPersonnel({
+            field_personnel_id: e.field_personnel_id
+          }).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.getFieldList();
+          });
+        })
+        .catch(() => {});
     },
     newgoout() {
       this.isgoout = true;

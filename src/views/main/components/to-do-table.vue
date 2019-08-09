@@ -39,6 +39,7 @@ export default {
   components: { FoldTable },
   methods: {
     getrow([row, expandedRows]) {
+      console.log(row);
       this.taskid = row.ID_;
       if (this.openid != row.ID_) {
         let that = this;
@@ -55,15 +56,21 @@ export default {
         let id = row.BUSINESS_KEY_.split(".")[1];
         this.openid = row.ID_;
         apigetField({ id: id }).then(res => {
+          console.log(res);
           this.userid = res.data.field_personnel_userid;
-          that.newlist = [
-            ["流程ID", row.ID_],
-            ["流程名称", row.pdname],
-            ["审批部门", row.NAME_],
-            ["申请人", row.applicant],
-            ["外出地点", res.data.field_personnel_place],
-            ["外出内容", res.data.field_personnel_cause]
-          ];
+
+          switch (row.illustrate) {
+            case "外勤申请单":
+              that.newlist = [
+                ["流程ID", row.ID_],
+                ["流程名称", row.pdname],
+                ["审批部门", row.NAME_],
+                ["申请人", row.applicant],
+                ["外出地点", res.data.field_personnel_place],
+                ["外出内容", res.data.field_personnel_cause]
+              ];
+              break;
+          }
         });
       }
     },
@@ -74,13 +81,14 @@ export default {
         reasons: reasons,
         sign: e
       };
-      // apipassField(data)
-      //   .then(res => {
-      //     console.log(res);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      apipassField(data)
+        .then(res => {
+          console.log(res);
+          this.$emit("reload");
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

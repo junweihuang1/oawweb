@@ -1,7 +1,12 @@
 // 选择公司组件
 <template>
   <div>
-    <el-select v-model="company_id" placeholder="请选择公司" clearable>
+    <el-select
+      v-model="company_id"
+      placeholder="请选择公司"
+      clearable
+      @change="selcompanyName"
+    >
       <el-option
         v-for="item in companyList"
         :key="item.company_id"
@@ -19,30 +24,33 @@ export default {
   name: "selectCompany",
   data() {
     return {
+      company_id: "",
       companyList: [],
       companyPage: 1,
-      companyrows: 15,
-      company_id: ""
+      companyrows: 15
     };
   },
-  watch: {
-    company_id(val) {
-      console.log(val);
-      this.$emit("selectId", val);
-    }
-  },
   mounted() {
-    apicompanyList({
-      rows: this.companyrows,
-      page: this.companyPage,
-      companyname: ""
-    }).then(res => {
-      this.companyList = this.companyList.concat(res.data);
-      if (res.data.length == this.companyrows) {
-        this.companyPage++;
-        this.getCompanyInf();
-      }
-    });
+    this.getCompanyInf();
+  },
+  methods: {
+    getCompanyInf() {
+      apicompanyList({
+        rows: this.companyrows,
+        page: this.companyPage,
+        companyname: ""
+      }).then(res => {
+        this.companyList = this.companyList.concat(res.data);
+        if (res.data.length == this.companyrows) {
+          this.companyPage++;
+          this.getCompanyInf();
+        }
+      });
+    },
+    selcompanyName(e) {
+      console.log(e);
+      this.$emit("setCompanyName", e);
+    }
   }
 };
 </script>
