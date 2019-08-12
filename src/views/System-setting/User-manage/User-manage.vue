@@ -99,11 +99,13 @@ export default {
         .catch(() => {});
     },
     getUserList() {
-      apiuserLists({
+      let data = {
         Limit: this.currentPage,
         pageSize: this.currentlimit,
         inputName: this.inputName
-      }).then(res => {
+      };
+      console.log(data);
+      apiuserLists(data).then(res => {
         console.log(res);
         this.StaffData = res.data.map(item => {
           item.sex = item.sex == 1 ? "男" : "女";

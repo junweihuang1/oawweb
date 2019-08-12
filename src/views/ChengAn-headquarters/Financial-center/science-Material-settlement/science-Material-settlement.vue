@@ -2,7 +2,7 @@
   <div>
     <el-form inline size="mini">
       <el-form-item label="供应商名称">
-        <el-input placeholder="请输入" v-model="gysName"></el-input>
+        <el-input placeholder="请输入" v-model="gysName" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="querygys">搜索</el-button>
@@ -24,7 +24,11 @@
     <el-dialog :visible.sync="isopen" title="项目列表">
       <el-form inline size="mini">
         <el-form-item label="项目名称">
-          <el-input placeholder="请输入" v-model="projectName"></el-input>
+          <el-input
+            placeholder="请输入"
+            v-model="projectName"
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="queryproject">搜索</el-button>
@@ -35,6 +39,7 @@
         :DataList="detailList"
         :header="detailHeader"
         :headle="detailHeadle"
+        @checkleave="getList"
       ></Ca-rule-table>
       <paging
         :currentpage="currentpage2"
@@ -50,7 +55,11 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apibuild_settlements, apisettleConstructList } from "@/request/api.js";
+import {
+  apibuild_settlements,
+  apisettleConstructList,
+  apisettlePayList
+} from "@/request/api.js";
 export default {
   name: "scienceSettlement",
   data() {
@@ -98,6 +107,17 @@ export default {
     this.getsettlements();
   },
   methods: {
+    getList(row) {
+      console.log(row);
+      let data = {
+        rows: 15,
+        page: 1,
+        construct_project_id: row.projectId
+      };
+      apisettlePayList(data).then(res => {
+        console.log(res);
+      });
+    },
     querygys() {
       this.getsettlements();
     },
@@ -138,8 +158,10 @@ export default {
         construct_supplier_id: this.id,
         projectName: this.projectName
       }).then(res => {
-        this.detailList = res.rows;
-        console.log(res);
+        if (res.rows[0]) {
+          this.detailList = res.rows;
+        }
+        console.log(this.detailList);
       });
     }
   }

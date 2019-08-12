@@ -26,14 +26,16 @@
       :currentpage="currentPage"
       :currentlimit="currentlimit"
     ></paging>
-    <Permission-Tree
+    <!-- <Permission-Tree
       :isPerTree="isPerTree"
       :TreeList="TreeList"
       :checkList="checkList"
       @closePerRole="tarnsferValue"
-    ></Permission-Tree>
+    ></Permission-Tree> -->
     <New-Role
       :isNewRole="isNewRole"
+      :rule_name="rule_name"
+      :state="state"
       @myNewRole="tarnsferValue"
       :TreeList="TreeList"
       :checkList="checkList"
@@ -45,7 +47,7 @@
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import NewRole from "./components/New-Role";
-import PermissionTree from "./components/Permission-Tree";
+// import PermissionTree from "./components/Permission-Tree";
 import { apiroleLists, apimenuTreeList, apideleRole } from "@/request/api.js";
 export default {
   name: "StaffInfo",
@@ -63,14 +65,15 @@ export default {
       headerList: [
         ["职位编号", "role_id", 100],
         ["职位名称", "role_name"],
-        ["状态", "state", 80]
+        ["状态", "state2", 80]
       ],
-      headle: ["编辑", "删除"]
+      headle: ["编辑", "删除"],
+      state: "",
+      rule_name: ""
     };
   },
   components: {
     paging,
-    PermissionTree,
     NewRole,
     CaRuleTable
   },
@@ -82,15 +85,28 @@ export default {
       this.isPerTree = e;
       this.isNewRole = e;
     },
+    //编辑
+    edit(e) {
+      this.rule_name = e.role_name;
+      this.state = e.state.toString();
+      this.isNewRole = true;
+      this.getRoleTree(e.role_name);
+    },
+    //新增
     addNewRole() {
+      this.rule_name = "";
+      this.state = "1";
       this.isNewRole = true;
       this.getRoleTree("");
     },
     delRole(e) {
-      this.$message.warning("此功能未启用");
-      // apideleRole({ roleId: e }).then(res => {
-      //   console.log(res);
-      // });
+      this.$confirm(`确定删除${e.role_name}？`)
+        .then(() => {
+          apideleRole({ roleId: e }).then(res => {
+            console.log(res);
+          });
+        })
+        .catch(() => {});
     },
     searchRole() {
       this.getroleLists(this.roleName);
@@ -110,34 +126,25 @@ export default {
         roleid: "",
         role_name: roleName
       }).then(res => {
+        console.log("res");
+        console.log(res);
         this.roleList = res.data.map(item => {
-          item.state = item.state == 1 ? "启动" : "停用";
+          item.state2 = item.state == 1 ? "启动" : "停用";
           return item;
         });
       });
     },
-    edit(e) {
-      this.isPerTree = true;
-      this.getRoleTree(e.role_name);
-    },
+
     getRoleTree(roleName) {
       this.TreeList = [];
       this.checkList = [];
-      console.log(roleName);
       apimenuTreeList({
         roleName: roleName
       }).then(res => {
-        console.log(res);
         this.TreeList = res.data;
         res.data.forEach(item => {
           if (item.children) {
-            this.checkList.push(item.id);
-          }
-          if (item.children) {
             item.children.forEach(item2 => {
-              if (item2.checked) {
-                this.checkList.push(item2.id);
-              }
               if (item2.children) {
                 item2.children.forEach(item3 => {
                   if (item3.checked) {

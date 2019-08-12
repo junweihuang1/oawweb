@@ -11,17 +11,12 @@
         <el-input v-model="centerName" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="mini" @click="queryCompanyInf"
+        <el-button type="primary" size="mini" @click="getCompanyInf"
           >查询</el-button
         >
       </el-form-item>
     </el-form>
-
-    <Ca-rule-table
-      style="width:40%;"
-      :DataList="targetList"
-      :header="headerList"
-    ></Ca-rule-table>
+    <Ca-rule-table :DataList="targetList" :header="headerList"></Ca-rule-table>
     <paging
       @setlimit="getlimit"
       @setpage="getpage"
@@ -50,7 +45,20 @@ export default {
       companyName: "",
       isselect: true,
       targetList: [],
-      headerList: [["公司", "company_name"], ["中心", "center_name"]],
+      headerList: [
+        ["公司", ""],
+        ["中心", ""],
+        ["姓名", ""],
+        ["年度", ""],
+        ["总数", ""],
+        ["未完成工作目标", ""],
+        ["完成工作目标", ""],
+        ["完成生活目标", ""],
+        ["未完成生活目标", ""],
+        ["生活目标完成率", ""],
+        ["工作目标完成率", ""],
+        ["目标完成率", ""]
+      ],
       form: {},
       selectList: [],
       currentpage: 1,
@@ -74,9 +82,6 @@ export default {
     //获取当前页显示数量
     getlimit(e) {
       this.currentlimit = e;
-      this.getCompanyInf();
-    },
-    queryCompanyInf() {
       this.getCompanyInf();
     },
     //获取目标信息

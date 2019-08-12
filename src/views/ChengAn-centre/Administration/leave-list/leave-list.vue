@@ -84,6 +84,7 @@ export default {
           item.end_time = changetime(item.end_time);
           return item;
         });
+        console.log(this.DataList);
       })
       .catch(err => {
         console.log(err);
@@ -97,6 +98,7 @@ export default {
     opanLeaveList(item) {
       this.isopen = true;
       this.form = item;
+      // console.log(this.form);
     },
     tableRowClassName(row) {
       if (row.status === 1) {

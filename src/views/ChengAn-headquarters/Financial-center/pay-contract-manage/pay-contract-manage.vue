@@ -107,6 +107,7 @@ export default {
   },
   methods: {
     submit(data) {
+      console.log(data);
       apisaveContract(data).then(res => {
         console.log(res);
       });

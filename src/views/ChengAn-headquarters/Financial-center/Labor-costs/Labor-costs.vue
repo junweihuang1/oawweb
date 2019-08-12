@@ -21,8 +21,6 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      id="table"
-      style="overflow:auto;"
       :DataList="CostsList"
       :header="header"
       :headle="headle"
@@ -41,7 +39,7 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apiuserWagesLists } from "@/request/api.js";
+import { apiuserWagesLists, apisave_userWages } from "@/request/api.js";
 export default {
   name: "LaborCosts",
   data() {
@@ -69,7 +67,7 @@ export default {
         ["岗位工资", "uc_wage_post"],
         ["绩效工资", "uc_wage_achieve"],
         ["津贴补助", "uc_wage_subsidy"],
-        ["考勤扣除", ""],
+        ["考勤扣除", "uc_wages_dedu"],
         ["应发小计", "grosspay"],
         ["代扣社保", "uc_wage_socSec"],
         ["公积金", ""],
@@ -86,8 +84,6 @@ export default {
     paging
   },
   mounted() {
-    document.getElementById("table").style.height =
-      document.body.scrollHeight * 0.77 + "px";
     this.getCostsList();
   },
   methods: {
@@ -110,7 +106,23 @@ export default {
       this.currentpage = e;
       this.getCostsList();
     },
-    file() {},
+    file(row) {
+      // let data = {
+      //   finance_wages_vacaCount: "",
+      //   uc_wages_dedu: "", //(必填)：考勤扣除；
+      //   uc_wages_baseTotal: "", //(必填)：应发小计
+      //   uc_wage_tax: "", //(必填)：代扣个税
+      //   uc_wage_realhair: "", //(必填)：实发工资
+      //   company_name: "", //必填)：公司名称
+      //   userid: "", //必填)：用户id;
+      //   uc_wage_actualDay: "", //必填)：实际出勤天数
+      //   uc_wage_center_name: "" //必填)：中心名称；
+      // };
+      console.log(row);
+      // apisave_userWages().then(res => {
+      //   console.log(res);
+      // });
+    },
     query() {
       this.getCostsList();
     },

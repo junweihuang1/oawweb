@@ -123,6 +123,7 @@ export default {
   watch: {
     screenHeight(val) {
       if (val && document.getElementsByClassName("panel-group").length != 0) {
+        console.log(document.getElementsByClassName("panel-group"));
         document.getElementsByClassName("panel-group")[1].style.height =
           val - 290 + "px";
       }

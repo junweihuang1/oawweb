@@ -72,10 +72,6 @@ export default {
       }
     }
   },
-  mounted() {
-    document.getElementById("table").style.height =
-      document.body.scrollHeight * 0.5 + "px";
-  },
   methods: {
     dblclick(row) {
       this.$emit("setSelectName", row);

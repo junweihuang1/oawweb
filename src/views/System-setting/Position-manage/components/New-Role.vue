@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="新增职位" :visible.sync="myNewRole" @close="closeNewRole">
+    <el-dialog title="修改职位" :visible.sync="myNewRole" @close="closeNewRole">
       <el-row>
         <el-col :span="12">
           <div class="Tree-line">
@@ -14,14 +14,14 @@
           </div>
           <div class="Tree-line">
             <div class="Tree-line-label">状态</div>
-            <el-radio-group v-model="state">
+            <el-radio-group v-model="mystate">
               <el-radio-button label="1">启用</el-radio-button>
               <el-radio-button label="2">停用</el-radio-button>
             </el-radio-group>
           </div>
           <div class="Tree-line">
             <div class="Tree-line-button">
-              <el-button type="success" @click="getCheckedKeys">新增</el-button>
+              <el-button type="success" @click="getCheckedKeys">提交</el-button>
               <el-button type="danger">取消</el-button>
             </div>
           </div>
@@ -47,6 +47,17 @@
 import { apisaveRole } from "@/request/api.js";
 export default {
   name: "NewRole",
+  data() {
+    return {
+      mystate: this.state,
+      roleName: this.rule_name,
+      myNewRole: this.isNewRole,
+      defaultProps: {
+        children: "children",
+        label: "name"
+      }
+    };
+  },
   props: {
     isNewRole: {
       type: Boolean,
@@ -57,47 +68,44 @@ export default {
     },
     checkList: {
       type: Array
+    },
+    rule_name: {
+      type: String,
+      default: ""
+    },
+    state: {
+      type: String,
+      default: "1"
     }
-  },
-  data() {
-    return {
-      state: "1",
-      roleName: "",
-      myNewRole: this.isNewRole,
-      defaultProps: {
-        children: "children",
-        label: "name"
-      }
-    };
   },
   watch: {
     isNewRole(newValue) {
       this.myNewRole = newValue;
+    },
+    state(val) {
+      this.mystate = val;
+    },
+    rule_name(val) {
+      this.roleName = val;
     }
   },
   methods: {
     getCheckedKeys() {
       let data = {
         roleName: this.roleName,
-        state: this.state,
+        mystate: this.mystate,
         nodes: this.$refs.tree.getCheckedKeys(),
         roleId: "",
         menuId: ""
       };
       console.log(data);
-      // apisaveRole({
-      //   roleName: this.roleName,
-      //   state: this.state,
-      //   nodes: this.$refs.tree.getCheckedKeys(),
-      //   roleId: "",
-      //   menuId: ""
-      // })
-      //   .then(res => {
-      //     console.log(res);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      apisaveRole(data)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     closeNewRole() {
       this.$emit("myNewRole", false);

@@ -45,6 +45,7 @@ import paging from "@/components/paging/paging";
 import SealApply from "./components/Seal-Apply";
 import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
+import { getDate_cn } from "@/components/global-fn/global-fn";
 import { apigetSealList, apiSealById, apidelSeal } from "@/request/api.js";
 export default {
   name: "Sealappliction",
@@ -73,8 +74,14 @@ export default {
         ["用章类别", "own_seal_chapCategory"],
         ["盖章用途", "own_seal_remark"]
       ],
+      ApprovalHeaderList: [
+        ["序号", "index", 60],
+        ["流程节点", "name_", 100],
+        ["审核人", "username", 80],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ],
       Approvaltable: [],
-      ApprovalHeaderList: [],
       isApplyOpen: false,
       currentlimit: 15,
       currentpage: 1,
@@ -98,7 +105,6 @@ export default {
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {
-        console.log(res);
         this.DataList = res.data.map(item => {
           switch (item.own_seal_company) {
             case 12:
@@ -126,19 +132,19 @@ export default {
               break;
           }
           switch (item.own_seal_chapCategory) {
-            case 1:
+            case "1":
               item.own_seal_chapCategory = "公章";
               break;
-            case 2:
+            case "2":
               item.own_seal_chapCategory = "业务章";
               break;
-            case 3:
+            case "3":
               item.own_seal_chapCategory = "出图章";
               break;
-            case 4:
+            case "4":
               item.own_seal_chapCategory = "竣工章";
               break;
-            case 5:
+            case "5":
               item.own_seal_chapCategory = "项目章";
               break;
           }
@@ -159,14 +165,16 @@ export default {
       this.isApplyOpen = false;
     },
     deleteApply(e) {
-      this.$confirm("确认删除？").then(_ => {
-        console.log(e);
-        // apidelSeal({
-        //   own_seal_id: e.own_seal_id
-        // }).then(res => {
-        //   console.log(res);
-        // });
-      });
+      this.$confirm("确认删除？")
+        .then(() => {
+          console.log(e);
+          apidelSeal({
+            own_seal_id: e.own_seal_id
+          }).then(res => {
+            console.log(res);
+          });
+        })
+        .catch(() => {});
     },
     openApply() {
       this.isApplyOpen = true;
@@ -175,6 +183,11 @@ export default {
       this.selectList = e;
       apiSealById({ own_seal_id: e.own_seal_id }).then(res => {
         console.log(res);
+        this.Approvaltable = res.hisComment.map(item => {
+          item.END_TIME_ = getDate_cn(item.END_TIME_);
+          return item;
+        });
+        console.log(this.Approvaltable);
       });
       this.isopen = true;
     },

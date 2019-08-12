@@ -100,7 +100,7 @@ export default {
         manage_contract_num: this.form.manage_contract_num,
         manage_contract_remark: this.form.manage_contract_remark,
         manage_contract_company: 0,
-        rows: [
+        rows: JSON.stringify([
           {
             status: "P",
             manage_reqfunds_contractId: "",
@@ -113,12 +113,9 @@ export default {
             manage_reqfunds_receiveAmount: "666",
             manage_reqfunds_remark: "777"
           }
-        ]
+        ])
       };
       this.$emit("setDate", data);
-      // apisaveContract(data).then(res => {
-      //   console.log(res);
-      // });
     },
     showecharts() {
       let mychart = this.$echarts.init(document.getElementById("chart"));

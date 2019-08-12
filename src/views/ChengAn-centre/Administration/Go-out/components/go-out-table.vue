@@ -28,12 +28,12 @@
         </el-row>
         <el-form-item label="是否用车">
           <el-switch
-            v-model="form.isCar"
-            active-value="2"
-            inactive-value="1"
+            v-model="form.field_personnel_car"
+            :active-value="2"
+            :inactive-value="1"
           ></el-switch>
         </el-form-item>
-        <template v-if="form.isCar == '2'">
+        <template v-if="form.field_personnel_car == 2">
           <el-row>
             <el-col :span="12">
               <el-form-item label="车牌号">
@@ -46,18 +46,24 @@
             <el-col :span="12">
               <el-form-item label="驾驶员">
                 <el-input
-                  v-model="form.driver"
+                  v-model="form.field_personnel_driver"
                   placeholder="用车必填"
                 ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </template>
-        <el-form-item label="外出地点" prop="address">
-          <el-input v-model="form.address" placeholder="必填"></el-input>
+        <el-form-item label="外出地点" prop="field_personnel_place">
+          <el-input
+            v-model="form.field_personnel_place"
+            placeholder="必填"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="外出内容" prop="content">
-          <el-input v-model="form.content" placeholder="必填"></el-input>
+        <el-form-item label="外出内容" prop="field_personnel_cause">
+          <el-input
+            v-model="form.field_personnel_cause"
+            placeholder="必填"
+          ></el-input>
         </el-form-item>
         <el-row>
           <el-col :span="12">
@@ -69,7 +75,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item>
+        <el-form-item v-if="Type == 'edit'">
           <el-button type="primary" @click="onSubmit('form')">申请</el-button>
           <el-button @click="resetForm('form')" type="danger" plain=""
             >重置</el-button
@@ -102,20 +108,14 @@ export default {
     return {
       nextopen: true,
       mygoout: this.isgoout,
-      form: {
-        number: "",
-        content: "",
-        address: "",
-        driver: "",
-        isCar: 1,
-        start_time: "",
-        end_time: "",
-        userid: ""
-      },
+      form: this.activeform,
       rules2: {
-        content: [{ validator: validatecontent, trigger: "blur" }],
-        address: [{ validator: validateaddress, trigger: "blur" }]
-      }
+        field_personnel_cause: [
+          { validator: validatecontent, trigger: "blur" }
+        ],
+        field_personnel_place: [{ validator: validateaddress, trigger: "blur" }]
+      },
+      Type: this.openType
     };
   },
   components: {
@@ -126,6 +126,26 @@ export default {
     isgoout: {
       type: Boolean,
       default: false
+    },
+    activeform: {
+      type: Object,
+      default: () => {
+        return {
+          field_personnel_cause: "",
+          field_personnel_place: "",
+          field_personnel_driver: "",
+          field_personnel_car: 1,
+          start_time: "",
+          end_time: "",
+          field_personnel_userid: ""
+        };
+      }
+    },
+    openType: {
+      type: String,
+      default: () => {
+        return "";
+      }
     }
   },
   watch: {
@@ -135,6 +155,12 @@ export default {
       this.$nextTick(() => {
         this.nextopen = true;
       });
+    },
+    activeform(val) {
+      this.form = val;
+    },
+    openType(val) {
+      this.Type = val;
     }
   },
   methods: {
@@ -152,41 +178,39 @@ export default {
     },
     //从组件中获取审批人
     getApprover(Approver) {
-      this.form.userid = Approver;
+      this.form.field_personnel_userid = Approver;
     },
     reload() {
       this.form = {
-        content: "",
-        address: "",
-        driver: "",
-        isCar: false,
+        field_personnel_cause: "",
+        field_personnel_place: "",
+        field_personnel_driver: "",
+        field_personnel_car: 2,
         start_time: "",
         end_time: ""
       };
     },
     onSubmit(formName) {
-      if (this.form.isCar == "2") {
+      if (this.form.field_personnel_car == 2) {
         if (this.form.number == "") {
           this.$message.warning("用车必填车牌号");
           return;
         }
-        if (this.form.driver == "") {
+        if (this.form.field_personnel_driver == "") {
           this.$message.warning("用车必填驾驶人");
           return;
         }
       }
       let data = {
-        field_personnel_place: this.form.address, //(必填)外出地点；
+        field_personnel_place: this.form.field_personnel_place, //(必填)外出地点；
         field_personnel_license: this.form.number, //(必填)车牌号；
-        field_personnel_car: this.form.isCar, //(必填)是否用车(1:否,2:是)；
-        field_personnel_driver: this.form.driver, //(必填)驾驶员；
-        field_personnel_cause: this.form.content, //(必填)外出原因；
+        field_personnel_car: this.form.field_personnel_car, //(必填)是否用车(1:否,2:是)；
+        field_personnel_driver: this.form.field_personnel_driver, //(必填)驾驶员；
+        field_personnel_cause: this.form.field_personnel_cause, //(必填)外出原因；
         start_time: this.form.start_time, //(必填)起始时间；
         end_time: this.form.end_time, //(必填)结束时间；
-        userid: this.form.userid
+        userid: this.form.field_personnel_car
       };
-      console.log(data.start_time);
-      console.log(data.end_time);
       if (data.start_time >= data.end_time) {
         this.$message.warning("结束时间应大于开始时间");
         return;
@@ -218,7 +242,7 @@ export default {
       });
     },
     closegoouttable() {
-      this.$emit("setmygoout");
+      this.$emit("setclose");
       this.nextopen = false;
       this.mygoout = false;
       this.resetForm("form");

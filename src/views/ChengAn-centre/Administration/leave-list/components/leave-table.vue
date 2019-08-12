@@ -55,6 +55,7 @@ export default {
   },
   watch: {
     isopen(newValue) {
+      console.log(this.setform);
       if (newValue == true) {
         apiViewHisComment({ bizId: "275", beyId: "Leave_flow" })
           .then(res => {

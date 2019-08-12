@@ -23,7 +23,12 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <go-out-table :isgoout="isgoout" @setmygoout="getmygoout"></go-out-table>
+    <go-out-table
+      :openType="openType"
+      :isgoout="isgoout"
+      @setclose="getclose"
+      :activeform="activeform"
+    ></go-out-table>
   </div>
 </template>
 
@@ -50,14 +55,16 @@ export default {
         ["职位/岗位", "field_personnel_rolename", 140],
         ["外出地址", "field_personnel_place", 170],
         ["车牌号", "field_personnel_license", 90],
-        ["是否用车", "field_personnel_car", 100],
+        ["是否用车", "field_personnel_car2", 100],
         ["驾驶员", "field_personnel_driver", 90],
         ["外出事由", "field_personnel_cause"],
         ["开始时间", "start_time", 150],
         ["结束时间", "end_time", 150],
         ["状态", "field_personnel_status", 80]
       ],
-      headle: ["编辑", "删除"]
+      headle: ["编辑", "删除"],
+      activeform: {},
+      openType: ""
     };
   },
   components: {
@@ -83,24 +90,25 @@ export default {
         limit: this.currentpage
       })
         .then(res => {
-          console.log(res);
           this.goOutList = res.data.map(item => {
-            item.field_personnel_car =
+            item.field_personnel_car2 =
               item.field_personnel_car == 1 ? "否" : "是";
             item.field_personnel_status =
               item.field_personnel_status == 4 ? "外勤结束" : "外勤中";
             return item;
           });
-          console.log(this.goOutList);
         })
         .catch(err => {
           console.log(err);
         });
     },
     edit(e) {
-      apigetField({ id: e.field_personnel_id }).then(res => {
-        console.log(res);
-      });
+      this.openType = "";
+      this.activeform = e;
+      this.isgoout = true;
+      // apigetField({ id: e.field_personnel_id }).then(res => {
+      //   console.log(res);
+      // });
     },
     deleteitem(e) {
       this.$confirm(`确定删除 { ${e.username} } 的外勤记录吗？`)
@@ -108,7 +116,6 @@ export default {
           apidelFieldPersonnel({
             field_personnel_id: e.field_personnel_id
           }).then(res => {
-            console.log(res);
             this.$message.success(res.msg);
             this.getFieldList();
           });
@@ -116,10 +123,12 @@ export default {
         .catch(() => {});
     },
     newgoout() {
+      this.openType = "edit";
       this.isgoout = true;
     },
-    getmygoout() {
+    getclose() {
       this.isgoout = false;
+      this.getFieldList();
     }
   }
 };

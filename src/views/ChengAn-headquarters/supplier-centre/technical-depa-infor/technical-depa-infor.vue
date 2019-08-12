@@ -86,7 +86,7 @@ export default {
         ["公司", "company_name"],
         ["中心", "center_name"],
         ["中心id", "center_id"],
-        ["部门", "department"],
+        ["部门", "department_name"],
         ["身份证号码", "user_card"],
         ["身份证地址", "card_address"]
       ],

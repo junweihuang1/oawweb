@@ -138,6 +138,7 @@ export default {
             password: this.newpassForm.newpassword,
             userid: this.userid
           }).then(res => {
+            console.log(res);
             this.isChangeLoad = false;
             if (res.code == "20000") {
               this.$message.success(res.msg);

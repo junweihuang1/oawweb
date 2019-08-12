@@ -167,6 +167,7 @@ export default {
         status: this.form.status == "" ? 0 : this.form.status
       };
       apipmuserList(data).then(res => {
+        console.log(res);
         this.staffList = res.data.map(item => {
           item.sex = item.sex == 1 ? "男" : "女";
           switch (item.status) {
@@ -199,6 +200,7 @@ export default {
       if (this.roleList == "") {
         apipersonalRecords().then(res => {
           //如果职位列表为空则历遍获得职位列表数组
+
           res.roles.forEach(item => {
             this.roleList.push([item.role_id, item.role_name]);
           });

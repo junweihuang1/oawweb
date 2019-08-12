@@ -235,7 +235,7 @@ export const apisupplierformList = data => get("supplierformLists", data);
 export const apisupplierformView = data => get("supplierformView", data);
 
 //诚安人中心-->任务类-->任务管理
-export const apiownWorkList = data => get("ownWorkList", data);
+export const apiownWorkList = data => get("ownWorkLists", data);
 
 //任务类 --> 任务报表-->查询所有任务报表信息
 export const apiownWorkReport = data => post("ownWorkReport", data);
@@ -252,11 +252,17 @@ export const apiuserWagesLibs = data => get("userWagesLibs", data);
 //财务中心 --> 人员成本汇总-->删除工资信息
 export const apidele_userWages = data => Delete("dele_userWages", data);
 
+//财务中心 --> 人员成本汇总-->保存工资信息
+export const apisave_userWages = data => post("save_userWages", data);
+
 //财务中心 --> 人员成本汇总-->查询出建设公司材料结算信息
 export const apibuild_settlements = data => get("build_settlements", data);
 
 //财务中心 --> 人员成本汇总-->查询项目列表信息
 export const apisettleConstructList = data => post("settleConstructList", data);
+
+//财务中心 --> 人员成本汇总-->查询付款单信息
+export const apisettlePayList = data => post("settlePayList", data);
 
 //财务中心 --> 支出合同管理-->查询出所有支出合同信息
 export const apicontractPayLists = data => get("contractPayLists", data);
@@ -411,3 +417,6 @@ export const apiorgChecks = data => get("orgChecks", data);
 
 //供应商中心 --> 材料调价-->查询出所有材料调价信息
 export const apisupplier_price = data => post("supplier_price", data);
+
+//供应商中心 --> 材料调价-->查询出当前登录用户所负责的项目班组信息
+export const apiworkerConList = data => get("workerConList", data);
