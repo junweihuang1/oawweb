@@ -54,6 +54,7 @@
               <input
                 type="text"
                 clearable
+                v-if="isselect"
                 v-model="row[item[1]]"
                 @focus="selectDepartment"
                 placeholder="请选择"
@@ -63,6 +64,7 @@
             <template v-else>
               <input
                 type="text"
+                v-if="isselect"
                 clearable
                 v-model="row[item[1]]"
                 style="border:none;height:20px;width:100%;text-align:center;outline:none;"
@@ -73,16 +75,23 @@
       </el-table>
     </template>
     <Tabs @setJobChanges="getJobChanges" :DataList="recordList"></Tabs>
-    <select-department
-      :isopenSelect="isopenSelect"
-      @closewin="closewin"
-      @setSelectName="setSelectName"
-    ></select-department>
+    <el-dialog
+      :visible.sync="isopenSelect"
+      title="部门信息"
+      :append-to-body="true"
+      width="30%"
+      top="6vh"
+    >
+      <select-department
+        v-if="isopenSelect"
+        @setSelectName="setSelectName"
+      ></select-department>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import selectDepartment from "./select-department";
+import selectDepartment from "@/components/Ca-select/select-department";
 import Tabs from "./Tabs";
 import { apisavePersonalRecords } from "@/request/api.js";
 export default {
@@ -91,6 +100,7 @@ export default {
     return {
       JobChanges: [],
       isopenSelect: false,
+      isselect: true,
       form: [this.userList],
       formTitleList: [
         [
@@ -224,6 +234,10 @@ export default {
       }
     },
     setSelectName(row) {
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
       this.isopenSelect = false;
       this.form[0].department_name = row.department_name;
       this.form[0].department = row.department_id;
@@ -233,9 +247,6 @@ export default {
     },
     selectDepartment() {
       this.isopenSelect = true;
-    },
-    closewin() {
-      this.isopenSelect = false;
     },
     getJobChanges(e) {
       this.JobChanges = e;

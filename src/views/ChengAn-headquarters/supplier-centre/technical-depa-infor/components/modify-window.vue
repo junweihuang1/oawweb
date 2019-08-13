@@ -74,15 +74,23 @@
         </el-table-column>
       </el-table>
     </template>
-    <select-department
-      :isopenSelect="isopenSelect"
-      @setSelectName="getSelectName"
-    ></select-department>
+    <el-dialog
+      :visible.sync="isopenSelect"
+      title="部门信息"
+      :append-to-body="true"
+      width="30%"
+      top="6vh"
+    >
+      <select-department
+        v-if="isopenSelect"
+        @setSelectName="getSelectName"
+      ></select-department>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import selectDepartment from "./select-department";
+import selectDepartment from "@/components/Ca-select/select-department";
 import { apisavePersonalRecords } from "@/request/api.js";
 export default {
   name: "modifyWindow2",

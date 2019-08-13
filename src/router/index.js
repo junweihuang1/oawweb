@@ -31,6 +31,7 @@ const router = new Router({
           component: () =>
             import("@/views/System-setting/Position-manage/Position-manage.vue")
         },
+        //诚安人中心-->行政类
         {
           path: "Mail-list",
           name: "Mail-list",
@@ -55,17 +56,31 @@ const router = new Router({
           component: () =>
             import("@/views/ChengAn-centre/Administration/chengAn-standard/chengAn-standard.vue")
         },
+        //诚安人中心-->个人工资
         {
           path: "wage-slip",
           name: "wage-slip",
           component: () =>
             import("@/views/ChengAn-centre/personal-information/wage-slip/wage-slip.vue")
         },
+        //诚安人中心-->费用类
         {
           path: "Seal-application",
           name: "Seal-application",
           component: () =>
             import("@/views/ChengAn-centre/cost/Seal-application/Seal-application.vue")
+        },
+        {
+          path: "cost-application",
+          name: "cost-application",
+          component: () =>
+            import("@/views/ChengAn-centre/cost/cost-application/cost-application.vue")
+        },
+        {
+          path: "Goods-purchase",
+          name: "Goods-purchase",
+          component: () =>
+            import("@/views/ChengAn-centre/cost/Goods-purchase/Goods-purchase.vue")
         },
         {
           path: "Ceo-office",

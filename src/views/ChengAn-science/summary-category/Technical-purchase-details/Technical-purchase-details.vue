@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import selectProject from "@/components/Ca-select/select-project";
+import selectProject from "@/components/Ca-select/select-science-project";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apidevePurReport } from "@/request/api.js";

@@ -111,6 +111,12 @@ export const apidelSeal = data => post("delSeal", data);
 //发起盖章流程
 export const apisaveSeal = data => post("saveSeal", data);
 
+//费用类-->查询所有费用申请
+export const apigetCostappList = data => get("getCostappList", data);
+
+//费用类-->查询指定的费用详情
+export const apigetCostappById = data => get("getCostappById", data);
+
 //查询出所有总裁办信息
 export const apiframeWorkList = data => post("frameWorkList", data);
 
@@ -420,3 +426,15 @@ export const apisupplier_price = data => post("supplier_price", data);
 
 //供应商中心 --> 材料调价-->查询出当前登录用户所负责的项目班组信息
 export const apiworkerConList = data => get("workerConList", data);
+
+//供应商中心 -->劳动力分配-->根据某个班组中的员工信息
+export const apiworkerList = data => get("workerList", data);
+
+//供应商中心 -->劳动力分配-->查询可调动人员信息
+export const apiworkerCheck = data => get("workerCheck", data);
+
+//供应商中心 -->劳动力分配-->添加人员到指定班组
+export const apisave_Worker = data => post("save_Worker", data);
+
+//供应商中心 -->劳动力分配-->人员批量调动
+export const apimultiplayerApply = data => post("multiplayerApply", data);

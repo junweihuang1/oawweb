@@ -24,7 +24,7 @@
       </el-form>
 
       <h5>审批流程</h5>
-      <el-table :data="Approvaltable" border="">
+      <el-table :data="Approvaltable" border>
         <el-table-column
           v-for="(item, index) in ApprovalHeaderList"
           :key="index"

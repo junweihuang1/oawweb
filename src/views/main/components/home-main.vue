@@ -136,8 +136,10 @@ export default {
       // 定义窗口大小变更通知事件
       _this.screenHeight = document.documentElement.clientHeight; //窗口高度
     };
-    document.getElementsByClassName("panel-group")[1].style.height =
-      document.documentElement.clientHeight - 290 + "px";
+    if (document.getElementsByClassName("panel-group").length != 0) {
+      document.getElementsByClassName("panel-group")[1].style.height =
+        document.documentElement.clientHeight - 290 + "px";
+    }
     _this.getAttendance();
   },
   created() {

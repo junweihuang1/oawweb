@@ -111,6 +111,16 @@ export default {
                   id: "3-2-1",
                   title: "盖章申请",
                   route: "Seal-application"
+                },
+                {
+                  id: "3-2-2",
+                  title: "费用申请",
+                  route: "cost-application"
+                },
+                {
+                  id: "3-2-3",
+                  title: "物品采购",
+                  route: "Goods-purchase"
                 }
               ]
             },

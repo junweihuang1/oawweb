@@ -57,16 +57,23 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
-    <select-project
-      :isopenSelect="isopenSelect"
-      @closewin="closewin"
-      @setSelectName="setSelectName"
-    ></select-project>
+    <el-dialog
+      :visible.sync="isopenSelect"
+      title="选择项目名称"
+      top="8vh"
+      width="60%"
+      class="abow_dialog"
+    >
+      <select-project
+        @setSelectName="setSelectName"
+        v-if="isopenSelect"
+      ></select-project>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import selectProject from "./components/select-project";
+import selectProject from "@/components/Ca-select/select-project";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import {
@@ -111,9 +118,6 @@ export default {
       this.isopenSelect = false;
       this.form.construct_project_name = row.construct_project_name;
       this.form.project_id = row.construct_project_id;
-    },
-    closewin() {
-      this.isopenSelect = false;
     },
     openSelect() {
       this.isopenSelect = true;
