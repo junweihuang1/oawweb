@@ -117,6 +117,20 @@ export const apigetCostappList = data => get("getCostappList", data);
 //费用类-->查询指定的费用详情
 export const apigetCostappById = data => get("getCostappById", data);
 
+//费用类-->提交费用申请
+export const apisaveCostapp = data => post("saveCostapp", data);
+
+//费用类-->修改费用申请
+export const apimodCostapp = data => post("modCostapp", data);
+
+//费用类-->删除费用申请单
+export const apidelCostapp = data => post("delCostapp", data);
+
+//费用类-->物品采购列表
+export const apigetOwnHeadList = data => get("getOwnHeadList", data);
+
+export const apiOwnHeadListById = data => get("getOwnHeadListById", data);
+
 //查询出所有总裁办信息
 export const apiframeWorkList = data => post("frameWorkList", data);
 

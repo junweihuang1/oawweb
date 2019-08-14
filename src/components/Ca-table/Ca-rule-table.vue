@@ -80,6 +80,15 @@
               :key="index"
               >{{ item }}</el-button
             >
+            <el-button
+              v-if="index == 3 && item != ''"
+              type="success"
+              size="mini"
+              @click="modify(scope.row)"
+              plain
+              :key="index"
+              >{{ item }}</el-button
+            >
           </template>
         </template>
       </el-table-column>
@@ -138,7 +147,13 @@ export default {
   computed: {
     getwidth() {
       let width = this.headle.filter(item => item != "");
-      return width.length == 3 ? "240" : width.length == 2 ? "200" : "100";
+      return width.length == 3
+        ? "240"
+        : width.length == 2
+        ? "200"
+        : width.length == 1
+        ? "100"
+        : "320";
     },
     span() {
       //listarr是分配每行中的每个键值的数量，例：[[3,2,1],[0,0,1],[0,1,1]]
@@ -226,6 +241,10 @@ export default {
     //第三个按钮事件传递给父组件
     edit(item) {
       this.$emit("edit", item);
+    },
+    //第四个按钮事件传递给父组件
+    modify(item) {
+      this.$emit("modify", item);
     },
     clickline(row, event, column) {
       this.$emit("checkline", [row, event, column]);

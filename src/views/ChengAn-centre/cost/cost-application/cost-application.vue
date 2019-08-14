@@ -5,7 +5,10 @@
         <el-input v-model="companyName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getCostList">搜索</el-button>
+        <el-button-group>
+          <el-button type="primary" @click="getCostList">搜索</el-button>
+          <el-button type="success" @click="additem">新增</el-button>
+        </el-button-group>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -13,6 +16,9 @@
       :header="header"
       :headle="headle"
       @checkleave="details"
+      @delete="deleteitem"
+      @edit="print"
+      @modify="modify"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
@@ -22,16 +28,41 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog :visible.sync="isopen" title="费用申请单">
-      <cost-details v-if="isopen"></cost-details>
+      <cost-details
+        v-if="isopen"
+        :openType="openType"
+        @close="closewin"
+        :setform="setform"
+        :Approvaltable="Approvaltable"
+      ></cost-details>
+    </el-dialog>
+    <el-dialog
+      width="100%"
+      :visible.sync="isprint"
+      title="费用报销"
+      :fullscreen="true"
+      :show-close="false"
+    >
+      <cost-details-print
+        v-if="isprint"
+        :setform="setform"
+        :Approvaltable="Approvaltable"
+      ></cost-details-print>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import costDetailsPrint from "./components/cost-details-print";
 import costDetails from "./components/cost-details";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apigetCostappList, apigetCostappById } from "@/request/api.js";
+import {
+  apigetCostappList,
+  apigetCostappById,
+  apidelCostapp
+} from "@/request/api.js";
+import { changetime, getPdf } from "@/components/global-fn/global-fn";
 export default {
   name: "costApplication",
   data() {
@@ -49,27 +80,87 @@ export default {
         ["费用金额", "costapp_amount", 100],
         ["状态", "costapp_status", 100]
       ],
-      headle: ["查看"],
-      isopen: false
+      headle: ["查看", "删除", "打印", "修改"],
+      isopen: false,
+      setform: {},
+      Approvaltable: [],
+      isprint: false,
+      openType: ""
     };
   },
   components: {
     CaRuleTable,
     paging,
-    costDetails
+    costDetails,
+    costDetailsPrint
   },
   mounted() {
     this.getCostList();
   },
   methods: {
+    closewin() {
+      this.isopen = false;
+    },
+    //修改
+    modify(row) {
+      apigetCostappById({
+        costapp_id: row.costapp_id
+      }).then(res => {
+        this.Approvaltable = [];
+        this.setform = res.data;
+        this.openType = "modify";
+        this.isopen = true;
+      });
+    },
+    //打印
+    print(row) {
+      this.isprint = true;
+      apigetCostappById({
+        costapp_id: row.costapp_id
+      }).then(res => {
+        this.Approvaltable = res.hisComment.map(item => {
+          item.START_TIME_ = changetime(item.START_TIME_);
+          return item;
+        });
+        this.setform = res.data;
+        setTimeout(() => {
+          this.isprint = false;
+        }, 100);
+      });
+    },
+    //删除
+    deleteitem(row) {
+      this.$confirm("确定删除？")
+        .then(() => {
+          apidelCostapp({
+            costapp_id: row.costapp_id
+          }).then(() => {
+            this.$message.success("删除成功！");
+            this.getCostList();
+          });
+        })
+        .catch(() => {});
+    },
+    //新增
+    additem() {
+      this.openType = "new";
+      this.setform = {};
+      this.Approvaltable = [];
+      this.isopen = true;
+    },
     //查看
     details(row) {
-      this.isopen = true;
-      console.log(row);
+      this.openType = "";
       apigetCostappById({
         costapp_id: row.costapp_id
       }).then(res => {
         console.log(res);
+        this.Approvaltable = res.hisComment.map(item => {
+          item.START_TIME_ = changetime(item.START_TIME_);
+          return item;
+        });
+        this.setform = res.data;
+        this.isopen = true;
       });
     },
     getlimit(val) {
@@ -87,7 +178,17 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
-        this.costList = res.data;
+        this.costList = res.data.map(item => {
+          item.costapp_status =
+            item.costapp_status == 3
+              ? "审批通过"
+              : item.costapp_status == 2
+              ? "审核中"
+              : item.costapp_status == 1
+              ? "审核不通过"
+              : "初始录入";
+          return item;
+        });
       });
     }
   }

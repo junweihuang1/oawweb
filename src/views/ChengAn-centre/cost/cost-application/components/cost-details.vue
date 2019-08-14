@@ -4,12 +4,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="申请人">
-            <el-input v-model="applicant"></el-input>
+            <el-input v-model="applicant" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="申请时间">
-            <el-input v-model="nowtime"></el-input>
+            <el-input v-model="nowtime" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -20,8 +20,70 @@
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="申请类型">
+            <el-select v-model="form.costapp_application" style="width:100%;">
+              <el-option
+                v-for="(item, index) in applyType"
+                :value="item"
+                :label="item"
+                :key="index"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="费用金额">
+            <el-input v-model="form.costapp_amount"></el-input
+          ></el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="金额(大写)">
+            <el-input v-model="big_costapp_amount" readonly></el-input
+          ></el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="申请事项">
+            <el-input
+              type="textarea"
+              :row="3"
+              v-model="form.costapp_appitem"
+            ></el-input
+          ></el-form-item>
+        </el-col>
+        <el-col :span="24" v-if="Approvaltable == ''">
+          <el-form-item label=" ">
+            <el-button type="primary" @click="submit" v-if="openType == 'new'"
+              >提交</el-button
+            >
+            <el-button
+              type="primary"
+              @click="modify"
+              v-else-if="openType == 'modify'"
+              >修改</el-button
+            >
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
+    <fieldset
+      v-if="Approvaltable != ''"
+      style="border-top:2px #ccc dotted;border-left:none;border-right:none;border-bottom:none;"
+    >
+      <legend style="font-size:16px;">审核记录</legend>
+      <el-table :data="Approvaltable" border>
+        <el-table-column
+          v-for="(item, index) in ApprovalHeaderList"
+          :key="index"
+          :label="item[0]"
+          :prop="item[1]"
+          :type="index == 0 ? 'index' : ''"
+          :width="item[2]"
+          align="center"
+        ></el-table-column>
+      </el-table>
+    </fieldset>
+
     <el-dialog
       :visible.sync="isopenselect"
       title="选择部门"
@@ -35,15 +97,27 @@
 
 <script>
 import selectDepartment from "@/components/Ca-select/select-department";
-import { getDates } from "@/components/global-fn/global-fn";
+import {
+  apisaveCostapp,
+  apiCostappProcessList,
+  apimodCostapp
+} from "@/request/api.js";
+import { getDates, number_chinese } from "@/components/global-fn/global-fn";
 export default {
   name: "costDetails",
   data() {
     return {
+      applicant: localStorage.getItem("username"),
       form: this.setform,
-      applicant: "",
-      nowtime: getDates(new Date()),
-      isopenselect: false
+      isopenselect: false,
+      applyType: ["费用审批", "借支申请", "报销申请"],
+      ApprovalHeaderList: [
+        ["序号", "index", 60],
+        ["流程节点", "name_", 100],
+        ["审核人", "username", 80],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ]
     };
   },
   components: {
@@ -60,9 +134,50 @@ export default {
           costapp_application: ""
         };
       }
+    },
+    openType: String,
+    Approvaltable: Array
+  },
+  watch: {
+    setform(val) {
+      this.form = val;
+    }
+  },
+  computed: {
+    nowtime() {
+      if (this.openType == "modify") {
+        return getDates(new Date());
+      }
+      return this.form.costapp_time
+        ? this.form.costapp_time
+        : getDates(new Date());
+    },
+    big_costapp_amount() {
+      return number_chinese(this.form.costapp_amount);
     }
   },
   methods: {
+    modify() {
+      let data = {
+        costapp_id: this.form.costapp_id,
+        costapp_company: this.form.costapp_company,
+        costapp_appitem: this.form.costapp_appitem,
+        costapp_amount: this.form.costapp_amount,
+        costapp_application: this.form.costapp_application
+      };
+      apimodCostapp(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
+    },
+    submit() {
+      apisaveCostapp(this.form).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
+    },
     getSelectName(row) {
       console.log(row);
       this.isopenselect = false;

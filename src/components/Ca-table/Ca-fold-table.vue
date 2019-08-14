@@ -2,7 +2,7 @@
 <template>
   <el-table
     :data="dataList"
-    style="width: 100%"
+    style="width: 100%;"
     :row-key="getrowkey"
     :expand-row-keys="expands"
     @cell-click="clickTable"

@@ -5,6 +5,7 @@
       v-model="company_id"
       placeholder="请选择公司"
       clearable
+      style="width:100%;"
       @change="selcompanyName"
     >
       <el-option
