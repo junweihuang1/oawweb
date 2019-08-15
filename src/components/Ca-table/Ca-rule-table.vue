@@ -63,7 +63,7 @@
               >{{ item }}</el-button
             >
             <el-button
-              type="danger"
+              type="warning"
               size="mini"
               v-if="index == 1 && item != ''"
               @click="deleteflie(scope.row)"
@@ -221,7 +221,9 @@ export default {
     //给表单的表头添加背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return "background: #84C2B7;color:#fff;height:40px;padding:0px;";
+        return `background: ${
+          this.$store.state.tableColor
+        };color:#fff;height:40px;padding:0px;`;
       } else {
         return "height:40px;padding:0px;";
       }

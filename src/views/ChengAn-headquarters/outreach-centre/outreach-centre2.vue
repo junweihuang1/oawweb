@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row>
-      <Ca-tree centerName="材料分供方" @nodeClick="nodeClick"></Ca-tree>
+      <Ca-tree centerName="加盟分供方" @nodeClick="nodeClick"></Ca-tree>
       <el-col :span="21" style="padding-left:20px;">
         <el-form inline size="mini">
           <el-form-item label="姓名">
@@ -51,6 +51,11 @@ export default {
     return {
       currentpage: 1,
       currentlimit: 15,
+      winheight: document.documentElement.scrollHeight - 126 + "px",
+      defaultProps: {
+        label: "name",
+        children: "children"
+      },
       username: "",
       WorkerList: [],
       header: [
@@ -114,7 +119,7 @@ export default {
         {
           company_id: 17,
           center_id: 38,
-          center_name: "材料分供方",
+          center_name: "加盟分供方",
           company_name: "分供方"
         }
       ];
@@ -138,7 +143,7 @@ export default {
         rows: this.currentlimit,
         page: this.currentpage,
         username: this.username,
-        center_name: "材料分供方"
+        center_name: "加盟分供方"
       };
       apiworkerUserList(data).then(res => {
         console.log(res);

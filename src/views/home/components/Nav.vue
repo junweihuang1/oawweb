@@ -8,7 +8,7 @@
         :default-active="activeIndex"
         @select="handleSelect"
         text-color="#FFF"
-        active-text-color="#FFD700"
+        :active-text-color="this.$store.state.fontColor"
         :background-color="this.$store.state.theme"
         unique-opened
       >

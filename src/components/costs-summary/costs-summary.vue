@@ -19,7 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getSummaryList">
+        <el-button type="primary" @click="getLaborList">
           查询
         </el-button>
       </el-form-item>
@@ -52,9 +52,9 @@
 import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apifirmLaborCost } from "@/request/api.js";
+import { apilaborCostMon } from "@/request/api.js";
 export default {
-  name: "SupplierLaborSummary",
+  name: "costsSummary",
   data() {
     return {
       queryYear: "",
@@ -64,11 +64,12 @@ export default {
       SummaryList: [],
       isopen: false,
       header: [
-        ["项目部", "constuct_project_dep_name", 90],
-        ["项目负责人", "constuct_project_dep_leader"],
-        ["合同总金额", "conAmount", 120],
+        ["项目", "construct_project_name", 90],
+        ["施工项目", "construct_project_workTeam_category"],
+        ["施工项目id", "construct_project_workTeam_id", 120],
+        ["班组", "username", 75],
+        ["合同金额", "construct_project_workTeam_amount", 75],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
-        ["年度", "firmYear", 75],
         ["1月", "january", 75],
         ["2月", "february", 75],
         ["3月", "march", 75],
@@ -96,7 +97,7 @@ export default {
     dialogTabs
   },
   created() {
-    this.getSummaryList();
+    this.getLaborList();
   },
   methods: {
     closedialog() {
@@ -109,23 +110,42 @@ export default {
     },
     getlimit(val) {
       this.currentlimit = val;
-      this.getSummaryList();
+      this.getLaborList();
     },
     getpage(val) {
       this.currentpage = val;
-      this.getSummaryList();
+      this.getLaborList();
     },
-    getSummaryList() {
+    getLaborList() {
       let data = {
         companyId: this.companyId,
-        firmYear: this.queryYear,
-        constuct_project_dep_name: this.projectName,
-        pageSize: this.currentlimit,
-        limit: this.currentpage
+        hr_attend_date: this.queryYear,
+        construct_project_name: this.projectName,
+        limit: this.currentpage,
+        pageSize: this.currentlimit
       };
-      apifirmLaborCost(data).then(res => {
+      apilaborCostMon(data).then(res => {
         console.log(res);
-        this.SummaryList = res.data;
+        this.SummaryList = res.data.map(item => {
+          switch (item.construct_project_workTeam_category) {
+            case 1:
+              item.construct_project_workTeam_category = "预埋";
+              break;
+            case 2:
+              item.construct_project_workTeam_category = "消防水";
+              break;
+            case 3:
+              item.construct_project_workTeam_category = "消防电";
+              break;
+            case 4:
+              item.construct_project_workTeam_category = "防排烟";
+              break;
+            case 5:
+              item.construct_project_workTeam_category = "消防水电";
+              break;
+          }
+          return item;
+        });
       });
     }
   }

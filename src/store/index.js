@@ -8,7 +8,9 @@ export default new Vuex.Store({
   state: {
     openTabs: [],
     activeIndex: "1",
-    theme: "#0190A0",
+    theme: "#0190A0", //导航栏主题色
+    fontColor: "#FFD700", //导航栏点击的字体颜色
+    tableColor: "#4DB2BD", //表头颜色
     dialog_openTabs: [false, false, false]
   },
   mutations: {

@@ -22,10 +22,20 @@
       @checkleave="openheadle"
       @edit="openpic"
     ></Ca-rule-table>
+    <el-dialog :visible.sync="openGoods">
+      <headle-Goods
+        v-if="openGoods"
+        :id="id"
+        :taskid="taskid"
+        @close="closewin"
+        :openGoods="openGoods"
+      ></headle-Goods>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headleGoods from "./components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
 import { apiFindTaskList } from "@/request/api";
@@ -66,16 +76,24 @@ export default {
         "监察意见",
         "劳动力分配"
       ],
-      summary: []
+      summary: [],
+      openGoods: false,
+      id: "",
+      taskid: ""
     };
   },
   components: {
-    CaRuleTable
+    CaRuleTable,
+    headleGoods
   },
   mounted() {
     this.getToDoList();
   },
   methods: {
+    closewin() {
+      this.openGoods = false;
+      this.getToDoList();
+    },
     query() {
       if (this.selectType == null) {
         this.todoList = this.summary;
@@ -85,15 +103,23 @@ export default {
         );
       }
     },
+    //打开流程图
     openpic(row) {
       console.log(row);
     },
+    //待办
     openheadle(row) {
-      console.log(row);
+      // console.log(row);
+      this.id = row.BUSINESS_KEY_.split(".")[1];
+      this.taskid = row.ID_;
+      switch (row.pdname) {
+        case "[材料]-物品采购":
+          this.openGoods = true;
+          break;
+      }
     },
     getToDoList() {
       apiFindTaskList().then(res => {
-        console.log(res);
         this.summary = res.map(item => {
           item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
           return item;

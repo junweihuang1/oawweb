@@ -129,7 +129,20 @@ export const apidelCostapp = data => post("delCostapp", data);
 //费用类-->物品采购列表
 export const apigetOwnHeadList = data => get("getOwnHeadList", data);
 
+//费用类-->物品采购-->提交保存
+export const apisaveOwnHead = data => post("saveOwnHead", data);
+
+//费用类-->物品采购-->查看指定id
 export const apiOwnHeadListById = data => get("getOwnHeadListById", data);
+
+//费用类-->物品采购-->办理普通采购单
+export const apipassOwnHead = data => post("passOwnHead", data);
+
+//费用类-->物品采购-->删除指定采购物品
+export const apidelOwnEntry = data => post("delOwnEntry", data);
+
+//费用类-->物品采购-->获取下一审核人
+export const apiNextProcess = data => get("getOwnHeadProcessList", data);
 
 //查询出所有总裁办信息
 export const apiframeWorkList = data => post("frameWorkList", data);
@@ -452,3 +465,5 @@ export const apisave_Worker = data => post("save_Worker", data);
 
 //供应商中心 -->劳动力分配-->人员批量调动
 export const apimultiplayerApply = data => post("multiplayerApply", data);
+
+//外联中心

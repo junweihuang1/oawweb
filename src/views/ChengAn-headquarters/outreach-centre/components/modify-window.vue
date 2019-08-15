@@ -7,7 +7,7 @@
       >提交</el-button
     >
     <template v-for="(items, index) in formTitleList">
-      <el-table :data="form" border :key="index">
+      <el-table :data="form" border size="mini" :key="index">
         <el-table-column
           v-for="(item, index2) in items"
           :label="item[0]"
@@ -39,7 +39,6 @@
                 v-model="row[item[1]]"
                 placeholder="请选择"
                 filterable
-                size="mini"
                 clearable
               >
                 <el-option
@@ -51,49 +50,24 @@
                 </el-option>
               </el-select>
             </template>
-            <template v-else-if="item[2] == 'openselect'">
-              <input
-                type="text"
-                clearable
-                class="inputbox"
-                v-if="isselect"
-                v-model="row[item[1]]"
-                @focus="selectDepartment"
-                placeholder="请选择"
-              />
-            </template>
             <template v-else>
               <input
                 type="text"
-                class="inputbox"
                 v-if="isselect"
+                :readonly="item[4]"
                 clearable
                 v-model="row[item[1]]"
+                style="border:none;height:20px;width:100%;text-align:center;outline:none;"
               />
             </template>
           </template>
         </el-table-column>
       </el-table>
     </template>
-    <Tabs @setJobChanges="getJobChanges" :DataList="recordList"></Tabs>
-    <el-dialog
-      :visible.sync="isopenSelect"
-      title="部门信息"
-      :append-to-body="true"
-      width="30%"
-      top="6vh"
-    >
-      <select-department
-        v-if="isopenSelect"
-        @setSelectName="setSelectName"
-      ></select-department>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import selectDepartment from "@/components/Ca-select/select-department";
-import Tabs from "./Tabs";
 import { apisavePersonalRecords } from "@/request/api.js";
 export default {
   name: "modifyWindow",
@@ -101,8 +75,7 @@ export default {
     return {
       JobChanges: [],
       isopenSelect: false,
-      isselect: true,
-      form: [this.userList],
+      form: this.userList,
       formTitleList: [
         [
           ["姓名", "username"],
@@ -157,13 +130,19 @@ export default {
           ["转正工资", "worker"],
           ["入司日期", "incorporation_date", "date"],
           ["转正日期", "close_time", "date"],
-          ["部门", "department_name", "openselect"],
-          ["中心", "center_name", "openselect"],
+          ["部门", "department_name", "", "", true],
+          ["中心", "center_name", "", "", true],
           [
             "状态",
             "status",
             "select",
-            [[1, "在职"], [2, "离职"], [3, "试用期"], [4, "实习"]]
+            [
+              [0, "请选择"],
+              [1, "在职"],
+              [2, "离职"],
+              [3, "试用期"],
+              [4, "实习"]
+            ]
           ],
           [
             "级别",
@@ -187,6 +166,7 @@ export default {
           ["职业资格证", "profl_certificate"]
         ],
         [
+          ["公司", "company_name", "", "", true],
           ["年限", "age_limit"],
           ["签约时间", "sign", "date"],
           ["到期时间", "expiry", "date"],
@@ -195,27 +175,31 @@ export default {
           ["工号", "user_num"],
           ["", ""],
           ["", ""],
-          ["", ""],
           ["", ""]
         ]
-        // ["直属上级", "superiors"],
-        // ["直属公司上级", "CompanySuperiors", 120]
-      ]
+      ],
+      isselect: true
     };
   },
-  components: {
-    Tabs,
-    selectDepartment
-  },
   props: {
-    userList: Object,
+    userList: Array,
     roleList: Array,
-    recordList: Object,
     submitType: String
   },
+  watch: {
+    userList(val) {
+      this.form = val;
+    }
+  },
   methods: {
+    //当出生日期发生改变，计算年龄
     selectDate(row) {
-      if (row == "birth_date") {
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
+      //当时间选择器是生日日期并且生日日期不为null时，计算年龄
+      if (row == "birth_date" && this.form[0].birth_date != null) {
         let now = new Date();
         let now_year = now.getFullYear();
         let now_month = now.getMonth() + 1;
@@ -233,6 +217,10 @@ export default {
           this.form[0].age = year_Differ - 1;
         }
       }
+      //当时间选择器是生日日期并且生日日期为null时，清空年龄为0
+      else if (row == "birth_date" && this.form[0].birth_date == null) {
+        this.form[0].age = 0;
+      }
     },
     setSelectName(row) {
       this.isselect = false;
@@ -243,21 +231,21 @@ export default {
       this.form[0].department_name = row.department_name;
       this.form[0].department = row.department_id;
       this.form[0].center_name = row.center_name;
+      this.form[0].company_name = row.company_name;
       this.form[0].center_id = row.center_id;
       console.log(row);
     },
     selectDepartment() {
       this.isopenSelect = true;
     },
-    getJobChanges(e) {
-      this.JobChanges = e;
-      console.log(e);
+    closewin() {
+      this.isopenSelect = false;
     },
     submitForm() {
       let data = this.form[0];
-      console.log(this.recordList);
       if (this.submitType == "new") {
         data.userid = 0;
+        data.user_num = 0;
       }
       console.log(data);
       apisavePersonalRecords(data).then(res => {

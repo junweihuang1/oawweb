@@ -1,23 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-col
-        :span="3"
-        style="border:1px solid #E4E7ED;background:#E4E7ED;"
-        :style="{ height: winheight }"
-      >
-        <div class="menu">
-          <i class="el-icon-document"></i>
-          菜单
-        </div>
-        <el-tree
-          :data="TreeList"
-          @node-click="nodeClick"
-          accordion
-          :props="defaultProps"
-          style="padding:5px;background:#E4E7ED;"
-        ></el-tree>
-      </el-col>
+      <Ca-tree @nodeClick="nodeClick" centerName="劳动力分供方"></Ca-tree>
       <el-col :span="21" style="padding-left:20px;">
         <el-form inline size="mini">
           <el-form-item label="姓名">
@@ -56,14 +40,11 @@
 </template>
 
 <script>
+import CaTree from "@/components/Ca-tree/Ca-tree";
 import ModifyWindow from "./components/modify-window";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import {
-  apiworkerUserTreeList,
-  apiworkerUserList,
-  apiworkerUserNew
-} from "@/request/api";
+import { apiworkerUserList, apiworkerUserNew } from "@/request/api";
 export default {
   name: "technicalDepaInfor",
   data() {
@@ -71,11 +52,6 @@ export default {
       TreeList: [],
       currentpage: 1,
       currentlimit: 15,
-      winheight: document.documentElement.scrollHeight - 126 + "px",
-      defaultProps: {
-        label: "name",
-        children: "children"
-      },
       username: "",
       WorkerList: [],
       header: [
@@ -101,18 +77,19 @@ export default {
   components: {
     CaRuleTable,
     paging,
-    ModifyWindow
+    ModifyWindow,
+    CaTree
   },
   mounted() {
-    this.getTreeList();
     this.getWorkerList();
   },
   methods: {
     //点击树形菜单获取部门名称
     nodeClick(data) {
-      console.log(data);
-      this.department_name = data.name;
-      this.getWorkerList();
+      if (data.name != "劳动力分供方" && data.name != "分供方") {
+        this.department_name = data.name;
+        this.getWorkerList();
+      }
     },
     //获取工人职位信息
     getWorkerpost() {
@@ -158,13 +135,7 @@ export default {
       this.getWorkerList();
     },
     //获取菜单树列表
-    getTreeList() {
-      apiworkerUserTreeList({
-        center_name: "劳动力分供方"
-      }).then(res => {
-        this.TreeList = res.data;
-      });
-    },
+
     //所有材料部信息
     getWorkerList() {
       let data = {
@@ -186,10 +157,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.menu {
-  padding: 10px;
-  border-bottom: 1px solid #e4e7ed;
-  font-weight: 700;
-}
-</style>
+<style lang="scss"></style>

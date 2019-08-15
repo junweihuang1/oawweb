@@ -1,38 +1,18 @@
 <template>
   <div>
-    教育
+    <costs-summary :companyId="11"></costs-summary>
   </div>
 </template>
 
 <script>
-import { apilaborCostMon } from "@/request/api.js";
+import CostsSummary from "@/components/costs-summary/costs-summary";
 export default {
   name: "LaborCostsSummary",
   data() {
-    return {
-      queryYear: "",
-      projectName: "",
-      currentpage: 1,
-      currentlimit: 15
-    };
+    return {};
   },
-  mounted() {
-    console.log("data");
-    this.getLaborList();
-  },
-  methods: {
-    getLaborList() {
-      let data = {
-        companyId: 11,
-        hr_attend_date: this.queryYear,
-        construct_project_name: this.projectName,
-        limit: this.currentpage,
-        pageSize: this.currentlimit
-      };
-      apilaborCostMon(data).then(res => {
-        console.log(res);
-      });
-    }
+  components: {
+    CostsSummary
   }
 };
 </script>

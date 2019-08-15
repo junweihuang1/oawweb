@@ -94,7 +94,21 @@ export default {
     handleSetLineChartData(e) {
       switch (e) {
         case "process":
-          this.processTable = true;
+          // this.processTable = true;
+          //如果打开的标签里面没有待办事项，则增加进去
+          if (
+            !this.$store.state.openTabs.some(item => item.title == "待办事项")
+          ) {
+            this.$store.commit("addTabs", {
+              route: "/to-do",
+              title: "待办事项",
+              id: "3-3-1"
+            });
+          }
+          this.$store.commit("changeActiveIndex", "3-3-1");
+          this.$router.push({
+            path: "/to-do"
+          });
           break;
         case "message":
           this.messageTable = true;
