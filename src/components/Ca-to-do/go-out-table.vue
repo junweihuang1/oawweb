@@ -1,88 +1,75 @@
 <template>
   <div>
-    <el-dialog
-      title="发起外勤申请"
-      :visible.sync="mygoout"
-      @close="closegoouttable"
-      width="35%"
-    >
-      <el-form ref="form" :model="form" label-width="80px" :rules="rules2">
+    <el-form ref="form" :model="form" label-width="80px" :rules="rules2">
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="开始时间">
+            <date-time
+              v-if="nextopen == true"
+              :startstauts="true"
+              @settime="getStartTime"
+            ></date-time>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="结束时间">
+            <date-time
+              v-if="nextopen == true"
+              @settime="getEndTime"
+            ></date-time>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="是否用车">
+        <el-switch
+          v-model="form.field_personnel_car"
+          :active-value="2"
+          :inactive-value="1"
+        ></el-switch>
+      </el-form-item>
+      <template v-if="form.field_personnel_car == 2">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="开始时间">
-              <date-time
-                v-if="nextopen == true"
-                :startstauts="true"
-                @settime="getStartTime"
-              ></date-time>
+            <el-form-item label="车牌号">
+              <el-input v-model="form.number" placeholder="用车必填"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="结束时间">
-              <date-time
-                v-if="nextopen == true"
-                @settime="getEndTime"
-              ></date-time>
+            <el-form-item label="驾驶员">
+              <el-input
+                v-model="form.field_personnel_driver"
+                placeholder="用车必填"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="是否用车">
-          <el-switch
-            v-model="form.field_personnel_car"
-            :active-value="2"
-            :inactive-value="1"
-          ></el-switch>
-        </el-form-item>
-        <template v-if="form.field_personnel_car == 2">
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="车牌号">
-                <el-input
-                  v-model="form.number"
-                  placeholder="用车必填"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="驾驶员">
-                <el-input
-                  v-model="form.field_personnel_driver"
-                  placeholder="用车必填"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </template>
-        <el-form-item label="外出地点" prop="field_personnel_place">
-          <el-input
-            v-model="form.field_personnel_place"
-            placeholder="必填"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="外出内容" prop="field_personnel_cause">
-          <el-input
-            v-model="form.field_personnel_cause"
-            placeholder="必填"
-          ></el-input>
-        </el-form-item>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="审批人">
-              <picker-c
-                @setApprover="getApprover"
-                :selected="mygoout"
-              ></picker-c>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item v-if="Type == 'edit'">
-          <el-button type="primary" @click="onSubmit('form')">申请</el-button>
-          <el-button @click="resetForm('form')" type="danger" plain=""
-            >重置</el-button
-          >
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+      </template>
+      <el-form-item label="外出地点" prop="field_personnel_place">
+        <el-input
+          v-model="form.field_personnel_place"
+          placeholder="必填"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="外出内容" prop="field_personnel_cause">
+        <el-input
+          v-model="form.field_personnel_cause"
+          placeholder="必填"
+        ></el-input>
+      </el-form-item>
+      <el-row>
+        <el-col :span="12" v-if="Type == 'edit'">
+          <el-form-item label="审批人">
+            <picker-c @setApprover="getApprover"></picker-c>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item v-if="Type == 'edit'">
+        <el-button type="primary" @click="onSubmit('form')">申请</el-button>
+        <el-button @click="resetForm('form')" type="danger" plain=""
+          >重置</el-button
+        >
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -107,7 +94,6 @@ export default {
     };
     return {
       nextopen: true,
-      mygoout: this.isgoout,
       form: this.activeform,
       rules2: {
         field_personnel_cause: [
@@ -123,10 +109,6 @@ export default {
     DateTime
   },
   props: {
-    isgoout: {
-      type: Boolean,
-      default: false
-    },
     activeform: {
       type: Object,
       default: () => {
@@ -150,12 +132,6 @@ export default {
   },
   watch: {
     //监听窗口状态
-    isgoout(newValue) {
-      this.mygoout = newValue;
-      this.$nextTick(() => {
-        this.nextopen = true;
-      });
-    },
     activeform(val) {
       this.form = val;
     },
@@ -244,7 +220,6 @@ export default {
     closegoouttable() {
       this.$emit("setclose");
       this.nextopen = false;
-      this.mygoout = false;
       this.resetForm("form");
     }
   }

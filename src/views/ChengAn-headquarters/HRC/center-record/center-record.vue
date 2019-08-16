@@ -5,19 +5,17 @@
         <el-input v-model="centerName" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="mini" @click="queryCompanyInf"
-          >查询</el-button
-        >
-      </el-form-item>
-      <el-form-item>
-        <el-button type="success" size="mini" @click="addCenterInf"
-          >新增</el-button
-        >
-      </el-form-item>
-      <el-form-item>
-        <el-button type="danger" size="mini" @click="deleteitem"
-          >删除</el-button
-        >
+        <el-button-group>
+          <el-button type="primary" size="mini" @click="queryCompanyInf"
+            >查询</el-button
+          >
+          <el-button type="success" size="mini" @click="addCenterInf"
+            >新增</el-button
+          >
+          <el-button type="danger" size="mini" @click="deleteitem"
+            >删除</el-button
+          >
+        </el-button-group>
       </el-form-item>
     </el-form>
 

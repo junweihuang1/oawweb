@@ -23,19 +23,20 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <go-out-table
-      :openType="openType"
-      :isgoout="isgoout"
-      @setclose="getclose"
-      :activeform="activeform"
-    ></go-out-table>
+    <el-dialog title="发起外勤申请" :visible.sync="isgoout" width="35%">
+      <go-out-table
+        :openType="openType"
+        v-if="isgoout"
+        :activeform="activeform"
+      ></go-out-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import GoOutTable from "./components/go-out-table";
+import GoOutTable from "@/components/Ca-to-do/go-out-table";
 import {
   apiFieldPersonnelList,
   apigetField,
@@ -123,6 +124,7 @@ export default {
         .catch(() => {});
     },
     newgoout() {
+      this.activeform = {};
       this.openType = "edit";
       this.isgoout = true;
     },

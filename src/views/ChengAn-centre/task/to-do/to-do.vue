@@ -22,6 +22,7 @@
       @checkleave="openheadle"
       @edit="openpic"
     ></Ca-rule-table>
+    <!-- 打开办理普通采购的窗口 -->
     <el-dialog :visible.sync="openGoods">
       <headle-Goods
         v-if="openGoods"
@@ -31,10 +32,21 @@
         :openGoods="openGoods"
       ></headle-Goods>
     </el-dialog>
+    <!-- 打开办理外勤窗口 -->
+    <el-dialog :visible.sync="openGoOut" width="35%">
+      <headle-go-out
+        v-if="openGoOut"
+        :id="id"
+        :taskid="taskid"
+        @close="closewin"
+        :openGoOut="openGoOut"
+      ></headle-go-out>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headleGoOut from "./components/headle-go-out";
 import headleGoods from "./components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
@@ -77,14 +89,16 @@ export default {
         "劳动力分配"
       ],
       summary: [],
-      openGoods: false,
       id: "",
-      taskid: ""
+      taskid: "",
+      openGoods: false,
+      openGoOut: false
     };
   },
   components: {
     CaRuleTable,
-    headleGoods
+    headleGoods,
+    headleGoOut
   },
   mounted() {
     this.getToDoList();
@@ -92,6 +106,7 @@ export default {
   methods: {
     closewin() {
       this.openGoods = false;
+      this.openGoOut = false;
       this.getToDoList();
     },
     query() {
@@ -109,12 +124,15 @@ export default {
     },
     //待办
     openheadle(row) {
-      // console.log(row);
+      console.log(row);
       this.id = row.BUSINESS_KEY_.split(".")[1];
       this.taskid = row.ID_;
       switch (row.pdname) {
         case "[材料]-物品采购":
           this.openGoods = true;
+          break;
+        case "[考勤]-外勤申请":
+          this.openGoOut = true;
           break;
       }
     },

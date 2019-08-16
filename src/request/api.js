@@ -189,6 +189,15 @@ export const apisaveCompany = data => post("saveCompany", data);
 //人力资源中心  --> 公司记录-->删除指定公司信息
 export const apideleCompany = id => Delete("deleCompany", id);
 
+//人力资源中心  -->公告-->查询所有公告
+export const apinoticeLists = data => get("noticeLists", data);
+
+//人力资源中心  -->公告-->新增公告
+export const apiadd_Notice = data => post("add_Notice", data);
+
+//人力资源中心  -->公告-->删除公告
+export const apideleteNotice = data => Delete("deleteNotice", data);
+
 //人力资源中心  --> 部门记录-->查询出所有部门信息
 export const apidepartmentList = data => post("departmentList", data);
 
@@ -196,7 +205,7 @@ export const apidepartmentList = data => post("departmentList", data);
 export const apisaveDepartment = data => post("saveDepartment", data);
 
 //人力资源中心  --> 部门记录-->删除指定部门信息
-export const apideleDepartment = data => delete ("deleDepartment", data);
+export const apideleDepartment = data => Delete("deleDepartment", data);
 
 //人力资源中心  --> 中心记录-->查询所有中心信息
 export const apicenterHome = data => get("centerHome", data);
