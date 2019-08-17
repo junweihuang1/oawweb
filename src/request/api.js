@@ -87,6 +87,12 @@ export const apideleLeave = id => Delete("deleLeave", id);
 //获取请假的审批流程
 export const apiViewHisComment = data => get("getViewHisComment", data);
 
+//行政类-->公告
+export const apinoticeListViews = data => get("noticeListViews", data);
+
+//行政类-->查看公告详情
+export const apinoticeviewss = data => get("noticeviewss", data);
+
 //发起请假
 export const apisaveLeave = data => post("saveLeave", data);
 
@@ -439,6 +445,15 @@ export const apisave_aPartyPur = data => post("save_aPartyPur", data);
 //运营类-->甲方材料采购-->修改甲供材料采购单
 export const apiupdateAPartyPur = data => post("updateAPartyPur", data);
 
+//运营类-->项目运营-->获取所有项目列表
+export const apiprojectDepList = data => get("projectDepList", data);
+
+//运营类-->项目运营-->获取项目列表详细信息
+export const apiprojectdetail = data => get("getProjectByDep", data);
+
+//运营类-->项目运营-->获取项目下的班组列表
+export const apigetTeamByProject = data => get("getTeamByProject", data);
+
 //汇总类 --> 科技采购明细
 export const apidevePurReport = data => get("devePurReport", data);
 
@@ -474,5 +489,3 @@ export const apisave_Worker = data => post("save_Worker", data);
 
 //供应商中心 -->劳动力分配-->人员批量调动
 export const apimultiplayerApply = data => post("multiplayerApply", data);
-
-//外联中心

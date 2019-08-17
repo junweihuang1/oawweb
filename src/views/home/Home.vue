@@ -92,11 +92,16 @@ export default {
                 },
                 {
                   id: "3-1-3",
+                  title: "通知/公告",
+                  route: "/admin-notice-record"
+                },
+                {
+                  id: "3-1-4",
                   title: "外勤申请",
                   route: "/Go-out"
                 },
                 {
-                  id: "3-1-4",
+                  id: "3-1-5",
                   title: "请假条",
                   route: "/leave-list"
                 }

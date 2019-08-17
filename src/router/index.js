@@ -56,6 +56,12 @@ const router = new Router({
           component: () =>
             import("@/views/ChengAn-centre/Administration/chengAn-standard/chengAn-standard.vue")
         },
+        {
+          path: "admin-notice-record",
+          name: "admin-notice-record",
+          component: () =>
+            import("@/views/ChengAn-centre/Administration/notice-record/notice-record.vue")
+        },
         //诚安人中心-->个人工资
         {
           path: "wage-slip",

@@ -5,9 +5,11 @@
     <el-table
       :data="DataList"
       border
+      highlight-current-row
       :height="maxHeight"
       :header-cell-style="getRowClass"
       size="mini"
+      @current-change="handleCurrentChange"
       :span-method="objectSpanMethod"
       :cell-style="getcellstyle"
       :row-style="{ height: '35px' }"
@@ -190,6 +192,9 @@ export default {
     }
   },
   methods: {
+    handleCurrentChange(val) {
+      this.$emit("oneselect", val);
+    },
     //相同的元素进行合并列
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (column.property && row[column.property]) {
