@@ -24,7 +24,9 @@
           <el-button type="primary" @click="checkProject('contract')"
             >合同工程量</el-button
           >
-          <el-button type="primary" @click="checkProject">请款进度</el-button>
+          <el-button type="primary" @click="checkProject('request')"
+            >请款进度</el-button
+          >
           <el-button type="primary" @click="checkProject">领款申请</el-button>
           <el-button type="primary" @click="checkProject">领款列表</el-button>
           <el-button type="primary" @click="checkProject">保养项目</el-button>

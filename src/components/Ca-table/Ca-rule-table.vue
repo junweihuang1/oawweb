@@ -144,6 +144,10 @@ export default {
     progressstatus: {
       type: Number,
       default: null
+    },
+    isSpan: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -197,7 +201,7 @@ export default {
     },
     //相同的元素进行合并列
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (column.property && row[column.property]) {
+      if (column.property && row[column.property] && this.isSpan) {
         return {
           rowspan: this.span[rowIndex][column.property],
           colspan: 1

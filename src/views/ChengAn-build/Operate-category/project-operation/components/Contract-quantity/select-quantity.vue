@@ -91,7 +91,7 @@ export default {
     },
     getQuantityList() {
       apiConMaterialList({
-        type: "ASupply",
+        type: "BSupply",
         project_id: this.projectList.construct_project_id,
         construct_material_seriesName: this.material_category,
         construct_material_name: this.material_name,

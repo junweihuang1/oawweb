@@ -487,6 +487,27 @@ export const apisavePurchase = data => post("savePurchase", data);
 //运营类-->项目运营-->获取合同工程量
 export const apiContractQuantity = data => get("getPurchaseMaterialList", data);
 
+//运营类-->项目运营-->选择材料（保存合同工程量）
+export const apichooseQuantities = data => get("chooseQuantities", data);
+
+//运营类-->项目运营-->保存合同工程量
+export const apisaveQuantities = data => post("saveQuantities", data);
+
+//运营类-->项目运营-->修改合同工程量
+export const apimodQuantities = data => post("modQuantities", data);
+
+//运营类-->项目运营-->获取请款进度信息
+export const apiContractInvoice = data => get("getContractInvoice", data);
+
+//运营类-->项目运营-->获取开票视图
+export const apigetreqfundsView = data => get("getreqfundsView", data);
+
+//运营类-->项目运营-->保存请款进度
+export const apisavereqfunds = data => post("savereqfunds", data);
+
+//运营类-->项目运营-->修改请款进度
+export const apimodreqfunds = data => post("modreqfunds", data);
+
 //汇总类 --> 科技采购明细
 export const apidevePurReport = data => get("devePurReport", data);
 

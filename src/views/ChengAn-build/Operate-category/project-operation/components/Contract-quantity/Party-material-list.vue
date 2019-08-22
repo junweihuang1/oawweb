@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form inline size="mini">
-      <el-form-item label="材料类别">
+      <el-form-item label="材料系列">
         <el-input v-model="material_category" clearable></el-input>
       </el-form-item>
       <el-form-item label="材料名称">
@@ -11,7 +11,7 @@
         <el-input v-model="material_model_name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="primary" @click="getMaterialList">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -27,16 +27,13 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      v-loading="loading"
-      element-loading-text="拼命加载中"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(255, 255, 255, 0.6)"
       :headle="headle"
       :setselect="true"
       @setselect="getselect"
       :DataList="materialList"
       :header="header"
-      @checkleave="modifyParty"
+      @checkleave="checkitem"
+      @edit="modifyParty"
       :setheight="0.6"
     ></Ca-rule-table>
     <paging
@@ -56,18 +53,13 @@
       <el-form size="mini" inline label-width="90px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="材料类别">
-              <el-input
-                clearable
-                v-model="addform.construct_Aparty_material_category"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="材料名称">
               <el-input
                 clearable
-                v-model="addform.construct_Aparty_material_name"
+                readonly
+                placeholder="请选择"
+                @focus="openSelectMaterial"
+                v-model="addform.construct_project_quantities_name"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -75,7 +67,23 @@
             <el-form-item label="型号规格">
               <el-input
                 clearable
-                v-model="addform.construct_Aparty_material_model"
+                v-model="addform.construct_project_quantities_model"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="主材数量">
+              <el-input
+                clearable
+                v-model="addform.construct_project_quantities_num"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="辅材数量">
+              <el-input
+                clearable
+                v-model="addform.construct_project_quantities_auxiliaryNum"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -83,15 +91,15 @@
             <el-form-item label="单位">
               <el-input
                 clearable
-                v-model="addform.construct_Aparty_material_unit"
+                v-model="addform.construct_project_quantities_unit"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同工程量">
+            <el-form-item label="合同单价">
               <el-input
                 clearable
-                v-model="addform.construct_Aparty_material_num"
+                v-model="addform.construct_project_quantities_price"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -99,11 +107,11 @@
             <el-form-item label="备注">
               <el-input
                 clearable
-                v-model="addform.construct_Aparty_material_remark"
+                v-model="addform.construct_project_quantities_remarks"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" v-if="opentype !== 'check'">
             <el-form-item label=" ">
               <el-button type="primary" @click="saveform">保存</el-button>
             </el-form-item>
@@ -122,18 +130,28 @@
         type="BSupply"
       ></Contract-record>
     </el-dialog>
+    <el-dialog
+      :visible.sync="isopenMaterial"
+      title="选择材料"
+      :append-to-body="true"
+    >
+      <select-material
+        v-if="isopenMaterial"
+        @setSelectName="getMaterialName"
+      ></select-material>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectMaterial from "./select-material";
 import ContractRecord from "./Contract-record";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apiContractQuantity,
-  apisaveAParty,
-  apiupdateAParty,
-  apideleteAParty
+  apisaveQuantities,
+  apimodQuantities
 } from "@/request/api.js";
 export default {
   name: "PartyMaterialList",
@@ -165,28 +183,30 @@ export default {
         ["合同单价", "construct_project_quantities_price", 120],
         ["备注", "construct_project_quantities_remarks"]
       ],
-      headle: ["修改"],
-      loading: true,
+      headle: ["查看", "", "修改"],
       isadd: false,
       addform: {},
       diatitle: "",
       idarr: [],
       contractForm: {},
       isopenContract: false,
-      isopen_ContractRecord: false
+      isopen_ContractRecord: false,
+      isopenMaterial: false,
+      opentype: ""
     };
   },
   components: {
     CaRuleTable,
     paging,
-    ContractRecord
+    ContractRecord,
+    selectMaterial
   },
   props: {
     projectList: Object
   },
   watch: {
+    //打卡选择材料
     projectList() {
-      this.loading = true;
       this.materialList = [];
       this.getMaterialList();
     }
@@ -195,6 +215,23 @@ export default {
     this.getMaterialList();
   },
   methods: {
+    //获取选择的材料信息，赋值到要保存的合同工程量
+    getMaterialName(row) {
+      this.addform.construct_project_quantities_name =
+        row.construct_material_name;
+      this.addform.construct_project_quantities_model =
+        row.construct_material_model_name;
+      this.addform.construct_project_quantities_unit =
+        row.construct_material_model_unit;
+      this.addform.construct_project_quantities_modelId =
+        row.construct_material_model_id;
+      this.isopenMaterial = false;
+    },
+    //打开材料选择
+    openSelectMaterial() {
+      this.isopenMaterial = true;
+    },
+    //打开合同工程量记录
     openQuantityRecord() {
       this.isopen_ContractRecord = true;
     },
@@ -206,88 +243,103 @@ export default {
       this.idarr = e.map(item => item.construct_Aparty_material_id);
     },
     saveform() {
-      if (!this.addform.construct_Aparty_material_id) {
-        apisaveAParty(this.addform).then(res => {
-          console.log(res);
-          this.$message.success("保存成功");
+      if (!this.addform.construct_project_quantities_id) {
+        apisaveQuantities(this.addform).then(res => {
+          this.$message.success(res.msg);
         });
       } else {
-        apiupdateAParty(this.addform).then(res => {
-          console.log(res);
-          this.$message.success("修改成功");
+        apimodQuantities(this.addform).then(res => {
+          this.$message.success(res.msg);
         });
       }
       this.isadd = false;
       this.getMaterialList();
     },
+    checkitem(row) {
+      this.isadd = true;
+      this.diatitle = "查看合同工程量";
+      this.opentype = "check";
+      this.addform = {
+        construct_project_quantities_id: row.construct_project_quantities_id,
+        construct_project_quantities_conId: this.projectList
+          .construct_project_id,
+        construct_project_quantities_name: row.construct_material_name, //(必填)材料名称
+        construct_project_quantities_model: row.construct_material_model_name, //(型号规格)
+        construct_project_quantities_num: row.construct_project_quantities_num, //(必填)主材数量
+        construct_project_quantities_auxiliaryNum:
+          row.construct_project_quantities_auxiliaryNum, //(必填)辅材数量
+        construct_project_quantities_unit: row.construct_material_model_unit, //(必填)单位
+        construct_project_quantities_price:
+          row.construct_project_quantities_price, //(必填)单价
+        construct_project_quantities_remarks:
+          row.construct_project_quantities_remarks, //(必填)备注
+        construct_project_quantities_modelId: row.construct_material_seriesId //(必填)规格id
+      };
+    },
     //打开修改合同工程量窗口
     modifyParty(row) {
-      console.log(row);
+      this.opentype = "";
       this.diatitle = "修改合同工程量";
       this.isadd = true;
       this.addform = {
-        construct_Aparty_material_id: row.construct_Aparty_material_id,
-        construct_Aparty_material_name: row.construct_Aparty_material_name,
-        construct_Aparty_material_unit: row.construct_Aparty_material_unit,
-        construct_Aparty_material_category:
-          row.construct_Aparty_material_category,
-        construct_Aparty_material_num: row.construct_Aparty_material_num,
-        construct_Aparty_material_remark: row.construct_Aparty_material_remark,
-        construct_Aparty_material_constructId: this.projectList
+        construct_project_quantities_id: row.construct_project_quantities_id,
+        construct_project_quantities_conId: this.projectList
           .construct_project_id,
-        construct_Aparty_material_model: row.construct_Aparty_material_model
+        construct_project_quantities_name: row.construct_material_name, //(必填)材料名称
+        construct_project_quantities_model: row.construct_material_model_name, //(型号规格)
+        construct_project_quantities_num: row.construct_project_quantities_num, //(必填)主材数量
+        construct_project_quantities_auxiliaryNum:
+          row.construct_project_quantities_auxiliaryNum, //(必填)辅材数量
+        construct_project_quantities_unit: row.construct_material_model_unit, //(必填)单位
+        construct_project_quantities_price:
+          row.construct_project_quantities_price, //(必填)单价
+        construct_project_quantities_remarks:
+          row.construct_project_quantities_remarks, //(必填)备注
+        construct_project_quantities_modelId: row.construct_material_seriesId //(必填)规格id
       };
     },
     //打开新增合同工程量窗口
     isaddform() {
+      this.opentype = "";
       this.diatitle = "新增合同工程量";
       this.isadd = true;
       this.addform = {
-        construct_Aparty_material_name: "",
-        construct_Aparty_material_unit: "",
-        construct_Aparty_material_category: "",
-        construct_Aparty_material_num: "",
-        construct_Aparty_material_remark: "",
-        construct_Aparty_material_constructId: this.projectList
-          .construct_project_id,
-        construct_Aparty_material_model: ""
+        construct_project_quantities_name: "", //(必填)材料名称
+        construct_project_quantities_model: "", //(型号规格)
+        construct_project_quantities_num: 0, //(必填)主材数量
+        construct_project_quantities_auxiliaryNum: 0, //(必填)辅材数量
+        construct_project_quantities_unit: "", //(必填)单位
+        construct_project_quantities_price: 0, //(必填)单价
+        construct_project_quantities_remarks: "", //(必填)备注
+        construct_project_quantities_conId: this.projectList
+          .construct_project_id, //(必填)项目id
+        construct_project_quantities_modelId: "" //(必填)规格id
       };
     },
     //删除多行
     deleteitem() {
       this.$confirm(`确定删除吗(有问题未修复)？`)
-        .then(() => {
-          apideleteAParty({ ids: this.idarr }).then(res => {
-            console.log(res);
-          });
-        })
+        .then(() => {})
         .catch(() => {});
     },
-    query() {
-      this.loading = true;
-      this.getMaterialList();
-    },
     getpage(val) {
-      this.loading = true;
       this.currentpage = val;
       this.getMaterialList();
     },
     getlimit(val) {
-      this.loading = true;
       this.currentlimit = val;
       this.getMaterialList();
     },
     getMaterialList() {
       apiContractQuantity({
         construct_project_id: this.projectList.construct_project_id,
-        material_category: this.material_category,
-        material_name: this.material_name,
-        material_model_name: this.material_model_name,
+        construct_material_seriesName: this.material_category,
+        construct_project_quantities_name: this.material_name,
+        construct_project_quantities_model: this.material_model_name,
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {
         console.log(res);
-        this.loading = false;
         this.materialList = res.data;
       });
     }

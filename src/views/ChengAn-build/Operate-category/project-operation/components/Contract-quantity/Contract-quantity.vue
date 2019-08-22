@@ -4,13 +4,13 @@
     <el-form size="mini" inline label-width="100px">
       <el-form-item label="项目名称">
         <el-input
-          v-model="projectList.construct_project_name"
+          v-model="projectList.manage_contract_name"
           readonly
         ></el-input>
       </el-form-item>
       <el-form-item label="工程地址">
         <el-input
-          v-model="projectList.construct_project_addr"
+          v-model="projectList.manage_contract_address"
           readonly
         ></el-input>
       </el-form-item>
@@ -19,7 +19,7 @@
         </el-input>
       </el-form-item>
       <el-form-item label="类型">
-        <el-input readonly value="甲供材"></el-input>
+        <el-input readonly value="乙供材"></el-input>
       </el-form-item>
     </el-form>
     <h3>材料单</h3>
@@ -30,12 +30,7 @@
         >
       </el-form-item>
     </el-form>
-    <el-table
-      :data="DataList"
-      border
-      @cell-click="clickinp"
-      :height="maxheight"
-    >
+    <el-table :data="DataList" border :height="maxheight">
       <el-table-column
         align="center"
         :label="item[0]"
@@ -45,13 +40,13 @@
         :key="index"
       >
         <template slot-scope="{ row, column }">
-          <el-input
+          <input
             size="mini"
-            v-if="column.label == '新增主材数量' && row.isinput"
+            v-if="column.label == '新增主材数量'"
             type="text"
+            class="inputbox"
             placeholder="请输入"
             v-model="row[item[1]]"
-            style="border:none;outline:none;height:25px;width:100%;margin:5px 0;"
           />
           <span v-else>{{ row[item[1]] }}</span>
         </template>
@@ -163,6 +158,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.projectList);
     this.getprossList();
   },
   methods: {
@@ -180,27 +176,20 @@ export default {
         return item;
       });
       let data = {
-        type: "ASupply",
+        type: "BSupply",
         construct_project_id: this.projectList.construct_project_id,
         rows: JSON.stringify(rows),
         userid: "1054"
       };
+      console.log(data);
       apistart_record(data).then(res => {
         console.log(res);
-        this.$message.success("提交成功");
+        this.$message.success(res.msg);
         this.$emit("close");
       });
     },
-    clickinp(row, column, cell, event) {
-      this.DataList = this.DataList.map(item => {
-        item.isinput = false;
-        if (item.id == row.id && column.label == "新增主材数量") {
-          item.isinput = true;
-        }
-        return item;
-      });
-    },
     deleteitem(row) {
+      console.log(this.DataList);
       this.DataList = this.DataList.filter(item => item.id !== row.id);
     },
     //添加行
@@ -214,8 +203,7 @@ export default {
         construct_material_model_unit: "",
         construct_project_quantities_num: "",
         afterAddingNum: "",
-        purNum: "",
-        isinput: false
+        purNum: ""
       });
       this.addid++;
     },
@@ -259,4 +247,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+// .inputbox {
+//   width: 100%;
+//   border: none;
+//   height: 30px;
+//   text-align: center;
+//   outline-color: #0191a0;
+// }
+</style>
