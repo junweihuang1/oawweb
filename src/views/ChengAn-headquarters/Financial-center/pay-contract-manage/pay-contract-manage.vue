@@ -26,7 +26,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="querygys">搜索</el-button>
+        <el-button type="primary" @click="getPayList">搜索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="addcontract">新增</el-button>
@@ -48,7 +48,7 @@
     ></paging>
 
     <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
-      <echarts :setform="contractform" @setDate="submit"></echarts>
+      <echarts :setform="contractform" @setDate="submit" :rows="rows"></echarts>
     </el-dialog>
   </div>
 </template>
@@ -61,7 +61,8 @@ import {
   apicontractPayLists,
   apicontractPayList,
   apidelete_Contract,
-  apisaveContract
+  apisaveContract,
+  apicontractPayNew
 } from "@/request/api.js";
 export default {
   name: "payContractManage",
@@ -93,7 +94,8 @@ export default {
       yearMonList: [],
       companyName: "",
       projectName: "",
-      contractform: {}
+      contractform: {},
+      rows: []
     };
   },
   components: {
@@ -106,10 +108,12 @@ export default {
     this.getyears();
   },
   methods: {
+    //提交保存
     submit(data) {
-      console.log(data);
       apisaveContract(data).then(res => {
-        console.log(res);
+        this.$message.success(res.msg);
+        this.getPayList();
+        this.isopen = false;
       });
     },
     //删除指定合同
@@ -126,9 +130,6 @@ export default {
           });
         })
         .catch(() => {});
-    },
-    querygys() {
-      this.getPayList();
     },
     getpage(e) {
       this.currentpage = e;
@@ -159,18 +160,25 @@ export default {
       });
     },
     checkDetails(row) {
-      this.contractform = {
-        manage_contract_num: row.manage_contract_num,
-        company_name: row.company_name,
-        manage_contract_name: row.manage_contract_name,
-        manage_contract_firstParty: row.manage_contract_firstParty,
-        manage_contract_address: row.manage_contract_address,
-        manage_contract_startTime: row.manage_contract_startTime,
-        manage_contract_endTime: row.manage_contract_endTime,
-        manage_contract_amount: row.manage_contract_amount,
-        manage_contract_visaAmount: row.manage_contract_visaAmount,
-        manage_contract_remark: row.manage_contract_remark
-      };
+      apicontractPayNew({ manage_contract_id: row.manage_contract_id }).then(
+        res => {
+          console.log(res);
+          this.contractform = res.data;
+          this.rows = res.rows.rows;
+        }
+      );
+      // this.contractform = {
+      //   manage_contract_num: row.manage_contract_num,
+      //   company_name: row.company_name,
+      //   manage_contract_name: row.manage_contract_name,
+      //   manage_contract_firstParty: row.manage_contract_firstParty,
+      //   manage_contract_address: row.manage_contract_address,
+      //   manage_contract_startTime: row.manage_contract_startTime,
+      //   manage_contract_endTime: row.manage_contract_endTime,
+      //   manage_contract_amount: row.manage_contract_amount,
+      //   manage_contract_visaAmount: row.manage_contract_visaAmount,
+      //   manage_contract_remark: row.manage_contract_remark
+      // };
       this.isopen = true;
     },
     addcontract() {

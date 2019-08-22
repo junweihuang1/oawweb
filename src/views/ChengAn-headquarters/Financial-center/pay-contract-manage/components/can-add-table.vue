@@ -7,10 +7,17 @@
       >
       <el-button type="danger" size="mini" @click="deleteall">删除</el-button>
     </el-button-group>
-    <el-table :data="DataList" border size="mini">
+    <el-table
+      :data="DataList"
+      border
+      :header-cell-style="getRowClass"
+      show-summary
+      :summary-method="computeSummary"
+    >
       <el-table-column
         :label="item[0]"
         :width="item[3]"
+        align="center"
         v-for="(item, index) in titleList"
         :key="index"
       >
@@ -18,7 +25,7 @@
           <template v-if="item[2] == 'date'">
             <el-date-picker
               style="width:100%;"
-              format="MM-dd"
+              format="yyyy-MM-dd"
               v-model="row[item[1]]"
               type="date"
               placeholder="选择日期"
@@ -26,7 +33,7 @@
             </el-date-picker>
           </template>
           <template v-else>
-            <el-input v-model="row[item[1]]"> </el-input>
+            <input v-model="row[item[1]]" class="inputbox" />
           </template>
         </template>
       </el-table-column>
@@ -40,21 +47,32 @@ export default {
   data() {
     return {
       titleList: [
-        ["请款时间", "gettime", "date"],
-        ["请款金额", "manage_contract_amount", ""],
-        ["开票日期", "start_time", "date"],
-        ["开票金额", "contract_amount", ""],
-        ["付款日期", "paymentdate", "date"],
-        ["付款金额", "payment_amount", ""],
-        ["备注", "remark", ""]
+        ["请款时间", "manage_reqfunds_time", "date"],
+        ["请款金额", "manage_bank_account", ""],
+        ["开票日期", "manage_reqfunds_ticketDate", "date"],
+        ["开票金额", "manage_reqfunds_ticketAmount", ""],
+        ["付款日期", "manage_reqfunds_receiveDate", "date"],
+        ["付款金额", "manage_reqfunds_receiveAmount", ""],
+        ["备注", "manage_reqfunds_remark", ""]
       ],
-      DataList: []
+      DataList: this.rows
     };
+  },
+  props: {
+    rows: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    }
   },
   watch: {
     DataList(val) {
       this.$emit("setTableList", val);
       console.log(val);
+    },
+    rows(val) {
+      this.DataList = val;
     }
   },
   methods: {
@@ -75,9 +93,38 @@ export default {
         remark: ""
       };
       this.DataList.push(data);
+    },
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex === 0) {
+        return `background: ${
+          this.$store.state.tableColor
+        };color:#fff;height:40px;padding:0px;`;
+      } else {
+        return "height:40px;padding:0px;";
+      }
+    },
+    //计算合计
+    computeSummary({ columns, data }) {
+      let data2 = ["", "", "", "", "收款合计", 0, ""];
+      data.forEach(item => {
+        data2[5] += item.manage_reqfunds_receiveAmount;
+      });
+      this.$emit("receiveAmount", data2[5]);
+      return data2;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-table--border td:first-child .cell {
+  padding-left: 0;
+}
+.el-table td .cell {
+  padding: 0;
+  line-height: 30px;
+}
+.el-table--small td {
+  padding: 0;
+}
+</style>

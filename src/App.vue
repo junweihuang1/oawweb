@@ -74,4 +74,11 @@ body {
 .el-menu.el-menu--horizontal {
   border-bottom: 0 !important;
 }
+.inputbox {
+  width: 100%;
+  border: none;
+  height: 30px;
+  text-align: center;
+  outline-color: #0191a0;
+}
 </style>

@@ -44,19 +44,31 @@
     <Ca-rule-table
       :DataList="contractList"
       :header="header"
+      :setheight="setheight"
       :headle="headle"
+      @dblclick="dblclick"
       @checkleave="modifyitem"
       @delete="deleteitem"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="263"
+      :total="290"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
-      <echarts :setform="contractform" @setDate="submit"></echarts>
+    <el-dialog
+      :visible.sync="isopen"
+      title="合同信息"
+      top="8vh"
+      :append-to-body="true"
+    >
+      <echarts
+        v-if="isopen"
+        :setform="contractform"
+        :rows="rows"
+        @setDate="submit"
+      ></echarts>
     </el-dialog>
   </div>
 </template>
@@ -68,7 +80,8 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import {
   apicontractLists,
   apisaveContract,
-  apidelete_Contract
+  apidelete_Contract,
+  apicontractPayNew
 } from "@/request/api.js";
 export default {
   name: "contractManage",
@@ -104,8 +117,15 @@ export default {
         ["未收款金额", "unreceiveAmount", 110]
       ],
       headle: ["修改", "删除"],
-      contractList: []
+      contractList: [],
+      rows: []
     };
+  },
+  props: {
+    setheight: {
+      type: Number,
+      default: 0.77
+    }
   },
   components: {
     CaRuleTable,
@@ -116,8 +136,13 @@ export default {
     this.getContractList();
   },
   methods: {
+    //双击给父组件回调
+    dblclick(row) {
+      this.$emit("setSelectName", row);
+    },
     addcontract() {
       this.contractform = {
+        manage_contract_id: 0,
         manage_contract_num: "",
         company_name: "",
         manage_contract_name: "",
@@ -133,9 +158,10 @@ export default {
     },
     submit(data) {
       apisaveContract(data).then(res => {
-        console.log(res);
+        this.$message.success(res.msg);
+        this.isopen = false;
+        this.getContractList();
       });
-      console.log(data);
     },
     getlimit(e) {
       this.currentlimit = e;
@@ -146,18 +172,13 @@ export default {
       this.getContractList();
     },
     modifyitem(row) {
-      this.contractform = {
-        manage_contract_num: row.manage_contract_num,
-        company_name: row.company_name,
-        manage_contract_name: row.manage_contract_name,
-        manage_contract_firstParty: row.manage_contract_firstParty,
-        manage_contract_address: row.manage_contract_address,
-        manage_contract_startTime: row.manage_contract_startTime,
-        manage_contract_endTime: row.manage_contract_endTime,
-        manage_contract_amount: row.manage_contract_amount,
-        manage_contract_visaAmount: row.manage_contract_visaAmount,
-        manage_contract_remark: row.manage_contract_remark
-      };
+      apicontractPayNew({ manage_contract_id: row.manage_contract_id }).then(
+        res => {
+          console.log(res);
+          this.contractform = res.data;
+          this.rows = res.rows.rows;
+        }
+      );
       this.isopen = true;
     },
     deleteitem(e) {

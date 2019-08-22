@@ -268,4 +268,28 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-divider {
+  text-shadow: 2px 2px 2px #aaa;
+}
+.el-table--border td:first-child .cell {
+  padding-left: 0;
+}
+.el-table td .cell {
+  padding: 0;
+  line-height: 30px;
+}
+.el-table--small td {
+  padding: 0;
+}
+.inputbox {
+  width: 100%;
+  border: none;
+  height: 30px;
+  text-align: center;
+  outline-color: #0191a0;
+}
+.el-step__title {
+  font-size: 12px;
+}
+</style>

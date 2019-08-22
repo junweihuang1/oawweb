@@ -75,7 +75,7 @@
             >
             <el-button
               v-if="index == 2 && item != ''"
-              type="warning"
+              type="primary"
               size="mini"
               @click="edit(scope.row)"
               plain

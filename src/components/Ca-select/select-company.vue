@@ -49,7 +49,6 @@ export default {
       });
     },
     selcompanyName(e) {
-      console.log(e);
       this.$emit("setCompanyName", e);
     }
   }

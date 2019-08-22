@@ -12,17 +12,52 @@
         <project-infor
           style="padding:10px;"
           :openType="openType"
+          :activeForm="activeForm"
           :entryList="entryList"
           :headform="headform"
         ></project-infor>
+      </el-tab-pane>
+      <el-tab-pane label="采购列表" name="3" v-if="isopenPurchase">
+        <purchase-list
+          @openaddPurchase="openaddPurchase"
+          style="padding:10px;"
+          :activeForm="headform"
+        ></purchase-list>
+      </el-tab-pane>
+      <el-tab-pane label="新增采购申请" name="4" v-if="isopenAddPurchase">
+        <Apply-purchase
+          style="padding:10px;"
+          :entryList="Purchase_entryList"
+          :headform="headform"
+          @close="closeApply"
+          :openType="ApplyopenType"
+        ></Apply-purchase>
+      </el-tab-pane>
+      <el-tab-pane label="合同工程量" name="5" v-if="isopenContract">
+        <Party-material-list
+          v-if="isopenContract"
+          @openContract="openContract"
+          style="padding:10px;"
+          :projectList="headform"
+        ></Party-material-list>
+      </el-tab-pane>
+      <el-tab-pane label="增加合同工程量" name="6" v-if="isopenAddContract">
+        <Contract-quantity
+          style="padding:10px;"
+          :projectList="headform"
+        ></Contract-quantity>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import ProjectInfor from "./components/project-infor";
-import ProjectList from "./components/project-list";
+import ContractQuantity from "./components/Contract-quantity/Contract-quantity";
+import PartyMaterialList from "./components/Contract-quantity/Party-material-list";
+import ApplyPurchase from "./components/purchase-list/Apply-purchase";
+import purchaseList from "./components/purchase-list/purchase-list";
+import ProjectInfor from "./components/project-list/project-infor";
+import ProjectList from "./components/project-list/project-list";
 import { apigetTeamByProject } from "@/request/api.js";
 export default {
   name: "dialogTabs",
@@ -30,9 +65,16 @@ export default {
     return {
       currentActive: "1",
       isopenProjectInfor: false,
+      isopenPurchase: false,
+      isopenAddPurchase: false,
+      isopenContract: false,
+      isopenAddContract: false,
       entryList: [],
       headform: Object,
-      openType: ""
+      openType: "",
+      projectId: Number,
+      Purchase_entryList: [], //采购申请中的表格数组
+      ApplyopenType: ""
     };
   },
   props: {
@@ -40,11 +82,94 @@ export default {
   },
   components: {
     ProjectList,
-    ProjectInfor
+    ProjectInfor,
+    purchaseList,
+    ApplyPurchase,
+    PartyMaterialList,
+    ContractQuantity
   },
   methods: {
+    //打开新增合同工程量
+    openContract() {
+      this.isopenAddContract = true;
+      this.currentActive = "6";
+    },
+    closeApply() {
+      this.isopenAddPurchase = false;
+      this.currentActive = "3";
+      this.isopenPurchase = false;
+      this.$nextTick(() => {
+        this.isopenPurchase = true;
+      });
+    },
+    //打開采购申请列表
+    openaddPurchase() {
+      this.currentActive = "4";
+      this.isopenProjectInfor = false;
+      this.isopenAddPurchase = true;
+      this.Purchase_entryList = [];
+      this.ApplyopenType = "add";
+    },
     openProject([type, val]) {
       switch (type) {
+        case "contract":
+          this.isopenContract = false;
+          this.isopenProjectInfor = false;
+          this.isopenPurchase = false;
+          this.isopenAddPurchase = false;
+          this.$nextTick(() => {
+            this.isopenContract = true;
+          });
+          this.currentActive = "5";
+          this.headform = val;
+          break;
+        case "purchase":
+          this.isopenProjectInfor = false;
+          this.isopenPurchase = false;
+          this.isopenAddPurchase = false;
+          this.$nextTick(() => {
+            this.isopenPurchase = true;
+          });
+          this.currentActive = "3";
+          this.headform = val;
+          break;
+        case "modify":
+          apigetTeamByProject({
+            construct_project_id: val.construct_project_id
+          }).then(res => {
+            console.log(res);
+            this.isopenProjectInfor = false;
+            this.$nextTick(() => {
+              this.isopenProjectInfor = true;
+            });
+            this.openType = "modify";
+            this.currentActive = "2";
+            this.isopenPurchase = false;
+            this.isopenAddPurchase = false;
+            this.entryList = res.entry.map(item => {
+              switch (item.construct_project_workTeam_category) {
+                case 1:
+                  item.construct_project_workTeam_category = "预埋";
+                  break;
+                case 2:
+                  item.construct_project_workTeam_category = "消防水";
+                  break;
+                case 3:
+                  item.construct_project_workTeam_category = "消防电";
+                  break;
+                case 4:
+                  item.construct_project_workTeam_category = "防排烟";
+                  break;
+                case 5:
+                  item.construct_project_workTeam_category = "消防水电";
+                  break;
+              }
+              return item;
+            });
+            this.headform = res.head[0];
+          });
+
+          break;
         //查看项目
         case "check":
           apigetTeamByProject({
@@ -55,6 +180,8 @@ export default {
             this.$nextTick(() => {
               this.isopenProjectInfor = true;
             });
+            this.isopenPurchase = false;
+            this.isopenAddPurchase = false;
             this.openType = "check";
             this.currentActive = "2";
             this.entryList = res.entry.map(item => {
@@ -78,12 +205,18 @@ export default {
               return item;
             });
             this.headform = res.head[0];
+            console.log(this.headform);
           });
+
           break;
         //查看项目
         case "add":
           this.openType = "add";
+          this.entryList = [];
           this.isopenProjectInfor = false;
+          this.isopenPurchase = false;
+          this.isopenAddPurchase = false;
+          this.headform = {};
           this.$nextTick(() => {
             this.isopenProjectInfor = true;
           });

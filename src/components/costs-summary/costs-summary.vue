@@ -105,7 +105,8 @@ export default {
       this.$store.state.dialog_openTabs = [false, false, false];
     },
     checkcard(row) {
-      this.departmentid = row.constuct_project_dep_id.toString();
+      console.log(row);
+      this.departmentid = JSON.stringify(row.construct_project_workTeam_id);
       this.isopen = true;
     },
     getlimit(val) {

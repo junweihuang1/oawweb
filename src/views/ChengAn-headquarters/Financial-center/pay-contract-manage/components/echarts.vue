@@ -5,12 +5,13 @@
         <el-col :span="8" v-for="(item, index) in propsList" :key="index">
           <el-form-item :label="item[0]" :key="index" ref="form" v-model="form">
             <template v-if="item[2] == 'select'">
-              <select-company @selectId="getselectId"></select-company>
+              <select-company @setCompanyName="getCompanyName"></select-company>
             </template>
             <template v-else-if="item[2] == 'date'">
               <el-date-picker
                 style="width:100%;"
                 v-model="form[item[1]]"
+                value-format="yyyy-MM-dd"
                 type="date"
                 placeholder="选择日期"
               >
@@ -30,8 +31,12 @@
         </el-col>
       </el-form>
     </el-row>
-    <can-add-table @setTableList="getTableList"></can-add-table>
-    <div style="width:100%;height:300px;" id="chart"></div>
+    <can-add-table
+      @setTableList="getTableList"
+      :rows="rows"
+      @receiveAmount="receiveAmount"
+    ></can-add-table>
+    <div style="width:100%;height:300px;" id="chart" v-show="isshow"></div>
   </div>
 </template>
 
@@ -56,7 +61,10 @@ export default {
       ],
       form: this.setform,
       tableList: [],
-      Companyid: ""
+      Companyid: "",
+      Received: Number,
+      noReceived: Number,
+      isshow: true
     };
   },
   components: {
@@ -66,20 +74,30 @@ export default {
   props: {
     setform: {
       type: Object
-    }
+    },
+    rows: Array
   },
   watch: {
     setform(value) {
       this.form = value;
-      this.showecharts();
     }
   },
   mounted() {
     this.showecharts();
   },
   methods: {
-    getselectId(val) {
-      this.Companyid = val;
+    //获取收款金额
+    receiveAmount(val) {
+      this.Received = val;
+      this.noReceived = this.form.manage_contract_amount - val;
+      this.isshow = false;
+      this.$nextTick(() => {
+        this.isshow = true;
+        this.showecharts();
+      });
+    },
+    getCompanyName(val) {
+      this.form.manage_contract_payCompany = val;
     },
     //从子组件获取表格的数据
     getTableList(arr) {
@@ -88,33 +106,21 @@ export default {
     submitContract() {
       let data = {
         type: "save",
-        manage_contract_id: 0,
+        manage_contract_id: this.form.manage_contract_id,
         manage_contract_name: this.form.manage_contract_name,
         manage_contract_address: this.form.manage_contract_address,
         manage_contract_amount: this.form.manage_contract_amount,
         manage_contract_startTime: this.form.manage_contract_startTime,
         manage_contract_endTime: this.form.manage_contract_endTime,
         manage_contract_firstParty: this.form.manage_contract_firstParty,
-        manage_contract_payCompany: this.Companyid,
+        manage_contract_payCompany: this.form.manage_contract_payCompany,
         manage_contract_visaAmount: this.form.manage_contract_visaAmount,
         manage_contract_num: this.form.manage_contract_num,
         manage_contract_remark: this.form.manage_contract_remark,
         manage_contract_company: 0,
-        rows: JSON.stringify([
-          {
-            status: "P",
-            manage_reqfunds_contractId: "",
-            manage_reqfunds_id: "",
-            manage_reqfunds_time: "111",
-            manage_reqfunds_amount: "222",
-            manage_reqfunds_ticketDate: "333",
-            manage_reqfunds_ticketAmount: "444",
-            manage_reqfunds_receiveDate: "555",
-            manage_reqfunds_receiveAmount: "666",
-            manage_reqfunds_remark: "777"
-          }
-        ])
+        rows: JSON.stringify(this.tableList)
       };
+      console.log(data);
       this.$emit("setDate", data);
     },
     showecharts() {
@@ -141,7 +147,7 @@ export default {
         legend: {
           orient: "vertical",
           left: "left",
-          data: ["已付款", "未付款"]
+          data: ["已收款", "未收款"]
         },
         series: [
           {
@@ -150,8 +156,8 @@ export default {
             radius: "55%",
             center: ["50%", "60%"],
             data: [
-              { value: 0, name: "已付款" },
-              { value: this.form.manage_contract_amount, name: "未付款" }
+              { value: this.Received, name: "已收款" },
+              { value: this.noReceived, name: "未收款" }
             ],
             itemStyle: {
               emphasis: {

@@ -20,7 +20,7 @@
     </el-upload>
     <iframe
       style="margin-top:20px;"
-      src="http://localhost:8000/public/file/address_list.pdf"
+      src="http://localhost:3000/public/file/address_list.pdf"
       width="90%"
       frameborder="0"
       :height="boxheight"

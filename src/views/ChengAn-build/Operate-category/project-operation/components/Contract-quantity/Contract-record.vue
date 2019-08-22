@@ -56,15 +56,15 @@ export default {
       modelName: "", //型号规格
       RecordList: [],
       header: [
-        ["材料类别", "", 100],
-        ["材料名称", "", 100],
-        ["型号规格", "", 100],
-        ["主材数量", "", 100],
-        ["已采购数量", "", 120],
-        ["新增数量", "", 100],
+        ["材料类别", "construct_material_seriesName", 100],
+        ["材料名称", "construct_material_name", 100],
+        ["型号规格", "construct_material_model_name", 100],
+        ["主材数量", "construct_project_quantities_num", 100],
+        ["已采购数量", "purNum", 120],
+        ["新增数量", "afterAddingNum", 100],
         ["步骤名称", "", 100],
-        ["状态", "", 80],
-        ["修改时间", "", 100]
+        ["状态", "status", 80],
+        ["修改时间", "change_time", 100]
       ]
     };
   },
@@ -101,7 +101,10 @@ export default {
       console.log(data);
       apiQuantityRecord(data).then(res => {
         console.log(res);
-        this.RecordList = res.data;
+        this.RecordList = res.data.map(item => {
+          item.status = item.status == 2 ? "审核通过" : item.status;
+          return item;
+        });
       });
     }
   }

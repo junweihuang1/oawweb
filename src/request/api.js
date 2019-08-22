@@ -451,8 +451,41 @@ export const apiprojectDepList = data => get("projectDepList", data);
 //运营类-->项目运营-->获取项目列表详细信息
 export const apiprojectdetail = data => get("getProjectByDep", data);
 
+//运营类-->项目运营-->修改项目部
+export const apimodprojectDep = data => post("modprojectDep", data);
+
+//运营类-->项目运营-->新增项目部
+export const apisaveprojectDep = data => post("saveprojectDep", data);
+
 //运营类-->项目运营-->获取项目下的班组列表
 export const apigetTeamByProject = data => get("getTeamByProject", data);
+
+//运营类-->项目运营-->保存项目和班组
+export const apisaveProjectTeam = data => post("saveProjectTeam", data);
+
+//运营类-->项目运营-->获取合同项目
+export const apigetContractItem = data => get("getContractItem", data);
+
+//运营类-->项目运营-->獲取班组信息
+export const apigetProjectManager = data => get("getProjectManager", data);
+
+//运营类-->项目运营-->獲取項目部
+export const apigetProjectDep = data => get("getProjectDep", data);
+
+//运营类-->项目运营-->获取采购申请列表
+export const apiPurchaseList = data => get("getPurchaseList", data);
+
+//运营类-->项目运营-->材料类别选择列表
+export const apiselMaterialSeries = data => get("selectMaterialSeries", data);
+
+//运营类-->项目运营-->材料选择列表
+export const apiselMaterial = data => get("selectMaterial", data);
+
+//运营类-->项目运营-->保存材料采购申请单
+export const apisavePurchase = data => post("savePurchase", data);
+
+//运营类-->项目运营-->获取合同工程量
+export const apiContractQuantity = data => get("getPurchaseMaterialList", data);
 
 //汇总类 --> 科技采购明细
 export const apidevePurReport = data => get("devePurReport", data);

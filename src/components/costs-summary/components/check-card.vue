@@ -116,7 +116,9 @@ export default {
         pageSize: this.currentlimit,
         limit: this.currentpage
       };
+      console.log(data);
       apifirmLaborCostPro(data).then(res => {
+        console.log(res);
         this.cardList = res.data;
       });
     }

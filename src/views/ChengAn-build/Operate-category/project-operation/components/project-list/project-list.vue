@@ -18,10 +18,12 @@
           <el-button type="primary" @click="checkProject('check')"
             >查看项目</el-button
           >
-          <el-button type="primary" @click="checkProject"
+          <el-button type="primary" @click="checkProject('purchase')"
             >采购申请列表</el-button
           >
-          <el-button type="primary" @click="checkProject">合同工程量</el-button>
+          <el-button type="primary" @click="checkProject('contract')"
+            >合同工程量</el-button
+          >
           <el-button type="primary" @click="checkProject">请款进度</el-button>
           <el-button type="primary" @click="checkProject">领款申请</el-button>
           <el-button type="primary" @click="checkProject">领款列表</el-button>
@@ -86,7 +88,7 @@ export default {
   methods: {
     //查看项目
     checkProject(type) {
-      if (this.activeitem === Object) {
+      if (this.activeitem === Object && type !== "add") {
         this.$message.warning("请选择项目");
       } else {
         this.$emit("openProject", [type, this.activeitem]);
