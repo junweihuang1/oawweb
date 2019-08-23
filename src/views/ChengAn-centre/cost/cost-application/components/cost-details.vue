@@ -62,27 +62,28 @@
               v-else-if="openType == 'modify'"
               >修改</el-button
             >
+            <el-button
+              type="primary"
+              @click="headle"
+              v-else-if="openType == 'headle'"
+              >提交</el-button
+            >
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <fieldset
-      v-if="Approvaltable != ''"
-      style="border-top:2px #ccc dotted;border-left:none;border-right:none;border-bottom:none;"
-    >
-      <legend style="font-size:16px;">审核记录</legend>
-      <el-table :data="Approvaltable" border>
-        <el-table-column
-          v-for="(item, index) in ApprovalHeaderList"
-          :key="index"
-          :label="item[0]"
-          :prop="item[1]"
-          :type="index == 0 ? 'index' : ''"
-          :width="item[2]"
-          align="center"
-        ></el-table-column>
-      </el-table>
-    </fieldset>
+    <el-divider content-position="left">审核记录</el-divider>
+    <el-table :data="Approvaltable" border>
+      <el-table-column
+        v-for="(item, index) in ApprovalHeaderList"
+        :key="index"
+        :label="item[0]"
+        :prop="item[1]"
+        :type="index == 0 ? 'index' : ''"
+        :width="item[2]"
+        align="center"
+      ></el-table-column>
+    </el-table>
 
     <el-dialog
       :visible.sync="isopenselect"
@@ -99,8 +100,8 @@
 import selectDepartment from "@/components/Ca-select/select-department";
 import {
   apisaveCostapp,
-  apiCostappProcessList,
-  apimodCostapp
+  apimodCostapp,
+  apipassCostapp
 } from "@/request/api.js";
 import { getDates, number_chinese } from "@/components/global-fn/global-fn";
 export default {
@@ -172,8 +173,15 @@ export default {
       });
     },
     submit() {
+      console.log(this.form);
       apisaveCostapp(this.form).then(res => {
         console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
+    },
+    headle() {
+      apipassCostapp(this.form).then(res => {
         this.$message.success(res.msg);
         this.$emit("close");
       });

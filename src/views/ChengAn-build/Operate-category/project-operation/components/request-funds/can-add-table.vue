@@ -43,18 +43,25 @@
           <span v-else>{{ row[item[1]] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="100" align="center">
+      <el-table-column label="操作" width="200" align="center" fixed="right">
         <template slot-scope="{ row }">
           <el-button
             type="warning"
             class="el-icon-edit"
             @click="modify(row)"
           ></el-button>
-          <el-button
-            type="primary"
-            class="el-icon-search"
-            @click="checkitem(row)"
-          ></el-button>
+          <template v-if="row.manage_status == 0">
+            <el-button @click="print(row)">开票</el-button>
+            <el-button type="danger" plain @click="delitem(row)"
+              >删除</el-button
+            >
+          </template>
+          <template v-else-if="row.manage_status == 2">
+            <el-button type="success" @click="checkitem(row)">通过</el-button>
+          </template>
+          <template v-else>
+            <el-button type="text" disabled>审核中</el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +69,7 @@
 </template>
 
 <script>
-import ApplicationForm from "./Application-form";
+import { apidelreqfunds } from "@/request/api.js";
 export default {
   name: "canAddTable",
   data() {
@@ -95,15 +102,30 @@ export default {
     }
   },
   methods: {
+    //删除
+    delitem(row) {
+      console.log(row);
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apidelreqfunds({ manage_reqfunds_id: row.manage_reqfunds_id }).then(
+            res => {
+              console.log(res);
+              this.$message.success(res.msg);
+              this.$emit("reload");
+            }
+          );
+        })
+        .catch();
+    },
+    //开票
+    print(row) {
+      console.log(row);
+      this.$emit("printApplyForm", row.manage_reqfunds_id);
+    },
     //查看
     checkitem(row) {
       console.log(row);
       this.$emit("openApplyForm", row.manage_reqfunds_id);
-      // apigetreqfundsView({ manage_reqfunds_id: row.manage_reqfunds_id }).then(
-      //   res => {
-      //     console.log(res);
-      //   }
-      // );
     },
     modify(row) {
       this.$emit("setTableList", row);

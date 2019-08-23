@@ -8,7 +8,7 @@
           @openProject="openProject"
         ></project-list>
       </el-tab-pane>
-      <el-tab-pane label="项目信息" name="2" v-if="isopenProjectInfor" closable>
+      <el-tab-pane label="项目信息" name="2" v-if="isopen[0]" closable>
         <project-infor
           style="padding:10px;"
           :openType="openType"
@@ -17,60 +17,56 @@
           :headform="headform"
         ></project-infor>
       </el-tab-pane>
-      <el-tab-pane label="采购列表" name="3" v-if="isopenPurchase" closable>
+      <el-tab-pane label="采购列表" name="3" v-if="isopen[1]" closable>
         <purchase-list
           @openaddPurchase="openaddPurchase"
+          @opencheckPurchase="opencheckPurchase"
+          @openeditPurchase="openeditPurchase"
           style="padding:10px;"
           :activeForm="headform"
         ></purchase-list>
       </el-tab-pane>
-      <el-tab-pane
-        label="新增采购申请"
-        name="4"
-        v-if="isopenAddPurchase"
-        closable
-      >
+      <el-tab-pane label="新增采购申请" name="4" v-if="isopen[2]" closable>
         <Apply-purchase
           style="padding:10px;"
           :entryList="Purchase_entryList"
           :headform="headform"
+          :activeForm="headform2"
+          :ProcessList="ProcessList"
           @close="closeApply"
           :openType="ApplyopenType"
         ></Apply-purchase>
       </el-tab-pane>
-      <el-tab-pane label="合同工程量" name="5" v-if="isopenContract" closable>
+      <el-tab-pane label="合同工程量" name="5" v-if="isopen[3]" closable>
         <Party-material-list
-          v-if="isopenContract"
+          v-if="isopen[3]"
           @openContract="openContract"
           style="padding:10px;"
           :projectList="headform"
         ></Party-material-list>
       </el-tab-pane>
-      <el-tab-pane
-        label="增加合同工程量"
-        name="6"
-        v-if="isopenAddContract"
-        closable
-      >
+      <el-tab-pane label="增加合同工程量" name="6" v-if="isopen[4]" closable>
         <Contract-quantity
           @close="closeQuantity"
           style="padding:10px;"
           :projectList="headform"
         ></Contract-quantity>
       </el-tab-pane>
-      <el-tab-pane label="请款进度" name="7" v-if="isopenRequest" closable>
+      <el-tab-pane label="请款进度" name="7" v-if="isopen[5]" closable>
         <echarts
-          v-if="isopenRequest"
+          v-if="isopen[5]"
           style="padding:10px;"
           @openApplyForm="openApplyForm"
+          @printApplyForm="printApplyForm"
           :projectList="headform"
         ></echarts>
       </el-tab-pane>
-      <el-tab-pane label="开发票申请表" name="8" v-if="isopenApply" closable>
+      <el-tab-pane label="开发票申请表" name="8" v-if="isopen[6]" closable>
         <Application-form
-          v-if="isopenApply"
+          v-if="isopen[6]"
           style="padding:10px;"
           :reqfundsId="reqfundsId"
+          :openType="ApplyFormopenType"
         ></Application-form>
       </el-tab-pane>
     </el-tabs>
@@ -80,32 +76,30 @@
 <script>
 import ApplicationForm from "./components/request-funds/Application-form";
 import echarts from "./components/request-funds/echarts";
-import ContractQuantity from "./components/Contract-quantity/Contract-quantity";
-import PartyMaterialList from "./components/Contract-quantity/Party-material-list";
+import ContractQuantity from "@/components/Ca-to-do/Contract-quantity/Contract-quantity";
+import PartyMaterialList from "@/components/Ca-to-do/Contract-quantity/Party-material-list";
 import ApplyPurchase from "./components/purchase-list/Apply-purchase";
 import purchaseList from "./components/purchase-list/purchase-list";
 import ProjectInfor from "./components/project-list/project-infor";
 import ProjectList from "./components/project-list/project-list";
-import { apigetTeamByProject, apiContractInvoice } from "@/request/api.js";
+import { apigetTeamByProject, apigetPurchase } from "@/request/api.js";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "dialogTabs",
   data() {
     return {
       currentActive: "1",
-      isopenProjectInfor: false,
-      isopenPurchase: false,
-      isopenAddPurchase: false,
-      isopenContract: false,
-      isopenAddContract: false,
-      isopenRequest: false,
-      isopenApply: false,
+      isopen: [false, false, false, false, false, false, false],
       entryList: [],
       headform: Object,
       openType: "",
       projectId: Number,
       Purchase_entryList: [], //采购申请中的表格数组
       ApplyopenType: "",
-      reqfundsId: Number
+      reqfundsId: Number,
+      ApplyFormopenType: "",
+      ProcessList: [],
+      headform2: Object
     };
   },
   props: {
@@ -122,74 +116,133 @@ export default {
     ApplicationForm
   },
   methods: {
-    openApplyForm(id) {
-      this.isopenApply = false;
-      this.$nextTick(() => {
-        this.isopenApply = true;
+    getNext(Ind) {
+      this.isopen = this.isopen.map((item, index) => {
+        if (index == Ind) {
+          item = true;
+        }
+        return item;
       });
+    },
+    getopenList() {
+      this.isopen = this.isopen.map(item => {
+        item = false;
+        return item;
+      });
+    },
+    printApplyForm(id) {
+      this.isopen = [false, false, false, false, false, true, false];
+      this.$nextTick(() => {
+        this.isopen = [false, false, false, false, false, true, true];
+      });
+      console.log(this.isopen);
       this.currentActive = "8";
       this.reqfundsId = id;
+      this.ApplyFormopenType = "add";
     },
+    //打开开票申请表
+    openApplyForm(id) {
+      console.log("通过");
+      this.isopen = [false, false, false, false, false, true, false];
+      this.$nextTick(() => {
+        this.isopen = [false, false, false, false, false, true, true];
+      });
+      console.log(this.isopen);
+      this.currentActive = "8";
+      this.reqfundsId = id;
+      this.ApplyFormopenType = "";
+    },
+    //关闭标签
     removeTab(e) {
-      console.log(e);
+      this.isopen[e - 2] = false;
+      //先把当前点击标签默认为1，若还有打开的标签，则点击标签为该标签
+      this.currentActive = "1";
+      this.isopen.forEach((item, index) => {
+        if (item === true) {
+          this.currentActive = index + 2 + "";
+        }
+      });
     },
     //关闭新增合同工程量
     closeQuantity() {
-      this.isopenAddContract = false;
+      this.isopen[4] = false;
       this.currentActive = "5";
     },
     //打开新增合同工程量
     openContract() {
-      this.isopenAddContract = true;
+      this.isopen[4] = true;
       this.currentActive = "6";
     },
     closeApply() {
-      this.isopenAddPurchase = false;
       this.currentActive = "3";
-      this.isopenPurchase = false;
+      this.isopen = [false, false, false, false, false, false, false];
       this.$nextTick(() => {
-        this.isopenPurchase = true;
+        this.isopen = [false, true, false, false, false, false, false];
       });
+    },
+    //打开修改采购单
+    openeditPurchase(id) {
+      this.currentActive = "4";
+      this.isopen[2] = true;
+      apigetPurchase({ construct_purchase_id: id }).then(res => {
+        console.log(res);
+        // this.headform = res.projectInfo;
+        this.Purchase_entryList = res.purchaseEntry;
+        this.ProcessList = res.hisComment.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
+        this.headform2 = res.purchaseHead;
+      });
+      this.ApplyopenType = "edit";
+    },
+    //打开查看采购单
+    opencheckPurchase(id) {
+      this.currentActive = "4";
+      this.isopen[2] = true;
+      apigetPurchase({ construct_purchase_id: id }).then(res => {
+        console.log(res);
+        // this.headform = res.projectInfo;
+        this.Purchase_entryList = res.purchaseEntry;
+        this.ProcessList = res.hisComment.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
+        this.headform2 = res.purchaseHead;
+      });
+      this.ApplyopenType = "check";
     },
     //打開采购申请列表
     openaddPurchase() {
       this.currentActive = "4";
-      this.isopenProjectInfor = false;
-      this.isopenAddPurchase = true;
+      this.isopen[2] = true;
       this.Purchase_entryList = [];
+      // this.headform = {};
+      this.ProcessList = [];
+      this.headform2 = {};
       this.ApplyopenType = "add";
     },
     openProject([type, val]) {
       switch (type) {
         case "request":
-          this.isopenContract = false;
-          this.isopenProjectInfor = false;
-          this.isopenPurchase = false;
-          this.isopenAddPurchase = false;
-          this.isopenRequest = false;
+          this.isopen = [false, false, false, false, false, false, false];
           this.$nextTick(() => {
-            this.isopenRequest = true;
+            this.isopen = [false, false, false, false, false, true, false];
           });
           this.currentActive = "7";
           this.headform = val;
           break;
         case "contract":
-          this.isopenContract = false;
-          this.isopenProjectInfor = false;
-          this.isopenPurchase = false;
-          this.isopenAddPurchase = false;
-          this.$nextTick(() => {
-            this.isopenContract = true;
-          });
+          this.getopenList();
+          this.isopen[3] = true;
           this.currentActive = "5";
           this.headform = val;
           break;
         case "purchase":
-          this.isopenProjectInfor = false;
-          this.isopenPurchase = false;
-          this.isopenAddPurchase = false;
+          this.getopenList();
+          this.isopen = [false, false, false, false, false, false, false];
           this.$nextTick(() => {
-            this.isopenPurchase = true;
+            this.isopen = [false, true, false, false, false, false, false];
           });
           this.currentActive = "3";
           this.headform = val;
@@ -198,15 +251,10 @@ export default {
           apigetTeamByProject({
             construct_project_id: val.construct_project_id
           }).then(res => {
-            console.log(res);
-            this.isopenProjectInfor = false;
-            this.$nextTick(() => {
-              this.isopenProjectInfor = true;
-            });
+            this.getopenList();
+            this.isopen[0] = true;
             this.openType = "modify";
             this.currentActive = "2";
-            this.isopenPurchase = false;
-            this.isopenAddPurchase = false;
             this.entryList = res.entry.map(item => {
               switch (item.construct_project_workTeam_category) {
                 case 1:
@@ -236,13 +284,8 @@ export default {
           apigetTeamByProject({
             construct_project_id: val.construct_project_id
           }).then(res => {
-            console.log(res);
-            this.isopenProjectInfor = false;
-            this.$nextTick(() => {
-              this.isopenProjectInfor = true;
-            });
-            this.isopenPurchase = false;
-            this.isopenAddPurchase = false;
+            this.getopenList();
+            this.isopen[0] = true;
             this.openType = "check";
             this.currentActive = "2";
             this.entryList = res.entry.map(item => {
@@ -274,13 +317,9 @@ export default {
         case "add":
           this.openType = "add";
           this.entryList = [];
-          this.isopenProjectInfor = false;
-          this.isopenPurchase = false;
-          this.isopenAddPurchase = false;
+          this.getopenList();
+          this.isopen[0] = true;
           this.headform = {};
-          this.$nextTick(() => {
-            this.isopenProjectInfor = true;
-          });
           this.currentActive = "2";
           break;
       }

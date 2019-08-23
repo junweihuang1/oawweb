@@ -42,10 +42,20 @@
         :openGoOut="openGoOut"
       ></headle-go-out>
     </el-dialog>
+    <!-- 打开办理增量流程窗口 -->
+    <el-dialog :visible.sync="openIncrement" width="50%" top="8vh">
+      <headle-Increment
+        v-if="openIncrement"
+        :id="id"
+        :taskid="taskid"
+        @close="closewin"
+      ></headle-Increment>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headleIncrement from "./components/headle-Increment";
 import headleGoOut from "./components/headle-go-out";
 import headleGoods from "./components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -92,13 +102,15 @@ export default {
       id: "",
       taskid: "",
       openGoods: false,
-      openGoOut: false
+      openGoOut: false,
+      openIncrement: false
     };
   },
   components: {
     CaRuleTable,
     headleGoods,
-    headleGoOut
+    headleGoOut,
+    headleIncrement
   },
   mounted() {
     this.getToDoList();
@@ -133,6 +145,9 @@ export default {
           break;
         case "[考勤]-外勤申请":
           this.openGoOut = true;
+          break;
+        case "合同工程量新增":
+          this.openIncrement = true;
           break;
       }
     },

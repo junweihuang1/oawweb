@@ -3,110 +3,88 @@
     <el-divider content-position="left">项目信息</el-divider>
     <el-row>
       <el-form inline size="mini" label-width="130px" label-position="left">
-        <el-col :span="10">
-          <el-form-item label="项目名称">
-            <el-input
-              v-model="headform.manage_contract_name"
-              readonly
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="工程地址">
-            <el-input
-              v-model="headform.manage_contract_address"
-              readonly
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="项目经理">
-            <el-input
-              v-model="headform.construct_project_leader"
-              readonly
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="项目经理联系方式">
-            <el-input
-              v-model="headform.construct_project_leaderTel"
-              readonly
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
+        <el-form-item label="项目名称">
+          <el-input
+            v-model="headform.manage_contract_name"
+            readonly
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="工程地址">
+          <el-input
+            v-model="headform.manage_contract_address"
+            readonly
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="项目经理">
+          <el-input
+            v-model="headform.construct_project_leader"
+            readonly
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="项目经理联系方式">
+          <el-input
+            v-model="headform.construct_project_leaderTel"
+            readonly
+            clearable
+          ></el-input>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-divider content-position="left">材料信息</el-divider>
     <el-row>
       <el-form inline size="mini" label-width="130px" label-position="left">
-        <el-col :span="10">
-          <el-form-item label="计划日期">
-            <el-date-picker
-              type="date"
-              style="width:100%;"
-              v-model="activeForm.construct_purchase_planDate"
-              value-format="yyyy-MM-dd"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="希望送达时间">
-            <el-date-picker
-              type="date"
-              style="width:100%;"
-              v-model="activeForm.construct_purchase_arriveDate"
-              value-format="yyyy-MM-dd"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="材料计划员">
-            <el-input
-              @focus="openselectplanMan"
-              v-model="activeForm.construct_purchase_planMan"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="复核员">
-            <el-input
-              @focus="openselectreviewer"
-              v-model="activeForm.construct_purchase_reviewer"
-              readonly=""
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="供应商">
-            <el-input
-              v-model="activeForm.construct_purchase_supplier"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="供应商联系方式">
-            <el-input
-              clearable
-              v-model="activeForm.construct_purchase_supplierTel"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="材料类别">
-            <el-input
-              @focus="openselectMaterialseries"
-              clearable
-              v-model="activeForm.construct_purchase_materialSerName"
-            ></el-input>
-          </el-form-item>
-        </el-col>
+        <el-form-item label="计划日期">
+          <el-date-picker
+            type="date"
+            style="width:100%;"
+            v-model="activeForm.construct_purchase_planDate"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="希望送达时间">
+          <el-date-picker
+            type="date"
+            style="width:100%;"
+            v-model="activeForm.construct_purchase_arriveDate"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="材料计划员">
+          <el-input
+            @focus="openselectplanMan"
+            v-model="activeForm.construct_purchase_planMan"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="复核员">
+          <el-input
+            @focus="openselectreviewer"
+            v-model="activeForm.construct_purchase_reviewer"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="供应商">
+          <el-input
+            v-model="activeForm.construct_purchase_supplier"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="供应商联系方式">
+          <el-input
+            clearable
+            v-model="activeForm.construct_purchase_supplierTel"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="材料类别" v-if="openType !== 'check'">
+          <el-input
+            @focus="openselectMaterialseries"
+            clearable
+            v-model="activeForm.construct_purchase_materialSerName"
+          ></el-input>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-divider content-position="left">班组信息</el-divider>
@@ -153,6 +131,14 @@
       @click="save"
       >保存</el-button
     >
+    <div v-if="openType == 'check'">
+      <el-divider content-position="left">流程线</el-divider>
+      <Ca-rule-table
+        :DataList="ProcessList"
+        :setheight="0.3"
+        :header="Process_header"
+      ></Ca-rule-table>
+    </div>
     <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true">
       <select-material-series
         @setSelectName="getSelectName"
@@ -183,14 +169,27 @@
 </template>
 
 <script>
+import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import selectTeams from "@/components/Ca-select/select-teams";
 import selectMaterial from "@/components/Ca-select/select-material";
 import selectMaterialSeries from "@/components/Ca-select/select-material-series";
-import { apisavePurchase, apiNextProcess } from "@/request/api.js";
+import {
+  apisavePurchase,
+  apiNextProcess,
+  apimodPurchase
+} from "@/request/api.js";
 export default {
   name: "projectInfor",
   data() {
     return {
+      Process_header: [
+        ["步骤名称", "name_", 100],
+        ["相关人员", "username", 100],
+        ["发生时间", "END_TIME_", 120],
+        ["中心", "center_name", 100],
+        ["部门", "department_name", 100],
+        ["审核意见", "MESSAGE_"]
+      ],
       header: [
         ["材料名称", "construct_purchase_material", 100],
         ["型号规格", "construct_purchase_model", 100],
@@ -207,17 +206,6 @@ export default {
       isselectMaterialseries: false,
       isselectMaterial: false,
       active: {},
-      activeForm: {
-        construct_purchase_planDate: "", //(必填)计划日期
-        construct_purchase_arriveDate: "", //(必填)希望送达时间
-        construct_purchase_planMan: "", //(必填)计划员
-        construct_purchase_reviewer: "", //(必填)复核员
-        construct_purchase_supplier: "", //(必填)供应商
-        construct_purchase_supplierTel: "", //(必填)供应商联系方式
-        construct_purchase_projectId: this.headform.construct_project_id, //(必填)项目id
-        construct_purchase_materialSerId: "", //(必填)材料系列id
-        construct_purchase_materialSerName: "" //(必填)材料系列
-      },
       isreviewer: false,
       isplanMan: false
     };
@@ -225,12 +213,30 @@ export default {
   props: {
     headform: Object,
     openType: String,
-    entryList: Array
+    entryList: Array,
+    activeForm: {
+      // type: Object,
+      default: () => {
+        return {
+          construct_purchase_planDate: "", //(必填)计划日期
+          construct_purchase_arriveDate: "", //(必填)希望送达时间
+          construct_purchase_planMan: "", //(必填)计划员
+          construct_purchase_reviewer: "", //(必填)复核员
+          construct_purchase_supplier: "", //(必填)供应商
+          construct_purchase_supplierTel: "", //(必填)供应商联系方式
+          construct_purchase_projectId: this.headform.construct_project_id, //(必填)项目id
+          construct_purchase_materialSerId: "", //(必填)材料系列id
+          construct_purchase_materialSerName: "" //(必填)材料系列}}
+        };
+      }
+    },
+    ProcessList: Array
   },
   components: {
     selectMaterialSeries,
     selectMaterial,
-    selectTeams
+    selectTeams,
+    CaRuleTable
   },
   mounted() {
     console.log(this.headform);
@@ -321,11 +327,32 @@ export default {
       this.getNextProcess();
       this.activeForm.entry = JSON.stringify(this.entryList);
       console.log(this.activeForm);
-      apisavePurchase(this.activeForm).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      if (
+        this.activeForm.construct_purchase_planMan == "" ||
+        !this.activeForm.construct_purchase_planMan
+      ) {
+        this.$message.error("计划员不能为空");
+        return;
+      }
+      if (
+        this.activeForm.construct_purchase_reviewer == "" ||
+        !this.activeForm.construct_purchase_reviewer
+      ) {
+        this.$message.error("复核员不能为空");
+        return;
+      }
+      if (this.openType == "add") {
+        console.log(this.activeForm);
+        apisavePurchase(this.activeForm).then(res => {
+          console.log(res);
+          this.$message.success(res.msg);
+          this.$emit("close");
+        });
+      } else {
+        apimodPurchase(this.activeForm).then(res => {
+          console.log(res);
+        });
+      }
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {

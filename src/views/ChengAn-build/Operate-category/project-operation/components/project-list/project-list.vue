@@ -9,16 +9,28 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" @click="checkProject('modify')"
+          <el-button
+            type="primary"
+            class="el-icon-edit"
+            @click="checkProject('modify')"
             >修改项目</el-button
           >
-          <el-button type="primary" @click="checkProject('add')"
+          <el-button
+            type="primary"
+            class="el-icon-plus"
+            @click="checkProject('add')"
             >新增项目</el-button
           >
-          <el-button type="primary" @click="checkProject('check')"
+          <el-button
+            type="primary"
+            class="el-icon-search"
+            @click="checkProject('check')"
             >查看项目</el-button
           >
-          <el-button type="primary" @click="checkProject('purchase')"
+          <el-button
+            type="primary"
+            class="el-icon-document"
+            @click="checkProject('purchase')"
             >采购申请列表</el-button
           >
           <el-button type="primary" @click="checkProject('contract')"
@@ -27,12 +39,12 @@
           <el-button type="primary" @click="checkProject('request')"
             >请款进度</el-button
           >
-          <el-button type="primary" @click="checkProject">领款申请</el-button>
+          <!-- <el-button type="primary" @click="checkProject">领款申请</el-button>
           <el-button type="primary" @click="checkProject">领款列表</el-button>
           <el-button type="primary" @click="checkProject">保养项目</el-button>
           <el-button type="primary" @click="checkProject"
             >保养项目内容</el-button
-          >
+          > -->
         </el-button-group>
       </el-form-item>
     </el-form>
@@ -66,11 +78,11 @@ export default {
       lists: [],
       header: [
         ["项目编号", "construct_project_id", 100],
-        ["项目名称", "manage_contract_name", 150],
+        ["项目名称", "manage_contract_name", 280],
         ["甲方", "manage_contract_firstParty"],
         ["工程地址", "manage_contract_address", 150],
         ["项目经理", "construct_project_leader", 100],
-        ["项目经理联系方式", "construct_project_leaderTel", 150],
+        ["项目经理联系方式", "construct_project_leaderTel", 160],
         ["项目开始时间", "manage_contract_startTime", 140],
         ["项目结束时间", "manage_contract_endTime", 140]
       ],

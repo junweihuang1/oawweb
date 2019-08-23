@@ -38,24 +38,19 @@
               </template>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label=" "
-              ><el-button type="primary" @click="submitContract"
-                >保存</el-button
-              ></el-form-item
-            >
-          </el-col>
         </el-form>
-
-        <can-add-table
-          v-if="ismodify"
-          @setTableList="getTableList"
-          :rows="rows"
-          @openApplyForm="openApplyForm"
-          :projectList="projectList"
-          @reload="reload"
-          @receiveAmount="receiveAmount"
-        ></can-add-table>
+        <el-col :span="24">
+          <can-add-table
+            v-if="ismodify"
+            @setTableList="getTableList"
+            :rows="rows"
+            @openApplyForm="openApplyForm"
+            @printApplyForm="printApplyForm"
+            :projectList="projectList"
+            @reload="reload"
+            @receiveAmount="receiveAmount"
+          ></can-add-table>
+        </el-col>
       </el-col>
       <el-col :span="8">
         <div style="width:100%;height:300px;" id="chart" v-show="isshow"></div>
@@ -109,11 +104,15 @@ export default {
     this.getFundsList();
   },
   methods: {
+    printApplyForm(id) {
+      this.$emit("printApplyForm", id);
+    },
     openApplyForm(id) {
       this.$emit("openApplyForm", id);
     },
     //重載
     reload() {
+      this.getFundsList();
       this.ismodify = false;
       this.$nextTick(() => {
         this.ismodify = true;
@@ -124,7 +123,15 @@ export default {
         manage_contract_id: this.projectList.manage_contract_id
       }).then(res => {
         console.log(res);
-        this.rows = res.entry;
+        this.rows = res.entry.map(item => {
+          item.manage_status2 =
+            item.manage_status == 0
+              ? "开票"
+              : item.manage_status == 2
+              ? "已通过"
+              : "审核中";
+          return item;
+        });
         this.form = res.head[0];
       });
     },
@@ -165,20 +172,7 @@ export default {
           this.getFundsList();
         });
       }
-      this.ismodify = false;
-      this.$nextTick(() => {
-        this.ismodify = true;
-      });
-    },
-    submitContract() {
-      let data = {
-        manage_contract_id: this.form.manage_contract_id,
-        manage_contract_name: this.form.manage_contract_name,
-        manage_contract_firstParty: this.form.manage_contract_firstParty,
-        rows: JSON.stringify(this.tableList)
-      };
-      console.log(data);
-      // this.$emit("setDate", data);
+      this.reload();
     },
     showecharts() {
       let mychart = this.$echarts.init(document.getElementById("chart"));

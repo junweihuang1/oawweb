@@ -2,7 +2,7 @@
   <div>
     <el-form ref="emailform" :model="emailform" label-width="80px">
       <el-form-item
-        label="收件人"
+        label="收件地址"
         prop="address"
         :rules="[
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -12,11 +12,8 @@
             trigger: 'blur'
           }
         ]"
-        ><el-input
-          v-model="emailform.address"
-          style="width:50%;"
-          clearable
-        ></el-input
+        ><el-input v-model="emailform.address" style="width:50%;" clearable>
+        </el-input
       ></el-form-item>
       <el-form-item
         label="主题"
@@ -57,8 +54,7 @@ export default {
       emailform: {
         address: "",
         title: "",
-        content:
-          "尊敬的阁下：<br>\
+        content: `尊敬的阁下：<br>\
                 \n\t非常荣幸地通知您，您已经顺利通过我司的面试环节，即将正式入职我司。您的入职状态、岗位职级以及薪金标准构成等由我司资源中心亲自通知。<br>\
                 \n\t如仍有任何疑问，请您致电公司资源中心，联系电话：89660456，联系人：谢经理。<br>\
 \n<br>\
@@ -96,7 +92,7 @@ export default {
 \n<br>\
 \n<br>\
 															\n\t\t\t\t\t\t\t\t\t公司地址：广州市海珠区新港东路2440号409室<br>\
-															\n\t\t\t\t\t\t\t\t\t(地铁4号线万胜围站B出口转乘137.262等到黄埔村下)<br>"
+															\n\t\t\t\t\t\t\t\t\t(地铁4号线万胜围站B出口转乘137.262等到黄埔村下)<br>`
       }
     };
   },
@@ -105,12 +101,13 @@ export default {
     sendemail(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$confirm("确认发送？").then(_ => {
-            apiemail({
+          this.$confirm("确认发送？").then(() => {
+            let data = {
               receive: this.emailform.address,
               theme: this.emailform.title,
               content: this.emailform.content
-            }).then(res => {
+            };
+            apiemail(data).then(res => {
               (this.emailform.address = ""),
                 (this.emailform.title = ""),
                 this.$message.success(res.msg);

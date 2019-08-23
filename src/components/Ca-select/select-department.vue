@@ -5,7 +5,7 @@
         <el-input v-model="departmentName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="queryCenter">查询</el-button>
+        <el-button type="success" @click="getdepartmentList">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -65,12 +65,10 @@ export default {
       this.currentlimit = e;
       this.getdepartmentList();
     },
-    queryCenter() {
-      this.getdepartmentList();
-    },
     //获取项目名称
     getdepartmentList() {
       apiorgChecks({
+        department_name: this.departmentName,
         limit: this.currentlimit,
         page: this.currentpage
       })

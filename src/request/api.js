@@ -126,6 +126,9 @@ export const apigetCostappById = data => get("getCostappById", data);
 //费用类-->提交费用申请
 export const apisaveCostapp = data => post("saveCostapp", data);
 
+//费用类-->办理费用申请
+export const apipassCostapp = data => post("passCostapp", data);
+
 //费用类-->修改费用申请
 export const apimodCostapp = data => post("modCostapp", data);
 
@@ -475,6 +478,12 @@ export const apigetProjectDep = data => get("getProjectDep", data);
 //运营类-->项目运营-->获取采购申请列表
 export const apiPurchaseList = data => get("getPurchaseList", data);
 
+//运营类-->项目运营-->获取指定材料采购单
+export const apigetPurchase = data => get("getPurchase", data);
+
+//运营类-->项目运营-->删除材料采购单
+export const apidelPurchase = data => post("delPurchase", data);
+
 //运营类-->项目运营-->材料类别选择列表
 export const apiselMaterialSeries = data => get("selectMaterialSeries", data);
 
@@ -484,6 +493,9 @@ export const apiselMaterial = data => get("selectMaterial", data);
 //运营类-->项目运营-->保存材料采购申请单
 export const apisavePurchase = data => post("savePurchase", data);
 
+//运营类-->项目运营-->修改材料采购申请单
+export const apimodPurchase = data => post("modPurchase", data);
+
 //运营类-->项目运营-->获取合同工程量
 export const apiContractQuantity = data => get("getPurchaseMaterialList", data);
 
@@ -492,6 +504,9 @@ export const apichooseQuantities = data => get("chooseQuantities", data);
 
 //运营类-->项目运营-->保存合同工程量
 export const apisaveQuantities = data => post("saveQuantities", data);
+
+//运营类-->项目运营-->查看指定增量流程
+export const apiChangeQuantity = data => get("getChangeQuantityRecord", data);
 
 //运营类-->项目运营-->修改合同工程量
 export const apimodQuantities = data => post("modQuantities", data);
@@ -505,8 +520,14 @@ export const apigetreqfundsView = data => get("getreqfundsView", data);
 //运营类-->项目运营-->保存请款进度
 export const apisavereqfunds = data => post("savereqfunds", data);
 
+//运营类-->项目运营-->删除请款进度
+export const apidelreqfunds = data => post("delreqfunds", data);
+
 //运营类-->项目运营-->修改请款进度
 export const apimodreqfunds = data => post("modreqfunds", data);
+
+//运营类-->项目运营-->启动开票申请流程
+export const apistartReqfunds = data => post("startReqfunds", data);
 
 //汇总类 --> 科技采购明细
 export const apidevePurReport = data => get("devePurReport", data);

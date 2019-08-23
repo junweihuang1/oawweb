@@ -155,10 +155,13 @@ export default {
         costapp_id: row.costapp_id
       }).then(res => {
         console.log(res);
-        this.Approvaltable = res.hisComment.map(item => {
-          item.START_TIME_ = changetime(item.START_TIME_);
-          return item;
-        });
+        this.Approvaltable = [];
+        if (res.hisComment) {
+          this.Approvaltable = res.hisComment.map(item => {
+            item.END_TIME_ = changetime(item.END_TIME_);
+            return item;
+          });
+        }
         this.setform = res.data;
         this.isopen = true;
       });

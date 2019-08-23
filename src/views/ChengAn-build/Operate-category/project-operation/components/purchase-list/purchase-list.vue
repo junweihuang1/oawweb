@@ -1,11 +1,16 @@
 <template>
   <div>
     <el-form inline size="mini">
-      <!-- <el-form-item label="项目名称">
-        <el-input></el-input>
-      </el-form-item> -->
+      <el-form-item label="供应商">
+        <el-input v-model="supplierName" clearable></el-input>
+      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="openPurchase">申请采购</el-button>
+        <el-button type="primary" @click="getPurchaseList">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" class="el-icon-plus" @click="openPurchase"
+          >申请采购</el-button
+        >
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -24,15 +29,14 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
-    <!-- <el-dialog :visible.sync="isopenPurchase" :append-to-body="true" top="8vh"> -->
-    <!-- </el-dialog> -->
+    <el-dialog></el-dialog>
   </div>
 </template>
 
 <script>
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import paging from "@/components/paging/paging";
-import { apiPurchaseList } from "@/request/api.js";
+import { apiPurchaseList, apidelPurchase } from "@/request/api.js";
 import { getDates } from "@/components/global-fn/global-fn";
 export default {
   name: "purchaseList",
@@ -56,8 +60,8 @@ export default {
         ["状态", "construct_purchase_status", 90]
       ],
       headle: ["查看", "删除", "修改"],
-      // isopenPurchase: false,
-      openType: ""
+      openType: "",
+      supplierName: ""
     };
   },
   props: {
@@ -74,15 +78,23 @@ export default {
     //修改
     modify(row) {
       console.log(row);
+      this.$emit("openeditPurchase", row.construct_purchase_id);
     },
     //删除
     delitem(row) {
-      console.log(row);
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apidelPurchase({
+            construct_purchase_id: row.construct_purchase_id
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.getPurchaseList();
+          });
+        })
+        .catch();
     },
     //申请采购
     openPurchase() {
-      // this.openType = "add";
-      // this.isopenPurchase = true;
       this.$emit("openaddPurchase");
     },
     getpage(val) {
@@ -95,10 +107,11 @@ export default {
     },
     //查看
     checkitem(row) {
-      console.log(row);
+      this.$emit("opencheckPurchase", row.construct_purchase_id);
     },
     getPurchaseList() {
       let data = {
+        construct_purchase_supplier: this.supplierName,
         construct_project_id: this.activeForm.construct_project_id,
         pageSize: this.currentlimit,
         limit: this.currentpage
