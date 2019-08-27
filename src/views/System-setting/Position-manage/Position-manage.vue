@@ -126,10 +126,9 @@ export default {
         roleid: "",
         role_name: roleName
       }).then(res => {
-        console.log("res");
         console.log(res);
         this.roleList = res.data.map(item => {
-          item.state2 = item.state == 1 ? "启动" : "停用";
+          item.state2 = item.state == 1 ? "启用" : "停用";
           return item;
         });
       });

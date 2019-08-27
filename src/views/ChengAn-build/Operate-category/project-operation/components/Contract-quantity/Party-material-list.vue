@@ -201,7 +201,9 @@ export default {
     selectMaterial
   },
   props: {
-    projectList: Object
+    projectList: {
+      type: Object
+    }
   },
   watch: {
     //打卡选择材料
@@ -324,14 +326,16 @@ export default {
       this.getMaterialList();
     },
     getMaterialList() {
-      apiContractQuantity({
+      let data = {
         construct_project_id: this.projectList.construct_project_id,
         construct_material_seriesName: this.material_category,
         construct_project_quantities_name: this.material_name,
         construct_project_quantities_model: this.material_model_name,
         pageSize: this.currentlimit,
         limit: this.currentpage
-      }).then(res => {
+      };
+      console.log(data);
+      apiContractQuantity(data).then(res => {
         console.log(res);
         this.materialList = res.data;
       });

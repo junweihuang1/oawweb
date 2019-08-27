@@ -22,7 +22,7 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      style="width:60%;"
+      style="width:70%;"
       :setheight="0.6"
       :DataList="workerList"
       :header="header"
@@ -54,14 +54,14 @@ export default {
       queryYearMonth: "",
       workerList: [],
       header: [
-        ["项目", "construct_project_name", 90],
+        ["项目", "construct_project_name"],
         ["施工项目", "construct_project_workTeam_category", 100],
-        ["打卡人", "username"],
-        ["打卡年月", "yearMon", 110],
+        ["打卡人", "username", 100],
+        ["打卡年月", "yearMon"],
         ["出勤天数", "attendanceDays", 130],
-        ["实际工作时长", "hr_attend_WTLength", 75],
-        ["单价", "january", 75],
-        ["应发工资", "wage", 75]
+        ["实际工作时长", "hr_attend_WTLength", 130],
+        ["单价", "january", 90],
+        ["应发工资", "wage", 100]
       ],
       headle: ["打卡详情"]
     };

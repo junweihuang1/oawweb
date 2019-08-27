@@ -57,7 +57,7 @@ export default {
         ["复核员", "construct_purchase_reviewer", 90],
         ["供应商", "construct_purchase_supplier", 90],
         ["供应商联系方式", "construct_purchase_supplierTel", 130],
-        ["状态", "construct_purchase_status", 90]
+        ["状态", "taskName", 90]
       ],
       headle: ["查看", "删除", "修改"],
       openType: "",
@@ -82,16 +82,24 @@ export default {
     },
     //删除
     delitem(row) {
-      this.$confirm(`确定删除吗？`)
-        .then(() => {
-          apidelPurchase({
-            construct_purchase_id: row.construct_purchase_id
-          }).then(res => {
-            this.$message.success(res.msg);
-            this.getPurchaseList();
-          });
-        })
-        .catch();
+      console.log(row);
+      if (
+        row.construct_purchase_status == 0 ||
+        row.construct_purchase_status == 1
+      ) {
+        this.$confirm(`确定删除吗？`)
+          .then(() => {
+            apidelPurchase({
+              construct_purchase_id: row.construct_purchase_id
+            }).then(res => {
+              this.$message.success(res.msg);
+              this.getPurchaseList();
+            });
+          })
+          .catch();
+      } else {
+        this.$message.error("审核中不能删除");
+      }
     },
     //申请采购
     openPurchase() {
@@ -120,20 +128,12 @@ export default {
       apiPurchaseList(data).then(res => {
         console.log(res);
         this.purchaseList = res.data.map(item => {
-          item.construct_purchase_planDate = getDates(
-            item.construct_purchase_planDate
-          );
-          item.construct_purchase_arriveDate = getDates(
-            item.construct_purchase_arriveDate
-          );
-          switch (item.construct_purchase_status) {
-            case 6:
-              item.construct_purchase_status = "供应商";
-              break;
-            case 11:
-              item.construct_purchase_status = "供应商结算申请";
-              break;
-          }
+          item.construct_purchase_planDate = item.construct_purchase_planDate
+            ? getDates(item.construct_purchase_planDate)
+            : "";
+          item.construct_purchase_arriveDate = item.construct_purchase_arriveDate
+            ? getDates(item.construct_purchase_arriveDate)
+            : "";
           return item;
         });
       });

@@ -2,8 +2,7 @@
   <div>
     <add-goods
       v-if="isopen"
-      :taskid="taskid"
-      :itemid="id"
+      :active="active"
       :entryList="entryList"
       :ownHead="ownHead"
       :hisComment="hisComment"
@@ -31,8 +30,7 @@ export default {
   },
   components: { addGoods },
   props: {
-    id: String,
-    taskid: String,
+    active: Object,
     openGoods: Boolean
   },
   watch: {
@@ -50,7 +48,7 @@ export default {
     },
     getGoodsList() {
       apiOwnHeadListById({
-        own_purchase_id: this.id
+        own_purchase_id: this.active.BUSINESS_KEY_.split(".")[1]
       }).then(res => {
         console.log(res);
         this.ownHead = res.data.ownHead;

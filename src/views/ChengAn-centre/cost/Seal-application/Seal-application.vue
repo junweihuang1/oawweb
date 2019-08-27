@@ -8,13 +8,12 @@
       >申请盖章</el-button
     >
     <rule-table
-      id="table"
-      style="overflow:auto;width:90%;"
+      :setheight="0.77"
       :header="headerList"
       :DataList="DataList"
-      @RowClassName="tableRowClassName"
       @checkleave="opanLeaveList"
       @delete="deleteApply"
+      @edit="downfile"
       :headle="headle"
     ></rule-table>
     <paging
@@ -24,26 +23,21 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
-    <Ca-view-process
-      :setform="selectList"
-      :isopen="isopen"
-      :header="ProcessHeader"
-      :title="dialogtitle"
-      :ApprovalHeaderList="ApprovalHeaderList"
-      @setclose="closeopen"
-      :Approvaltable="Approvaltable"
-    ></Ca-view-process>
-    <Seal-Apply
-      :isopen="isApplyOpen"
-      @closewidow="closeApplyWidow"
-    ></Seal-Apply>
+    <el-dialog title="盖章申请" :visible.sync="isApplyOpen" width="35%">
+      <Seal-Apply
+        :form="addform"
+        v-if="isApplyOpen"
+        :openType="openType"
+        :Approvaltable="Approvaltable"
+        @close="closeApplyWidow"
+      ></Seal-Apply>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import paging from "@/components/paging/paging";
-import SealApply from "./components/Seal-Apply";
-import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
+import SealApply from "@/components/Ca-to-do/Seal-Apply";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import { getDate_cn } from "@/components/global-fn/global-fn";
 import { apigetSealList, apiSealById, apidelSeal } from "@/request/api.js";
@@ -57,13 +51,13 @@ export default {
         ["ID", "own_seal_id", 80],
         ["文件名称", "own_seal_fileName", 100],
         ["用章公司", "own_seal_company", 140],
-        ["用章类别", "own_seal_chapCategory", 100],
+        ["用章类别", "own_seal_chapCategory2", 100],
         ["主送单位", "own_seal_sender", 280],
         ["创建时间", "own_seal_creatTime", 120],
         ["状态", "own_seal_status", 80],
         ["备注", "own_seal_remark"]
       ],
-      headle: ["查看", "删除"],
+      headle: ["查看", "删除", "下载"],
       isopen: false,
       selectList: {},
       ProcessHeader: [
@@ -85,27 +79,38 @@ export default {
       isApplyOpen: false,
       currentlimit: 15,
       currentpage: 1,
-      total: 50
+      total: 0,
+      addform: {},
+      openType: ""
     };
   },
   components: {
     ruleTable,
     SealApply,
-    paging,
-    CaViewProcess
+    paging
   },
   mounted() {
-    document.getElementById("table").style.height =
-      document.body.scrollHeight * 0.77 + "px";
     this.getsealList();
   },
   methods: {
+    downfile(row) {
+      if (row.own_seal_filePath && row.own_seal_filePath !== "") {
+        window.open(
+          "http://file.casdapi.com/sealFile/" + row.own_seal_filePath
+        );
+      } else {
+        this.$message.warning("没有附件");
+      }
+    },
     getsealList() {
       apigetSealList({
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {
+        console.log(res);
+        this.total = res.totalCount;
         this.DataList = res.data.map(item => {
+          //遍历公司用对应的文字替换
           switch (item.own_seal_company) {
             case 12:
               item.own_seal_company = "诚安时代（1）";
@@ -131,23 +136,31 @@ export default {
             default:
               break;
           }
-          switch (item.own_seal_chapCategory) {
-            case "1":
-              item.own_seal_chapCategory = "公章";
-              break;
-            case "2":
-              item.own_seal_chapCategory = "业务章";
-              break;
-            case "3":
-              item.own_seal_chapCategory = "出图章";
-              break;
-            case "4":
-              item.own_seal_chapCategory = "竣工章";
-              break;
-            case "5":
-              item.own_seal_chapCategory = "项目章";
-              break;
-          }
+          //盖章类型由字符串转数组，遍历用对应的文字替换
+          item.own_seal_chapCategory2 = item.own_seal_chapCategory
+            .split(",")
+            .map(item => {
+              switch (item) {
+                case "1":
+                  item = "公章";
+                  break;
+                case "2":
+                  item = "业务章";
+                  break;
+                case "3":
+                  item = "出图章";
+                  break;
+                case "4":
+                  item = "竣工章";
+                  break;
+                case "5":
+                  item = "项目章";
+                  break;
+              }
+
+              return item;
+            });
+          item.own_seal_chapCategory2 = item.own_seal_chapCategory2.join(",");
           item.own_seal_status = item.own_seal_status == 2 ? "通过" : "待审批";
           return item;
         });
@@ -163,37 +176,51 @@ export default {
     },
     closeApplyWidow() {
       this.isApplyOpen = false;
+      this.getsealList();
     },
     deleteApply(e) {
       this.$confirm("确认删除？")
         .then(() => {
-          console.log(e);
           apidelSeal({
             own_seal_id: e.own_seal_id
           }).then(res => {
-            console.log(res);
+            this.$message.success(res.msg);
+            this.getsealList();
           });
         })
         .catch(() => {});
     },
     openApply() {
+      this.openType = "add";
+      this.addform = {
+        own_seal_fileName: "", //文件名称
+        own_seal_settle: 0, //预结算金额
+        own_seal_company: "", //用章公司
+        own_seal_sender: "", //主送单位
+        own_seal_chapCategory: ["1"], //用章类别
+        own_seal_remark: "", //盖章用途
+        userid: "",
+        own_seal_filePath: ""
+      };
       this.isApplyOpen = true;
     },
     opanLeaveList(e) {
+      this.openType = "check";
       this.selectList = e;
       apiSealById({ own_seal_id: e.own_seal_id }).then(res => {
         console.log(res);
-        this.Approvaltable = res.hisComment.map(item => {
-          item.END_TIME_ = getDate_cn(item.END_TIME_);
-          return item;
-        });
-        console.log(this.Approvaltable);
+        this.addform = res.data;
+        this.addform.own_seal_chapCategory = this.addform.own_seal_chapCategory.split(
+          ","
+        );
+        this.Approvaltable = res.hisComment
+          ? res.hisComment.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? getDate_cn(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
+        this.isApplyOpen = true;
       });
-      this.isopen = true;
-    },
-    tableRowClassName(e) {},
-    closeopen() {
-      this.isopen = false;
     }
   }
 };

@@ -66,6 +66,12 @@ export default {
               title: "职位管理",
               route: "/Position-manage",
               children: []
+            },
+            {
+              id: "2-3",
+              title: "流程管理",
+              route: "/process-manage",
+              children: []
             }
           ]
         },

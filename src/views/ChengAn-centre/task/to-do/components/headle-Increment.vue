@@ -3,6 +3,7 @@
     <Contract-quantity
       @close="closeQuantity"
       :projectList="activeform"
+      :active="active"
       opentype="headle"
       :DataList="DataList"
     ></Contract-quantity>
@@ -26,8 +27,7 @@ export default {
     ContractQuantity
   },
   props: {
-    id: String,
-    taskid: String
+    active: Object
   },
   watch: {
     openGoods(val) {
@@ -38,12 +38,13 @@ export default {
     this.getGoOut();
   },
   methods: {
-    closeQuantity() {},
+    closeQuantity() {
+      this.$emit("close");
+    },
     getclose() {},
     getGoOut() {
-      console.log(this.id);
       apiChangeQuantity({
-        id: this.id
+        id: this.active.BUSINESS_KEY_.split(".")[1]
       }).then(res => {
         console.log(res);
         this.activeform = res.head;

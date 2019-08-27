@@ -18,7 +18,6 @@
       @checkleave="details"
       @delete="deleteitem"
       @edit="print"
-      @modify="modify"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
@@ -32,6 +31,7 @@
         v-if="isopen"
         :openType="openType"
         @close="closewin"
+        :processType="processType"
         :setform="setform"
         :Approvaltable="Approvaltable"
       ></cost-details>
@@ -80,12 +80,13 @@ export default {
         ["费用金额", "costapp_amount", 100],
         ["状态", "costapp_status", 100]
       ],
-      headle: ["查看", "删除", "打印", "修改"],
+      headle: ["查看", "删除", "打印"],
       isopen: false,
       setform: {},
       Approvaltable: [],
       isprint: false,
-      openType: ""
+      openType: "",
+      processType: {}
     };
   },
   components: {
@@ -100,18 +101,20 @@ export default {
   methods: {
     closewin() {
       this.isopen = false;
+      this.getCostList();
     },
     //修改
-    modify(row) {
-      apigetCostappById({
-        costapp_id: row.costapp_id
-      }).then(res => {
-        this.Approvaltable = [];
-        this.setform = res.data;
-        this.openType = "modify";
-        this.isopen = true;
-      });
-    },
+    // modify(row) {
+    //   apigetCostappById({
+    //     costapp_id: row.costapp_id
+    //   }).then(res => {
+    //     console.log(res);
+    //     this.Approvaltable = res.hisComment;
+    //     this.setform = res.data;
+    //     this.openType = "modify";
+    //     this.isopen = true;
+    //   });
+    // },
     //打印
     print(row) {
       this.isprint = true;
@@ -147,6 +150,13 @@ export default {
       this.setform = {};
       this.Approvaltable = [];
       this.isopen = true;
+      this.processType = {
+        taskid: "", //(必填)流程任务id
+        processInstanceId: "", //(必填)流程实例id
+        key: "costappView", //(必填)流程定义key
+        position: localStorage.getItem("role_name"), //(必填)申请人角色
+        type: "new" //(必填)新增new/运行中
+      };
     },
     //查看
     details(row) {
@@ -158,7 +168,7 @@ export default {
         this.Approvaltable = [];
         if (res.hisComment) {
           this.Approvaltable = res.hisComment.map(item => {
-            item.END_TIME_ = changetime(item.END_TIME_);
+            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
           });
         }

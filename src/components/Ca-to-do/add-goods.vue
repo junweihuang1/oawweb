@@ -123,8 +123,8 @@
         <el-input type="textarea" :row="2" v-model="reasons"></el-input>
       </el-form-item>
       <el-form-item label=" ">
-        <el-button type="primary" size="mini" @click="headle(true)"
-          >提交</el-button
+        <el-button type="success" size="mini" @click="headle(true)"
+          >同意</el-button
         >
         <el-button type="warning" size="mini" @click="headle(false)"
           >驳回</el-button
@@ -135,7 +135,7 @@
       type="primary"
       size="mini"
       style="margin:10px 0 0 30px;"
-      v-if="openType == 'add'"
+      v-else-if="openType == 'add'"
       @click="submit"
       >提交</el-button
     >
@@ -229,8 +229,7 @@ export default {
     },
     openType: String,
     hisComment: Array,
-    taskid: String,
-    itemid: String
+    active: Object
   },
   components: {
     selectCompany,
@@ -241,12 +240,13 @@ export default {
   },
   methods: {
     headle(type) {
+      console.log(this.active);
       let data = {
-        taskid: this.taskid,
+        taskid: this.active.ID_,
         userid: "1054",
         reasons: this.reasons,
         type: type,
-        own_purchase_id: this.itemid,
+        own_purchase_id: this.active.BUSINESS_KEY_.split(".")[1],
         own_purchase_planMan: this.form.own_purchase_planMan
       };
       console.log(data);
@@ -268,9 +268,15 @@ export default {
     },
     //获取流程线和下一审核人
     getNext() {
-      apiNextProcess({
-        type: "new"
-      }).then(res => {
+      let data = {
+        taskid: "", //(必填)流程任务id
+        processInstanceId: "", //(必填)流程实例id
+        key: "ownHeadView", //(必填)流程定义key
+        position: localStorage.getItem("role_name"), //(必填)申请人角色
+        type: "new" //(必填)新增new/运行中
+      };
+      console.log(data);
+      apiNextProcess(data).then(res => {
         console.log(res);
         this.activityList = res.activityList;
       });

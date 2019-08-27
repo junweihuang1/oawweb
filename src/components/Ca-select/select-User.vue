@@ -8,9 +8,14 @@
       <el-form-item>
         <el-button type="primary" @click="getUserList">搜索</el-button>
       </el-form-item>
+      <el-form-item v-if="openType == 'checkbox'">
+        <el-button type="primary" @click="save">保存</el-button>
+      </el-form-item>
     </el-form>
     <Ca-rule-table
       :setheight="0.5"
+      :setselect="true"
+      @setselect="getselect"
       :header="header"
       :DataList="userList"
       @dblclick="dblclick"
@@ -46,10 +51,13 @@ export default {
         ["公司", ""],
         ["部门id", "department"]
       ],
-      username: ""
+      username: "",
+      selectForm: {}
     };
   },
-  props: {},
+  props: {
+    openType: String
+  },
   watch: {},
   components: {
     CaRuleTable,
@@ -59,6 +67,19 @@ export default {
     this.getUserList();
   },
   methods: {
+    save() {
+      let name = this.selectForm.map(item => {
+        return item.username;
+      });
+      let id = this.selectForm.map(item => {
+        return item.userid;
+      });
+      this.$emit("setsup", [name, id]);
+    },
+    getselect(row) {
+      console.log(row);
+      this.selectForm = row;
+    },
     getlimit(e) {
       this.currentlimit = e;
       this.getUserList();

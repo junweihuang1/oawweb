@@ -25,7 +25,7 @@ export default {
   name: "selectCompany",
   data() {
     return {
-      company_id: "",
+      company_id: this.companyId,
       companyList: [],
       companyPage: 1,
       companyrows: 15
@@ -33,6 +33,17 @@ export default {
   },
   mounted() {
     this.getCompanyInf();
+  },
+  props: {
+    companyId: {
+      type: Number,
+      default: null
+    }
+  },
+  watch: {
+    companyId(val) {
+      this.company_id = val;
+    }
   },
   methods: {
     getCompanyInf() {

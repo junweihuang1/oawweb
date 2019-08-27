@@ -15,6 +15,7 @@
         <el-col :span="12">
           <el-form-item label="公司部门">
             <el-input
+              placeholder="请选择"
               v-model="form.costapp_company"
               @focus="openselect"
             ></el-input>
@@ -72,6 +73,14 @@
         </el-col>
       </el-row>
     </el-form>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps :active="current" align-center>
+      <el-step
+        v-for="(item, index) in processLine"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <el-divider content-position="left">审核记录</el-divider>
     <el-table :data="Approvaltable" border>
       <el-table-column
@@ -101,7 +110,8 @@ import selectDepartment from "@/components/Ca-select/select-department";
 import {
   apisaveCostapp,
   apimodCostapp,
-  apipassCostapp
+  apipassCostapp,
+  apigetProcessList
 } from "@/request/api.js";
 import { getDates, number_chinese } from "@/components/global-fn/global-fn";
 export default {
@@ -118,7 +128,10 @@ export default {
         ["审核人", "username", 80],
         ["审核时间", "END_TIME_", 160],
         ["审核意见", "MESSAGE_"]
-      ]
+      ],
+      processLine: [],
+      current: 1,
+      userid: Number //下一审核人id
     };
   },
   components: {
@@ -137,12 +150,21 @@ export default {
       }
     },
     openType: String,
-    Approvaltable: Array
+    Approvaltable: Array,
+    processType: Object
   },
   watch: {
     setform(val) {
       this.form = val;
     }
+  },
+  mounted() {
+    console.log(this.processType);
+    apigetProcessList(this.processType).then(res => {
+      console.log(res);
+      this.processLine = res.activityList;
+      this.form.userid = res.userlist.userList[0].userid;
+    });
   },
   computed: {
     nowtime() {

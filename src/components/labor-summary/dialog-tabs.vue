@@ -15,6 +15,7 @@
       >
         <el-tab-pane label="项目打卡" name="1">
           <check-card
+            style="padding:10px;"
             :companyId="companyId"
             :departmentid="departmentid"
             @openTeamList="openTeamList"
@@ -25,6 +26,7 @@
           v-if="this.$store.state.dialog_openTabs[0]"
           name="2"
           ><team-list
+            style="padding:10px;"
             :projectId="projectId"
             @opencardlist="opecardlist"
           ></team-list
@@ -35,6 +37,7 @@
           name="3"
         >
           <worker-list
+            style="padding:10px;"
             :teamId="teamId"
             @opendetaillist="opendetaillist"
           ></worker-list>
@@ -45,6 +48,7 @@
           name="4"
         >
           <detailed-list
+            style="padding:10px;"
             :workTeamId="workTeamId"
             :userId="userId"
           ></detailed-list>

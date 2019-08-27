@@ -13,6 +13,12 @@ export const apiUserInf = data => get("getUser", data);
 //获取流程代办
 export const apiFindTaskList = data => get("findTaskList", data);
 
+//查询所有代办类型
+export const apifindTaskType = () => get("findTaskType");
+
+//获取当前用户所有代办信息
+export const apifindTaskLists = data => get("findTaskLists", data);
+
 //外勤单信息接口
 export const apigetField = data => get("getFieldPersonnelById", data);
 
@@ -84,8 +90,14 @@ export const apiLeaveList = data => get("getLeaveList", data);
 //删除指定请假记录
 export const apideleLeave = id => Delete("deleLeave", id);
 
+//根据请假单查询详情
+export const apiLeaveListById = id => get("getLeaveListById", id);
+
 //获取请假的审批流程
 export const apiViewHisComment = data => get("getViewHisComment", data);
+
+//办理请假流程
+export const apipassLeave = data => post("passLeave", data);
 
 //行政类-->公告
 export const apinoticeListViews = data => get("noticeListViews", data);
@@ -116,6 +128,9 @@ export const apidelSeal = data => post("delSeal", data);
 
 //发起盖章流程
 export const apisaveSeal = data => post("saveSeal", data);
+
+//辦理盖章流程
+export const apipassSeal = data => post("passSeal", data);
 
 //费用类-->查询所有费用申请
 export const apigetCostappList = data => get("getCostappList", data);
@@ -426,8 +441,11 @@ export const apiaPartyMaterialCheck = data => get("aPartyMaterialCheck", data);
 //运营类-->甲方材料采购-->启动增量流程
 export const apistart_record = data => post("start_record", data);
 
-//运营类-->甲方材料采购-->获取流程线和下一节点名称和审核人
-export const apiCostappProcessList = data => get("getCostappProcessList", data);
+//获取流程线和下一节点名称和审核人
+export const apigetProcessList = data => get("getProcessList", data);
+
+//获取盖章的流程线和下一节点名称和审核人
+export const apiSealProcessList = data => get("getSealProcessList", data);
 
 //运营类-->甲方材料采购-->查询增量申请记录
 export const apiQuantityRecord = data =>
@@ -508,6 +526,9 @@ export const apisaveQuantities = data => post("saveQuantities", data);
 //运营类-->项目运营-->查看指定增量流程
 export const apiChangeQuantity = data => get("getChangeQuantityRecord", data);
 
+//运营类-->项目运营-->办理增量流程
+export const apipass_record = data => post("pass_record", data);
+
 //运营类-->项目运营-->修改合同工程量
 export const apimodQuantities = data => post("modQuantities", data);
 
@@ -564,3 +585,15 @@ export const apisave_Worker = data => post("save_Worker", data);
 
 //供应商中心 -->劳动力分配-->人员批量调动
 export const apimultiplayerApply = data => post("multiplayerApply", data);
+
+//系统设置-->流程管理-->获取所有流程信息
+export const apiprocessList = data => get("processList", data);
+
+//系统设置-->流程管理-->更新流程信息
+export const apisaveTaskRole = () => post("saveTaskRole");
+
+//系统设置-->流程管理-->获取指定流程信息
+export const apiprocessDetail = data => get("processDetail", data);
+
+//系统设置-->流程管理-->更新流程关联角色中间表角色绑定信息
+export const apiupdateTaskRoleId = data => post("updateTaskRoleId", data);

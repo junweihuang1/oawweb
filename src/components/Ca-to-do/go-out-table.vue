@@ -56,19 +56,31 @@
           placeholder="必填"
         ></el-input>
       </el-form-item>
-      <el-row>
-        <el-col :span="12" v-if="Type == 'edit'">
-          <el-form-item label="审批人">
-            <picker-c @setApprover="getApprover"></picker-c>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item v-if="Type == 'edit'">
-        <el-button type="primary" @click="onSubmit('form')">申请</el-button>
-        <el-button @click="resetForm('form')" type="danger" plain=""
-          >重置</el-button
-        >
-      </el-form-item>
+      <template v-if="Type == 'headle'">
+        <el-form-item label="意见">
+          <el-input
+            type="textarea"
+            :row="3"
+            v-model="reasons"
+            placeholder="必填"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="headle(true)">同意</el-button>
+          <el-button @click="headle(false)" type="warning">驳回</el-button>
+        </el-form-item>
+      </template>
+      <template v-else>
+        <el-form-item label="审批人">
+          <picker-c @setApprover="getApprover" style="width:50%;"></picker-c>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit('form')">申请</el-button>
+          <el-button @click="resetForm('form')" type="danger" plain=""
+            >重置</el-button
+          >
+        </el-form-item>
+      </template>
     </el-form>
   </div>
 </template>
@@ -76,7 +88,7 @@
 <script>
 import DateTime from "@/components/Ca-date-time/Ca-date-time";
 import pickerC from "@/components/Ca-picker-c/Ca-picker-c";
-import { apigoout } from "@/request/api.js";
+import { apigoout, apipassField } from "@/request/api.js";
 export default {
   name: "goouttable",
   data() {
@@ -101,7 +113,8 @@ export default {
         ],
         field_personnel_place: [{ validator: validateaddress, trigger: "blur" }]
       },
-      Type: this.openType
+      Type: this.openType,
+      reasons: ""
     };
   },
   components: {
@@ -128,7 +141,8 @@ export default {
       default: () => {
         return "";
       }
-    }
+    },
+    active: Object
   },
   watch: {
     //监听窗口状态
@@ -140,6 +154,20 @@ export default {
     }
   },
   methods: {
+    headle(type) {
+      let data = {
+        taskid: this.active.ID_,
+        userid: "1054",
+        reasons: this.reasons,
+        sign: type
+      };
+      console.log(data);
+      apipassField(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("setclose");
+      });
+    },
     resetForm(formName) {
       this.reload();
       this.$refs[formName].resetFields();
@@ -185,7 +213,7 @@ export default {
         field_personnel_cause: this.form.field_personnel_cause, //(必填)外出原因；
         start_time: this.form.start_time, //(必填)起始时间；
         end_time: this.form.end_time, //(必填)结束时间；
-        userid: this.form.field_personnel_car
+        userid: this.form.field_personnel_userid
       };
       if (data.start_time >= data.end_time) {
         this.$message.warning("结束时间应大于开始时间");
@@ -193,6 +221,7 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(data);
           apigoout(data)
             .then(res => {
               if (res.msg == "办理完成") {

@@ -62,6 +62,28 @@
                 placeholder="请选择"
               />
             </template>
+            <template v-else-if="item[2] == 'selsuperior'">
+              <input
+                type="text"
+                clearable
+                class="inputbox"
+                v-if="isselect"
+                v-model="row[item[1]]"
+                @focus="selsuperior"
+                placeholder="请选择"
+              />
+            </template>
+            <template v-else-if="item[2] == 'selCompsuperior'">
+              <input
+                type="text"
+                clearable
+                class="inputbox"
+                v-if="isselect"
+                v-model="row[item[1]]"
+                @focus="selCompsuperior"
+                placeholder="请选择"
+              />
+            </template>
             <template v-else>
               <input
                 type="text"
@@ -88,10 +110,35 @@
         @setSelectName="setSelectName"
       ></select-department>
     </el-dialog>
+    <el-dialog
+      :visible.sync="isopensup"
+      title="上级信息"
+      :append-to-body="true"
+      width="45%"
+      top="6vh"
+    >
+      <select-User
+        v-if="isopensup"
+        openType="checkbox"
+        @setsup="getuser"
+      ></select-User>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="isopenCompsup"
+      title="上级信息"
+      :append-to-body="true"
+      width="45%"
+      top="6vh"
+    >
+      <select-role v-if="isopenCompsup" @setrole="getrole"></select-role>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectRole from "@/components/Ca-select/select-role";
+import selectUser from "@/components/Ca-select/select-User";
 import selectDepartment from "@/components/Ca-select/select-department";
 import Tabs from "./Tabs";
 import { apisavePersonalRecords } from "@/request/api.js";
@@ -102,6 +149,8 @@ export default {
       JobChanges: [],
       isopenSelect: false,
       isselect: true,
+      isopenCompsup: false,
+      isopensup: false,
       form: [this.userList],
       formTitleList: [
         [
@@ -193,19 +242,19 @@ export default {
           ["续约", "renew", "date"],
           ["人员类型", "type", "select", [[1, "工人"], [2, "办公室人员"]]],
           ["工号", "user_num"],
-          ["", ""],
-          ["", ""],
+          ["直属上级", "leaderName", "selsuperior"],
+          ["直属公司上级", "chief_leaderName", "selCompsuperior"],
           ["", ""],
           ["", ""]
         ]
-        // ["直属上级", "superiors"],
-        // ["直属公司上级", "CompanySuperiors", 120]
       ]
     };
   },
   components: {
     Tabs,
-    selectDepartment
+    selectDepartment,
+    selectRole,
+    selectUser
   },
   props: {
     userList: Object,
@@ -246,13 +295,45 @@ export default {
       this.form[0].center_id = row.center_id;
       console.log(row);
     },
+    //获取直接上级
+    getuser([namelist, idlist]) {
+      this.form[0].leaderName = namelist.join(",");
+      this.form[0].leader = idlist.join(",");
+      this.isopensup = false;
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
+    },
+    //获取公司上级
+    getrole(row) {
+      // console.log(row);
+      this.form[0].chief_leaderName = row.role_name;
+      this.form[0].chief_leader = row.role_id;
+      this.isopenCompsup = false;
+      this.isselect = false;
+      this.$nextTick(() => {
+        this.isselect = true;
+      });
+    },
+    //打开选择部门的窗口
     selectDepartment() {
       this.isopenSelect = true;
     },
+    //打开选择上级的窗口
+    selsuperior() {
+      this.isopensup = true;
+    },
+    //打开选择公司上级的窗口
+    selCompsuperior() {
+      this.isopenCompsup = true;
+    },
+
     getJobChanges(e) {
       this.JobChanges = e;
       console.log(e);
     },
+    //提交
     submitForm() {
       let data = this.form[0];
       console.log(this.recordList);
@@ -262,6 +343,8 @@ export default {
       console.log(data);
       apisavePersonalRecords(data).then(res => {
         console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
       });
     }
   }

@@ -23,21 +23,19 @@
       @edit="openpic"
     ></Ca-rule-table>
     <!-- 打开办理普通采购的窗口 -->
-    <el-dialog :visible.sync="openGoods">
+    <el-dialog :visible.sync="openGoods" top="8vh">
       <headle-Goods
         v-if="openGoods"
-        :id="id"
-        :taskid="taskid"
+        :active="active"
         @close="closewin"
         :openGoods="openGoods"
       ></headle-Goods>
     </el-dialog>
     <!-- 打开办理外勤窗口 -->
-    <el-dialog :visible.sync="openGoOut" width="35%">
+    <el-dialog :visible.sync="openGoOut" width="35%" top="8vh">
       <headle-go-out
         v-if="openGoOut"
-        :id="id"
-        :taskid="taskid"
+        :active="active"
         @close="closewin"
         :openGoOut="openGoOut"
       ></headle-go-out>
@@ -46,21 +44,40 @@
     <el-dialog :visible.sync="openIncrement" width="50%" top="8vh">
       <headle-Increment
         v-if="openIncrement"
-        :id="id"
-        :taskid="taskid"
+        :active="active"
         @close="closewin"
       ></headle-Increment>
+    </el-dialog>
+    <el-dialog :visible.sync="openleave" width="50%" top="8vh">
+      <headle-leave
+        v-if="openleave"
+        :active="active"
+        @close="closewin"
+      ></headle-leave>
+    </el-dialog>
+    <el-dialog :visible.sync="openSeal" width="50%" top="8vh">
+      <headle-Seal
+        v-if="openSeal"
+        :active="active"
+        @close="closewin"
+      ></headle-Seal>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import headleSeal from "./components/headle-Seal";
+import headleLeave from "./components/headle-leave";
 import headleIncrement from "./components/headle-Increment";
 import headleGoOut from "./components/headle-go-out";
 import headleGoods from "./components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
-import { apiFindTaskList } from "@/request/api";
+import {
+  apiFindTaskList,
+  apifindTaskLists,
+  apifindTaskType
+} from "@/request/api";
 export default {
   name: "todo",
   data() {
@@ -77,52 +94,48 @@ export default {
         ["单据描述", "illustrate"]
       ],
       headle: ["办理", "", "流程图"],
-      typeList: [
-        "[人事]-转正申请",
-        "[考勤]-请假申请",
-        "[资费]-采购付款申请",
-        "材料采购申请(建设)",
-        "[甲供]-材料采购",
-        "绩效考评",
-        "合同工程量新增",
-        "[资费]-材料价格变更",
-        "项目合同申请",
-        "[资费]-费用申请",
-        "[资费]-领款申请",
-        "[考勤]-外勤申请",
-        "[公告]-通知公告",
-        "[材料]-物品采购",
-        "开票申请",
-        "离职申请",
-        "[内部]-盖章申请",
-        "监察意见",
-        "劳动力分配"
-      ],
+      typeList: [],
       summary: [],
-      id: "",
-      taskid: "",
+      currentlimit: 15,
+      currentpage: 1,
+      active: {},
       openGoods: false,
       openGoOut: false,
-      openIncrement: false
+      openIncrement: false,
+      openleave: false,
+      openSeal: false
     };
   },
   components: {
     CaRuleTable,
     headleGoods,
     headleGoOut,
-    headleIncrement
+    headleIncrement,
+    headleLeave,
+    headleSeal
   },
   mounted() {
+    //获取待办类型
+    apifindTaskType().then(res => {
+      console.log(res);
+      this.typeList = res.data.map(item => {
+        return item.NAME_;
+      });
+    });
     this.getToDoList();
   },
   methods: {
     closewin() {
       this.openGoods = false;
       this.openGoOut = false;
+      this.openIncrement = false;
+      this.openleave = false;
+      this.openSeal = false;
       this.getToDoList();
     },
+    //查询
     query() {
-      if (this.selectType == null) {
+      if (this.selectType == "") {
         this.todoList = this.summary;
       } else {
         this.todoList = this.summary.filter(
@@ -136,9 +149,10 @@ export default {
     },
     //待办
     openheadle(row) {
+      this.active = row;
       console.log(row);
-      this.id = row.BUSINESS_KEY_.split(".")[1];
-      this.taskid = row.ID_;
+      // this.id = row.BUSINESS_KEY_.split(".")[1];
+      // this.taskid = row.ID_;
       switch (row.pdname) {
         case "[材料]-物品采购":
           this.openGoods = true;
@@ -149,10 +163,21 @@ export default {
         case "合同工程量新增":
           this.openIncrement = true;
           break;
+        case "[考勤]-请假申请":
+          this.openleave = true;
+          break;
+        case "[内部]-盖章申请":
+          this.openSeal = true;
+          break;
       }
     },
     getToDoList() {
-      apiFindTaskList().then(res => {
+      apiFindTaskList({
+        process_name: this.selectType,
+        pageSize: this.currentlimit,
+        limit: this.currentpage
+      }).then(res => {
+        console.log(res);
         this.summary = res.map(item => {
           item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
           return item;

@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { apistart_record, apiCostappProcessList } from "@/request/api.js";
+import { apistart_record, apigetProcessList } from "@/request/api.js";
 import selectQuantity from "./select-quantity";
 import paging from "@/components/paging/paging";
 export default {
@@ -150,7 +150,9 @@ export default {
     paging
   },
   props: {
-    projectList: Object
+    projectList: {
+      type: Object
+    }
   },
   watch: {
     projectList() {
@@ -158,16 +160,20 @@ export default {
     }
   },
   mounted() {
-    console.log(this.projectList);
     this.getprossList();
   },
   methods: {
     getprossList() {
-      apiCostappProcessList({
-        type: "new"
-      }).then(res => {
+      let data = {
+        taskid: "", //(必填)流程任务id
+        processInstanceId: "", //(必填)流程实例id
+        key: "afterAddingNum", //(必填)流程定义key
+        position: localStorage.getItem("role_name"), //(必填)申请人角色
+        type: "new" //(必填)新增new/运行中
+      };
+      apigetProcessList(data).then(res => {
         console.log(res);
-        this.activityList = res.activityList;
+        // this.activityList = res.activityList;
       });
     },
     submit() {

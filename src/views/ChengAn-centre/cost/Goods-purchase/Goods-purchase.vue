@@ -111,11 +111,17 @@ export default {
       this.getGoodsList();
     },
     delitem(row) {
-      apidelOwnEntry({
-        own_purchase_entryId: row.own_purchase_id
-      }).then(res => {
-        console.log(res);
-      });
+      console.log(row);
+      this.$confirm(`确认删除吗？`)
+        .then(() => {
+          apidelOwnEntry({
+            own_purchase_entryId: row.own_purchase_id
+          }).then(res => {
+            console.log(res);
+            this.getGoodsList();
+          });
+        })
+        .catch();
     },
     //查看
     checkitem(row) {

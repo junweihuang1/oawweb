@@ -63,7 +63,13 @@
           <span v-else>{{ row[item[1]] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="160" fixed="right">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="160"
+        fixed="right"
+        v-if="!active"
+      >
         <template slot-scope="scope">
           <el-button
             type="success"
@@ -97,13 +103,38 @@
         <el-input
           type="textarea"
           :rows="2"
+          v-model="reason"
           style="width:50%;"
           placeholder="请输入内容"
         ></el-input>
       </el-form-item>
       <el-form-item label=" " v-if="opentype == 'headle'">
-        <el-button type="success" size="mini" @click="submit">同意</el-button>
-        <el-button type="danger" size="mini" @click="submit">驳回</el-button>
+        <template v-for="(item, index) in buttonList">
+          <el-button
+            v-if="item == 'submit'"
+            :key="index"
+            type="success"
+            size="mini"
+            @click="headleprocess(true)"
+            >提交</el-button
+          >
+          <el-button
+            v-else-if="item == 'reject'"
+            :key="index"
+            type="warning"
+            size="mini"
+            @click="headleprocess(false)"
+            >驳回</el-button
+          >
+          <el-button
+            v-else-if="item == 'disagree'"
+            :key="index"
+            type="danger"
+            size="mini"
+            @click="headleprocess('finish')"
+            >不同意</el-button
+          >
+        </template>
       </el-form-item>
       <el-form-item label=" " v-else>
         <el-button type="primary" size="mini" @click="submit">提交</el-button>
@@ -113,16 +144,23 @@
     <el-divider content-position="left">流程线</el-divider>
     <el-steps
       :space="250"
-      :active="0"
-      finish-status="success"
+      :active="current"
       style="margin-left:50px;"
+      align-center
     >
       <el-step
         :title="item.name"
         v-for="(item, index) in activityList"
         :key="index"
+        :description="item.username"
       ></el-step>
     </el-steps>
+    <el-divider content-position="left">审批流程</el-divider>
+    <Ca-view-process
+      style="width:75%;"
+      :Approvaltable="Approvaltable"
+      :ApprovalHeaderList="ApprovalHeaderList"
+    ></Ca-view-process>
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
         :projectList="projectList"
@@ -133,9 +171,15 @@
 </template>
 
 <script>
-import { apistart_record, apiCostappProcessList } from "@/request/api.js";
+import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
+import {
+  apistart_record,
+  apigetProcessList,
+  apipass_record
+} from "@/request/api.js";
 import selectQuantity from "./select-quantity";
 import paging from "@/components/paging/paging";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "ContractQuantity",
   data() {
@@ -157,12 +201,25 @@ export default {
       isopen: false,
       addid: 1,
       activeList: [],
-      activityList: []
+      current: 1,
+      activityList: [],
+      reason: "",
+      userid: Number,
+      buttonList: [],
+      Approvaltable: [],
+      ApprovalHeaderList: [
+        ["序号", "index", 80],
+        ["流程节点", "name_", 100],
+        ["审核人", "username", 100],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ]
     };
   },
   components: {
     selectQuantity,
-    paging
+    paging,
+    CaViewProcess
   },
   props: {
     projectList: Object,
@@ -172,42 +229,97 @@ export default {
         return [];
       }
     },
-    opentype: String
-  },
-  watch: {
-    projectList() {
-      this.getprossList();
+    opentype: String,
+    active: {
+      type: Object,
+      default: () => {}
     }
   },
   mounted() {
     this.getprossList();
   },
   methods: {
-    getprossList() {
-      apiCostappProcessList({
-        type: "new"
-      }).then(res => {
-        console.log(res);
-        this.activityList = res.activityList;
-      });
-    },
-    submit() {
-      let rows = this.DataList.map(item => {
-        delete item.id;
-        return item;
-      });
+    //办理
+    headleprocess(type) {
       let data = {
-        type: "BSupply",
-        construct_project_id: this.projectList.construct_project_id,
-        rows: JSON.stringify(rows),
-        userid: "1054"
+        taskid: this.active.ID_,
+        reasons: this.reason,
+        sign: type,
+        taskName: this.active.NAME_,
+        headId: this.projectList.id,
+        type: this.projectList.type,
+        rows: JSON.stringify(this.DataList),
+        userid: this.userid
       };
       console.log(data);
-      apistart_record(data).then(res => {
+      apipass_record(data).then(res => {
         console.log(res);
-        this.$message.success(res.msg);
+        this.$message.success(res.Msg);
         this.$emit("close");
       });
+    },
+    getprossList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          key: "afterAddingNum", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "afterAddingNum", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.buttonList = res.startForm.split(",");
+        this.userid = res.userlist.userList[0].userid;
+        this.Approvaltable = res.historyList.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
+        //当进入办理流程后，遍历流程线，判断出当前的节点
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == res.userlist.userTaskName) {
+            item.username = res.userlist.userList[0].username;
+            if (this.active) {
+              this.current = index;
+            }
+          }
+          return item;
+        });
+        console.log(this.activityList);
+      });
+    },
+    //保存
+    submit() {
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          let rows = this.DataList.map(item => {
+            delete item.id;
+            return item;
+          });
+          let data = {
+            type: "BSupply",
+            construct_project_id: this.projectList.construct_project_id,
+            rows: JSON.stringify(rows),
+            userid: this.userid
+          };
+          console.log(data);
+          apistart_record(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch();
     },
     deleteitem(row) {
       console.log(this.DataList);

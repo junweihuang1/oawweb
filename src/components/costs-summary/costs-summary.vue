@@ -65,10 +65,10 @@ export default {
       isopen: false,
       header: [
         ["项目", "construct_project_name", 90],
-        ["施工项目", "construct_project_workTeam_category"],
+        ["施工项目", "construct_project_workTeam_category", 100],
         ["施工项目id", "construct_project_workTeam_id", 120],
         ["班组", "username", 75],
-        ["合同金额", "construct_project_workTeam_amount", 75],
+        ["合同金额", "construct_project_workTeam_amount", 100],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["1月", "january", 75],
         ["2月", "february", 75],

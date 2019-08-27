@@ -123,7 +123,6 @@ export default {
   watch: {
     screenHeight(val) {
       if (val && document.getElementsByClassName("panel-group").length != 0) {
-        console.log(document.getElementsByClassName("panel-group"));
         document.getElementsByClassName("panel-group")[1].style.height =
           val - 290 + "px";
       }
@@ -151,26 +150,22 @@ export default {
         hr_attend_apply_data: this.ApplyForm.date,
         hr_attend_apply_reason: this.ApplyForm.desc,
         hr_attend_typeCard: this.ApplyForm.ApplyType
-      })
-        .then(res => {
-          if (res.msg) {
-            this.$message({
-              message: res.msg,
-              type: "success"
-            });
-            this.ApplyForm = {
-              ApplyType: "上班",
-              date: "",
-              desc: ""
-            };
-            setTimeout(() => {
-              this.isApply = false;
-            }, 500);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      }).then(res => {
+        if (res.msg) {
+          this.$message({
+            message: res.msg,
+            type: "success"
+          });
+          this.ApplyForm = {
+            ApplyType: "上班",
+            date: "",
+            desc: ""
+          };
+          setTimeout(() => {
+            this.isApply = false;
+          }, 500);
+        }
+      });
     },
     ApplyCard() {
       this.isApply = true;

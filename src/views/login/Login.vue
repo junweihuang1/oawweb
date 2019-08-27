@@ -36,7 +36,7 @@
             type="primary"
             :disabled="disabled"
             :loading="loading"
-            style="width:100%;margin-bottom:150px;"
+            plain
             @click="submitForm('formInline')"
             >登录</el-button
           >
@@ -159,15 +159,22 @@ export default {
 
 <style lang="scss">
 .login {
+  background: url(../../assets/bg.jpg);
+  background-size: 100% 100%;
   width: 100%;
   height: 100vh;
-  //background-color:rgb(45, 58, 75);
+  // background-color: rgb(45, 58, 75);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .el-form-login {
-  min-width: 350px;
+  // min-width: 350px;
+  background: rgba($color: #fff, $alpha: 0.1);
+  border-radius: 3px;
+  text-align: center;
+  padding: 50px 100px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 .login-title {
   width: 100%;

@@ -128,11 +128,10 @@ export default {
     },
     //代办任务
     handleApiFindTaskList() {
-      apiFindTaskList({
-        userId: ""
-      })
+      apiFindTaskList({})
         .then(res => {
           console.log(res);
+          this.$store.state.todoList = res;
           this.processList = res;
         })
         .catch(err => {

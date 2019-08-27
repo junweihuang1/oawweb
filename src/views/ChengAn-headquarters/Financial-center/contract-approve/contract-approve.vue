@@ -172,17 +172,11 @@ export default {
           apideleteContract({
             manage_contractapprove_id: row.manage_contractapprove_id,
             filePath: ""
-          })
-            .then(res => {
-              this.getContractApprove();
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          }).then(res => {
+            this.getContractApprove();
+          });
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch();
     },
     downfile(row) {
       if (row.manage_contractapprove_attachAddress) {

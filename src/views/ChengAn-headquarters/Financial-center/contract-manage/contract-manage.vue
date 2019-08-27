@@ -154,6 +154,7 @@ export default {
         manage_contract_visaAmount: 0,
         manage_contract_remark: ""
       };
+      this.rows = [];
       this.isopen = true;
     },
     submit(data) {
@@ -171,6 +172,7 @@ export default {
       this.currentpage = e;
       this.getContractList();
     },
+    //修改
     modifyitem(row) {
       apicontractPayNew({ manage_contract_id: row.manage_contract_id }).then(
         res => {

@@ -31,6 +31,12 @@ const router = new Router({
           component: () =>
             import("@/views/System-setting/Position-manage/Position-manage.vue")
         },
+        {
+          path: "process-manage",
+          name: "process-manage",
+          component: () =>
+            import("@/views/System-setting/process-manage/process-manage.vue")
+        },
         //诚安人中心-->行政类
         {
           path: "Mail-list",

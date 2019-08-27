@@ -19,13 +19,14 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="150"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
     <el-dialog title="发起外勤申请" :visible.sync="isgoout" width="35%">
       <go-out-table
         :openType="openType"
+        @setclose="getclose"
         v-if="isgoout"
         :activeform="activeform"
       ></go-out-table>
@@ -49,6 +50,7 @@ export default {
       isgoout: false,
       currentlimit: 15,
       currentpage: 1,
+      total: null,
       goOutList: [],
       header: [
         ["申请人", "username", 90],
@@ -61,7 +63,7 @@ export default {
         ["外出事由", "field_personnel_cause"],
         ["开始时间", "start_time", 150],
         ["结束时间", "end_time", 150],
-        ["状态", "field_personnel_status", 80]
+        ["状态", "field_personnel_status2", 80]
       ],
       headle: ["编辑", "删除"],
       activeform: {},
@@ -91,11 +93,19 @@ export default {
         limit: this.currentpage
       })
         .then(res => {
+          console.log(res);
+          this.total = res.totalCount;
           this.goOutList = res.data.map(item => {
             item.field_personnel_car2 =
               item.field_personnel_car == 1 ? "否" : "是";
-            item.field_personnel_status =
-              item.field_personnel_status == 4 ? "外勤结束" : "外勤中";
+            item.field_personnel_status2 =
+              item.field_personnel_status == 4
+                ? "外勤结束"
+                : item.field_personnel_status == 3
+                ? "未通过"
+                : item.field_personnel_status == 2
+                ? "审核通过"
+                : "审核中";
             return item;
           });
         })

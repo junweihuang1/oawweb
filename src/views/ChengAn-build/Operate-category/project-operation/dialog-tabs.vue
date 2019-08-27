@@ -91,7 +91,7 @@ export default {
       currentActive: "1",
       isopen: [false, false, false, false, false, false, false],
       entryList: [],
-      headform: Object,
+      headform: {},
       openType: "",
       projectId: Number,
       Purchase_entryList: [], //采购申请中的表格数组
@@ -99,7 +99,7 @@ export default {
       reqfundsId: Number,
       ApplyFormopenType: "",
       ProcessList: [],
-      headform2: Object
+      headform2: {}
     };
   },
   props: {

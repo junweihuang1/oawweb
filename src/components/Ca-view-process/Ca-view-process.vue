@@ -1,41 +1,17 @@
 // form表单+流程table
 <template>
   <div>
-    <el-dialog
-      :title="title"
-      :visible.sync="myopen"
-      @close="closeopen"
-      width="35%"
-    >
-      <el-form ref="form" :model="setform" label-width="90px">
-        <el-row>
-          <template v-for="(item, index) in header">
-            <el-col :span="index == header.length - 1 ? 24 : 12" :key="index">
-              <el-form-item :label="item[0]" :key="index">
-                <el-input
-                  :value="setform[item[1]]"
-                  :type="index == header.length - 1 ? 'textarea' : 'text'"
-                  row="3"
-                />
-              </el-form-item>
-            </el-col>
-          </template>
-        </el-row>
-      </el-form>
-
-      <h5>审批流程</h5>
-      <el-table :data="Approvaltable" border>
-        <el-table-column
-          v-for="(item, index) in ApprovalHeaderList"
-          :key="index"
-          :label="item[0]"
-          :prop="item[1]"
-          :type="index == 0 ? 'index' : ''"
-          :width="item[2]"
-          align="center"
-        ></el-table-column>
-      </el-table>
-    </el-dialog>
+    <el-table :data="Approvaltable" border :header-cell-style="getRowClass">
+      <el-table-column
+        v-for="(item, index) in ApprovalHeaderList"
+        :key="index"
+        :label="item[0]"
+        :prop="item[1]"
+        :type="index == 0 ? 'index' : ''"
+        :width="item[2]"
+        align="center"
+      ></el-table-column>
+    </el-table>
   </div>
 </template>
 
@@ -44,15 +20,21 @@ export default {
   name: "CaViewProcess",
   data() {
     return {
-      myopen: this.isopen
+      // ApprovalHeaderList:
     };
   },
   props: {
-    title: String,
-    setform: Object,
-    isopen: Boolean,
-    header: Array,
-    ApprovalHeaderList: Array,
+    ApprovalHeaderList: {
+      default: () => {
+        return [
+          ["序号", "index", 60],
+          ["流程节点", "name_", 140],
+          ["审核人", "username", 80],
+          ["审核时间", "END_TIME_", 160],
+          ["审核意见", "MESSAGE_"]
+        ];
+      }
+    },
     Approvaltable: Array
   },
   watch: {
@@ -63,6 +45,15 @@ export default {
   methods: {
     closeopen() {
       this.$emit("setclose");
+    },
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex === 0) {
+        return `background: ${
+          this.$store.state.tableColor
+        };color:#fff;height:40px;padding:0px;`;
+      } else {
+        return "height:40px;padding:0px;";
+      }
     }
   }
 };

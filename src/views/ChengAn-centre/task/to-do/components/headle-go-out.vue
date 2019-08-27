@@ -3,6 +3,7 @@
     <go-out-table
       :openType="openType"
       @setclose="getclose"
+      :active="active"
       :activeform="activeform"
     ></go-out-table>
   </div>
@@ -16,7 +17,7 @@ export default {
   data() {
     return {
       isopen: false,
-      openType: "edit",
+      openType: "headle",
       activeform: {}
     };
   },
@@ -24,8 +25,7 @@ export default {
     GoOutTable
   },
   props: {
-    id: String,
-    taskid: String,
+    active: Object,
     openGoOut: Boolean
   },
   watch: {
@@ -37,10 +37,12 @@ export default {
     this.getGoOut();
   },
   methods: {
-    getclose() {},
+    getclose() {
+      this.$emit("close");
+    },
     getGoOut() {
       apigetField({
-        id: this.id
+        id: this.active.BUSINESS_KEY_.split(".")[1]
       }).then(res => {
         this.activeform = res.data;
         console.log(this.activeform);

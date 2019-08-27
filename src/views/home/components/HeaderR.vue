@@ -87,10 +87,14 @@ export default {
       this.fullscreen = !this.fullscreen;
     },
     handleLoginOut() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      localStorage.removeItem("role_name");
-      localStorage.removeItem("userid");
+      // localStorage.removeItem("token");
+      this.$store.state.token = "";
+      localStorage.clear();
+      // localStorage.removeItem("username");
+      // localStorage.removeItem("role_name");
+      // localStorage.removeItem("userid");
+      // localStorage.removeItem("center_name");
+
       this.$router.push("/login");
     }
   }
