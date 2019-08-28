@@ -10,6 +10,7 @@
     </div>
     <el-tree
       :data="TreeList"
+      default-expand-all
       @node-click="nodeClick"
       accordion
       :props="defaultProps"

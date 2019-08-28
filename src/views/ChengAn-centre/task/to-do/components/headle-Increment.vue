@@ -29,11 +29,6 @@ export default {
   props: {
     active: Object
   },
-  watch: {
-    openGoods(val) {
-      this.isopen = val;
-    }
-  },
   mounted() {
     this.getGoOut();
   },
@@ -43,12 +38,15 @@ export default {
     },
     getclose() {},
     getGoOut() {
+      console.log(this.active)
+      let id=this.active.BUSINESS_KEY_.split(".")[1]?this.active.BUSINESS_KEY_.split(".")[1]:this.active.businessId
+      console.log(id)
       apiChangeQuantity({
-        id: this.active.BUSINESS_KEY_.split(".")[1]
+        id: id
       }).then(res => {
         console.log(res);
-        this.activeform = res.head;
-        this.DataList = res.entry;
+        // this.activeform = res.head;
+        // this.DataList = res.entry;
       });
     }
   }

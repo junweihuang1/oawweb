@@ -20,8 +20,8 @@
       :header="header"
       :headle="headle"
       @checkleave="openheadle"
-      @edit="openpic"
     ></Ca-rule-table>
+    <paging :currentpage="currentpage" :currentlimit="currentlimit" :total="total" @setpage="getpage" @setlimit="getlimit"></paging>
     <!-- 打开办理普通采购的窗口 -->
     <el-dialog :title="openTitle" :visible.sync="openGoods" top="8vh">
       <headle-Goods
@@ -98,36 +98,41 @@
 </template>
 
 <script>
-import headlePurchase from "./components/headle-Purchase";
-import headleSeal from "./components/headle-Seal";
-import headleLeave from "./components/headle-leave";
-import headleIncrement from "./components/headle-Increment";
-import headleGoOut from "./components/headle-go-out";
-import headleGoods from "./components/headle-Goods";
+import headlePurchase from "../to-do/components/headle-Purchase";
+import headleSeal from "../to-do/components/headle-Seal";
+import headleLeave from "../to-do/components/headle-leave";
+import headleIncrement from "../to-do/components/headle-Increment";
+import headleGoOut from "../to-do/components/headle-go-out";
+import headleGoods from "../to-do/components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
+import paging from "@/components/paging/paging"
 import { changetime } from "@/components/global-fn/global-fn";
 import {
-  apiFindTaskList,
+  apialreadyHandleTask,
   apifindTaskType,
   apipersonManagem_s
 } from "@/request/api";
 export default {
-  name: "todo",
+  name: "alreadyDo",
   data() {
     return {
+        total:0,
       img_src: "",
       todoList: [],
       selectType: "",
       header: [
         ["流水号", "ID_", 90],
-        ["流程类型", "pdname", 150],
-        ["步骤名称", "NAME_", 150],
-        ["任务创建时间", "CREATE_TIME_", 150],
-        ["流程实例id", "EXECUTION_ID_", 120],
+        ["流程类型", "processName", 150],
+        ["申请时间", "startTime", 150],        
         ["申请人", "applicant", 120],
+        ["流程实例id", "taskid", 120],
+        ["步骤名称", "taskName", 130],
+        ["任务到达时间","arrivalTime",120],
+        ["办理人","assignee",100],
+         ["状态","status",100],
         ["单据描述", "illustrate"]
       ],
-      headle: ["办理", "", "流程图"],
+      headle: ["查看"],
       typeList: [],
       summary: [],
       currentlimit: 15,
@@ -149,7 +154,8 @@ export default {
     headleIncrement,
     headleLeave,
     headlePurchase,
-    headleSeal
+    headleSeal,
+    paging
   },
   mounted() {
     //获取待办类型
@@ -159,7 +165,7 @@ export default {
         return item.NAME_;
       });
     });
-    this.getToDoList();
+    this.getReadyDoList();
   },
   methods: {
     closewin() {
@@ -169,7 +175,7 @@ export default {
       this.openleave = false;
       this.openSeal = false;
       this.openPurchase = false;
-      this.getToDoList();
+      this.getReadyDoList();
     },
     //查询
     query() {
@@ -181,19 +187,12 @@ export default {
         );
       }
     },
-    //打开流程图
-    openpic(row) {
-      console.log(row);
-      apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-        // console.log(typeof res);
-      });
-    },
     //待办
     openheadle(row) {
       this.active = row;
       console.log(row);
-      this.openTitle = row.pdname;
-      switch (row.pdname) {
+      this.openTitle = row.processName;
+      switch (row.processName) {
         case "[材料]-物品采购":
           this.openGoods = true;
           break;
@@ -214,19 +213,32 @@ export default {
           break;
       }
     },
-    getToDoList() {
-      apiFindTaskList({
-        process_name: this.selectType,
+    getpage(val){
+        this.currentpage=val
+        this.getReadyDoList()
+    },
+    getlimit(val){
+        this.currentlimit=val
+        this.getReadyDoList()
+    },
+    getReadyDoList() {
+        let data={
+        applicant:"",
+        processKey: this.selectType,
         pageSize: this.currentlimit,
         limit: this.currentpage
-      }).then(res => {
+      }
+      console.log(data)
+      apialreadyHandleTask(data).then(res => {
         console.log(res);
-        this.summary = res.map(item => {
-          item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
-          return item;
-        });
-        this.todoList = res.map(item => {
-          item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
+        this.total=res.total
+        // this.summary = res.data.map(item => {
+        //   item.startTime = changetime(item.startTime);
+        //   return item;
+        // });
+        this.todoList = res.data.map(item => {
+          item.startTime = changetime(item.startTime);
+          item.status=item.status==0?'已结束':''
           return item;
         });
       });

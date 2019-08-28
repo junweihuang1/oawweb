@@ -125,7 +125,7 @@ export default {
     headle: Array,
     setheight: {
       type: Number,
-      default: 0.77
+      default: 0.74
     },
     setselect: {
       type: Boolean,

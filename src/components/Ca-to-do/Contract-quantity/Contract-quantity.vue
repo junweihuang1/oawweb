@@ -271,7 +271,7 @@ export default {
         rows: JSON.stringify(this.myDataList),
         userid: this.userid
       };
-      console.log(data);
+      
       apipass_record(data).then(res => {
         console.log(res);
         this.$message.success(res.Msg);

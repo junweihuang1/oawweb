@@ -246,7 +246,8 @@ import selectMaterialSeries from "@/components/Ca-select/select-material-series"
 import {
   apisavePurchase,
   apimodPurchase,
-  apiPurchaseProcessList
+  apiPurchaseProcessList,
+  apipassPurchase
 } from "@/request/api.js";
 export default {
   name: "projectInfor",
@@ -308,7 +309,22 @@ export default {
   },
   methods: {
     //办理
-    headleprocess(type) {},
+    headleprocess(type) {
+      let data={
+        processInstanceId:this.active.PROC_INST_ID_,//(必填)运行时id
+		taskid:this.active.ID_,//(必填)实例id
+		sign:type,//(必填)是否同意
+		reason:this.reasons,//(必填)审核意见
+		usertask:"",//(必填)驳回节点
+		taskName:this.active.NAME_,//(必填)当前节点id
+		construct_purchase_id:this.active.BUSINESS_KEY_.split(".")[1],//(必填)材料单id
+		userid:this.userid,//(必填)下一审批人id
+	  }
+	  console.log(data)
+      apipassPurchase(data).then(res=>{
+        console.log(res)
+      })
+    },
     getprossList() {
       let data = {};
       //当active（待办）不为空时

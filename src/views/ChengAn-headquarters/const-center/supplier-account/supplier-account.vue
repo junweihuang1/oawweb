@@ -12,9 +12,6 @@
           >添加供应商</el-button
         >
       </el-form-item>
-      <el-form-item>
-        <el-button type="danger" @click="deleteSupplier">删除供应商</el-button>
-      </el-form-item>
     </el-form>
     <Ca-rule-table
       style="width:60%;"

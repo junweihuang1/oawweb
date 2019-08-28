@@ -1,4 +1,4 @@
-import { get, post, Delete, put } from "./http";
+import {get, post, Delete, put } from "./http";
 // import { publicDecrypt } from "crypto";
 
 // new接口
@@ -12,6 +12,9 @@ export const apiUserInf = data => get("getUser", data);
 
 //获取流程代办
 export const apiFindTaskList = data => get("findTaskList", data);
+
+//
+export const apialreadyHandleTask = data => get("alreadyHandleTask", data)
 
 //根据待办id查询流程图
 export const apipersonManagem_s = id => get("personManagem_s", id);
@@ -45,7 +48,7 @@ export const apiapplyFillCard = data => post("applyFillCard", data);
 
 //获取指定补卡申请的详情
 export const apiApplicationDetails = ApplyId =>
-  get("getAssingnationAttendApply", ApplyId);
+    get("getAssingnationAttendApply", ApplyId);
 
 //获取未审核的补卡审批
 export const apiNotAuditedCard = data => get("getUnreviewedAttendApply", data);
@@ -55,7 +58,7 @@ export const apiagreeAttendApply = ApplyId => get("agreeAttendApply", ApplyId);
 
 //拒绝补卡申请
 export const apirejectAttendApply = ApplyId =>
-  get("rejectAttendApply", ApplyId);
+    get("rejectAttendApply", ApplyId);
 
 //获取所有用户信息
 export const apiuserLists = data => get("userLists", data);
@@ -440,7 +443,7 @@ export const apiConMaterialList = data => get("getConMaterialList", data);
 
 //乙供材料采购获取下一节点和审核人
 export const apiPurchaseProcessList = data =>
-  get("getPurchaseProcessList", data);
+    get("getPurchaseProcessList", data);
 
 //运营类-->甲方材料采购-->获取甲供材料
 export const apiaPartyMaterialCheck = data => get("aPartyMaterialCheck", data);
@@ -456,7 +459,7 @@ export const apiSealProcessList = data => get("getSealProcessList", data);
 
 //运营类-->甲方材料采购-->查询增量申请记录
 export const apiQuantityRecord = data =>
-  get("changeQuantityRecordRecord", data);
+    get("changeQuantityRecordRecord", data);
 
 //运营类-->甲方材料采购-->获取甲供材料采购信息
 export const apiaPartyPurList = data => get("aPartyPurList", data);
@@ -520,6 +523,9 @@ export const apisavePurchase = data => post("savePurchase", data);
 
 //运营类-->项目运营-->修改材料采购申请单
 export const apimodPurchase = data => post("modPurchase", data);
+
+//运营类-->项目运营-->办理材料采购申请单
+export const apipassPurchase = data => post("passPurchase", data);
 
 //运营类-->项目运营-->启动材料采购申请流程
 export const apistartPurchase = data => post("startPurchase", data);

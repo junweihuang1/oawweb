@@ -147,16 +147,21 @@ export default {
                 },
                 {
                   id: "3-3-2",
+                  title: "已办事项",
+                  route: "already-do"
+                },
+                {
+                  id: "3-3-3",
                   title: "任务管理",
                   route: "task-manage"
                 },
                 {
-                  id: "3-3-3",
+                  id: "3-3-4",
                   title: "任务报表",
                   route: "task-report"
                 },
                 {
-                  id: "3-3-4",
+                  id: "3-3-5",
                   title: "诚安梦",
                   route: "chengan-dream"
                 }

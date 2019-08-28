@@ -1,5 +1,25 @@
 <template>
   <div>
+    <el-row>
+      <el-col
+    :span="3"
+    style="border:1px solid #E4E7ED;background:#E4E7ED;"
+    :style="{ height: winheight }"
+  >
+    <div class="menu">
+      <i class="el-icon-document"></i>
+      菜单
+    </div>
+    <el-tree
+      :data="TreeList"
+      default-expand-all
+      @node-click="nodeClick"
+      accordion
+      :props="defaultProps"
+      style="padding:5px;background:#E4E7ED;"
+    ></el-tree>
+  </el-col>
+  <el-col :span="21">
     <el-form ref="form" :model="form" inline="" size="mini">
       <el-form-item label="员工编号">
         <el-input v-model="form.number" clearable></el-input>
@@ -41,6 +61,9 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
+  </el-col>
+    </el-row>
+    
     <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh">
       <modify-window
         v-if="isadd"
@@ -71,6 +94,12 @@ export default {
   name: "staffInformation",
   data() {
     return {
+      winheight:document.documentElement.scrollHeight - 126 + "px",
+      defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+        TreeList:[],
       isadd: false,
       form: {
         number: "",
@@ -154,9 +183,14 @@ export default {
       this.getpmuserList();
     },
     getuserTree() {
+      console.log("tree");
       apiuserTreeList().then(res => {
         console.log(res);
+        this.TreeList=res.data
       });
+    },
+    nodeClick(row){
+      console.log(row)
     },
     getpmuserList() {
       let data = {
@@ -215,4 +249,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.menu {
+  padding: 10px;
+  border-bottom: 1px solid #e4e7ed;
+  font-weight: 700;
+}</style>
