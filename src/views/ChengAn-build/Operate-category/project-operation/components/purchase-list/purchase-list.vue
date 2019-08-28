@@ -18,6 +18,8 @@
       :header="header"
       :setheight="0.5"
       :headle="headle"
+      judge="construct_purchase_status"
+      @start="start"
       @edit="modify"
       @delete="delitem"
       @checkleave="checkitem"
@@ -25,7 +27,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="45"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -36,7 +38,11 @@
 <script>
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import paging from "@/components/paging/paging";
-import { apiPurchaseList, apidelPurchase } from "@/request/api.js";
+import {
+  apiPurchaseList,
+  apidelPurchase,
+  apistartPurchase
+} from "@/request/api.js";
 import { getDates } from "@/components/global-fn/global-fn";
 export default {
   name: "purchaseList",
@@ -59,7 +65,8 @@ export default {
         ["供应商联系方式", "construct_purchase_supplierTel", 130],
         ["状态", "taskName", 90]
       ],
-      headle: ["查看", "删除", "修改"],
+      total: 0,
+      headle: ["查看", "删除", "修改", "", "启动"],
       openType: "",
       supplierName: ""
     };
@@ -75,6 +82,21 @@ export default {
     this.getPurchaseList();
   },
   methods: {
+    //启动
+    start(row) {
+      this.$confirm(`确定启动流程吗？`)
+        .then(() => {
+          apistartPurchase({
+            purchase_id: row.construct_purchase_id,
+            project_name: row.construct_project_name,
+            materialSerName: row.construct_purchase_materialSerName
+          }).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+          });
+        })
+        .catch(() => {});
+    },
     //修改
     modify(row) {
       console.log(row);
@@ -82,7 +104,7 @@ export default {
     },
     //删除
     delitem(row) {
-      console.log(row);
+      console.log(row.construct_purchase_status);
       if (
         row.construct_purchase_status == 0 ||
         row.construct_purchase_status == 1
@@ -127,6 +149,7 @@ export default {
       console.log(data);
       apiPurchaseList(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.purchaseList = res.data.map(item => {
           item.construct_purchase_planDate = item.construct_purchase_planDate
             ? getDates(item.construct_purchase_planDate)

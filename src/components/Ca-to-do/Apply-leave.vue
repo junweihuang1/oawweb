@@ -70,15 +70,23 @@
               type="textarea"
               rows="3"
               minlength="300px"
-            /> </el-form-item></el-col
-      ></el-row>
+            /> </el-form-item
+        ></el-col>
+        <el-col :span="12">
+          <el-form-item label="审核人">
+            <el-select v-model="userid" style="width:100%;">
+              <el-option
+                v-for="(item, index) in userList"
+                :key="index"
+                :value="item.userid"
+                :label="item.username"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <div v-if="openType == 'add'">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="审核人">
-              <picker-c @setApprover="getApprover"></picker-c>
-            </el-form-item> </el-col
-        ></el-row>
+        <el-row> </el-row>
         <el-form-item>
           <el-button type="primary" @click="submitForm('form')">申请</el-button>
           <el-button type="danger" @click="resetForm('form')">重置</el-button>
@@ -92,16 +100,49 @@
             </el-form-item> </el-col
         ></el-row>
         <el-form-item>
-          <el-button type="success" @click="process_leave(true)"
-            >同意</el-button
-          >
-          <el-button type="warning" @click="process_leave(false)"
-            >驳回</el-button
-          >
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headleprocess(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headleprocess('finish')"
+              >不同意</el-button
+            >
+          </template>
         </el-form-item>
       </div>
     </el-form>
-
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps
+      :space="250"
+      :active="current"
+      style="margin-left:50px;"
+      align-center
+    >
+      <el-step
+        :title="item.name"
+        v-for="(item, index) in activityList"
+        :key="index"
+        :description="item.username"
+      ></el-step>
+    </el-steps>
     <template>
       <el-divider content-position="left">审批流程</el-divider>
       <el-table :data="DataList" border>
@@ -120,10 +161,13 @@
 </template>
 
 <script>
-import pickerC from "@/components/Ca-picker-c/Ca-picker-c.vue";
 import DateTime from "@/components/Ca-date-time/Ca-date-time";
-
-import { apisaveLeave, apipassLeave } from "@/request/api.js";
+import { changetime } from "@/components/global-fn/global-fn";
+import {
+  apisaveLeave,
+  apipassLeave,
+  apigetProcessList
+} from "@/request/api.js";
 export default {
   name: "leavetable",
   data() {
@@ -162,15 +206,23 @@ export default {
           label: "年假"
         }
       ],
-      isreload: true
+      isreload: true,
+      Approvaltable: [],
+      buttonList: [],
+      userid: 0,
+      userList: [],
+      activityList: [],
+      current: 1
     };
   },
   components: {
-    DateTime,
-    pickerC
+    DateTime
   },
   props: {
-    DataList: Array,
+    DataList: {
+      type: Array,
+      default: () => []
+    },
     form: {
       type: Object,
       default: () => {}
@@ -178,12 +230,49 @@ export default {
     openType: String,
     active: Object
   },
+  mounted() {
+    this.getprossList();
+  },
   methods: {
+    //获取下一审核人
+    getprossList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          key: "Leave_flow", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "Leave_flow", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
+      console.log(data);
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == res.userlist.userTaskName && this.active) {
+            this.current = index;
+          }
+          return item;
+        });
+        this.buttonList = res.startForm.split(",");
+        this.userid = res.userlist.userList[0].userid;
+        this.userList = res.userlist.userList;
+      });
+    },
     //办理流程
-    process_leave(type) {
+    headleprocess(type) {
       let data = {
         taskid: this.active.ID_,
-        userid: "1054",
+        userid: this.userid,
         reasons: this.reasons,
         sign: type
       };
@@ -217,20 +306,15 @@ export default {
       this.reload();
       this.$refs[formName].resetFields();
     },
+    //提交
     submitForm() {
       if (this.form.start_time >= this.form.end_time) {
         this.$message.error("开始时间须早于结束时间");
         return;
       }
-      let data = {
-        leave_category: this.form.leave_category,
-        start_time: this.form.start_time,
-        end_time: this.form.end_time,
-        reason: this.form.reason,
-        day_count: this.form.day_count,
-        userid: this.form.userid
-      };
-      apisaveLeave(data).then(res => {
+      this.form.userid = this.userid;
+      console.log(this.form);
+      apisaveLeave(this.form).then(res => {
         console.log(res);
         this.$message.success(res.msg);
         this.$emit("close");

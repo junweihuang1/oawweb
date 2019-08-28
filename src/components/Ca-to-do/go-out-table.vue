@@ -31,7 +31,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="车牌号">
-              <el-input v-model="form.number" placeholder="用车必填"></el-input>
+              <el-input
+                v-model="form.field_personnel_license"
+                placeholder="用车必填"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -56,7 +59,10 @@
           placeholder="必填"
         ></el-input>
       </el-form-item>
-      <template v-if="Type == 'headle'">
+      <el-form-item label="审核人" v-if="username !== ''">
+        <el-input v-model="username" readonly />
+      </el-form-item>
+      <template v-if="openType == 'headle'">
         <el-form-item label="意见">
           <el-input
             type="textarea"
@@ -66,14 +72,35 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="headle(true)">同意</el-button>
-          <el-button @click="headle(false)" type="warning">驳回</el-button>
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headle(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headle(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headle('finish')"
+              >不同意</el-button
+            >
+          </template>
         </el-form-item>
       </template>
-      <template v-else>
-        <el-form-item label="审批人">
-          <picker-c @setApprover="getApprover" style="width:50%;"></picker-c>
-        </el-form-item>
+      <template v-else-if="openType == 'add'">
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')">申请</el-button>
           <el-button @click="resetForm('form')" type="danger" plain=""
@@ -82,13 +109,39 @@
         </el-form-item>
       </template>
     </el-form>
+    <el-divider content-position="left">
+      流程线
+    </el-divider>
+    <el-steps :active="current" :align-center="true">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
+    <template v-if="openType != 'add'">
+      <el-divider content-position="left">
+        审核记录
+      </el-divider>
+      <el-table :data="hisComment" border>
+        <el-table-column
+          v-for="(item, index) in ApprovalHeaderList"
+          :key="index"
+          :label="item[0]"
+          :prop="item[1]"
+          :type="index == 0 ? 'index' : ''"
+          :width="item[2]"
+          align="center"
+        ></el-table-column>
+      </el-table>
+    </template>
   </div>
 </template>
 
 <script>
 import DateTime from "@/components/Ca-date-time/Ca-date-time";
-import pickerC from "@/components/Ca-picker-c/Ca-picker-c";
-import { apigoout, apipassField } from "@/request/api.js";
+import { apigoout, apipassField, apigetProcessList } from "@/request/api.js";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "goouttable",
   data() {
@@ -113,12 +166,23 @@ export default {
         ],
         field_personnel_place: [{ validator: validateaddress, trigger: "blur" }]
       },
-      Type: this.openType,
-      reasons: ""
+      reasons: "",
+      userid: 0,
+      username: "",
+      current: 1,
+      buttonList: [],
+      activityList: [],
+      hisComment: [],
+      ApprovalHeaderList: [
+        ["序号", "index", 60],
+        ["流程节点", "name_", 140],
+        ["审核人", "username", 80],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ]
     };
   },
   components: {
-    pickerC,
     DateTime
   },
   props: {
@@ -132,7 +196,7 @@ export default {
           field_personnel_car: 1,
           start_time: "",
           end_time: "",
-          field_personnel_userid: ""
+          userid: ""
         };
       }
     },
@@ -148,16 +212,60 @@ export default {
     //监听窗口状态
     activeform(val) {
       this.form = val;
-    },
-    openType(val) {
-      this.Type = val;
     }
   },
+  mounted() {
+    this.getprossList();
+  },
   methods: {
+    //获取流程信息
+    getprossList() {
+      let data = {};
+      //当active（待办）不为空时
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          key: "findFieldpView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "findFieldpView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
+      console.log(data);
+
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.hisComment = res.historyList.map(item => {
+          item.END_time = item.END_time ? changetime(item.END_time) : "";
+          return item;
+        });
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == res.userlist.userTaskName && this.active) {
+            this.current = index;
+          }
+          return item;
+        });
+        this.buttonList = res.startForm.split(",");
+        if (res.userlist.userList) {
+          this.userid = res.userlist.userList[0].userid;
+          this.username = res.userlist.userList[0].username;
+        } else {
+          this.current = 2;
+        }
+      });
+    },
     headle(type) {
       let data = {
         taskid: this.active.ID_,
-        userid: "1054",
+        userid: this.userid,
         reasons: this.reasons,
         sign: type
       };
@@ -180,10 +288,6 @@ export default {
     getStartTime(time) {
       this.form.start_time = time;
     },
-    //从组件中获取审批人
-    getApprover(Approver) {
-      this.form.field_personnel_userid = Approver;
-    },
     reload() {
       this.form = {
         field_personnel_cause: "",
@@ -196,7 +300,7 @@ export default {
     },
     onSubmit(formName) {
       if (this.form.field_personnel_car == 2) {
-        if (this.form.number == "") {
+        if (this.form.field_personnel_license == "") {
           this.$message.warning("用车必填车牌号");
           return;
         }
@@ -205,41 +309,27 @@ export default {
           return;
         }
       }
-      let data = {
-        field_personnel_place: this.form.field_personnel_place, //(必填)外出地点；
-        field_personnel_license: this.form.number, //(必填)车牌号；
-        field_personnel_car: this.form.field_personnel_car, //(必填)是否用车(1:否,2:是)；
-        field_personnel_driver: this.form.field_personnel_driver, //(必填)驾驶员；
-        field_personnel_cause: this.form.field_personnel_cause, //(必填)外出原因；
-        start_time: this.form.start_time, //(必填)起始时间；
-        end_time: this.form.end_time, //(必填)结束时间；
-        userid: this.form.field_personnel_userid
-      };
-      if (data.start_time >= data.end_time) {
+      if (this.form.start_time >= this.form.end_time) {
         this.$message.warning("结束时间应大于开始时间");
         return;
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(data);
-          apigoout(data)
+          this.form.userid = this.userid;
+          console.log(this.form);
+          apigoout(this.form)
             .then(res => {
-              if (res.msg == "办理完成") {
-                this.$message.success("办理成功！");
-                this.closegoouttable();
-              } else {
-                this.$message.warning(res.msg);
-                this.closegoouttable();
-              }
+              this.$message.success(res.msg);
+              this.closegoouttable();
               setTimeout(() => {
                 this.reload();
-              }, 1500);
+              }, 1000);
             })
             .catch(() => {
               this.$message.warning("请查看是否重复办理或联系开发人员");
               setTimeout(() => {
                 this.reload();
-              }, 1500);
+              }, 1000);
             });
         } else {
           this.$message.warning("缺少内容，请补充后才提交");

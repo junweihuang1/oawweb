@@ -78,7 +78,7 @@ import ApplicationForm from "./components/request-funds/Application-form";
 import echarts from "./components/request-funds/echarts";
 import ContractQuantity from "@/components/Ca-to-do/Contract-quantity/Contract-quantity";
 import PartyMaterialList from "@/components/Ca-to-do/Contract-quantity/Party-material-list";
-import ApplyPurchase from "./components/purchase-list/Apply-purchase";
+import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase";
 import purchaseList from "./components/purchase-list/purchase-list";
 import ProjectInfor from "./components/project-list/project-infor";
 import ProjectList from "./components/project-list/project-list";
@@ -184,20 +184,25 @@ export default {
     openeditPurchase(id) {
       this.currentActive = "4";
       this.isopen[2] = true;
+      console.log(id);
       apigetPurchase({ construct_purchase_id: id }).then(res => {
         console.log(res);
         // this.headform = res.projectInfo;
         this.Purchase_entryList = res.purchaseEntry;
-        this.ProcessList = res.hisComment.map(item => {
-          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-          return item;
-        });
+        if (res.hisComment != null) {
+          this.ProcessList = res.hisComment.map(item => {
+            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+            return item;
+          });
+        }
+
         this.headform2 = res.purchaseHead;
       });
       this.ApplyopenType = "edit";
     },
     //打开查看采购单
     opencheckPurchase(id) {
+      console.log(id);
       this.currentActive = "4";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
@@ -219,7 +224,17 @@ export default {
       this.Purchase_entryList = [];
       // this.headform = {};
       this.ProcessList = [];
-      this.headform2 = {};
+      this.headform2 = {
+        construct_purchase_planDate: "", //(必填)计划日期
+        construct_purchase_arriveDate: "", //(必填)希望送达时间
+        construct_purchase_planMan: "", //(必填)计划员
+        construct_purchase_reviewer: "", //(必填)复核员
+        construct_purchase_supplier: "", //(必填)供应商
+        construct_purchase_supplierTel: "", //(必填)供应商联系方式
+        construct_purchase_projectId: this.headform.construct_project_id, //(必填)项目id
+        construct_purchase_materialSerId: "", //(必填)材料系列id
+        construct_purchase_materialSerName: "" //(必填)材料系列}}
+      };
       this.ApplyopenType = "add";
     },
     openProject([type, val]) {

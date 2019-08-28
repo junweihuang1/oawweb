@@ -53,13 +53,13 @@
         :width="getwidth"
         fixed="right"
       >
-        <template slot-scope="scope">
+        <template slot-scope="{ row }">
           <template v-for="(item, index) in headle">
             <el-button
               type="success"
               size="mini"
               v-if="index == 0 && item != ''"
-              @click="checkleave(scope.row)"
+              @click="checkleave(row)"
               plain
               :key="index"
               >{{ item }}</el-button
@@ -68,7 +68,7 @@
               type="warning"
               size="mini"
               v-if="index == 1 && item != ''"
-              @click="deleteflie(scope.row)"
+              @click="deleteflie(row)"
               plain
               :key="index"
               >{{ item }}</el-button
@@ -77,7 +77,7 @@
               v-if="index == 2 && item != ''"
               type="primary"
               size="mini"
-              @click="edit(scope.row)"
+              @click="edit(row)"
               plain
               :key="index"
               >{{ item }}</el-button
@@ -86,7 +86,16 @@
               v-if="index == 3 && item != ''"
               type="success"
               size="mini"
-              @click="modify(scope.row)"
+              @click="modify(row)"
+              plain
+              :key="index"
+              >{{ item }}</el-button
+            >
+            <el-button
+              v-if="index == 4 && item != '' && !row[judge]"
+              type="primary"
+              size="mini"
+              @click="start(row)"
               plain
               :key="index"
               >{{ item }}</el-button
@@ -110,6 +119,7 @@ export default {
     };
   },
   props: {
+    judge: String,
     DataList: Array,
     header: Array,
     headle: Array,
@@ -256,6 +266,10 @@ export default {
     //第四个按钮事件传递给父组件
     modify(item) {
       this.$emit("modify", item);
+    },
+    //第五个按钮事件传递给父组件
+    start(item) {
+      this.$emit("start", item);
     },
     clickline(row, event, column) {
       this.$emit("checkline", [row, event, column]);

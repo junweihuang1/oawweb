@@ -23,7 +23,7 @@
       @edit="openpic"
     ></Ca-rule-table>
     <!-- 打开办理普通采购的窗口 -->
-    <el-dialog :visible.sync="openGoods" top="8vh">
+    <el-dialog :title="openTitle" :visible.sync="openGoods" top="8vh">
       <headle-Goods
         v-if="openGoods"
         :active="active"
@@ -32,7 +32,12 @@
       ></headle-Goods>
     </el-dialog>
     <!-- 打开办理外勤窗口 -->
-    <el-dialog :visible.sync="openGoOut" width="35%" top="8vh">
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openGoOut"
+      width="35%"
+      top="8vh"
+    >
       <headle-go-out
         v-if="openGoOut"
         :active="active"
@@ -41,31 +46,59 @@
       ></headle-go-out>
     </el-dialog>
     <!-- 打开办理增量流程窗口 -->
-    <el-dialog :visible.sync="openIncrement" width="50%" top="8vh">
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openIncrement"
+      width="50%"
+      top="8vh"
+    >
       <headle-Increment
         v-if="openIncrement"
         :active="active"
         @close="closewin"
       ></headle-Increment>
     </el-dialog>
-    <el-dialog :visible.sync="openleave" width="50%" top="8vh">
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openleave"
+      width="50%"
+      top="8vh"
+    >
       <headle-leave
         v-if="openleave"
         :active="active"
         @close="closewin"
       ></headle-leave>
     </el-dialog>
-    <el-dialog :visible.sync="openSeal" width="50%" top="8vh">
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openSeal"
+      width="50%"
+      top="8vh"
+    >
       <headle-Seal
         v-if="openSeal"
         :active="active"
         @close="closewin"
       ></headle-Seal>
     </el-dialog>
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openPurchase"
+      width="50%"
+      top="8vh"
+    >
+      <headle-Purchase
+        v-if="openPurchase"
+        :active="active"
+        @close="closewin"
+      ></headle-Purchase>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headlePurchase from "./components/headle-Purchase";
 import headleSeal from "./components/headle-Seal";
 import headleLeave from "./components/headle-leave";
 import headleIncrement from "./components/headle-Increment";
@@ -75,13 +108,14 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
 import {
   apiFindTaskList,
-  apifindTaskLists,
-  apifindTaskType
+  apifindTaskType,
+  apipersonManagem_s
 } from "@/request/api";
 export default {
   name: "todo",
   data() {
     return {
+      img_src: "",
       todoList: [],
       selectType: "",
       header: [
@@ -99,11 +133,13 @@ export default {
       currentlimit: 15,
       currentpage: 1,
       active: {},
+      openTitle: "",
       openGoods: false,
       openGoOut: false,
       openIncrement: false,
       openleave: false,
-      openSeal: false
+      openSeal: false,
+      openPurchase: false
     };
   },
   components: {
@@ -112,6 +148,7 @@ export default {
     headleGoOut,
     headleIncrement,
     headleLeave,
+    headlePurchase,
     headleSeal
   },
   mounted() {
@@ -131,6 +168,7 @@ export default {
       this.openIncrement = false;
       this.openleave = false;
       this.openSeal = false;
+      this.openPurchase = false;
       this.getToDoList();
     },
     //查询
@@ -146,13 +184,15 @@ export default {
     //打开流程图
     openpic(row) {
       console.log(row);
+      apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
+        console.log(typeof res);
+      });
     },
     //待办
     openheadle(row) {
       this.active = row;
       console.log(row);
-      // this.id = row.BUSINESS_KEY_.split(".")[1];
-      // this.taskid = row.ID_;
+      this.openTitle = row.pdname;
       switch (row.pdname) {
         case "[材料]-物品采购":
           this.openGoods = true;
@@ -168,6 +208,9 @@ export default {
           break;
         case "[内部]-盖章申请":
           this.openSeal = true;
+          break;
+        case "材料采购申请(建设)":
+          this.openPurchase = true;
           break;
       }
     },

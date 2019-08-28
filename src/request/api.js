@@ -13,6 +13,9 @@ export const apiUserInf = data => get("getUser", data);
 //获取流程代办
 export const apiFindTaskList = data => get("findTaskList", data);
 
+//根据待办id查询流程图
+export const apipersonManagem_s = id => get("personManagem_s", id);
+
 //查询所有代办类型
 export const apifindTaskType = () => get("findTaskType");
 
@@ -435,6 +438,10 @@ export const apideleteAParty = data => post("deleteAPartyMaterial", data);
 //运营类-->甲方材料采购-->增加合同工程量获取材料
 export const apiConMaterialList = data => get("getConMaterialList", data);
 
+//乙供材料采购获取下一节点和审核人
+export const apiPurchaseProcessList = data =>
+  get("getPurchaseProcessList", data);
+
 //运营类-->甲方材料采购-->获取甲供材料
 export const apiaPartyMaterialCheck = data => get("aPartyMaterialCheck", data);
 
@@ -513,6 +520,9 @@ export const apisavePurchase = data => post("savePurchase", data);
 
 //运营类-->项目运营-->修改材料采购申请单
 export const apimodPurchase = data => post("modPurchase", data);
+
+//运营类-->项目运营-->启动材料采购申请流程
+export const apistartPurchase = data => post("startPurchase", data);
 
 //运营类-->项目运营-->获取合同工程量
 export const apiContractQuantity = data => get("getPurchaseMaterialList", data);

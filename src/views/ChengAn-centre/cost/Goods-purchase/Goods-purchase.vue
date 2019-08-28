@@ -159,7 +159,7 @@ export default {
         own_purchase_planMan: localStorage.getItem("username"), //必填)复核员
         own_purchase_brand: "", //必填)品牌
         own_purchase_type: 1, //必填)采购类型
-        userid: "1054" //必填)下一审核人id
+        userid: 0 //必填)下一审核人id
       };
     },
     getGoodsList() {

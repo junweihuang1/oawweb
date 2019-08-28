@@ -114,12 +114,13 @@ export default {
         });
     },
     edit(e) {
-      this.openType = "";
+      this.openType = "edit";
       this.activeform = e;
+      console.log(e);
       this.isgoout = true;
-      // apigetField({ id: e.field_personnel_id }).then(res => {
-      //   console.log(res);
-      // });
+      apigetField({ id: e.field_personnel_id }).then(res => {
+        console.log(res);
+      });
     },
     deleteitem(e) {
       this.$confirm(`确定删除 { ${e.username} } 的外勤记录吗？`)
@@ -135,7 +136,7 @@ export default {
     },
     newgoout() {
       this.activeform = {};
-      this.openType = "edit";
+      this.openType = "add";
       this.isgoout = true;
     },
     getclose() {

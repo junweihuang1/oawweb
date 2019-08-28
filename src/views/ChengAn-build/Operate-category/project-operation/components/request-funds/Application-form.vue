@@ -171,7 +171,8 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apigetreqfundsView,
   apistartReqfunds,
-  apisupOpinionNew
+  apisupOpinionNew,
+  apigetProcessList
 } from "@/request/api.js";
 export default {
   name: "ApplicationForm",
@@ -188,7 +189,9 @@ export default {
       ],
       AuditorList: [],
       Auditor: "",
-      isopenDep: false
+      isopenDep: false,
+      buttonList: [],
+      activityList: []
     };
   },
   components: {
@@ -197,11 +200,12 @@ export default {
   },
   props: {
     reqfundsId: Number,
-    openType: String
+    openType: String,
+    active: Object
   },
   mounted() {
+    this.getprossList();
     this.getView();
-    this.getNextAuditor();
   },
   methods: {
     getSelectName(row) {
@@ -217,13 +221,38 @@ export default {
       //   console.log(res);
       // });
     },
-    getNextAuditor() {
-      if (this.AuditorList == "") {
-        apisupOpinionNew().then(res => {
-          this.AuditorList = res.userList;
-          console.log(res);
-        });
+    getprossList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          key: "reqfundsView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "reqfundsView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
       }
+      console.log(data);
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == res.userlist.userTaskName && this.active) {
+            this.current = index;
+          }
+          return item;
+        });
+        this.buttonList = res.startForm.split(",");
+        this.ApplyForm.userid = res.userlist.userList[0].userid;
+        this.AuditorList = res.userlist.userList;
+      });
     },
     getView() {
       apigetreqfundsView({ manage_reqfunds_id: this.reqfundsId }).then(res => {

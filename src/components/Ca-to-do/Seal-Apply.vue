@@ -50,6 +50,18 @@
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="审核人">
+            <el-select v-model="userid" style="width:100%;">
+              <el-option
+                v-for="(item, index) in userList"
+                :key="index"
+                :value="item.userid"
+                :label="item.username"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
         <template v-if="active">
           <el-col :span="24">
             <el-form-item label="意见">
@@ -101,7 +113,6 @@
               ref="upload"
               action="http://192.168.11.129:8081/casd2/admin/uploadSealFile"
               :on-preview="handlePreview"
-              :on-remove="handleRemove"
               :limit="1"
               :on-change="handleChange"
               :headers="{ token: token }"
@@ -160,8 +171,9 @@ export default {
       upload_add: "",
       fileList: [],
       buttonList: [],
-      userid: Number,
+      userid: 0,
       username: "",
+      userList: [],
       activityList: [],
       activityLists: [],
       current: 1, //当前流程节点
@@ -186,17 +198,17 @@ export default {
     headleprocess(type) {
       let data = {
         taskid: this.active.ID_, //(必填)流程实例id
-        userid: this.form.userid, //(必填)下一审核人id
+        userid: this.userid, //(必填)下一审核人id
         reasons: this.reasons, //(必填)审批意见
         type: type, //(必填)是否批准(true/false)
         own_seal_chapCategory: this.form.own_seal_chapCategory.join(",") //(必填)盖章类型
       };
       console.log(data);
-      apipassSeal(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      // apipassSeal(data).then(res => {
+      //   console.log(res);
+      //   this.$message.success(res.msg);
+      //   this.$emit("close");
+      // });
     },
     //根据盖章类别显示流程线
     getProcessline(row) {
@@ -206,6 +218,13 @@ export default {
         this.changeProcessline("process2");
       } else if (row[0] == "2" || row[0] == "3" || row[0] == "4") {
         this.changeProcessline("process1");
+      }
+      if (
+        this.form.own_seal_chapCategory.length > 1 &&
+        (this.form.own_seal_chapCategory.includes("1") ||
+          this.form.own_seal_chapCategory.includes("5"))
+      ) {
+        this.$message.error("选择章类型不符，公章、项目章只能单独申请");
       }
     },
     getprossList() {
@@ -227,12 +246,8 @@ export default {
       apiSealProcessList(data).then(res => {
         console.log(res);
         this.buttonList = res.startForm.split(",");
-        this.form.userid = res.userlist.userList[0].userid;
-        this.username = res.userlist.userList
-          .map(item => {
-            return item.username;
-          })
-          .join(" / ");
+        this.userid = res.userlist.userList[0].userid;
+        this.userList = res.userlist.userList;
         this.activityLists = res.activityList;
         this.userTaskName = res.userlist.userTaskName;
         // this.changeProcessline("process0");
@@ -242,11 +257,8 @@ export default {
     //改变章类型后获取流程线类型
     changeProcessline(i) {
       this.activityList = this.activityLists[i].map((item, index) => {
-        if (item.name == this.userTaskName) {
-          item.username = this.username;
-          if (this.active) {
-            this.current = index;
-          }
+        if (item.name == this.userTaskName && this.active) {
+          this.current = index;
         }
         return item;
       });
@@ -270,7 +282,6 @@ export default {
       this.form.own_seal_filePath = res.path;
       this.submit();
     },
-    handleRemove() {},
     successUpload(res, file, fileList) {
       console.log(res);
       console.log(file);
@@ -279,10 +290,15 @@ export default {
     getCompanyName(val) {
       this.form.own_seal_company = val;
     },
-    changefile(file) {
-      console.log(file);
-    },
     submitUpload() {
+      if (
+        this.form.own_seal_chapCategory.length > 1 &&
+        (this.form.own_seal_chapCategory.includes("1") ||
+          this.form.own_seal_chapCategory.includes("5"))
+      ) {
+        this.$message.error("选择章类型不符，公章、项目章只能单独申请");
+        return;
+      }
       this.$confirm(`确定提交吗？`)
         .then(() => {
           this.$refs.upload.submit();
@@ -294,6 +310,10 @@ export default {
         .catch();
     },
     submit() {
+      this.form.own_seal_chapCategory = this.form.own_seal_chapCategory.join(
+        ","
+      );
+      this.form.userid = this.userid;
       console.log(this.form);
       apisaveSeal(this.form).then(res => {
         this.$message.success(res.msg);

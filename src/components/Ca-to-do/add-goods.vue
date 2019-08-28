@@ -113,36 +113,59 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-form
-      size="mini"
-      label-width="80px"
-      style="margin-top:10px;"
-      v-if="openType == 'headle'"
-    >
-      <el-form-item label="审核意见">
-        <el-input type="textarea" :row="2" v-model="reasons"></el-input>
+    <el-form size="mini" label-width="80px" style="margin-top:10px;">
+      <el-form-item label="审核人">
+        <el-select v-model="userid">
+          <el-option
+            v-for="(item, index) in userList"
+            :key="index"
+            :value="item.userid"
+            :label="item.username"
+          ></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label=" ">
-        <el-button type="success" size="mini" @click="headle(true)"
-          >同意</el-button
-        >
-        <el-button type="warning" size="mini" @click="headle(false)"
-          >驳回</el-button
-        >
+      <template v-if="openType == 'headle'">
+        <el-form-item label="审核意见">
+          <el-input type="textarea" :row="2" v-model="reasons"></el-input>
+        </el-form-item>
+        <el-form-item label=" ">
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headle(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headle(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headle('finish')"
+              >不同意</el-button
+            >
+          </template>
+        </el-form-item>
+      </template>
+      <el-form-item v-else-if="openType == 'add'">
+        <el-button type="primary" size="mini" @click="submit">提交</el-button>
       </el-form-item>
     </el-form>
-    <el-button
-      type="primary"
-      size="mini"
-      style="margin:10px 0 0 30px;"
-      v-else-if="openType == 'add'"
-      @click="submit"
-      >提交</el-button
-    >
+
     <el-divider content-position="left">
       流程线
     </el-divider>
-    <el-steps :active="1" :align-center="true">
+    <el-steps :active="current" :align-center="true">
       <el-step
         v-for="(item, index) in activityList"
         :title="item.name"
@@ -180,7 +203,7 @@
 import selectProject from "@/components/Ca-select/select-project";
 import selectCompany from "@/components/Ca-select/select-company";
 import {
-  apiNextProcess,
+  apigetProcessList,
   apisaveOwnHead,
   apipassOwnHead
 } from "@/request/api.js";
@@ -214,7 +237,11 @@ export default {
         ["审核人", "username", 80],
         ["开始时间", "START_TIME_", 160],
         ["审核意见", "MESSAGE_"]
-      ]
+      ],
+      userid: 0,
+      userList: [],
+      current: 1,
+      buttonList: []
     };
   },
   props: {
@@ -236,14 +263,14 @@ export default {
     selectProject
   },
   mounted() {
-    this.getNext();
+    this.getprossList();
   },
   methods: {
     headle(type) {
       console.log(this.active);
       let data = {
         taskid: this.active.ID_,
-        userid: "1054",
+        userid: this.userid,
         reasons: this.reasons,
         type: type,
         own_purchase_id: this.active.BUSINESS_KEY_.split(".")[1],
@@ -256,29 +283,51 @@ export default {
       });
     },
     submit() {
+      this.form.userid = this.userid;
+      console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {
           this.form.ownEntry = JSON.stringify(this.addlist);
+
           apisaveOwnHead(this.form).then(res => {
             this.$message.success(res.msg);
             this.$emit("close");
           });
         })
-        .catch();
+        .catch(() => {});
     },
     //获取流程线和下一审核人
-    getNext() {
-      let data = {
-        taskid: "", //(必填)流程任务id
-        processInstanceId: "", //(必填)流程实例id
-        key: "ownHeadView", //(必填)流程定义key
-        position: localStorage.getItem("role_name"), //(必填)申请人角色
-        type: "new" //(必填)新增new/运行中
-      };
+    getprossList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          key: "ownHeadView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "ownHeadView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
       console.log(data);
-      apiNextProcess(data).then(res => {
+      apigetProcessList(data).then(res => {
         console.log(res);
-        this.activityList = res.activityList;
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == res.userlist.userTaskName && this.active) {
+            this.current = index;
+          }
+          return item;
+        });
+        this.buttonList = res.startForm.split(",");
+        this.userid = res.userlist.userList[0].userid;
+        this.userList = res.userlist.userList;
       });
     },
     delitem(row) {
@@ -303,7 +352,9 @@ export default {
       this.id++;
     },
     getSelectName(row) {
-      console.log(row);
+      this.projectName = row.construct_project_name;
+      this.form.own_purchase_projectId = row.construct_project_id;
+      this.isselect = false;
     },
     openselectProject() {
       this.isselect = true;

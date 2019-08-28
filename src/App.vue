@@ -18,6 +18,11 @@ export default {
       isRouterAlive: true
     };
   },
+  // mounted() {
+  //   window.addEventListener("unload", () => {
+  //     localStorage.removeItem("token");
+  //   });
+  // },
   methods: {
     reload() {
       this.isRouterAlive = false;

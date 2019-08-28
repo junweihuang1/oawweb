@@ -35,14 +35,14 @@
       </el-form-item>
     </el-form>
     <el-divider content-position="left">材料单</el-divider>
-    <el-form inline>
+    <el-form inline v-if="current == 1">
       <el-form-item>
         <el-button type="primary" @click="additem" size="mini"
           >添加行</el-button
         >
       </el-form-item>
     </el-form>
-    <el-table :data="DataList" border :height="maxheight">
+    <el-table :data="myDataList" border :height="maxheight">
       <el-table-column
         align="center"
         :label="item[0]"
@@ -91,7 +91,7 @@
     <paging
       :currentlimit="15"
       :currentpage="1"
-      :total="DataList.length"
+      :total="myDataList.length"
     ></paging>
     <el-form
       size="mini"
@@ -107,6 +107,16 @@
           style="width:50%;"
           placeholder="请输入内容"
         ></el-input>
+      </el-form-item>
+      <el-form-item label="审核人">
+        <el-select v-model="userid">
+          <el-option
+            v-for="(item, index) in userList"
+            :key="index"
+            :value="item.userid"
+            :label="item.username"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label=" " v-if="opentype == 'headle'">
         <template v-for="(item, index) in buttonList">
@@ -204,7 +214,7 @@ export default {
       current: 1,
       activityList: [],
       reason: "",
-      userid: Number,
+      userid: 0,
       buttonList: [],
       Approvaltable: [],
       ApprovalHeaderList: [
@@ -213,7 +223,9 @@ export default {
         ["审核人", "username", 100],
         ["审核时间", "END_TIME_", 160],
         ["审核意见", "MESSAGE_"]
-      ]
+      ],
+      userList: [],
+      myDataList: []
     };
   },
   components: {
@@ -224,7 +236,7 @@ export default {
   props: {
     projectList: Object,
     DataList: {
-      // type: Array,
+      type: Array,
       default: () => {
         return [];
       }
@@ -235,7 +247,15 @@ export default {
       default: () => {}
     }
   },
+  watch: {
+    DataList() {
+      this.myDataList = this.DataList;
+      console.log(this.myDataList);
+    }
+  },
   mounted() {
+    this.myDataList = this.DataList;
+    console.log(this.myDataList);
     this.getprossList();
   },
   methods: {
@@ -248,7 +268,7 @@ export default {
         taskName: this.active.NAME_,
         headId: this.projectList.id,
         type: this.projectList.type,
-        rows: JSON.stringify(this.DataList),
+        rows: JSON.stringify(this.myDataList),
         userid: this.userid
       };
       console.log(data);
@@ -277,44 +297,37 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
+      console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList[0].userid;
-        this.Approvaltable = res.historyList.map(item => {
-          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-          return item;
-        });
+        this.userList = res.userlist.userList;
         //当进入办理流程后，遍历流程线，判断出当前的节点
         this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName) {
-            item.username = res.userlist.userList[0].username;
-            if (this.active) {
-              this.current = index;
-            }
+          if (item.name == res.userlist.userTaskName && this.active) {
+            this.current = index;
           }
           return item;
         });
-        console.log(this.activityList);
       });
     },
     //保存
     submit() {
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          let rows = this.DataList.map(item => {
-            delete item.id;
-            return item;
-          });
+          // let rows = this.myDataList.map(item => {
+          //   delete item.id;
+          //   return item;
+          // });
           let data = {
             type: "BSupply",
             construct_project_id: this.projectList.construct_project_id,
-            rows: JSON.stringify(rows),
+            rows: JSON.stringify(this.myDataList),
             userid: this.userid
           };
           console.log(data);
           apistart_record(data).then(res => {
-            console.log(res);
             this.$message.success(res.msg);
             this.$emit("close");
           });
@@ -322,12 +335,12 @@ export default {
         .catch();
     },
     deleteitem(row) {
-      console.log(this.DataList);
-      this.DataList = this.DataList.filter(item => item.id !== row.id);
+      console.log(this.myDataList);
+      this.myDataList = this.myDataList.filter(item => item.id !== row.id);
     },
     //添加行
     additem() {
-      this.DataList.push({
+      this.myDataList.push({
         id: this.addid,
         construct_project_quantities_id: "",
         construct_material_seriesName: "",
@@ -346,7 +359,7 @@ export default {
     },
     getQuantity(row) {
       //遍历是否有重复选项
-      let isrepeat = this.DataList.some(
+      let isrepeat = this.myDataList.some(
         item =>
           item.construct_project_quantities_id ==
           row.construct_project_quantities_id
@@ -356,7 +369,7 @@ export default {
         return;
       }
       this.isopen = false;
-      this.DataList = this.DataList.map(item => {
+      this.myDataList = this.myDataList.map(item => {
         if (item.id == this.activeList.id) {
           item = {
             id: item.id,
@@ -374,7 +387,7 @@ export default {
         }
         return item;
       });
-      console.log(this.DataList);
+      console.log(this.myDataList);
     }
   }
 };
