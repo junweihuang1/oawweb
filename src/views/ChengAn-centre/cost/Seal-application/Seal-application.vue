@@ -23,7 +23,7 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
-    <el-dialog title="盖章申请" :visible.sync="isApplyOpen" width="35%">
+    <el-dialog title="盖章申请" :visible.sync="isApplyOpen" width="35%" top="10vh">
       <Seal-Apply
         :form="addform"
         v-if="isApplyOpen"
@@ -195,7 +195,7 @@ export default {
       this.addform = {
         own_seal_fileName: "", //文件名称
         own_seal_settle: 0, //预结算金额
-        own_seal_company: "", //用章公司
+        own_seal_company: 12, //用章公司
         own_seal_sender: "", //主送单位
         own_seal_chapCategory: ["1"], //用章类别
         own_seal_remark: "", //盖章用途

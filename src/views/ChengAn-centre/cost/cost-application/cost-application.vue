@@ -26,12 +26,11 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" title="费用申请单">
+    <el-dialog :visible.sync="isopen" title="费用申请单" top="8vh">
       <cost-details
         v-if="isopen"
         :openType="openType"
         @close="closewin"
-        :processType="processType"
         :setform="setform"
         :Approvaltable="Approvaltable"
       ></cost-details>
@@ -42,6 +41,7 @@
       title="费用报销"
       :fullscreen="true"
       :show-close="false"
+      top="8vh"
     >
       <cost-details-print
         v-if="isprint"
@@ -54,7 +54,7 @@
 
 <script>
 import costDetailsPrint from "./components/cost-details-print";
-import costDetails from "./components/cost-details";
+import costDetails from "@/components/Ca-to-do/cost-details";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
@@ -86,7 +86,6 @@ export default {
       Approvaltable: [],
       isprint: false,
       openType: "",
-      processType: {}
     };
   },
   components: {
@@ -150,13 +149,7 @@ export default {
       this.setform = {};
       this.Approvaltable = [];
       this.isopen = true;
-      this.processType = {
-        taskid: "", //(必填)流程任务id
-        processInstanceId: "", //(必填)流程实例id
-        key: "costappView", //(必填)流程定义key
-        position: localStorage.getItem("role_name"), //(必填)申请人角色
-        type: "new" //(必填)新增new/运行中
-      };
+      
     },
     //查看
     details(row) {

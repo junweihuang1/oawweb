@@ -288,10 +288,10 @@ export default {
       });
     },
     submit() {
-      this.ownHead.userid = this.userid;
       console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {
+          this.ownHead.userid = this.userid;
           this.ownHead.ownEntry = JSON.stringify(this.entryList);
           apisaveOwnHead(this.form).then(res => {
             this.$message.success(res.msg);
@@ -322,6 +322,7 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
+      console.log(data)
       apigetProcessList(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
@@ -330,10 +331,10 @@ export default {
           }
           return item;
         });
-        this.hisComment = res.historyList.map(item => {
+        this.hisComment = res.historyList?res.historyList.map(item => {
           item.START_TIME_ = changetime(item.START_TIME_);
           return item;
-        });
+        }):[];
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid

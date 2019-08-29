@@ -1,27 +1,28 @@
 <template>
   <div>
-    <Apply-leave
+    <cost-details
       :openType="openType"
       @close="getclose"
-      :form="activeform"
+      :setform="setform"
       :active="active"
-    ></Apply-leave>
+    ></cost-details>
   </div>
 </template>
 
 <script>
-import ApplyLeave from "@/components/Ca-to-do/Apply-leave";
-import { apiLeaveListById } from "@/request/api.js";
+import costDetails from "@/components/Ca-to-do/cost-details";
+import { apigetCostappById } from "@/request/api.js";
 import { changetime } from "@/components/global-fn/global-fn.js";
 export default {
   name: "headleleave",
   data() {
     return {
-      activeform: {}
+      activeform: {},
+      setform:{}
     };
   },
   components: {
-    ApplyLeave
+    costDetails
   },
   props: {
     openType: String,
@@ -38,11 +39,11 @@ export default {
       let id = this.active.BUSINESS_KEY_
         ? this.active.BUSINESS_KEY_.split(".")[1]
         : this.active.businessId;
-      apiLeaveListById({ id: id }).then(res => {
+      apigetCostappById({
+        costapp_id: id
+      }).then(res => {
         console.log(res);
-        this.activeform = res.data[0];
-        this.activeform.start_time = changetime(this.activeform.start_time);
-        this.activeform.end_time = changetime(this.activeform.end_time);
+        this.setform = res.data;
       });
     }
   }

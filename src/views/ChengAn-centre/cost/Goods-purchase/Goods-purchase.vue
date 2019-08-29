@@ -44,7 +44,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="物品采购" :visible.sync="isopen">
+    <el-dialog title="物品采购" :visible.sync="isopen" top="8vh">
       <add-goods
         v-if="isopen"
         :entryList="entryList"
