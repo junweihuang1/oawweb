@@ -50,7 +50,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="userList !== ''">
           <el-form-item label="审核人">
             <el-select v-model="userid" style="width:100%;">
               <el-option
@@ -77,32 +77,34 @@
                 v-if="form.own_seal_filePath"
                 >下载附件</el-button
               >
-              <template v-for="(item, index) in buttonList">
-                <el-button
-                  v-if="item == 'submit'"
-                  :key="index"
-                  type="success"
-                  size="mini"
-                  @click="headleprocess(true)"
-                  >提交</el-button
-                >
-                <el-button
-                  v-else-if="item == 'reject'"
-                  :key="index"
-                  type="warning"
-                  size="mini"
-                  @click="headleprocess(false)"
-                  >驳回</el-button
-                >
-                <el-button
-                  v-else-if="item == 'disagree'"
-                  :key="index"
-                  type="danger"
-                  size="mini"
-                  @click="headleprocess('finish')"
-                  >不同意</el-button
-                >
-              </template>
+              <div v-if="openType != 'check'">
+                <template v-for="(item, index) in buttonList">
+                  <el-button
+                    v-if="item == 'submit'"
+                    :key="index"
+                    type="success"
+                    size="mini"
+                    @click="headleprocess(true)"
+                    >提交</el-button
+                  >
+                  <el-button
+                    v-else-if="item == 'reject'"
+                    :key="index"
+                    type="warning"
+                    size="mini"
+                    @click="headleprocess(false)"
+                    >驳回</el-button
+                  >
+                  <el-button
+                    v-else-if="item == 'disagree'"
+                    :key="index"
+                    type="danger"
+                    size="mini"
+                    @click="headleprocess('finish')"
+                    >不同意</el-button
+                  >
+                </template>
+              </div>
             </el-form-item>
           </el-col>
         </template>
@@ -204,11 +206,11 @@ export default {
         own_seal_chapCategory: this.form.own_seal_chapCategory.join(",") //(必填)盖章类型
       };
       console.log(data);
-      // apipassSeal(data).then(res => {
-      //   console.log(res);
-      //   this.$message.success(res.msg);
-      //   this.$emit("close");
-      // });
+      apipassSeal(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
     },
     //根据盖章类别显示流程线
     getProcessline(row) {
@@ -230,10 +232,13 @@ export default {
     getprossList() {
       console.log("res");
       let data = {};
+
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -246,11 +251,12 @@ export default {
       apiSealProcessList(data).then(res => {
         console.log(res);
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList[0].userid;
-        this.userList = res.userlist.userList;
+        this.userid = res.userlist.userList
+          ? res.userlist.userList[0].userid
+          : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : "";
         this.activityLists = res.activityList;
         this.userTaskName = res.userlist.userTaskName;
-        // this.changeProcessline("process0");
         this.getProcessline(this.form.own_seal_chapCategory);
       });
     },
@@ -259,7 +265,10 @@ export default {
       this.activityList = this.activityLists[i].map((item, index) => {
         if (item.name == this.userTaskName && this.active) {
           this.current = index;
+        } else if (this.userTaskName == "结束") {
+          this.current = this.activityLists[i].length;
         }
+
         return item;
       });
     },

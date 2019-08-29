@@ -27,6 +27,7 @@
       <headle-Goods
         v-if="openGoods"
         :active="active"
+        openType="headle"
         @close="closewin"
         :openGoods="openGoods"
       ></headle-Goods>
@@ -41,6 +42,7 @@
       <headle-go-out
         v-if="openGoOut"
         :active="active"
+        openType="headle"
         @close="closewin"
         :openGoOut="openGoOut"
       ></headle-go-out>
@@ -55,6 +57,7 @@
       <headle-Increment
         v-if="openIncrement"
         :active="active"
+        openType="headle"
         @close="closewin"
       ></headle-Increment>
     </el-dialog>
@@ -67,6 +70,7 @@
       <headle-leave
         v-if="openleave"
         :active="active"
+        openType="headle"
         @close="closewin"
       ></headle-leave>
     </el-dialog>
@@ -79,6 +83,7 @@
       <headle-Seal
         v-if="openSeal"
         :active="active"
+        openType="headle"
         @close="closewin"
       ></headle-Seal>
     </el-dialog>
@@ -91,13 +96,29 @@
       <headle-Purchase
         v-if="openPurchase"
         :active="active"
+        openType="headle"
         @close="closewin"
       ></headle-Purchase>
+    </el-dialog>
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openInvoice"
+      width="50%"
+      top="8vh"
+    >
+      <Application-form
+        v-if="openInvoice"
+        @close="closewin"
+        :active="active"
+        :reqfundsId="reqfundsId"
+        openType="headle"
+      ></Application-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import headlePurchase from "./components/headle-Purchase";
 import headleSeal from "./components/headle-Seal";
 import headleLeave from "./components/headle-leave";
@@ -139,7 +160,9 @@ export default {
       openIncrement: false,
       openleave: false,
       openSeal: false,
-      openPurchase: false
+      openPurchase: false,
+      openInvoice: false,
+      reqfundsId: ""
     };
   },
   components: {
@@ -149,7 +172,8 @@ export default {
     headleIncrement,
     headleLeave,
     headlePurchase,
-    headleSeal
+    headleSeal,
+    ApplicationForm
   },
   mounted() {
     //获取待办类型
@@ -169,6 +193,7 @@ export default {
       this.openleave = false;
       this.openSeal = false;
       this.openPurchase = false;
+      this.openInvoice = false;
       this.getToDoList();
     },
     //查询
@@ -185,7 +210,8 @@ export default {
     openpic(row) {
       console.log(row);
       apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-        // console.log(typeof res);
+        // console.log(res);
+        this.img_src = res;
       });
     },
     //待办
@@ -211,6 +237,13 @@ export default {
           break;
         case "材料采购申请(建设)":
           this.openPurchase = true;
+          break;
+        case "[资费]-开票申请":
+          this.openInvoice = true;
+          this.reqfundsId = this.active.BUSINESS_KEY_
+            ? parseInt(this.active.BUSINESS_KEY_.split(".")[1])
+            : parseInt(this.active.businessId);
+          console.log(typeof this.reqfundsId);
           break;
       }
     },

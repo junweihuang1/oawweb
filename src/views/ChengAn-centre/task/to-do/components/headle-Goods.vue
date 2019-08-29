@@ -1,7 +1,6 @@
 <template>
   <div>
     <add-goods
-      v-if="isopen"
       :active="active"
       :entryList="entryList"
       :ownHead="ownHead"
@@ -14,7 +13,7 @@
 
 <script>
 import addGoods from "@/components/Ca-to-do/add-goods";
-import { changetime } from "@/components/global-fn/global-fn";
+
 import { apiOwnHeadListById } from "@/request/api.js";
 export default {
   name: "Goods",
@@ -23,42 +22,36 @@ export default {
       goodsList: [],
       entryList: [],
       ownHead: {},
-      hisComment: [],
-      openType: "",
-      isopen: false
+      hisComment: []
     };
   },
   components: { addGoods },
   props: {
+    openType: String,
     active: Object,
     openGoods: Boolean
-  },
-  watch: {
-    openGoods(val) {
-      this.isopen = val;
-    }
   },
   mounted() {
     this.getGoodsList();
   },
   methods: {
     closewin() {
-      this.isopen = false;
       this.$emit("close");
     },
     getGoodsList() {
+      let id = this.active.BUSINESS_KEY_
+        ? this.active.BUSINESS_KEY_.split(".")[1]
+        : this.active.businessId;
       apiOwnHeadListById({
-        own_purchase_id: this.active.BUSINESS_KEY_.split(".")[1]
+        own_purchase_id: id
       }).then(res => {
-        console.log(res);
         this.ownHead = res.data.ownHead;
         this.entryList = res.data.entryList;
-        this.hisComment = res.hisComment.map(item => {
-          item.START_TIME_ = changetime(item.START_TIME_);
-          return item;
-        });
-        this.isopen = true;
-        this.openType = "headle";
+        console.log(this.ownHead);
+        // this.hisComment = res.hisComment.map(item => {
+        //   item.START_TIME_ = changetime(item.START_TIME_);
+        //   return item;
+        // });
       });
     }
   }

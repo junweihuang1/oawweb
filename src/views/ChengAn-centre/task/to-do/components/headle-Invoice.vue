@@ -1,18 +1,18 @@
 <template>
   <div>
-    <Apply-purchase
+    <Application-form
       @close="close"
       :active="active"
       :openType="openType"
       :headform="headform"
       :entryList="DataList"
       :activeForm="activeform"
-    ></Apply-purchase>
+    ></Application-form>
   </div>
 </template>
 
 <script>
-import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase";
+import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import { apigetPurchase } from "@/request/api.js";
 
 export default {
@@ -26,7 +26,7 @@ export default {
     };
   },
   components: {
-    ApplyPurchase
+    ApplicationForm
   },
   props: {
     openType: String,

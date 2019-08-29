@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { apistart_record, apiCostappProcessList } from "@/request/api.js";
+import { apistart_record } from "@/request/api.js";
 import selectQuantity from "./select-quantity";
 import paging from "@/components/paging/paging";
 export default {
@@ -155,23 +155,7 @@ export default {
   props: {
     projectList: Object
   },
-  watch: {
-    projectList() {
-      this.getprossList();
-    }
-  },
-  mounted() {
-    this.getprossList();
-  },
   methods: {
-    getprossList() {
-      apiCostappProcessList({
-        type: "new"
-      }).then(res => {
-        console.log(res);
-        this.activityList = res.activityList;
-      });
-    },
     submit() {
       let rows = this.DataList.map(item => {
         delete item.id;
@@ -189,7 +173,7 @@ export default {
         this.$emit("close");
       });
     },
-    clickinp(row, column, cell, event) {
+    clickinp(row, column) {
       this.DataList = this.DataList.map(item => {
         item.isinput = false;
         if (item.id == row.id && column.label == "新增主材数量") {

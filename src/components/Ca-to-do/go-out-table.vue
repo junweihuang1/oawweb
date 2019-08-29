@@ -225,7 +225,9 @@ export default {
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
           key: "findFieldpView", //(必填)流程定义key
           position: localStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中

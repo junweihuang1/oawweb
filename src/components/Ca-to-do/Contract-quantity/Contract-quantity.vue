@@ -4,7 +4,7 @@
     <el-form size="mini" inline label-width="100px">
       <el-form-item label="项目名称">
         <el-input
-          v-if="opentype == 'headle'"
+          v-if="projectList.construct_project_name"
           v-model="projectList.construct_project_name"
           readonly
         ></el-input>
@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item label="工程地址">
         <el-input
-          v-if="opentype == 'headle'"
+          v-if="projectList.construct_project_addr"
           v-model="projectList.construct_project_addr"
           readonly
         ></el-input>
@@ -99,54 +99,56 @@
       label-position="left"
       label-width="60px"
     >
-      <el-form-item label="意见">
-        <el-input
-          type="textarea"
-          :rows="2"
-          v-model="reason"
-          style="width:50%;"
-          placeholder="请输入内容"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="审核人">
-        <el-select v-model="userid">
-          <el-option
-            v-for="(item, index) in userList"
-            :key="index"
-            :value="item.userid"
-            :label="item.username"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label=" " v-if="opentype == 'headle'">
-        <template v-for="(item, index) in buttonList">
-          <el-button
-            v-if="item == 'submit'"
-            :key="index"
-            type="success"
-            size="mini"
-            @click="headleprocess(true)"
-            >提交</el-button
-          >
-          <el-button
-            v-else-if="item == 'reject'"
-            :key="index"
-            type="warning"
-            size="mini"
-            @click="headleprocess(false)"
-            >驳回</el-button
-          >
-          <el-button
-            v-else-if="item == 'disagree'"
-            :key="index"
-            type="danger"
-            size="mini"
-            @click="headleprocess('finish')"
-            >不同意</el-button
-          >
-        </template>
-      </el-form-item>
-      <el-form-item label=" " v-else>
+      <template v-if="openType == 'headle'">
+        <el-form-item label="意见">
+          <el-input
+            type="textarea"
+            :rows="2"
+            v-model="reason"
+            style="width:50%;"
+            placeholder="请输入内容"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="审核人">
+          <el-select v-model="userid">
+            <el-option
+              v-for="(item, index) in userList"
+              :key="index"
+              :value="item.userid"
+              :label="item.username"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label=" ">
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headleprocess(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headleprocess('finish')"
+              >不同意</el-button
+            >
+          </template>
+        </el-form-item>
+      </template>
+      <el-form-item label=" " v-else-if="openType == 'add'">
         <el-button type="primary" size="mini" @click="submit">提交</el-button>
       </el-form-item>
     </el-form>
@@ -241,7 +243,7 @@ export default {
         return [];
       }
     },
-    opentype: String,
+    openType: String,
     active: {
       type: Object,
       default: () => {}
@@ -271,7 +273,7 @@ export default {
         rows: JSON.stringify(this.myDataList),
         userid: this.userid
       };
-      
+
       apipass_record(data).then(res => {
         console.log(res);
         this.$message.success(res.Msg);
@@ -283,7 +285,9 @@ export default {
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
           key: "afterAddingNum", //(必填)流程定义key
           position: localStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中
@@ -300,6 +304,10 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
+        this.Approvaltable = res.historyList.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList[0].userid;
         this.userList = res.userlist.userList;

@@ -65,6 +65,7 @@
         <Application-form
           v-if="isopen[6]"
           style="padding:10px;"
+          @close="closeApplication"
           :reqfundsId="reqfundsId"
           :openType="ApplyFormopenType"
         ></Application-form>
@@ -74,7 +75,7 @@
 </template>
 
 <script>
-import ApplicationForm from "./components/request-funds/Application-form";
+import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import echarts from "./components/request-funds/echarts";
 import ContractQuantity from "@/components/Ca-to-do/Contract-quantity/Contract-quantity";
 import PartyMaterialList from "@/components/Ca-to-do/Contract-quantity/Party-material-list";
@@ -135,19 +136,16 @@ export default {
       this.$nextTick(() => {
         this.isopen = [false, false, false, false, false, true, true];
       });
-      console.log(this.isopen);
       this.currentActive = "8";
       this.reqfundsId = id;
       this.ApplyFormopenType = "add";
     },
     //打开开票申请表
     openApplyForm(id) {
-      console.log("通过");
       this.isopen = [false, false, false, false, false, true, false];
       this.$nextTick(() => {
         this.isopen = [false, false, false, false, false, true, true];
       });
-      console.log(this.isopen);
       this.currentActive = "8";
       this.reqfundsId = id;
       this.ApplyFormopenType = "";
@@ -166,7 +164,21 @@ export default {
     //关闭新增合同工程量
     closeQuantity() {
       this.isopen[4] = false;
-      this.currentActive = "5";
+      this.currentActive = "1";
+      this.isopen.forEach((item, index) => {
+        if (item === true) {
+          this.currentActive = index + 2 + "";
+        }
+      });
+    },
+    closeApplication() {
+      this.isopen[6] = false;
+      this.currentActive = "1";
+      this.isopen.forEach((item, index) => {
+        if (item === true) {
+          this.currentActive = index + 2 + "";
+        }
+      });
     },
     //打开新增合同工程量
     openContract() {
@@ -184,9 +196,7 @@ export default {
     openeditPurchase(id) {
       this.currentActive = "4";
       this.isopen[2] = true;
-      console.log(id);
       apigetPurchase({ construct_purchase_id: id }).then(res => {
-        console.log(res);
         // this.headform = res.projectInfo;
         this.Purchase_entryList = res.purchaseEntry;
         if (res.hisComment != null) {
@@ -202,11 +212,9 @@ export default {
     },
     //打开查看采购单
     opencheckPurchase(id) {
-      console.log(id);
       this.currentActive = "4";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
-        console.log(res);
         // this.headform = res.projectInfo;
         this.Purchase_entryList = res.purchaseEntry;
         this.ProcessList = res.hisComment.map(item => {
@@ -324,7 +332,6 @@ export default {
               return item;
             });
             this.headform = res.head[0];
-            console.log(this.headform);
           });
 
           break;

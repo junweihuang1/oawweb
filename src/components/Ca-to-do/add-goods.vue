@@ -6,8 +6,8 @@
         <el-col :span="8">
           <el-form-item label="公司">
             <el-input
-              v-if="form.company_name"
-              v-model="form.company_name"
+              v-if="ownHead.company_name"
+              v-model="ownHead.company_name"
             ></el-input>
             <select-company
               @setCompanyName="getCompanyName"
@@ -18,8 +18,8 @@
         <el-col :span="8">
           <el-form-item label="项目名称">
             <el-input
-              v-if="form.construct_project_name"
-              v-model="form.construct_project_name"
+              v-if="ownHead.construct_project_name"
+              v-model="ownHead.construct_project_name"
               @focus="openselectProject"
             ></el-input>
             <el-input
@@ -32,7 +32,10 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="计划员">
-            <el-input v-model="form.own_purchase_planMan" readonly></el-input>
+            <el-input
+              v-model="ownHead.own_purchase_planMan"
+              readonly
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -42,7 +45,7 @@
               type="date"
               value-format="yyyy-MM-dd"
               clearable
-              v-model="form.own_purchase_planDate"
+              v-model="ownHead.own_purchase_planDate"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -53,21 +56,21 @@
               clearable
               value-format="yyyy-MM-dd"
               type="date"
-              v-model="form.own_purchase_arriveDate"
+              v-model="ownHead.own_purchase_arriveDate"
             ></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="品牌">
-            <el-input v-model="form.own_purchase_brand"></el-input>
+            <el-input v-model="ownHead.own_purchase_brand"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="">
-            <el-radio v-model="form.own_purchase_type" border :label="1"
+            <el-radio v-model="ownHead.own_purchase_type" border :label="1"
               >普通采购</el-radio
             >
-            <el-radio v-model="form.own_purchase_type" border :label="2"
+            <el-radio v-model="ownHead.own_purchase_type" border :label="2"
               >材料采购</el-radio
             >
           </el-form-item>
@@ -83,7 +86,7 @@
       @click="additem"
       >添加</el-button
     >
-    <el-table :data="addlist" border>
+    <el-table :data="entryList" border>
       <el-table-column
         :label="item[0]"
         v-for="(item, index) in header"
@@ -114,7 +117,7 @@
       </el-table-column>
     </el-table>
     <el-form size="mini" label-width="80px" style="margin-top:10px;">
-      <el-form-item label="审核人">
+      <el-form-item label="审核人" v-if="userList != ''">
         <el-select v-model="userid">
           <el-option
             v-for="(item, index) in userList"
@@ -201,6 +204,7 @@
 
 <script>
 import selectProject from "@/components/Ca-select/select-project";
+import { changetime } from "@/components/global-fn/global-fn";
 import selectCompany from "@/components/Ca-select/select-company";
 import {
   apigetProcessList,
@@ -228,7 +232,6 @@ export default {
         ["小计", "own_purchase_purchaseTotal"],
         ["备注", "own_purchase_remarks"]
       ],
-      addlist: this.entryList,
       id: 1,
       activityList: [],
       ApprovalHeaderList: [
@@ -241,6 +244,7 @@ export default {
       userid: 0,
       userList: [],
       current: 1,
+      hisComment: [],
       buttonList: []
     };
   },
@@ -255,7 +259,6 @@ export default {
       }
     },
     openType: String,
-    hisComment: Array,
     active: Object
   },
   components: {
@@ -273,8 +276,10 @@ export default {
         userid: this.userid,
         reasons: this.reasons,
         type: type,
-        own_purchase_id: this.active.BUSINESS_KEY_.split(".")[1],
-        own_purchase_planMan: this.form.own_purchase_planMan
+        own_purchase_id: this.active.BUSINESS_KEY_
+          ? this.active.BUSINESS_KEY_.split(".")[1]
+          : this.active.businessId,
+        own_purchase_planMan: this.ownHead.own_purchase_planMan
       };
       console.log(data);
       apipassOwnHead(data).then(res => {
@@ -283,12 +288,11 @@ export default {
       });
     },
     submit() {
-      this.form.userid = this.userid;
+      this.ownHead.userid = this.userid;
       console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          this.form.ownEntry = JSON.stringify(this.addlist);
-
+          this.ownHead.ownEntry = JSON.stringify(this.entryList);
           apisaveOwnHead(this.form).then(res => {
             this.$message.success(res.msg);
             this.$emit("close");
@@ -302,7 +306,9 @@ export default {
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
           key: "ownHeadView", //(必填)流程定义key
           position: localStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中
@@ -316,7 +322,6 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
-      console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
@@ -325,18 +330,24 @@ export default {
           }
           return item;
         });
+        this.hisComment = res.historyList.map(item => {
+          item.START_TIME_ = changetime(item.START_TIME_);
+          return item;
+        });
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList[0].userid;
-        this.userList = res.userlist.userList;
+        this.userid = res.userlist.userList
+          ? res.userlist.userList[0].userid
+          : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },
     delitem(row) {
       console.log(row);
-      this.addlist = this.addlist.filter(item => item.id !== row.id);
+      this.entryList = this.entryList.filter(item => item.id !== row.id);
     },
     //添加行
     additem() {
-      this.addlist.push({
+      this.entryList.push({
         id: this.id,
         own_purchase_material: "", //材料名称),
         own_purchase_model: "", //型号规格)
@@ -353,7 +364,7 @@ export default {
     },
     getSelectName(row) {
       this.projectName = row.construct_project_name;
-      this.form.own_purchase_projectId = row.construct_project_id;
+      this.ownHead.own_purchase_projectId = row.construct_project_id;
       this.isselect = false;
     },
     openselectProject() {
@@ -361,7 +372,7 @@ export default {
     },
     //选择公司
     getCompanyName(id) {
-      this.form.own_purchase_companyId = id;
+      this.ownHead.own_purchase_companyId = id;
     }
   }
 };

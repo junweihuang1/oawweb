@@ -281,4 +281,17 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+// 全局设置
+body .el-table th.gutter {
+  display: table-cell !important;
+}
+
+body .el-table colgroup.gutter {
+  display: table-cell !important;
+}
+.el-table__fixed,
+.el-table__fixed-right {
+  height: 100% !important;
+}
+</style>

@@ -19,8 +19,6 @@ export default {
   data() {
     return {
       entryList: [],
-      isopen: false,
-      openType: "headle",
       activeform: {}
     };
   },
@@ -28,12 +26,8 @@ export default {
     SealApply
   },
   props: {
+    openType: String,
     active: Object
-  },
-  watch: {
-    openGoods(val) {
-      this.isopen = val;
-    }
   },
   mounted() {
     this.getGoOut();
@@ -43,8 +37,11 @@ export default {
       this.$emit("close");
     },
     getGoOut() {
+      let id = this.active.BUSINESS_KEY_
+        ? this.active.BUSINESS_KEY_.split(".")[1]
+        : this.active.businessId;
       apiSealById({
-        own_seal_id: this.active.BUSINESS_KEY_.split(".")[1]
+        own_seal_id: id
       }).then(res => {
         console.log(res);
         this.entryList = res.hisComment.map(item => {

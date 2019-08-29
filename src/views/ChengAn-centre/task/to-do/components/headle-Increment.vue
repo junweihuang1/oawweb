@@ -4,7 +4,7 @@
       @close="closeQuantity"
       :projectList="activeform"
       :active="active"
-      opentype="headle"
+      openType="openType"
       :DataList="DataList"
     ></Contract-quantity>
   </div>
@@ -18,7 +18,6 @@ export default {
   data() {
     return {
       isopen: false,
-      openType: "edit",
       activeform: {},
       DataList: []
     };
@@ -27,6 +26,7 @@ export default {
     ContractQuantity
   },
   props: {
+    openType: String,
     active: Object
   },
   mounted() {
@@ -36,17 +36,17 @@ export default {
     closeQuantity() {
       this.$emit("close");
     },
-    getclose() {},
     getGoOut() {
-      console.log(this.active)
-      let id=this.active.BUSINESS_KEY_.split(".")[1]?this.active.BUSINESS_KEY_.split(".")[1]:this.active.businessId
-      console.log(id)
+      // console.log(this.active);
+      let id = this.active.BUSINESS_KEY_
+        ? this.active.BUSINESS_KEY_.split(".")[1]
+        : this.active.businessId;
       apiChangeQuantity({
         id: id
       }).then(res => {
         console.log(res);
-        // this.activeform = res.head;
-        // this.DataList = res.entry;
+        this.activeform = res.head;
+        this.DataList = res.entry;
       });
     }
   }

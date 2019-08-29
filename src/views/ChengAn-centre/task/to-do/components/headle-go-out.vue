@@ -17,7 +17,6 @@ export default {
   data() {
     return {
       isopen: false,
-      openType: "headle",
       activeform: {}
     };
   },
@@ -26,12 +25,7 @@ export default {
   },
   props: {
     active: Object,
-    openGoOut: Boolean
-  },
-  watch: {
-    openGoods(val) {
-      this.isopen = val;
-    }
+    openType: String
   },
   mounted() {
     this.getGoOut();
@@ -41,8 +35,11 @@ export default {
       this.$emit("close");
     },
     getGoOut() {
+      let id = this.active.BUSINESS_KEY_
+        ? this.active.BUSINESS_KEY_.split(".")[1]
+        : this.active.businessId;
       apigetField({
-        id: this.active.BUSINESS_KEY_.split(".")[1]
+        id: id
       }).then(res => {
         this.activeform = res.data;
         console.log(res);

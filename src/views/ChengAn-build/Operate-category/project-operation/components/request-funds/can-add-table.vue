@@ -2,9 +2,7 @@
   <div>
     <div>
       <el-button-group>
-        <el-button type="success" size="mini" @click.once="addline"
-          >添加</el-button
-        >
+        <el-button type="success" size="mini" @click="addline">添加</el-button>
         <el-button type="primary" size="mini" @click="undoadd"
           >撤销新增</el-button
         >
@@ -60,7 +58,7 @@
             <el-button type="success" @click="checkitem(row)">通过</el-button>
           </template>
           <template v-else>
-            <el-button type="text" disabled>审核中</el-button>
+            <el-button type="text" style="color:#F56C6C;">审核中</el-button>
           </template>
         </template>
       </el-table-column>
@@ -85,6 +83,7 @@ export default {
       ],
       DataList: this.rows,
       ischeck: true,
+      isadd: true,
       activeId: Number
     };
   },
@@ -128,7 +127,11 @@ export default {
       this.$emit("openApplyForm", row.manage_reqfunds_id);
     },
     modify(row) {
-      this.$emit("setTableList", row);
+      this.$confirm(`确定修改吗?`)
+        .then(() => {
+          this.$emit("setTableList", row);
+        })
+        .catch(() => {});
     },
     //行被点击
     rowClick(row) {
@@ -153,10 +156,24 @@ export default {
       this.DataList.pop();
     },
     addline() {
-      this.$emit("reload");
-      setTimeout(() => {
-        this.DataList.push({});
-      }, 100);
+      console.log(this.rows);
+      this.rows.push({
+        manage_reqfunds_time: "",
+        manage_reqfunds_amount: "",
+        manage_reqfunds_ticketDate: "",
+        manage_reqfunds_ticketAmount: "",
+        manage_reqfunds_receiveDate: "",
+        manage_reqfunds_receiveAmount: "",
+        manage_reqfunds_remark: ""
+      });
+      this.isadd = false;
+      this.$nextTick(() => {
+        this.isadd = true;
+      });
+      // this.$emit("reload");
+      // setTimeout(() => {
+
+      // }, 100);
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {

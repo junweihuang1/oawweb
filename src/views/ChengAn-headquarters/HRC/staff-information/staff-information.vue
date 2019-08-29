@@ -2,68 +2,70 @@
   <div>
     <el-row>
       <el-col
-    :span="3"
-    style="border:1px solid #E4E7ED;background:#E4E7ED;"
-    :style="{ height: winheight }"
-  >
-    <div class="menu">
-      <i class="el-icon-document"></i>
-      菜单
-    </div>
-    <el-tree
-      :data="TreeList"
-      default-expand-all
-      @node-click="nodeClick"
-      accordion
-      :props="defaultProps"
-      style="padding:5px;background:#E4E7ED;"
-    ></el-tree>
-  </el-col>
-  <el-col :span="21">
-    <el-form ref="form" :model="form" inline="" size="mini">
-      <el-form-item label="员工编号">
-        <el-input v-model="form.number" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="姓名">
-        <el-input v-model="form.name" clearable></el-input>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select v-model="form.status" placeholder="请选择" clearable>
-          <el-option
-            v-for="item in statusList"
-            :key="item[0]"
-            :label="item[1]"
-            :value="item[0]"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="success" @click="getpmuserList">查询</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button-group>
-          <el-button type="success" @click="addstaff">新增员工</el-button>
-          <el-button type="primary" @click="openNotCorrected">未转正</el-button>
-        </el-button-group>
-      </el-form-item>
-    </el-form>
-    <Ca-rule-table
-      :header="headerList"
-      :DataList="staffList"
-      :headle="headle"
-      @checkleave="edit"
-      @delete="deleteline"
-    ></Ca-rule-table>
-    <paging
-      @setlimit="getlimit"
-      @setpage="getpage"
-      :total="total"
-      :currentpage="currentpage"
-      :currentlimit="currentlimit"
-    ></paging>
-  </el-col>
+        :span="3"
+        style="border:1px solid #E4E7ED;background:#E4E7ED;"
+        :style="{ height: winheight }"
+      >
+        <div class="menu">
+          <i class="el-icon-document"></i>
+          菜单
+        </div>
+        <el-tree
+          :data="TreeList"
+          default-expand-all
+          @node-click="nodeClick"
+          accordion
+          :props="defaultProps"
+          style="padding:5px;background:#E4E7ED;"
+        ></el-tree>
+      </el-col>
+      <el-col :span="21" style="padding-left:20px;">
+        <el-form ref="form" :model="form" inline="" size="mini">
+          <el-form-item label="员工编号">
+            <el-input v-model="form.number" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input v-model="form.name" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="form.status" placeholder="请选择" clearable>
+              <el-option
+                v-for="item in statusList"
+                :key="item[0]"
+                :label="item[1]"
+                :value="item[0]"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="success" @click="getpmuserList">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button-group>
+              <el-button type="success" @click="addstaff">新增员工</el-button>
+              <el-button type="primary" @click="openNotCorrected"
+                >未转正</el-button
+              >
+            </el-button-group>
+          </el-form-item>
+        </el-form>
+        <Ca-rule-table
+          :header="headerList"
+          :DataList="staffList"
+          :headle="headle"
+          @checkleave="edit"
+          @delete="deleteline"
+        ></Ca-rule-table>
+        <paging
+          @setlimit="getlimit"
+          @setpage="getpage"
+          :total="total"
+          :currentpage="currentpage"
+          :currentlimit="currentlimit"
+        ></paging>
+      </el-col>
     </el-row>
-    
+
     <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh">
       <modify-window
         v-if="isadd"
@@ -75,12 +77,13 @@
       ></modify-window>
     </el-dialog>
     <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
-      <Not-Corrected v-if="isopenNoCor"></Not-Corrected>
+      <corrented-Tabs v-if="isopenNoCor"></corrented-Tabs>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import correntedTabs from "./components/corrented-Tabs";
 import NotCorrected from "./components/Not-Corrected";
 import modifyWindow from "./components/modify-window";
 import Paging from "@/components/paging/paging";
@@ -94,12 +97,12 @@ export default {
   name: "staffInformation",
   data() {
     return {
-      winheight:document.documentElement.scrollHeight - 126 + "px",
+      winheight: document.documentElement.scrollHeight - 126 + "px",
       defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        TreeList:[],
+        children: "children",
+        label: "label"
+      },
+      TreeList: [],
       isadd: false,
       form: {
         number: "",
@@ -123,7 +126,7 @@ export default {
         ["中心", "center_name", 130],
         ["部门", "department_name", 130],
         ["身份证号码", "user_card", 180],
-        ["身份证地址", "card_address"],
+        ["身份证地址", "card_address", 270],
         ["状态", "status", 80]
       ],
       headle: ["编辑", "删除"],
@@ -141,7 +144,7 @@ export default {
     Paging,
     CaRuleTable,
     modifyWindow,
-    NotCorrected
+    correntedTabs
   },
   mounted() {
     this.getpmuserList();
@@ -186,11 +189,11 @@ export default {
       console.log("tree");
       apiuserTreeList().then(res => {
         console.log(res);
-        this.TreeList=res.data
+        this.TreeList = res.data;
       });
     },
-    nodeClick(row){
-      console.log(row)
+    nodeClick(row) {
+      console.log(row);
     },
     getpmuserList() {
       let data = {
@@ -254,4 +257,5 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #e4e7ed;
   font-weight: 700;
-}</style>
+}
+</style>

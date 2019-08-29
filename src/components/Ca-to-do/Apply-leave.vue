@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="共计天数">
-            <el-input v-model="form.day_count" />
+            <el-input v-model="day_count" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -72,7 +72,7 @@
               minlength="300px"
             /> </el-form-item
         ></el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="userList !== ''">
           <el-form-item label="审核人">
             <el-select v-model="userid" style="width:100%;">
               <el-option
@@ -212,17 +212,23 @@ export default {
       userid: 0,
       userList: [],
       activityList: [],
+      DataList: [],
       current: 1
     };
+  },
+  computed: {
+    day_count() {
+      let leave_time =
+        new Date(this.form.end_time) - new Date(this.form.start_time);
+      leave_time /= 60 * 1000 * 60;
+      console.log(leave_time);
+      return leave_time.toFixed(2);
+    }
   },
   components: {
     DateTime
   },
   props: {
-    DataList: {
-      type: Array,
-      default: () => []
-    },
     form: {
       type: Object,
       default: () => {}
@@ -240,9 +246,11 @@ export default {
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
           key: "Leave_flow", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: this.active.role_name, //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -260,12 +268,22 @@ export default {
         this.activityList = res.activityList.map((item, index) => {
           if (item.name == res.userlist.userTaskName && this.active) {
             this.current = index;
+          } else if (res.userlist.userTaskName == "结束") {
+            this.current = res.activityList.length;
           }
           return item;
         });
+        this.DataList = res.historyList
+          ? res.historyList.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList[0].userid;
-        this.userList = res.userlist.userList;
+        this.userid =
+          res.userlist.userList != "" ? res.userlist.userList[0].userid : "";
+        this.userList =
+          res.userlist.userList != "" ? res.userlist.userList : [];
       });
     },
     //办理流程

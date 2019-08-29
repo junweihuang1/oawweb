@@ -4,6 +4,8 @@
       :DataList="NotCorList"
       :header="header"
       :setheight="0.6"
+      :headle="headle"
+      @checkleave="checkitem"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
@@ -12,6 +14,12 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
+    <!-- <el-dialog title="未转正详情" :visible.sync="isopen" :append-to-body="true">
+      <notCorrented-detail
+        v-if="isopen"
+        
+      ></notCorrented-detail>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -33,7 +41,10 @@ export default {
         ["角色名称", "role_name"],
         ["转正日期", "close_time"],
         ["状态", "status"]
-      ]
+      ],
+      headle: ["查看"],
+      isopen: false,
+      queryList: []
     };
   },
   components: { CaRuleTable, paging },
@@ -41,6 +52,10 @@ export default {
     this.getNotCorList();
   },
   methods: {
+    checkitem(row) {
+      console.log(row);
+      this.$emit("openCorrent", row);
+    },
     getlimit(val) {
       this.currentlimit = val;
       this.getNotCorList();

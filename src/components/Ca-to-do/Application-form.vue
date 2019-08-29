@@ -41,7 +41,7 @@
         <td align="center">
           <input
             type="text"
-            v-model="ApplyForm.manage_reqfunds_receiveAmount"
+            v-model="ApplyForm.manage_reqfunds_amount"
             class="inputbox"
           />
         </td>
@@ -122,15 +122,25 @@
           />
         </td>
       </tr>
+      <tr v-if="openType == 'headle'">
+        <td align="center">意见</td>
+        <td align="center" colspan="3">
+          <input type="text" v-model="reasons" class="inputbox" />
+        </td>
+      </tr>
     </table>
 
     <div>
       说明：“统一社会信用代码、地址、电话、开户行、银行账号”四项只需在第一次开票的时候填写即可，即同一项目从第二次开票开始此四项可省略。
     </div>
-    <div style="width:100%;text-align:center;" v-if="openType == 'add'">
+    <div style="width:100%;text-align:center;">
       <el-form inline size="mini">
         <el-form-item>
-          <el-select v-model="ApplyForm.userid" placeholder="请选择">
+          <el-select
+            v-model="userid"
+            placeholder="请选择"
+            v-if="AuditorList !== ''"
+          >
             <el-option
               v-for="item in AuditorList"
               :key="item.userid"
@@ -138,19 +148,64 @@
               :label="item.username"
             ></el-option>
           </el-select>
+          <el-input v-else value="">对应职称没有人员</el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="openType == 'add'">
           <el-button type="primary" @click="save">保存</el-button>
+        </el-form-item>
+        <el-form-item v-else-if="openType == 'headle'">
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headleprocess(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headleprocess('finish')"
+              >不同意</el-button
+            >
+          </template>
         </el-form-item>
       </el-form>
     </div>
+    <el-divider content-position="left">
+      流程线
+    </el-divider>
+    <el-steps :active="current" :align-center="true">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <div v-if="openType !== 'add'">
       <el-divider content-position="left">审批记录</el-divider>
-      <Ca-rule-table
-        :DataList="historyList"
-        :header="header"
-        :setheight="0.2"
-      ></Ca-rule-table>
+      <el-table :data="historyList" border>
+        <el-table-column
+          v-for="(item, index) in header"
+          :key="index"
+          :label="item[0]"
+          :prop="item[1]"
+          :type="index == 0 ? 'index' : ''"
+          :width="item[2]"
+          align="center"
+        ></el-table-column>
+      </el-table>
     </div>
     <el-dialog
       :visible.sync="isopenDep"
@@ -167,12 +222,12 @@
 <script>
 import selectDepartment from "@/components/Ca-select/select-department";
 import { changetime } from "@/components/global-fn/global-fn";
-import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apigetreqfundsView,
   apistartReqfunds,
   apisupOpinionNew,
-  apigetProcessList
+  apipassReqfunds,
+  apiReqfundsProcess
 } from "@/request/api.js";
 export default {
   name: "ApplicationForm",
@@ -191,11 +246,13 @@ export default {
       Auditor: "",
       isopenDep: false,
       buttonList: [],
-      activityList: []
+      activityList: [],
+      reasons: "",
+      userid: 0,
+      current: 1
     };
   },
   components: {
-    CaRuleTable,
     selectDepartment
   },
   props: {
@@ -208,6 +265,21 @@ export default {
     this.getView();
   },
   methods: {
+    headleprocess(type) {
+      let data = {
+        taskid: this.active.ID_, //(必填)流程实例id
+        userid: this.userid, //(必填)下一审核人id
+        reasons: this.reasons, //(必填)审批意见
+        sign: type, //(必填)是否批准(true/false)
+        taskName: this.active.NAME_
+      };
+      console.log(data);
+      apipassReqfunds(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
+    },
     getSelectName(row) {
       this.ApplyForm.manage_department = row.department_name;
       this.isopenDep = false;
@@ -217,31 +289,30 @@ export default {
     },
     save() {
       console.log(this.ApplyForm);
-      // apistartReqfunds(this.ApplyForm).then(res => {
-      //   console.log(res);
-      // });
+      this.ApplyForm.userid = this.userid;
+      apistartReqfunds(this.ApplyForm).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
     },
     getprossList() {
       let data = {};
       if (this.active) {
         data = {
           taskid: this.active.ID_, //(必填)流程任务id
-          processInstanceId: this.active.PROC_INST_ID_, //(必填)流程实例id
-          key: "reqfundsView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          taskName: this.active.NAME_, //(必填)当前节点名称
           type: "" //(必填)新增new/运行中
         };
       } else {
         data = {
           taskid: "", //(必填)流程任务id
-          processInstanceId: "", //(必填)流程实例id
-          key: "reqfundsView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          taskName: "申请人", //(必填)当前节点名称
           type: "new" //(必填)新增new/运行中
         };
       }
       console.log(data);
-      apigetProcessList(data).then(res => {
+      apiReqfundsProcess(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
           if (item.name == res.userlist.userTaskName && this.active) {
@@ -250,8 +321,9 @@ export default {
           return item;
         });
         this.buttonList = res.startForm.split(",");
-        this.ApplyForm.userid = res.userlist.userList[0].userid;
-        this.AuditorList = res.userlist.userList;
+        this.userid = res.userlist ? res.userlist[0].userid : 0;
+        this.AuditorList = res.userlist;
+        console.log(res.userlist[0].userid);
       });
     },
     getView() {
@@ -260,7 +332,7 @@ export default {
         this.ApplyForm = res.data[0];
         if (res.historyList) {
           this.historyList = res.historyList.map(item => {
-            item.END_TIME_ = changetime(item.END_TIME_);
+            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
           });
         }

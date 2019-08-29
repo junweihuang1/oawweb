@@ -54,8 +54,8 @@ export default {
       processList: [],
       header: [
         ["流程编号", "ID_"],
-        ["流程名称", "NAME_"],
-        ["流程描述位", "KEY_"],
+        ["流程名称", "NAME_", 200],
+        ["流程描述位", "KEY_", 200],
         ["版本", "VERSION_", 90]
       ],
       headle: ["查看"],

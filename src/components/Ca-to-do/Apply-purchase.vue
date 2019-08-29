@@ -198,15 +198,15 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-divider content-position="left">流程线</el-divider>
-      <el-steps :active="current" :align-center="true" :space="200">
-        <el-step
-          v-for="(item, index) in activityList"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
     </div>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps :active="current" :align-center="true" :space="200">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <el-divider content-position="left">审批记录</el-divider>
     <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
     <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true">
@@ -243,10 +243,11 @@ import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import selectTeams from "@/components/Ca-select/select-teams";
 import selectMaterial from "@/components/Ca-select/select-material";
 import selectMaterialSeries from "@/components/Ca-select/select-material-series";
+import { changetime } from "@/components/global-fn/global-fn";
 import {
   apisavePurchase,
   apimodPurchase,
-  apiPurchaseProcessList,
+  apiPurchaseProcess,
   apipassPurchase
 } from "@/request/api.js";
 export default {
@@ -285,7 +286,8 @@ export default {
       current: 1,
       userTaskName: "",
       buttonList: [],
-      activityList: []
+      activityList: [],
+      ProcessList: []
     };
   },
   props: {
@@ -295,7 +297,6 @@ export default {
     activeForm: {
       type: Object
     },
-    ProcessList: Array,
     active: Object
   },
   components: {
@@ -310,38 +311,52 @@ export default {
   methods: {
     //办理
     headleprocess(type) {
-      let data={
-        processInstanceId:this.active.PROC_INST_ID_,//(必填)运行时id
-		taskid:this.active.ID_,//(必填)实例id
-		sign:type,//(必填)是否同意
-		reason:this.reasons,//(必填)审核意见
-		usertask:"",//(必填)驳回节点
-		taskName:this.active.NAME_,//(必填)当前节点id
-		construct_purchase_id:this.active.BUSINESS_KEY_.split(".")[1],//(必填)材料单id
-		userid:this.userid,//(必填)下一审批人id
-	  }
-	  console.log(data)
-      apipassPurchase(data).then(res=>{
-        console.log(res)
-      })
+      let data = {
+        processInstanceId: this.active.PROC_INST_ID_
+          ? this.active.PROC_INST_ID_
+          : this.active.taskid, //(必填)运行时id
+        taskid: this.active.ID_, //(必填)实例id
+        sign: type, //(必填)是否同意
+        reason: this.reasons, //(必填)审核意见
+        usertask: "", //(必填)驳回节点
+        taskName: this.active.NAME_, //(必填)当前节点id
+        construct_purchase_id: this.active.BUSINESS_KEY_
+          ? this.active.BUSINESS_KEY_.split(".")[1]
+          : this.active.businessId, //(必填)材料单id
+        userid: this.userid //(必填)下一审批人id
+      };
+      console.log(data);
+      apipassPurchase(data).then(res => {
+        console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
+      });
     },
     getprossList() {
       let data = {};
       //当active（待办）不为空时
       data = {
         taskid: this.active.ID_,
-        processInstanceId: this.active.PROC_INST_ID_,
+        processInstanceId: this.active.PROC_INST_ID_
+          ? this.active.PROC_INST_ID_
+          : this.active.taskid,
         taskName: this.active.NAME_,
         key: "Purchase_payment",
-        construct_purchase_id: this.active.BUSINESS_KEY_.split(".")[1]
+        construct_purchase_id: this.active.BUSINESS_KEY_
+          ? this.active.BUSINESS_KEY_.split(".")[1]
+          : this.active.businessId
       };
       console.log(data);
-      apiPurchaseProcessList(data).then(res => {
+      apiPurchaseProcess(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
           if (item.name == res.userlist.userTaskName && this.active) {
             this.current = index;
           }
+          return item;
+        });
+        this.ProcessList = res.historyList.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
           return item;
         });
         this.userTaskName = res.userlist.userTaskName;
