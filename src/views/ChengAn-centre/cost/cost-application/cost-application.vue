@@ -14,6 +14,7 @@
     <Ca-rule-table
       :DataList="costList"
       :header="header"
+      style="width:85%;"
       :headle="headle"
       @checkleave="details"
       @delete="deleteitem"
@@ -62,7 +63,7 @@ import {
   apigetCostappById,
   apidelCostapp
 } from "@/request/api.js";
-import { changetime, getPdf } from "@/components/global-fn/global-fn";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "costApplication",
   data() {
@@ -73,7 +74,7 @@ export default {
       costList: [],
       header: [
         ["ID", "costapp_id", 70],
-        ["公司部门", "costapp_company", 180],
+        ["公司部门", "costapp_company", 250],
         ["申请事项", "costapp_appitem"],
         ["申请类型", "costapp_application", 100],
         ["建单时间", "costapp_time", 100],
@@ -85,7 +86,7 @@ export default {
       setform: {},
       Approvaltable: [],
       isprint: false,
-      openType: "",
+      openType: ""
     };
   },
   components: {
@@ -149,7 +150,6 @@ export default {
       this.setform = {};
       this.Approvaltable = [];
       this.isopen = true;
-      
     },
     //查看
     details(row) {

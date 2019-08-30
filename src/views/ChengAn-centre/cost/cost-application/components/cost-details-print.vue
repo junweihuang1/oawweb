@@ -1,6 +1,6 @@
 <template>
-  <div id="printing">
-    <table border="0" cellspacing="1" cellpadding="0">
+  <div>
+    <table border="1" cellspacing="0" cellpadding="0">
       <tr>
         <th>申请人</th>
         <th>{{ applicant }}</th>
@@ -78,10 +78,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+table {
+  width: 100%;
+  background: #aaa;
+}
 th {
+  background: #fff;
   width: 25%;
   height: 80px;
-  border: 1px solid #aaa;
   font-size: 16px;
   font-family: "宋体";
 }

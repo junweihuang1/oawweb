@@ -2,17 +2,17 @@
   <div>
     <el-form label-width="80px" inline>
       <el-form-item label="部门名称">
-        <el-input v-model="departmentName" />
+        <el-input v-model="departmentName" clearable />
       </el-form-item>
       <el-form-item label="中心名称">
-        <el-input v-model="centerName" />
+        <el-input v-model="centerName" clearable />
       </el-form-item>
       <el-form-item label="公司名称">
-        <el-input v-model="companyName" />
+        <el-input v-model="companyName" clearable />
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" @click="queryCompanyInf"
+          <el-button type="primary" size="mini" @click="getDepartmentInf"
             >查询</el-button
           >
           <el-button type="success" size="mini" @click="addCompanyInf"
@@ -53,7 +53,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="modify">提交</el-button>
-            <el-button type="danger" @click="exit">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -74,7 +73,6 @@
 </template>
 
 <script>
-//import axios from "axios";
 import selectCenter from "./components/select-center";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
@@ -150,9 +148,6 @@ export default {
       };
       this.isopen = true;
     },
-    queryCompanyInf() {
-      this.getDepartmentInf();
-    },
     getDepartmentInf() {
       apidepartmentList({
         rows: this.currentlimit,
@@ -160,14 +155,10 @@ export default {
         department_name: this.departmentName,
         center_name: this.centerName,
         company_name: this.companyName
-      })
-        .then(res => {
-          console.log(res);
-          this.departmentList = res.rows;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      }).then(res => {
+        this.total = res.total;
+        this.departmentList = res.rows;
+      });
     },
     openwindow(e) {
       this.form = {
@@ -188,28 +179,19 @@ export default {
         department_companyId: this.form.company_id
       }).then(res => {
         console.log(res);
-        this.departmentList.forEach(item => {
-          if (item.department_id == this.form.department_id) {
-            item.department_name = this.form.department_name;
-          }
-        });
-        this.$message.success("修改成功");
-        setTimeout(() => {
-          this.isopen = false;
-        }, 1500);
+        this.isopen = false;
+        this.getDepartmentInf();
+        this.$message.success("办理成功");
       });
-    },
-    exit() {
-      this.form.company_name = this.form.old_name;
-      this.isopen = false;
     },
     deleteitem() {
       if (this.selectList == "") {
         this.$message.error("请选择部门");
         return;
       }
+      console.log(JSON.stringify(this.selectList));
       apideleDepartment({
-        ids: this.selectList
+        ids: JSON.stringify(this.selectList)
       }).then(res => {
         console.log(res);
       });

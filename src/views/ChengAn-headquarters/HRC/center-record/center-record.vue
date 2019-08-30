@@ -2,7 +2,7 @@
   <div>
     <el-form label-width="80px" inline>
       <el-form-item label="中心名称">
-        <el-input v-model="centerName" />
+        <el-input v-model="centerName" clearable />
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -46,7 +46,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="modify">提交</el-button>
-          <el-button type="danger" @click="exit">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -129,13 +128,10 @@ export default {
         rows: this.currentlimit,
         page: this.currentpage,
         center_name: this.centerName
-      })
-        .then(res => {
-          this.centerList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      }).then(res => {
+        this.total = res.total;
+        this.centerList = res.data;
+      });
     },
     openwindow(e) {
       this.form = {
@@ -167,32 +163,23 @@ export default {
         center_id: this.form.center_id,
         center_name: this.form.center_name,
         center_companyId: this.form.company_id
-      }).then(res => {
-        this.centerList.forEach(item => {
-          if (item.center_id == this.form.center_id) {
-            item.center_name = this.form.center_name;
-          }
-        });
-        this.$message.success("修改成功");
-        setTimeout(() => {
-          this.isopen = false;
-        }, 1500);
+      }).then(() => {
+        this.$message.success("办理成功");
+        this.getCenterInf();
+        this.isopen = false;
       });
-    },
-    exit() {
-      this.form.company_name = this.form.old_name;
-      this.isopen = false;
     },
     deleteitem() {
       if (this.selectList == "") {
         this.$message.error("请选择中心");
         return;
       }
-      //   apideleCenter({
-      //     ids: this.selectList
-      //   }).then(res => {
-      //     console.log(res);
-      //   });
+      console.log(JSON.stringify(this.selectList));
+      apideleCenter({
+        ids: JSON.stringify(this.selectList)
+      }).then(res => {
+        console.log(res);
+      });
     },
     getselect(val) {
       this.selectList = val.map(item => item.center_id);

@@ -121,7 +121,7 @@ export default {
             this.getGoodsList();
           });
         })
-        .catch();
+        .catch(() => {});
     },
     //查看
     checkitem(row) {

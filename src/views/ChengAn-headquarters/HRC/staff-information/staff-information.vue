@@ -1,18 +1,13 @@
 <template>
   <div>
     <el-row>
-      <el-col
-        :span="3"
-        style="border:1px solid #E4E7ED;background:#E4E7ED;"
-        :style="{ height: winheight }"
-      >
+      <el-col :span="3" class="menu_main" :style="{ height: winheight }">
         <div class="menu">
           <i class="el-icon-document"></i>
           菜单
         </div>
         <el-tree
           :data="TreeList"
-          default-expand-all
           @node-click="nodeClick"
           accordion
           :props="defaultProps"
@@ -84,7 +79,6 @@
 
 <script>
 import correntedTabs from "./components/corrented-Tabs";
-import NotCorrected from "./components/Not-Corrected";
 import modifyWindow from "./components/modify-window";
 import Paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -100,7 +94,7 @@ export default {
       winheight: document.documentElement.scrollHeight - 126 + "px",
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "name"
       },
       TreeList: [],
       isadd: false,
@@ -137,7 +131,8 @@ export default {
       isopenNoCor: false,
       userList: {},
       recordList: {},
-      submitType: ""
+      submitType: "",
+      company_name: ""
     };
   },
   components: {
@@ -201,9 +196,9 @@ export default {
         page: this.currentpage,
         username: this.form.name,
         userid: this.form.number,
-        department_name: "",
-        center_name: "",
-        company_name: "",
+        department_name: this.departmentName,
+        center_name: this.centerName,
+        company_name: this.company_name,
         status: this.form.status == "" ? 0 : this.form.status
       };
       apipmuserList(data).then(res => {
@@ -257,5 +252,9 @@ export default {
   padding: 10px;
   border-bottom: 1px solid #e4e7ed;
   font-weight: 700;
+}
+.menu_main {
+  border: 1px solid #e4e7ed;
+  background: #e4e7ed;
 }
 </style>

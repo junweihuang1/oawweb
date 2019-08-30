@@ -114,7 +114,6 @@
               class="upload-demo"
               ref="upload"
               action="http://192.168.11.129:8081/casd2/admin/uploadSealFile"
-              :on-preview="handlePreview"
               :limit="1"
               :on-change="handleChange"
               :headers="{ token: token }"
@@ -281,6 +280,9 @@ export default {
         "http://file.casdapi.com/sealFile/" + this.form.own_seal_filePath
       );
     },
+    getCompanyName(val) {
+      this.form.own_seal_company = val;
+    },
     handleChange(file, fileList) {
       this.fileList = fileList.map(item => {
         return item.name;
@@ -291,14 +293,7 @@ export default {
       this.form.own_seal_filePath = res.path;
       this.submit();
     },
-    successUpload(res, file, fileList) {
-      console.log(res);
-      console.log(file);
-      console.log(fileList);
-    },
-    getCompanyName(val) {
-      this.form.own_seal_company = val;
-    },
+
     submitUpload() {
       if (
         this.form.own_seal_chapCategory.length > 1 &&
@@ -328,9 +323,6 @@ export default {
         this.$message.success(res.msg);
         this.$emit("close");
       });
-    },
-    handlePreview(e) {
-      console.log(e);
     }
   }
 };

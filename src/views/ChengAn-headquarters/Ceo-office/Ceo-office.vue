@@ -129,6 +129,7 @@ export default {
       this.getDataList();
     },
     deleteitem(e) {
+      console.log(e.uc_framework_id);
       this.$confirm("确定删除?")
         .then(() => {
           apidelframeWork({

@@ -65,12 +65,12 @@
             <el-input v-model="ownHead.own_purchase_brand"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="">
-            <el-radio v-model="ownHead.own_purchase_type" border :label="1"
+            <el-radio v-model="ownHead.own_purchase_type" :label="1"
               >普通采购</el-radio
             >
-            <el-radio v-model="ownHead.own_purchase_type" border :label="2"
+            <el-radio v-model="ownHead.own_purchase_type" :label="2"
               >材料采购</el-radio
             >
           </el-form-item>
@@ -322,7 +322,7 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
-      console.log(data)
+      console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
@@ -331,10 +331,12 @@ export default {
           }
           return item;
         });
-        this.hisComment = res.historyList?res.historyList.map(item => {
-          item.START_TIME_ = changetime(item.START_TIME_);
-          return item;
-        }):[];
+        this.hisComment = res.historyList
+          ? res.historyList.map(item => {
+              item.START_TIME_ = changetime(item.START_TIME_);
+              return item;
+            })
+          : [];
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid

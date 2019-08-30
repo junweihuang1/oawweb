@@ -3,24 +3,27 @@
     <el-upload
       class="upload-demo"
       ref="upload"
-      action="string"
-      :on-preview="handlePreview"
-      :before-upload="beforeUpload"
+      :data="{ uploadPath: 'userfile/' }"
+      name="pic"
+      action="http://192.168.11.129:8081/casd2/admin/uploadPdf/"
+      :limit="1"
+      :headers="{ token: token }"
+      :on-success="handleSuccess"
       :auto-upload="false"
-      v-if="isdisplay"
     >
-      <el-button slot="trigger" size="mini" type="primary">选取文件</el-button>
+      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
       <el-button
         style="margin-left: 10px;"
+        size="small"
         type="success"
-        size="mini"
         @click="submitUpload"
-        >上传到服务器</el-button
+        >提交</el-button
       >
     </el-upload>
     <iframe
+      v-if="isreload"
       style="margin-top:20px;"
-      src="http://localhost:3000/public/file/address_list.pdf"
+      src="http://file.casdapi.com/userfile/address_list.pdf"
       width="90%"
       frameborder="0"
       :height="boxheight"
@@ -29,41 +32,43 @@
 </template>
 
 <script>
-import axios from "axios";
 import { apiuploadPdf } from "@/request/api.js";
+import { setTimeout } from "timers";
 export default {
   name: "Maillist",
   data() {
     return {
+      token: localStorage.getItem("token"),
       isdisplay: true,
-      boxheight: document.documentElement.scrollHeight * 0.8
+      boxheight: document.documentElement.scrollHeight * 0.8,
+      fileList: [],
+      isreload: true
     };
   },
   methods: {
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    beforeUpload(file) {
-      let fd = new FormData();
-      fd.append("pic", file); //传文件
-      axios({
-        method: "post",
-        url: "http://39.108.184.20:8080/casd2/admin/uploadPdf",
-        data: fd,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          token: localStorage.getItem("token")
-        }
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
+    handleSuccess(res) {
+      this.$message.success(res.msg);
+      this.$refs.upload.clearFiles();
+      setTimeout(() => {
+        this.isreload = false;
+        this.$nextTick(() => {
+          this.isreload = true;
         });
+      }, 600);
+    },
+    submitUpload() {
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          this.$refs.upload.submit();
+          //当没有附件时单独提交
+        })
+        .catch(() => {});
+    },
+    submit() {
+      console.log(this.form);
+      apiuploadPdf(this.form).then(res => {
+        this.$message.success(res.msg);
+      });
     }
   }
 };

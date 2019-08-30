@@ -345,7 +345,7 @@ export default {
 <style lang="scss" scoped>
 .Application_form {
   width: 100%;
-  background: #aaa;
+  background: #555;
 }
 .Application_form td:nth-child(n) {
   width: 20%;
