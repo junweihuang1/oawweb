@@ -49,6 +49,7 @@
         <Contract-quantity
           @close="closeQuantity"
           style="padding:10px;"
+          openType="add"
           :projectList="headform"
         ></Contract-quantity>
       </el-tab-pane>

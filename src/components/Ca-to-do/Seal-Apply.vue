@@ -50,24 +50,26 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12" v-if="userList !== ''">
-          <el-form-item label="审核人">
-            <el-select v-model="userid" style="width:100%;">
-              <el-option
-                v-for="(item, index) in userList"
-                :key="index"
-                :value="item.userid"
-                :label="item.username"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <template v-if="active">
-          <el-col :span="24">
+        <template v-if="openType == 'add' || openType == 'headle'">
+          <el-col :span="12" v-if="userList !== ''">
+            <el-form-item label="审核人">
+              <el-select v-model="userid" style="width:100%;">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24" v-if="openType == 'headle'">
             <el-form-item label="意见">
               <el-input type="textarea" :row="3" v-model="reasons"></el-input>
             </el-form-item>
           </el-col>
+        </template>
+        <template v-if="openType == 'check' || openType == 'headle'">
           <el-col :span="24">
             <el-form-item>
               <el-button
@@ -77,7 +79,7 @@
                 v-if="form.own_seal_filePath"
                 >下载附件</el-button
               >
-              <div v-if="openType != 'check'">
+              <div v-if="openType == 'headle'">
                 <template v-for="(item, index) in buttonList">
                   <el-button
                     v-if="item == 'submit'"
@@ -113,11 +115,12 @@
             <el-upload
               class="upload-demo"
               ref="upload"
-              action="http://192.168.11.129:8081/casd2/admin/uploadSealFile"
+              :action="upload_url"
               :limit="1"
               :on-change="handleChange"
               :headers="{ token: token }"
               :on-success="handleSuccess"
+              :on-error="headleError"
               :auto-upload="false"
             >
               <el-button slot="trigger" size="small" type="primary"
@@ -154,6 +157,8 @@
 </template>
 
 <script>
+//"http://192.168.3.27:8081/casd2/admin/uploadSealFile"
+import http from "@/request/http.js";
 import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import selectCompany from "@/components/Ca-select/select-company";
 import { apisaveSeal, apiSealProcessList, apipassSeal } from "@/request/api.js";
@@ -161,6 +166,7 @@ export default {
   name: "SealApply",
   data() {
     return {
+      upload_url: http.base_url + "uploadSealFile",
       token: localStorage.getItem("token"),
       Seals: [
         ["1", "公章"],
@@ -293,7 +299,9 @@ export default {
       this.form.own_seal_filePath = res.path;
       this.submit();
     },
-
+    headleError(err, file, fileList) {
+      console.log(err);
+    },
     submitUpload() {
       if (
         this.form.own_seal_chapCategory.length > 1 &&
@@ -311,9 +319,10 @@ export default {
             this.submit();
           }
         })
-        .catch();
+        .catch(() => {});
     },
     submit() {
+      console.log("this.form");
       this.form.own_seal_chapCategory = this.form.own_seal_chapCategory.join(
         ","
       );

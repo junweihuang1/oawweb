@@ -44,7 +44,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="modify">提交</el-button>
-          <el-button type="danger" @click="exit">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -182,6 +181,9 @@ export default {
           project_id: this.form.project_id,
           address_radius: this.form.address_radius
         }).then(res => {
+          this.$message.success(res.msg);
+          this.isopen = false;
+          this.getCardAddressInf();
           console.log(res);
         });
       }
@@ -221,10 +223,6 @@ export default {
           this.isopen = false;
         }, 1500);
       });
-    },
-    exit() {
-      this.form.company_name = this.form.old_name;
-      this.isopen = false;
     },
     deleteitem() {
       if (this.selectList == "") {

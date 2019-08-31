@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="共计天数">
-            <el-input v-model="day_count" />
+            <el-input v-model="form.day_count" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -216,15 +216,22 @@ export default {
       current: 1
     };
   },
-  computed: {
-    day_count() {
-      let leave_time =
-        new Date(this.form.end_time) - new Date(this.form.start_time);
-      leave_time /= 60 * 1000 * 60;
-      console.log(leave_time);
-      return leave_time.toFixed(2);
-    }
-  },
+  // computed: {
+  //   day_count() {
+  //     let count = 0;
+  //     let leave_time =
+  //       new Date(this.form.end_time) - new Date(this.form.start_time);
+  //     leave_time /= 60 * 1000 * 60;
+  //     if (leave_time > 0 && leave_time <= 4) {
+  //       count = 0.5;
+  //     } else if (leave_time > 4 && leave_time <= 10) {
+  //       count = 1;
+  //     } else if (leave_time > 10) {
+  //       count = Math.floor(leave_time / 24);
+  //     }
+  //     return count;
+  //   }
+  // },
   components: {
     DateTime
   },

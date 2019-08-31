@@ -4,7 +4,7 @@
       @close="closeQuantity"
       :projectList="activeform"
       :active="active"
-      openType="openType"
+      openType="headle"
       :DataList="DataList"
     ></Contract-quantity>
   </div>

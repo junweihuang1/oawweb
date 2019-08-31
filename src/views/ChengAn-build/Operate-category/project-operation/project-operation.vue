@@ -2,10 +2,10 @@
   <div>
     <el-form inline size="mini">
       <el-form-item label="项目部名称">
-        <el-input v-model="projectName"></el-input>
+        <el-input v-model="projectName" clearable></el-input>
       </el-form-item>
       <el-form-item label="年度">
-        <el-select v-model="years">
+        <el-select v-model="years" clearable>
           <el-option
             v-for="(item, index) in yearList"
             :key="index"

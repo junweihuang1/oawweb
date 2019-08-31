@@ -199,16 +199,18 @@
         </el-row>
       </el-form>
     </div>
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps :active="current" :align-center="true" :space="200">
-      <el-step
-        v-for="(item, index) in activityList"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
-    <el-divider content-position="left">审批记录</el-divider>
-    <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps :active="current" :align-center="true" :space="200">
+        <el-step
+          v-for="(item, index) in activityList"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+      <el-divider content-position="left">审批记录</el-divider>
+      <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
+    </template>
     <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true">
       <select-material-series
         @setSelectName="getSelectName"
@@ -277,7 +279,7 @@ export default {
       ],
       isselectMaterialseries: false,
       isselectMaterial: false,
-      //active: {},
+      currentSelect: {},
       isreviewer: false,
       isplanMan: false,
       reasons: "",
@@ -335,35 +337,37 @@ export default {
     getprossList() {
       let data = {};
       //当active（待办）不为空时
-      data = {
-        taskid: this.active.ID_,
-        processInstanceId: this.active.PROC_INST_ID_
-          ? this.active.PROC_INST_ID_
-          : this.active.taskid,
-        taskName: this.active.NAME_,
-        key: "Purchase_payment",
-        construct_purchase_id: this.active.BUSINESS_KEY_
-          ? this.active.BUSINESS_KEY_.split(".")[1]
-          : this.active.businessId
-      };
-      console.log(data);
-      apiPurchaseProcess(data).then(res => {
-        console.log(res);
-        this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
-            this.current = index;
-          }
-          return item;
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_,
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid,
+          taskName: this.active.NAME_,
+          key: "Purchase_payment",
+          construct_purchase_id: this.active.BUSINESS_KEY_
+            ? this.active.BUSINESS_KEY_.split(".")[1]
+            : this.active.businessId
+        };
+        console.log(data);
+        apiPurchaseProcess(data).then(res => {
+          console.log(res);
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == res.userlist.userTaskName && this.active) {
+              this.current = index;
+            }
+            return item;
+          });
+          this.ProcessList = res.historyList.map(item => {
+            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+            return item;
+          });
+          this.userTaskName = res.userlist.userTaskName;
+          this.buttonList = res.startForm.split(",");
+          this.userid = res.userlist.userList[0].userid;
+          this.userList = res.userlist.userList;
         });
-        this.ProcessList = res.historyList.map(item => {
-          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-          return item;
-        });
-        this.userTaskName = res.userlist.userTaskName;
-        this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList[0].userid;
-        this.userList = res.userlist.userList;
-      });
+      }
     },
     //
     //从子组件获取计划员姓名
@@ -386,23 +390,23 @@ export default {
     },
     //双击选择材料，接收子组件回调的方法。赋值给点击的行
     getMaterialName(row) {
-      // this.active.construct_purchase_material =
-      //   row.construct_project_quantities_name;
-      // this.active.construct_purchase_model =
-      //   row.construct_project_quantities_model;
-      // this.active.construct_purchase_unit =
-      //   row.construct_project_quantities_unit;
-      // this.active.construct_purchase_quantities =
-      //   row.construct_project_quantities_num;
-      // this.active.construct_purchase_approvalNum = row.sum;
-      // this.active.construct_purchase_contractPrice =
-      //   row.construct_project_quantities_price;
-      // this.active.construct_purchase_purchasePrice = "";
-      // this.active.construct_purchase_purchaseTotal = "";
+      this.currentSelect.construct_purchase_material =
+        row.construct_project_quantities_name;
+      this.currentSelect.construct_purchase_model =
+        row.construct_project_quantities_model;
+      this.currentSelect.construct_purchase_unit =
+        row.construct_project_quantities_unit;
+      this.currentSelect.construct_purchase_quantities =
+        row.construct_project_quantities_num;
+      this.currentSelect.construct_purchase_approvalNum = row.sum;
+      this.currentSelect.construct_purchase_contractPrice =
+        row.construct_project_quantities_price;
+      this.currentSelect.construct_purchase_purchasePrice = "";
+      this.currentSelect.construct_purchase_purchaseTotal = "";
       this.isselectMaterial = false;
     },
     openselectMaterial(row) {
-      // this.active = row;
+      this.currentSelect = row;
       this.isselectMaterial = true;
     },
     //获取材料系列信息

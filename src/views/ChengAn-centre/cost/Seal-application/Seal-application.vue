@@ -23,7 +23,12 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
-    <el-dialog title="盖章申请" :visible.sync="isApplyOpen" width="35%" top="10vh">
+    <el-dialog
+      title="盖章申请"
+      :visible.sync="isApplyOpen"
+      width="35%"
+      top="10vh"
+    >
       <Seal-Apply
         :form="addform"
         v-if="isApplyOpen"

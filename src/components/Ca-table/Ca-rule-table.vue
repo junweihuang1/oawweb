@@ -92,7 +92,7 @@
               >{{ item }}</el-button
             >
             <el-button
-              v-if="index == 4 && item != '' && !row[judge]"
+              v-if="index == 4 && item != '' && row[judge] == null"
               type="primary"
               size="mini"
               @click="start(row)"

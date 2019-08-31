@@ -18,8 +18,8 @@
       <el-form-item>
         <el-date-picker
           v-model="query_month"
-          type="date"
-          placeholder="选择日期"
+          type="month"
+          placeholder="选择月份"
           format="yyyy-MM"
           value-format="yyyy-MM"
         >

@@ -15,6 +15,13 @@
       field="status"
       :columnIndex="5"
     ></rule-table>
+    <paging
+      :currentlimit="currentlimit"
+      :currentpage="currentpage"
+      :total="total"
+      @setpage="getpage"
+      @setlimit="getlimit"
+    ></paging>
     <el-dialog title="请假详情" :visible.sync="isApply" width="35%">
       <Apply-leave
         v-if="isApply"
@@ -28,6 +35,7 @@
 </template>
 
 <script>
+import paging from "@/components/paging/paging";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import ApplyLeave from "@/components/Ca-to-do/Apply-leave";
 // import LeaveTable from "./components/leave-table";
@@ -53,52 +61,67 @@ export default {
       headle: ["查看"],
       headform: {},
       openType: "",
-      entryList: []
+      entryList: [],
+      total: 0
     };
   },
   components: {
     ApplyLeave,
-    ruleTable
+    ruleTable,
+    paging
   },
   mounted() {
-    apiLeaveList({
-      pageSize: this.currentlimit,
-      limit: this.currentpage,
-      token: localStorage.getItem("token")
-    }).then(res => {
-      this.DataList = res.data.map(item => {
-        switch (item.status) {
-          case 0:
-            item.status2 = "待审批";
-            break;
-          case 1:
-            item.status2 = "不通过";
-            break;
-          case 3:
-            item.status2 = "审批通过";
-            break;
-        }
-        item.leave_category =
-          item.leave_category == 0
-            ? "事假"
-            : item.leave_category == 1
-            ? "病假"
-            : "其它";
-        item.start_time = changetime(item.start_time);
-        item.end_time = changetime(item.end_time);
-        return item;
-      });
-      console.log(res);
-    });
+    this.getleaveList();
   },
   methods: {
+    getlimit(e) {
+      this.currentlimit = e;
+      this.getleaveList();
+    },
+    getpage(e) {
+      this.currentpage = e;
+      this.getleaveList();
+    },
+    //获取请假列表
+    getleaveList() {
+      apiLeaveList({
+        pageSize: this.currentlimit,
+        limit: this.currentpage,
+        token: localStorage.getItem("token")
+      }).then(res => {
+        this.total = res.totalCount;
+        this.DataList = res.data.map(item => {
+          switch (item.status) {
+            case 0:
+              item.status2 = "待审批";
+              break;
+            case 1:
+              item.status2 = "不通过";
+              break;
+            case 3:
+              item.status2 = "审批通过";
+              break;
+          }
+          item.leave_category =
+            item.leave_category == 0
+              ? "事假"
+              : item.leave_category == 1
+              ? "病假"
+              : "其它";
+          item.start_time = changetime(item.start_time);
+          item.end_time = changetime(item.end_time);
+          return item;
+        });
+        console.log(res);
+      });
+    },
     getclose() {
       this.isApply = false;
+      this.getleaveList();
     },
     opanLeaveList(row) {
       console.log(row);
       this.isApply = true;
-      this.id = row.id;
       apiLeaveListById({ id: row.id }).then(res => {
         console.log(res);
         this.entryList = res.hisComment.map(item => {

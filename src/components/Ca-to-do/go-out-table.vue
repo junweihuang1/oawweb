@@ -245,10 +245,12 @@ export default {
 
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.hisComment = res.historyList.map(item => {
-          item.END_time = item.END_time ? changetime(item.END_time) : "";
-          return item;
-        });
+        this.hisComment = res.historyList
+          ? res.historyList.map(item => {
+              item.END_time = item.END_time ? changetime(item.END_time) : "";
+              return item;
+            })
+          : [];
         this.activityList = res.activityList.map((item, index) => {
           if (item.name == res.userlist.userTaskName && this.active) {
             this.current = index;
@@ -317,22 +319,26 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.form.userid = this.userid;
-          console.log(this.form);
-          apigoout(this.form)
-            .then(res => {
-              this.$message.success(res.msg);
-              this.closegoouttable();
-              setTimeout(() => {
-                this.reload();
-              }, 1000);
+          this.$confirm(`确定提交外勤申请吗？`)
+            .then(() => {
+              this.form.userid = this.userid;
+              console.log(this.form);
+              apigoout(this.form)
+                .then(res => {
+                  this.$message.success(res.msg);
+                  this.closegoouttable();
+                  setTimeout(() => {
+                    this.reload();
+                  }, 1000);
+                })
+                .catch(() => {
+                  this.$message.warning("请查看是否重复办理或联系开发人员");
+                  setTimeout(() => {
+                    this.reload();
+                  }, 1000);
+                });
             })
-            .catch(() => {
-              this.$message.warning("请查看是否重复办理或联系开发人员");
-              setTimeout(() => {
-                this.reload();
-              }, 1000);
-            });
+            .catch(() => {});
         } else {
           this.$message.warning("缺少内容，请补充后才提交");
         }

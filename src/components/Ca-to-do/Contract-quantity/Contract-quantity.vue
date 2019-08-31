@@ -99,6 +99,16 @@
       label-position="left"
       label-width="60px"
     >
+      <el-form-item label="审核人">
+        <el-select v-model="userid">
+          <el-option
+            v-for="(item, index) in userList"
+            :key="index"
+            :value="item.userid"
+            :label="item.username"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <template v-if="openType == 'headle'">
         <el-form-item label="意见">
           <el-input
@@ -109,16 +119,7 @@
             placeholder="请输入内容"
           ></el-input>
         </el-form-item>
-        <el-form-item label="审核人">
-          <el-select v-model="userid">
-            <el-option
-              v-for="(item, index) in userList"
-              :key="index"
-              :value="item.userid"
-              :label="item.username"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item label=" ">
           <template v-for="(item, index) in buttonList">
             <el-button
@@ -304,10 +305,12 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.Approvaltable = res.historyList.map(item => {
-          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-          return item;
-        });
+        this.Approvaltable = res.historyList
+          ? res.historyList.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList[0].userid;
         this.userList = res.userlist.userList;
@@ -336,6 +339,7 @@ export default {
           };
           console.log(data);
           apistart_record(data).then(res => {
+            console.log(res);
             this.$message.success(res.msg);
             this.$emit("close");
           });

@@ -236,6 +236,7 @@ export default {
       ApplyForm: {},
       historyList: [],
       header: [
+        ["序号"],
         ["审核人", "username"],
         ["步骤名称", "name_"],
         ["审核意见", "MESSAGE_"],
