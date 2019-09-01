@@ -32,7 +32,9 @@ export default {
     };
   },
   mounted() {
-    this.getCompanyInf();
+    if(this.companyList==""){
+      this.getCompanyInf();
+    }
   },
   props: {
     companyId: {

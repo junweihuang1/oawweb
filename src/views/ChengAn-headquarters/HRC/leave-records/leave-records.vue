@@ -112,7 +112,8 @@ export default {
         .then(() => {
           apideleLeave({
             leaveId: row.id
-          }).then(() => {
+          }).then(res => {
+            this.$message.success(res.msg)
             this.getLeaveRecord();
           });
         })

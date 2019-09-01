@@ -1,5 +1,5 @@
 <template>
-  <div style="width:55%;">
+  <div >
     <el-form inline size="mini"
       ><el-form-item label="节点名字"
         ><el-input v-model="framework_name" clearable></el-input
@@ -12,45 +12,31 @@
         <el-button type="success" @click="addFrameWork">添加</el-button>
       </el-form-item>
     </el-form>
-    <div>
       <Ca-rule-table
+      style="width:65%;"
         :DataList="tableData"
         :header="header"
         :headle="headle"
         @checkleave="modifyitem"
         @delete="deleteitem"
       ></Ca-rule-table>
-    </div>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="50"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
     <el-dialog :visible.sync="ismodify" width="20%" title="总裁办信息编辑">
       <el-form :model="dialogForm" ref="dialogForm" label-width="80px">
         <el-form-item label="公司">
-          <el-select
-            v-model="dialogForm.uc_framework_company"
-            placeholder="请选择"
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="item in companyList"
-              :key="item.company_id"
-              :label="item.company_name"
-              :value="item.company_id"
-            >
-            </el-option>
-          </el-select>
+          <select-company @setCompanyName="getCompanyName"></select-company>
         </el-form-item>
         <el-form-item label="名字">
           <el-input v-model="dialogForm.uc_framework_name"></el-input>
         </el-form-item>
         <el-form-item label="上一级">
-          <el-input v-model="dialogForm.lastLev"></el-input>
+          <el-input v-model="dialogForm.lastLev" placeholder="请选择" @focus="selectLevel"></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="dialogForm.uc_framework_describe"></el-input>
@@ -60,10 +46,15 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="isopenSelect" title="选择上一级">
+<select-level @setLevel="getLevel"></select-level>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectLevel from "@/components/Ca-select/select-level";
+import selectCompany from "@/components/Ca-select/select-company"
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
@@ -76,6 +67,7 @@ export default {
   name: "CeoOffice",
   data() {
     return {
+      total:0,
       framework_name: "",
       company_name: "",
       ismodify: false,
@@ -90,20 +82,39 @@ export default {
         ["描述", "uc_framework_describe"]
       ],
       headle: ["修改", "删除"],
-      companyList: []
+      companyList: [],
+      isopenSelect:false
     };
   },
   components: {
     CaRuleTable,
-    paging
+    paging,
+    selectCompany,
+    selectLevel
   },
   mounted() {
     this.getDataList();
   },
   methods: {
+    //从子组件获取上一级
+    getLevel(row){
+      console.log(row)
+      this.isopenSelect=false
+      this.dialogForm.lastLev=row.uc_framework_name
+    },
+    selectLevel(){
+      this.isopenSelect=true
+    },
+    getCompanyName(val){
+      this.dialogForm.uc_framework_company=val
+    },
     submit() {
+      console.log(this.dialogForm)
       apiaddframeWork(this.dialogForm).then(res => {
         console.log(res);
+        this.$message.success(res.msg)
+        this.ismodify=false
+        this.getDataList()
       });
     },
     getDataList() {
@@ -114,11 +125,9 @@ export default {
         company: this.company_name
       })
         .then(res => {
+          this.total=res.total
           this.tableData = res.data;
         })
-        .catch(err => {
-          console.log(err);
-        });
     },
     getlimit(val) {
       this.currentlimit = val;
