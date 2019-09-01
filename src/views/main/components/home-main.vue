@@ -2,6 +2,7 @@
   <div>
     <el-row :gutter="40" class="panel-group">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div id="qrcode">二维码生成的位置</div>  
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
@@ -91,6 +92,7 @@
 </template>
 
 <script>
+import QRCode from 'qrcodejs2'
 import Calendar from "vue-calendar-component";
 import {
   apiDatePunchInfo,
@@ -130,6 +132,15 @@ export default {
     }
   },
   mounted() {
+    let qrcode = new QRCode('qrcode', {  
+        width: 100,  
+        height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
+         text: 'http://arye2p.natappfree.cc' // 二维码内容  
+        //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）  
+         // background: '#f0f'  
+           // foreground: '#ff0'  
+     })  
+         console.log(qrcode)  
     var _this = this;
     _this.screenHeight = document.documentElement.clientHeight;
     window.onresize = function() {
