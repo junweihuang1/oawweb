@@ -95,12 +95,14 @@ export default {
       console.log(row);
     },
     getPurList() {
-      apimatPurReports({
+      let data = {
         limit: this.currentlimit,
         page: this.currentpage,
         construct_project_name: this.projectName,
         construct_purchase_status: this.purchaseStatus
-      }).then(res => {
+      };
+      console.log(data);
+      apimatPurReports(data).then(res => {
         console.log(res);
         this.PurList = res.data.map(item => {
           switch (item.construct_purchase_status) {

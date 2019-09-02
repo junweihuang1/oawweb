@@ -24,7 +24,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="60"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -54,6 +54,7 @@ export default {
   name: "PartyMaterialPurchase",
   data() {
     return {
+      total: 0,
       projectName: "",
       currentlimit: 15,
       currentpage: 1,
@@ -108,6 +109,7 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.PartyConList = res.data;
       });
     }

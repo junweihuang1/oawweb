@@ -34,7 +34,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="10"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -51,6 +51,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       seriesName: "", //材料累呗
       materialName: "", //材料名称
       modelName: "", //型号规格
@@ -101,6 +102,7 @@ export default {
       console.log(data);
       apiQuantityRecord(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.RecordList = res.data.map(item => {
           item.status = item.status == 2 ? "审核通过" : item.status;
           return item;

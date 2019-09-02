@@ -153,27 +153,30 @@
         <el-button type="primary" size="mini" @click="submit">提交</el-button>
       </el-form-item>
     </el-form>
-
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps
-      :space="250"
-      :active="current"
-      style="margin-left:50px;"
-      align-center
-    >
-      <el-step
-        :title="item.name"
-        v-for="(item, index) in activityList"
-        :key="index"
-        :description="item.username"
-      ></el-step>
-    </el-steps>
-    <el-divider content-position="left">审批流程</el-divider>
-    <Ca-view-process
-      style="width:75%;"
-      :Approvaltable="Approvaltable"
-      :ApprovalHeaderList="ApprovalHeaderList"
-    ></Ca-view-process>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps
+        :space="250"
+        :active="current"
+        style="margin-left:50px;"
+        align-center
+      >
+        <el-step
+          :title="item.name"
+          v-for="(item, index) in activityList"
+          :key="index"
+          :description="item.username"
+        ></el-step>
+      </el-steps>
+    </template>
+    <template v-if="openType !== 'add'">
+      <el-divider content-position="left">审批流程</el-divider>
+      <Ca-view-process
+        style="width:75%;"
+        :Approvaltable="Approvaltable"
+        :ApprovalHeaderList="ApprovalHeaderList"
+      ></Ca-view-process>
+    </template>
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
         :projectList="projectList"
@@ -263,7 +266,16 @@ export default {
   },
   methods: {
     //办理
+
     headleprocess(type) {
+      if (this.reason == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
       let data = {
         taskid: this.active.ID_,
         reasons: this.reason,
@@ -312,11 +324,13 @@ export default {
             })
           : [];
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList[0].userid;
-        this.userList = res.userlist.userList;
+        this.userid = res.userlist.userList
+          ? res.userlist.userList[0].userid
+          : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : [];
         //当进入办理流程后，遍历流程线，判断出当前的节点
         this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
+          if (this.active && item.name == this.active.NAME_) {
             this.current = index;
           }
           return item;

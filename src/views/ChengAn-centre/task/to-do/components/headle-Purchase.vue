@@ -49,11 +49,10 @@ export default {
       let id = this.active.BUSINESS_KEY_
         ? this.active.BUSINESS_KEY_.split(".")[1]
         : this.active.businessId;
-      console.log(id);
       apigetPurchase({
         construct_purchase_id: id
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         this.headform = res.projectInfo;
         this.DataList = res.purchaseEntry;
         this.activeform = res.purchaseHead;

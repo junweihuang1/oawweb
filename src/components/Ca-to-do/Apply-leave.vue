@@ -129,21 +129,23 @@
         </el-form-item>
       </div>
     </el-form>
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps
-      :space="250"
-      :active="current"
-      style="margin-left:50px;"
-      align-center
-    >
-      <el-step
-        :title="item.name"
-        v-for="(item, index) in activityList"
-        :key="index"
-        :description="item.username"
-      ></el-step>
-    </el-steps>
-    <template>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps
+        :space="250"
+        :active="current"
+        style="margin-left:50px;"
+        align-center
+      >
+        <el-step
+          :title="item.name"
+          v-for="(item, index) in activityList"
+          :key="index"
+          :description="item.username"
+        ></el-step>
+      </el-steps>
+    </template>
+    <template v-if="openType != 'add'">
       <el-divider content-position="left">审批流程</el-divider>
       <el-table :data="DataList" border>
         <el-table-column
@@ -273,7 +275,7 @@ export default {
       apigetProcessList(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
+          if (this.active && item.name == this.active.NAME_) {
             this.current = index;
           } else if (res.userlist.userTaskName == "结束") {
             this.current = res.activityList.length;
@@ -295,6 +297,14 @@ export default {
     },
     //办理流程
     headleprocess(type) {
+      if (this.reasons == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
       let data = {
         taskid: this.active.ID_,
         userid: this.userid,

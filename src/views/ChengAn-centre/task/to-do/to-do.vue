@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-image style='width:100%;width:100px;'  src="img_src" @load="loadimg"/>
     <el-form inline size="mini">
       <el-form-item label="流程类型">
         <el-select v-model="selectType" placeholder="请选择" clearable>
@@ -177,7 +176,7 @@ export default {
       openSeal: false,
       openPurchase: false,
       openInvoice: false,
-      openCost:false,
+      openCost: false,
       reqfundsId: ""
     };
   },
@@ -211,7 +210,7 @@ export default {
       this.openSeal = false;
       this.openPurchase = false;
       this.openInvoice = false;
-      this.openCost=false
+      this.openCost = false;
       this.getToDoList();
     },
     //查询
@@ -225,13 +224,13 @@ export default {
       }
     },
     //打开流程图
-    loadimg(Event){
-      console.log(Event)
+    loadimg(Event) {
+      console.log(Event);
     },
     openpic(row) {
       console.log(row);
       apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-        this.img_src = "'data:image/jpg;base64,"+res+"'";
+        this.img_src = "'data:image/jpg;base64," + res + "'";
         console.log(this.img_src);
       });
     },
@@ -266,9 +265,9 @@ export default {
             : parseInt(this.active.businessId);
           console.log(typeof this.reqfundsId);
           break;
-          case "[资费]-费用申请":
-            this.openCost = true;
-            break;
+        case "[资费]-费用申请":
+          this.openCost = true;
+          break;
       }
     },
     getToDoList() {

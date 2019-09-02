@@ -1,19 +1,21 @@
 <template>
   <div>
-    <project-operation :companyId="2" openType="science"></project-operation>
+    <project-operation-com
+      :companyId="2"
+      openType="science"
+    ></project-operation-com>
   </div>
 </template>
 
 <script>
-import projectOperation from "@/components/project-operation/project-operation";
+import projectOperationCom from "@/components/project-operation/project-operation-com";
 export default {
   name: "projectOperation",
   data() {
-    return {
-    };
+    return {};
   },
-  components:{
-    projectOperation
+  components: {
+    projectOperationCom
   }
 };
 </script>

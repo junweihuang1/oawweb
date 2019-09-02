@@ -43,6 +43,7 @@
 
 <script>
 import selectUser from "@/components/Ca-select/select-User";
+import { apisaveHistoricalWage } from "@/request/api";
 export default {
   name: "IncomingWages",
   data() {
@@ -100,11 +101,18 @@ export default {
     getuser(row) {
       this.isopenSelect = false;
       console.log(row);
+      this.form.uc_wage_username = row.username;
+      this.form.uc_wage_userid = row.userid;
+      // this.form.uc_wage_company_name = row;
     },
     closewin() {
       this.isopenSelect = false;
     },
     submit() {
+      console.log(this.form);
+      apisaveHistoricalWage(this.form).then(res => {
+        console.log(res);
+      });
       console.log(this.form);
     },
     openSelect() {

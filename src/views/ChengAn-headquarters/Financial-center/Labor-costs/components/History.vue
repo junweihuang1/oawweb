@@ -117,11 +117,13 @@ export default {
     },
     deleteitem(e) {
       this.$confirm("确认删除" + e.username + "的工资信息？").then(res => {
-        this.$message.warning("此功能暂未启用");
+        // this.$message.warning("此功能暂未启用");
+        apidele_userWages({ finance_wages_id: e.finance_wages_id }).then(
+          res => {
+            console.log(res);
+          }
+        );
       });
-      // apidele_userWages({ finance_wages_id: e.finance_wages_id }).then(res => {
-      //   console.log(res);
-      // });
     },
     getlimit(e) {
       this.currentlimit = e;

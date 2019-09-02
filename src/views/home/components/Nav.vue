@@ -85,9 +85,6 @@ export default {
       // this.$emit("collapse", this.isCollapse);
     },
     handleSelect(key, keyPath) {
-      this.addOpenTabs(key);
-    },
-    addOpenTabs(key) {
       let tabs;
       let flag = false;
       // 检测openTabs是否存在当前路由

@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <el-form inline size="mini"
       ><el-form-item label="节点名字"
         ><el-input v-model="framework_name" clearable></el-input
@@ -12,14 +12,14 @@
         <el-button type="success" @click="addFrameWork">添加</el-button>
       </el-form-item>
     </el-form>
-      <Ca-rule-table
+    <Ca-rule-table
       style="width:65%;"
-        :DataList="tableData"
-        :header="header"
-        :headle="headle"
-        @checkleave="modifyitem"
-        @delete="deleteitem"
-      ></Ca-rule-table>
+      :DataList="tableData"
+      :header="header"
+      :headle="headle"
+      @checkleave="modifyitem"
+      @delete="deleteitem"
+    ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
@@ -36,7 +36,11 @@
           <el-input v-model="dialogForm.uc_framework_name"></el-input>
         </el-form-item>
         <el-form-item label="上一级">
-          <el-input v-model="dialogForm.lastLev" placeholder="请选择" @focus="selectLevel"></el-input>
+          <el-input
+            v-model="dialogForm.lastLev"
+            placeholder="请选择"
+            @focus="selectLevel"
+          ></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="dialogForm.uc_framework_describe"></el-input>
@@ -47,14 +51,14 @@
       </el-form>
     </el-dialog>
     <el-dialog :visible.sync="isopenSelect" title="选择上一级">
-<select-level @setLevel="getLevel"></select-level>
+      <select-level @setLevel="getLevel"></select-level>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import selectLevel from "@/components/Ca-select/select-level";
-import selectCompany from "@/components/Ca-select/select-company"
+import selectCompany from "@/components/Ca-select/select-company";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
@@ -67,7 +71,7 @@ export default {
   name: "CeoOffice",
   data() {
     return {
-      total:0,
+      total: 0,
       framework_name: "",
       company_name: "",
       ismodify: false,
@@ -83,7 +87,7 @@ export default {
       ],
       headle: ["修改", "删除"],
       companyList: [],
-      isopenSelect:false
+      isopenSelect: false
     };
   },
   components: {
@@ -97,24 +101,24 @@ export default {
   },
   methods: {
     //从子组件获取上一级
-    getLevel(row){
-      console.log(row)
-      this.isopenSelect=false
-      this.dialogForm.lastLev=row.uc_framework_name
+    getLevel(row) {
+      console.log(row);
+      this.isopenSelect = false;
+      this.dialogForm.lastLev = row.uc_framework_name;
     },
-    selectLevel(){
-      this.isopenSelect=true
+    selectLevel() {
+      this.isopenSelect = true;
     },
-    getCompanyName(val){
-      this.dialogForm.uc_framework_company=val
+    getCompanyName(val) {
+      this.dialogForm.uc_framework_company = val;
     },
     submit() {
-      console.log(this.dialogForm)
+      console.log(this.dialogForm);
       apiaddframeWork(this.dialogForm).then(res => {
         console.log(res);
-        this.$message.success(res.msg)
-        this.ismodify=false
-        this.getDataList()
+        this.$message.success(res.msg);
+        this.ismodify = false;
+        this.getDataList();
       });
     },
     getDataList() {
@@ -123,11 +127,10 @@ export default {
         page: this.currentpage,
         framework_name: this.framework_name,
         company: this.company_name
-      })
-        .then(res => {
-          this.total=res.total
-          this.tableData = res.data;
-        })
+      }).then(res => {
+        this.total = res.total;
+        this.tableData = res.data;
+      });
     },
     getlimit(val) {
       this.currentlimit = val;

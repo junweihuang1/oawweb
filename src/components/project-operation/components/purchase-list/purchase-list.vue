@@ -93,6 +93,7 @@ export default {
           }).then(res => {
             console.log(res);
             this.$message.success(res.msg);
+            this.$emit("render");
           });
         })
         .catch(() => {});
@@ -107,7 +108,8 @@ export default {
       console.log(row.construct_purchase_status);
       if (
         row.construct_purchase_status == 0 ||
-        row.construct_purchase_status == 1
+        row.construct_purchase_status == 1 ||
+        !row.construct_purchase_status
       ) {
         this.$confirm(`确定删除吗？`)
           .then(() => {

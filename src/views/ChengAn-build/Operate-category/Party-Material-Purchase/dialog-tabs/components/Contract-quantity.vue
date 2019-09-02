@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>项目信息</h3>
+    <el-divider content-position="left">项目信息</el-divider>
     <el-form size="mini" inline label-width="100px">
       <el-form-item label="项目名称">
         <el-input
@@ -22,7 +22,7 @@
         <el-input readonly value="甲供材"></el-input>
       </el-form-item>
     </el-form>
-    <h3>材料单</h3>
+    <el-divider content-position="left">材料单</el-divider>
     <el-form inline>
       <el-form-item>
         <el-button type="primary" @click="additem">添加行</el-button>
@@ -97,7 +97,7 @@
       </el-form-item>
     </el-form>
 
-    <h3>流程线</h3>
+    <el-divider content-position="left">流程线</el-divider>
     <el-steps
       :space="250"
       :active="0"

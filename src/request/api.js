@@ -1,4 +1,4 @@
-import {get, post, Delete, put } from "./http";
+import { get, post, Delete, put } from "./http";
 // import { publicDecrypt } from "crypto";
 
 // new接口
@@ -48,7 +48,7 @@ export const apiapplyFillCard = data => post("applyFillCard", data);
 
 //获取指定补卡申请的详情
 export const apiApplicationDetails = ApplyId =>
-    get("getAssingnationAttendApply", ApplyId);
+  get("getAssingnationAttendApply", ApplyId);
 
 //获取未审核的补卡审批
 export const apiNotAuditedCard = data => get("getUnreviewedAttendApply", data);
@@ -58,7 +58,7 @@ export const apiagreeAttendApply = ApplyId => get("agreeAttendApply", ApplyId);
 
 //拒绝补卡申请
 export const apirejectAttendApply = ApplyId =>
-    get("rejectAttendApply", ApplyId);
+  get("rejectAttendApply", ApplyId);
 
 //获取所有用户信息
 export const apiuserLists = data => get("userLists", data);
@@ -331,6 +331,12 @@ export const apiuserWagesLibs = data => get("userWagesLibs", data);
 export const apidele_userWages = data => Delete("dele_userWages", data);
 
 //财务中心 --> 人员成本汇总-->保存工资信息
+export const apisaveHistoricalWage = data => post("saveHistoricalWage", data);
+
+//财务中心 --> 人员成本汇总-->查询用户选择
+export const apiuserListChecks = data => get("userListChecks", data);
+
+//财务中心 --> 人员成本汇总-->保存工资信息(存档)
 export const apisave_userWages = data => post("save_userWages", data);
 
 //财务中心 --> 人员成本汇总-->查询出建设公司材料结算信息
@@ -467,7 +473,7 @@ export const apiSealProcessList = data => get("getSealProcessList", data);
 
 //运营类-->甲方材料采购-->查询增量申请记录
 export const apiQuantityRecord = data =>
-    get("changeQuantityRecordRecord", data);
+  get("changeQuantityRecordRecord", data);
 
 //运营类-->甲方材料采购-->获取甲供材料采购信息
 export const apiaPartyPurList = data => get("aPartyPurList", data);

@@ -57,21 +57,17 @@
       <tr>
         <td align="center">纳税人类别</td>
         <td align="center">
-          <el-radio v-model="ApplyForm.manage_pay_taxes" :label="1"
-            >一般纳税</el-radio
-          >
-          <el-radio v-model="ApplyForm.manage_pay_taxes" :label="2"
-            >小规模纳税</el-radio
+          <el-radio-group v-model="manage_pay_taxes">
+            <el-radio :label="1">一般纳税</el-radio>
+            <el-radio :label="2">小规模纳税</el-radio></el-radio-group
           >
         </td>
         <td align="center">增值税类别</td>
         <td align="center">
-          <el-radio v-model="ApplyForm.manage_vat_category" :label="1"
-            >增值税专票</el-radio
-          >
-          <el-radio v-model="ApplyForm.manage_vat_category" :label="2"
-            >增值税普票</el-radio
-          >
+          <el-radio-group v-model="manage_vat_category">
+            <el-radio :label="1">增值税专票</el-radio>
+            <el-radio :label="2">增值税普票</el-radio>
+          </el-radio-group>
         </td>
       </tr>
       <tr>
@@ -136,11 +132,7 @@
     <div style="width:100%;text-align:center;">
       <el-form inline size="mini">
         <el-form-item>
-          <el-select
-            v-model="userid"
-            placeholder="请选择"
-            v-if="AuditorList !== ''"
-          >
+          <el-select v-model="userid" placeholder="请选择" v-if="userid !== ''">
             <el-option
               v-for="item in AuditorList"
               :key="item.userid"
@@ -148,7 +140,6 @@
               :label="item.username"
             ></el-option>
           </el-select>
-          <el-input v-else value="">对应职称没有人员</el-input>
         </el-form-item>
         <el-form-item v-if="openType == 'add'">
           <el-button type="primary" @click="save">保存</el-button>
@@ -183,16 +174,18 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-divider content-position="left">
-      流程线
-    </el-divider>
-    <el-steps :active="current" :align-center="true">
-      <el-step
-        v-for="(item, index) in activityList"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">
+        流程线
+      </el-divider>
+      <el-steps :active="current" :align-center="true">
+        <el-step
+          v-for="(item, index) in activityList"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+    </template>
     <div v-if="openType !== 'add'">
       <el-divider content-position="left">审批记录</el-divider>
       <el-table :data="historyList" border>
@@ -234,6 +227,8 @@ export default {
   data() {
     return {
       ApplyForm: {},
+      manage_pay_taxes: 1,
+      manage_vat_category: 1,
       historyList: [],
       header: [
         ["序号"],
@@ -267,6 +262,14 @@ export default {
   },
   methods: {
     headleprocess(type) {
+      if (this.reasons == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
       let data = {
         taskid: this.active.ID_, //(必填)流程实例id
         userid: this.userid, //(必填)下一审核人id
@@ -289,7 +292,8 @@ export default {
       this.isopenDep = true;
     },
     save() {
-      console.log(this.ApplyForm);
+      this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
+      this.ApplyForm.manage_vat_category = this.manage_vat_category;
       this.ApplyForm.userid = this.userid;
       apistartReqfunds(this.ApplyForm).then(res => {
         console.log(res);
@@ -316,15 +320,15 @@ export default {
       apiReqfundsProcess(data).then(res => {
         console.log(res);
         this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
+          if (this.active && item.name == this.active.NAME_) {
             this.current = index;
           }
           return item;
         });
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist ? res.userlist[0].userid : 0;
+        this.userid = res.userlist != "" ? res.userlist[0].userid : "";
         this.AuditorList = res.userlist;
-        console.log(res.userlist[0].userid);
+        console.log(this.AuditorList);
       });
     },
     getView() {

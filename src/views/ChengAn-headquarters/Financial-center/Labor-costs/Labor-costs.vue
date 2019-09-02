@@ -107,21 +107,21 @@ export default {
       this.getCostsList();
     },
     file(row) {
-      // let data = {
-      //   finance_wages_vacaCount: "",
-      //   uc_wages_dedu: "", //(必填)：考勤扣除；
-      //   uc_wages_baseTotal: "", //(必填)：应发小计
-      //   uc_wage_tax: "", //(必填)：代扣个税
-      //   uc_wage_realhair: "", //(必填)：实发工资
-      //   company_name: "", //必填)：公司名称
-      //   userid: "", //必填)：用户id;
-      //   uc_wage_actualDay: "", //必填)：实际出勤天数
-      //   uc_wage_center_name: "" //必填)：中心名称；
-      // };
+      let data = {
+        finance_wages_vacaCount: "",
+        uc_wages_dedu: "", //(必填)：考勤扣除；
+        uc_wages_baseTotal: "", //(必填)：应发小计
+        uc_wage_tax: "", //(必填)：代扣个税
+        uc_wage_realhair: "", //(必填)：实发工资
+        company_name: "", //必填)：公司名称
+        userid: "", //必填)：用户id;
+        uc_wage_actualDay: "", //必填)：实际出勤天数
+        uc_wage_center_name: "" //必填)：中心名称；
+      };
       console.log(row);
-      // apisave_userWages().then(res => {
-      //   console.log(res);
-      // });
+      apisave_userWages(row).then(res => {
+        console.log(res);
+      });
     },
     query() {
       this.getCostsList();

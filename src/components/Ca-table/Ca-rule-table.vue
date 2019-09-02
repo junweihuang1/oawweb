@@ -286,12 +286,4 @@ export default {
 body .el-table th.gutter {
   display: table-cell !important;
 }
-
-body .el-table colgroup.gutter {
-  display: table-cell !important;
-}
-.el-table__fixed,
-.el-table__fixed-right {
-  height: 100% !important;
-}
 </style>

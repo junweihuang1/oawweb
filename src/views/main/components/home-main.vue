@@ -1,8 +1,13 @@
 <template>
   <div>
-    <el-row :gutter="40" class="panel-group">
+    <el-row :gutter="40" class="panel-group" :style="{ height: cardHeight }">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div id="qrcode">二维码生成的位置</div>  
+        <div class="card-panel" :style="{ height: cardHeight }">
+          <!-- <div id="qrcode"></div> -->
+          <div style="padding:10px;font-weight: bold;font-size:16px;">
+            常用功能
+          </div>
+        </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
@@ -92,7 +97,7 @@
 </template>
 
 <script>
-import QRCode from 'qrcodejs2'
+import QRCode from "qrcodejs2";
 import Calendar from "vue-calendar-component";
 import {
   apiDatePunchInfo,
@@ -117,6 +122,7 @@ export default {
         date: "",
         desc: ""
       },
+      cardHeight: 0,
       screenHeight: null
     };
   },
@@ -126,21 +132,19 @@ export default {
   watch: {
     screenHeight(val) {
       if (val && document.getElementsByClassName("panel-group").length != 0) {
-        document.getElementsByClassName("panel-group")[1].style.height =
-          val - 290 + "px";
+        this.cardHeight = val - 290 + "px";
       }
     }
   },
   mounted() {
-    let qrcode = new QRCode('qrcode', {  
-        width: 100,  
-        height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
-         text: 'http://arye2p.natappfree.cc' // 二维码内容  
-        //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）  
-         // background: '#f0f'  
-           // foreground: '#ff0'  
-     })  
-         console.log(qrcode)  
+    // let qrcode = new QRCode("qrcode", {
+    //   width: 100,
+    //   height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
+    //   text: "http://arye2p.natappfree.cc" // 二维码内容
+    //   //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+    //   // background: '#f0f'
+    //   // foreground: '#ff0'
+    // });
     var _this = this;
     _this.screenHeight = document.documentElement.clientHeight;
     window.onresize = function() {
@@ -148,9 +152,9 @@ export default {
       _this.screenHeight = document.documentElement.clientHeight; //窗口高度
     };
     if (document.getElementsByClassName("panel-group").length != 0) {
-      document.getElementsByClassName("panel-group")[1].style.height =
-        document.documentElement.clientHeight - 290 + "px";
+      this.cardHeight = document.documentElement.clientHeight - 290 + "px";
     }
+
     _this.getAttendance();
   },
   created() {
@@ -253,6 +257,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card-panel {
+  text-align: center;
+  font-weight: bold;
+}
+.card-box {
+  text-align: center;
+  width: 100%;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 4px 4px 40px rgba(110, 110, 110, 0.05);
+  border-color: rgba(0, 0, 0, 0.05);
+}
 .Apply-line {
   padding: 10px;
 }

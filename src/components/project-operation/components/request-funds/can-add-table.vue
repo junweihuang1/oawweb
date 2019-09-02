@@ -57,7 +57,7 @@
           <template v-else-if="row.manage_status == 2">
             <el-button type="success" @click="checkitem(row)">通过</el-button>
           </template>
-          <template v-else>
+          <template v-else-if="row.manage_status">
             <el-button type="text" style="color:#F56C6C;">审核中</el-button>
           </template>
         </template>

@@ -128,6 +128,7 @@
             type="text"
             v-model="row[item[1]]"
             class="inputbox"
+            @input="changeValue(row, item[1])"
             placeholder="请输入"
             v-else-if="openType !== 'check' && item[3] == 'edit'"
           />
@@ -177,14 +178,31 @@
                   @click="headleprocess(true)"
                   >提交</el-button
                 >
-                <el-button
+                <el-dropdown
+                  split-button
+                  type="warning"
+                  size="mini"
+                  style="margin-left:10px;"
+                  :key="index"
+                  v-else-if="item == 'reject'"
+                >
+                  驳回
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>黄金糕</el-dropdown-item>
+                    <el-dropdown-item>狮子头</el-dropdown-item>
+                    <el-dropdown-item>螺蛳粉</el-dropdown-item>
+                    <el-dropdown-item>双皮奶</el-dropdown-item>
+                    <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <!-- <el-button
                   v-else-if="item == 'reject'"
                   :key="index"
                   type="warning"
                   size="mini"
                   @click="headleprocess(false)"
                   >驳回</el-button
-                >
+                > -->
                 <el-button
                   v-else-if="item == 'disagree'"
                   :key="index"
@@ -208,6 +226,8 @@
           :key="index"
         ></el-step>
       </el-steps>
+    </template>
+    <template v-if="openType != 'add'">
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
     </template>
@@ -289,7 +309,9 @@ export default {
       userTaskName: "",
       buttonList: [],
       activityList: [],
-      ProcessList: []
+      ProcessList: [],
+      usertask: 1,
+      taskList: []
     };
   },
   props: {
@@ -311,8 +333,32 @@ export default {
     this.getprossList();
   },
   methods: {
+    changeValue(row, filter) {
+      if (
+        filter == "construct_purchase_applyNum" &&
+        row.construct_purchase_quantities - row.construct_purchase_approvalNum <
+          parseInt(row.construct_purchase_applyNum)
+      ) {
+        console.log(filter);
+        this.$message.error("计划采购量已超量");
+        return;
+      }
+    },
     //办理
     headleprocess(type) {
+      if (type == false && this.active.PROC_DEF_ID_.split(":")[1] !== 2) {
+        console.log("驳回");
+        return;
+      }
+      if (this.reasons == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
+
       let data = {
         processInstanceId: this.active.PROC_INST_ID_
           ? this.active.PROC_INST_ID_
@@ -320,7 +366,7 @@ export default {
         taskid: this.active.ID_, //(必填)实例id
         sign: type, //(必填)是否同意
         reason: this.reasons, //(必填)审核意见
-        usertask: "", //(必填)驳回节点
+        usertask: this.usertask, //(必填)驳回节点
         taskName: this.active.NAME_, //(必填)当前节点id
         construct_purchase_id: this.active.BUSINESS_KEY_
           ? this.active.BUSINESS_KEY_.split(".")[1]
@@ -353,19 +399,23 @@ export default {
         apiPurchaseProcess(data).then(res => {
           console.log(res);
           this.activityList = res.activityList.map((item, index) => {
-            if (item.name == res.userlist.userTaskName && this.active) {
+            if (this.active && item.name == this.active.NAME_) {
               this.current = index;
             }
             return item;
           });
+          this.taskList = this.activityList.slice(0, this.current);
+          console.info("流程线", this.taskList);
           this.ProcessList = res.historyList.map(item => {
             item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
           });
           this.userTaskName = res.userlist.userTaskName;
           this.buttonList = res.startForm.split(",");
-          this.userid = res.userlist.userList[0].userid;
-          this.userList = res.userlist.userList;
+          this.userid = res.userlist.userList
+            ? res.userlist.userList[0].userid
+            : "";
+          this.userList = res.userlist.userList ? res.userlist.userList : [];
         });
       }
     },
@@ -390,6 +440,20 @@ export default {
     },
     //双击选择材料，接收子组件回调的方法。赋值给点击的行
     getMaterialName(row) {
+      //判断当前是否有选择该材料
+      console.log(row);
+      if (
+        this.entryList.some(
+          item =>
+            item.construct_project_quantities_id ==
+            row.construct_project_quantities_id
+        )
+      ) {
+        this.$message.error("该材料已选择");
+        return;
+      }
+      this.currentSelect.construct_project_quantities_id =
+        row.construct_project_quantities_id;
       this.currentSelect.construct_purchase_material =
         row.construct_project_quantities_name;
       this.currentSelect.construct_purchase_model =
@@ -445,8 +509,6 @@ export default {
       });
     },
     save() {
-      this.activeForm.entry = JSON.stringify(this.entryList);
-      console.log(this.activeForm);
       if (
         this.activeForm.construct_purchase_planMan == "" ||
         !this.activeForm.construct_purchase_planMan
@@ -461,16 +523,41 @@ export default {
         this.$message.error("复核员不能为空");
         return;
       }
+      let issubmit = true;
+      this.entryList.forEach(item => {
+        if (
+          item.construct_purchase_quantities -
+            item.construct_purchase_approvalNum <
+          parseInt(item.construct_purchase_applyNum)
+        ) {
+          issubmit = false;
+        }
+      });
+      if (!issubmit) {
+        this.$message.error("计划采购量已超量");
+        return;
+      }
+      this.activeForm.entry = JSON.stringify(this.entryList);
       if (this.openType == "add") {
-        apisavePurchase(this.activeForm).then(res => {
-          console.log(res);
-          this.$message.success(res.msg);
-          this.$emit("close");
-        });
+        this.$confirm(`确定保存吗？`)
+          .then(() => {
+            apisavePurchase(this.activeForm).then(res => {
+              console.log(res);
+              this.$message.success(res.msg);
+              this.$emit("close");
+            });
+          })
+          .catch(() => {});
       } else {
-        apimodPurchase(this.activeForm).then(res => {
-          console.log(res);
-        });
+        this.$confirm(`确定修改吗？`)
+          .then(() => {
+            apimodPurchase(this.activeForm).then(res => {
+              console.log(res);
+              this.$message.success(res.msg);
+              this.$emit("close");
+            });
+          })
+          .catch(() => {});
       }
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {

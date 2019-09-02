@@ -41,6 +41,8 @@
               <el-button type="primary" @click="openNotCorrected"
                 >未转正</el-button
               >
+              <el-button type="warning">离职</el-button
+              ><el-button type="primary">打卡记录</el-button>
             </el-button-group>
           </el-form-item>
         </el-form>

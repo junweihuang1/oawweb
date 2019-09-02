@@ -104,14 +104,16 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps :active="current" align-center>
-      <el-step
-        v-for="(item, index) in processLine"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps :active="current" align-center>
+        <el-step
+          v-for="(item, index) in processLine"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+    </template>
     <el-divider content-position="left">审核记录</el-divider>
     <el-table :data="Approvaltable" border>
       <el-table-column
@@ -238,7 +240,7 @@ export default {
       apigetProcessList(data).then(res => {
         console.log(res);
         this.processLine = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
+          if (this.active && item.name == this.active.NAME_) {
             this.current = index;
           } else if (res.userlist.userTaskName == "结束") {
             this.current = res.activityList.length;
@@ -285,6 +287,14 @@ export default {
         .catch(() => {});
     },
     headle(type) {
+      if (this.reasons == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
       let data = {
         taskid: this.active.ID_, //(必填)流程实例id
         userid: this.userid, //(必填)下一审核人id

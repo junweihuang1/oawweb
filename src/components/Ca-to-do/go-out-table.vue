@@ -109,16 +109,18 @@
         </el-form-item>
       </template>
     </el-form>
-    <el-divider content-position="left">
-      流程线
-    </el-divider>
-    <el-steps :active="current" :align-center="true">
-      <el-step
-        v-for="(item, index) in activityList"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">
+        流程线
+      </el-divider>
+      <el-steps :active="current" :align-center="true">
+        <el-step
+          v-for="(item, index) in activityList"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+    </template>
     <template v-if="openType != 'add'">
       <el-divider content-position="left">
         审核记录
@@ -252,21 +254,33 @@ export default {
             })
           : [];
         this.activityList = res.activityList.map((item, index) => {
-          if (item.name == res.userlist.userTaskName && this.active) {
+          if (this.active && item.name == this.active.NAME_) {
             this.current = index;
           }
           return item;
         });
         this.buttonList = res.startForm.split(",");
         if (res.userlist.userList) {
-          this.userid = res.userlist.userList[0].userid;
-          this.username = res.userlist.userList[0].username;
+          this.userid = res.userlist.userList
+            ? res.userlist.userList[0].userid
+            : "";
+          this.username = res.userlist.userList
+            ? res.userlist.userList[0].username
+            : [];
         } else {
           this.current = 2;
         }
       });
     },
     headle(type) {
+      if (this.reasons == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === 0) {
+        this.$message.error("没有下一审核人不能提交！");
+        return;
+      }
       let data = {
         taskid: this.active.ID_,
         userid: this.userid,

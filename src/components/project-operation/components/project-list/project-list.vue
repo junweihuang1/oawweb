@@ -57,7 +57,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -72,6 +72,7 @@ export default {
   name: "projectList",
   data() {
     return {
+      total: 0,
       currentlimit: 15,
       currentpage: 1,
       projectName: "",
@@ -128,6 +129,7 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.lists = res.data;
       });
     }

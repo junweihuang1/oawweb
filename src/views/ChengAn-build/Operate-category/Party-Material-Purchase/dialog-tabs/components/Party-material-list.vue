@@ -42,7 +42,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="950"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -139,6 +139,7 @@ export default {
   name: "PartyMaterialList",
   data() {
     return {
+      total: 0,
       currentlimit: 15,
       currentpage: 1,
       material_category: "",
@@ -283,6 +284,7 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.loading = false;
         this.materialList = res.data;
       });

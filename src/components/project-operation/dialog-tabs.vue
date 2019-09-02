@@ -19,6 +19,7 @@
       </el-tab-pane>
       <el-tab-pane label="采购列表" name="3" v-if="isopen[1]" closable>
         <purchase-list
+          @render="render"
           @openaddPurchase="openaddPurchase"
           @opencheckPurchase="opencheckPurchase"
           @openeditPurchase="openeditPurchase"
@@ -55,7 +56,7 @@
       </el-tab-pane>
       <el-tab-pane label="请款进度" name="7" v-if="isopen[5]" closable>
         <echarts
-          v-if="isopen[5]"
+          v-if="isopen[5] && isreload"
           style="padding:10px;"
           @openApplyForm="openApplyForm"
           @printApplyForm="printApplyForm"
@@ -101,7 +102,8 @@ export default {
       reqfundsId: Number,
       ApplyFormopenType: "",
       ProcessList: [],
-      headform2: {}
+      headform2: {},
+      isreload: true
     };
   },
   props: {
@@ -118,6 +120,10 @@ export default {
     ApplicationForm
   },
   methods: {
+    //流程启动成功后转跳待办事项
+    render() {
+      this.$emit("render");
+    },
     getNext(Ind) {
       this.isopen = this.isopen.map((item, index) => {
         if (index == Ind) {
@@ -173,8 +179,12 @@ export default {
       });
     },
     closeApplication() {
-      this.isopen[6] = false;
       this.currentActive = "1";
+      this.isopen[6] = false;
+      this.isreload = false;
+      this.$nextTick(() => {
+        this.isreload = true;
+      });
       this.isopen.forEach((item, index) => {
         if (item === true) {
           this.currentActive = index + 2 + "";

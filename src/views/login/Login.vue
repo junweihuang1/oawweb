@@ -13,11 +13,13 @@
         :model="formInline"
         size="medium"
       >
+        <el-input type="password" style="display: none;" />
         <el-form-item prop="checkUser">
           <el-input
             v-model="formInline.checkUser"
             prefix-icon="iconfont iconpeople_fill"
             placeholder="请输入用户名"
+            autocomplete="off"
             clearable
           />
         </el-form-item>
@@ -27,6 +29,7 @@
           <el-input
             v-model="formInline.checkPassword"
             type="password"
+            autocomplete="off"
             prefix-icon="iconfont iconunlock_fill"
             placeholder="请输入密码"
             clearable

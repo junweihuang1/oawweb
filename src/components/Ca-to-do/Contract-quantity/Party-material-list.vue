@@ -26,6 +26,10 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
+      v-loading="loading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(255, 255, 255, 0.6)"
       :headle="headle"
       :setselect="true"
       @setselect="getselect"
@@ -38,7 +42,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="950"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -156,6 +160,8 @@ export default {
   name: "PartyMaterialList",
   data() {
     return {
+      total: 0,
+      loading: true,
       currentlimit: 15,
       currentpage: 1,
       material_category: "",
@@ -333,6 +339,8 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.loading = false;
+        this.total = res.total;
         this.materialList = res.data;
       });
     }

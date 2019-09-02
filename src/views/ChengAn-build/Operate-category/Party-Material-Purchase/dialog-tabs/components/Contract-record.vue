@@ -34,7 +34,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="10"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -49,6 +49,7 @@ export default {
   name: "ContractRecord",
   data() {
     return {
+      total: 0,
       currentlimit: 15,
       currentpage: 1,
       seriesName: "", //材料累呗
@@ -101,6 +102,7 @@ export default {
       console.log(data);
       apiQuantityRecord(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.RecordList = res.data;
       });
     }

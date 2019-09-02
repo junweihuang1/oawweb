@@ -33,7 +33,7 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apiuserLists } from "@/request/api.js";
+import { apiuserListChecks } from "@/request/api.js";
 export default {
   name: "selectUser",
   data() {
@@ -93,11 +93,12 @@ export default {
       this.$emit("setuser", row);
     },
     getUserList() {
-      apiuserLists({
+      apiuserListChecks({
         Limit: this.currentPage,
         pageSize: this.currentlimit,
-        inputName: this.username
+        username: this.username
       }).then(res => {
+        console.log(res);
         this.userList = res.data;
       });
     }

@@ -156,7 +156,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .panel-group {
   margin-top: 18px;
   .card-panel-col {
