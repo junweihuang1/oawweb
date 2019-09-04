@@ -90,6 +90,14 @@
                     >提交</el-button
                   >
                   <el-button
+                    v-if="item == 'Resubmit'"
+                    :key="index"
+                    type="success"
+                    size="mini"
+                    @click="headleprocess(true)"
+                    >重新提交</el-button
+                  >
+                  <el-button
                     v-else-if="item == 'reject'"
                     :key="index"
                     type="warning"
@@ -138,22 +146,21 @@
         </el-col>
       </el-row>
     </el-form>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">流程线</el-divider>
-      <el-steps
-        :space="250"
-        :active="current"
-        style="margin-left:50px;"
-        align-center
-      >
-        <el-step
-          :title="item.name"
-          v-for="(item, index) in activityList"
-          :key="index"
-          :description="item.username"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps
+      finish-status="success"
+      :space="250"
+      :active="current"
+      style="margin-left:50px;"
+      align-center
+    >
+      <el-step
+        :title="item.name"
+        v-for="(item, index) in activityList"
+        :key="index"
+        :description="item.username"
+      ></el-step>
+    </el-steps>
     <el-divider content-position="left">审核记录</el-divider>
     <Ca-view-process :Approvaltable="Approvaltable"></Ca-view-process>
   </div>
@@ -187,7 +194,6 @@ export default {
       activityList: [],
       activityLists: [],
       current: 1, //当前流程节点
-      userTaskName: "",
       reasons: ""
     };
   },
@@ -246,7 +252,6 @@ export default {
       }
     },
     getprossList() {
-      console.log("res");
       let data = {};
 
       if (this.active) {
@@ -272,17 +277,15 @@ export default {
           : "";
         this.userList = res.userlist.userList ? res.userlist.userList : "";
         this.activityLists = res.activityList;
-        this.userTaskName = res.userlist.userTaskName;
         this.getProcessline(this.form.own_seal_chapCategory);
       });
     },
     //改变章类型后获取流程线类型
     changeProcessline(i) {
+      let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
       this.activityList = this.activityLists[i].map((item, index) => {
-        if (this.active && item.name == this.active.NAME_) {
-          this.current = index;
-        } else if (this.userTaskName == "结束") {
-          this.current = this.activityLists[i].length;
+        if (item.name == currentTask.name_) {
+          this.current = currentTask.END_TIME_ == "" ? index : index + 1;
         }
         return item;
       });

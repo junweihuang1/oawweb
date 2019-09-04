@@ -155,6 +155,14 @@
               >提交</el-button
             >
             <el-button
+              v-if="item == 'Resubmit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >重新提交</el-button
+            >
+            <el-button
               v-else-if="item == 'reject'"
               :key="index"
               type="warning"
@@ -174,18 +182,16 @@
         </el-form-item>
       </el-form>
     </div>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">
-        流程线
-      </el-divider>
-      <el-steps :active="current" :align-center="true">
-        <el-step
-          v-for="(item, index) in activityList"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">
+      流程线
+    </el-divider>
+    <el-steps :active="current" :align-center="true" finish-status="success">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <div v-if="openType !== 'add'">
       <el-divider content-position="left">审批记录</el-divider>
       <el-table :data="historyList" border>
@@ -257,7 +263,6 @@ export default {
     active: Object
   },
   mounted() {
-    this.getprossList();
     this.getView();
   },
   methods: {
@@ -285,7 +290,11 @@ export default {
       });
     },
     getSelectName(row) {
-      this.ApplyForm.manage_department = row.department_name;
+      console.log(row);
+      let companyName = row.company_name ? row.company_name : "";
+      let centerName = row.center_name ? row.center_name : "";
+      let departmentName = row.department_name ? row.department_name : "";
+      this.ApplyForm.manage_department = `${companyName}、${centerName}、${departmentName}`;
       this.isopenDep = false;
     },
     selectDep() {
@@ -318,13 +327,19 @@ export default {
       }
       console.log(data);
       apiReqfundsProcess(data).then(res => {
-        console.log(res);
-        this.activityList = res.activityList.map((item, index) => {
-          if (this.active && item.name == this.active.NAME_) {
-            this.current = index;
-          }
-          return item;
-        });
+        //获取当前审批的最后一行
+        if (this.historyList != "") {
+          let currentTask = this.historyList[this.historyList.length - 1];
+          //遍历获取当前节点
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist != "" ? res.userlist[0].userid : "";
         this.AuditorList = res.userlist;
@@ -333,14 +348,14 @@ export default {
     },
     getView() {
       apigetreqfundsView({ manage_reqfunds_id: this.reqfundsId }).then(res => {
-        console.log(res);
         this.ApplyForm = res.data[0];
-        if (res.historyList) {
-          this.historyList = res.historyList.map(item => {
-            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-            return item;
-          });
-        }
+        this.historyList = res.historyList
+          ? res.historyList.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
+        this.getprossList();
       });
     }
   }

@@ -200,6 +200,7 @@ export default {
       this.getProjectList();
     },
     checklist(row) {
+      console.log(row);
       this.activeForm = row;
       this.isopenlist = true;
     },

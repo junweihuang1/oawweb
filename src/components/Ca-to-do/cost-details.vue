@@ -83,6 +83,14 @@
                   >提交</el-button
                 >
                 <el-button
+                  v-if="item == 'Resubmit'"
+                  :key="index"
+                  type="success"
+                  size="mini"
+                  @click="headle(true)"
+                  >重新提交</el-button
+                >
+                <el-button
                   v-else-if="item == 'reject'"
                   :key="index"
                   type="warning"
@@ -90,6 +98,7 @@
                   @click="headle(false)"
                   >驳回</el-button
                 >
+
                 <el-button
                   v-else-if="item == 'disagree'"
                   :key="index"
@@ -104,16 +113,14 @@
         </el-col>
       </el-row>
     </el-form>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">流程线</el-divider>
-      <el-steps :active="current" align-center>
-        <el-step
-          v-for="(item, index) in processLine"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps :active="current" align-center finish-status="success">
+      <el-step
+        v-for="(item, index) in processLine"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <el-divider content-position="left">审核记录</el-divider>
     <el-table :data="Approvaltable" border>
       <el-table-column
@@ -239,20 +246,20 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.processLine = res.activityList.map((item, index) => {
-          if (this.active && item.name == this.active.NAME_) {
-            this.current = index;
-          } else if (res.userlist.userTaskName == "结束") {
-            this.current = res.activityList.length;
-          }
-          return item;
-        });
+
         this.Approvaltable = res.historyList
           ? res.historyList.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
               return item;
             })
           : [];
+        let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
+        this.processLine = res.activityList.map((item, index) => {
+          if (item.name == currentTask.name_) {
+            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+          }
+          return item;
+        });
         this.buttonList = res.startForm.split(",");
         this.userid =
           res.userlist.userList != "" ? res.userlist.userList[0].userid : "";

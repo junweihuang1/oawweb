@@ -4,6 +4,7 @@
       <el-tab-pane label="项目列表" name="1">
         <project-list
           :activeForm="activeForm"
+          v-if="isreload"
           style="padding:10px;"
           @openProject="openProject"
         ></project-list>
@@ -12,6 +13,7 @@
         <project-infor
           style="padding:10px;"
           :openType="openType"
+          @close="closeInfor"
           :activeForm="activeForm"
           :entryList="entryList"
           :headform="headform"
@@ -172,6 +174,20 @@ export default {
     closeQuantity() {
       this.isopen[4] = false;
       this.currentActive = "1";
+      this.isopen.forEach((item, index) => {
+        if (item === true) {
+          this.currentActive = index + 2 + "";
+        }
+      });
+    },
+    //关闭项目信息窗口
+    closeInfor() {
+      this.currentActive = "1";
+      this.isopen[0] = false;
+      this.isreload = false;
+      this.$nextTick(() => {
+        this.isreload = true;
+      });
       this.isopen.forEach((item, index) => {
         if (item === true) {
           this.currentActive = index + 2 + "";

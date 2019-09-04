@@ -178,7 +178,7 @@ export default {
   methods: {
     //获取合同信息
     getContract(row) {
-      console.log(row);
+      this.headform.construct_project_contractId = row.manage_contract_id;
       this.headform.construct_project_name = row.manage_contract_name;
       this.headform.manage_contract_address = row.manage_contract_address;
       this.headform.manage_contract_amount = row.manage_contract_amount;
@@ -196,7 +196,6 @@ export default {
       this.headform.construct_project_leader = row.username;
       this.headform.construct_project_leaderTel = row.phone_number;
       this.isselectProjectManager = false;
-      console.log(this.headform);
     },
     //打开选择项目经理
     selectProjectManager() {
@@ -218,7 +217,6 @@ export default {
     },
     //获取项目部信息
     getSelectName(row) {
-      console.log(row);
       this.active.username = row.username;
       this.active.construct_project_workTeam_projectId = this.activeForm.constuct_project_dep_id;
       this.active.construct_project_workTeam_departmentId = row.department_id;
@@ -238,11 +236,31 @@ export default {
     },
     //保存
     save() {
-      this.headform.entry = JSON.stringify(this.entryList);
+      let data = {
+        construct_project_name: this.headform.construct_project_name, //(必填)项目名
+        construct_project_contractId: this.headform
+          .construct_project_contractId, //(必填)合同id
+        construct_project_addr: this.headform.manage_contract_address, //(必填)项目地址
+        manage_contract_firstParty: this.headform.manage_contract_firstParty, //(必填)甲方
+        total: this.headform.manage_contract_amount, //(必填)合同总价
+        construct_project_startDate: this.headform.manage_contract_startTime, //(必填)合同开始时间
+        construct_project_endDate: this.headform.manage_contract_endTime, //(必填)合同结束时间
+        construct_project_leader: this.headform.construct_project_leader, //(必填)项目经理
+        construct_project_leaderTel: this.headform.construct_project_leaderTel, //(必填)项目经理电话
+        depName: this.headform.depName, //(必填)项目名名称
+        construct_project_dep: this.headform.construct_project_dep, //(必填)项目部id
+        entry: JSON.stringify(this.entryList)
+      };
+      console.log(data);
       if (this.openType == "add") {
-        apisaveProjectTeam(this.headform).then(res => {
-          console.log(res);
-        });
+        this.$confirm(`确定保存吗？`)
+          .then(() => {
+            apisaveProjectTeam(data).then(res => {
+              this.$message.success(res.msg);
+              this.$emit("close");
+            });
+          })
+          .catch(() => {});
       }
     },
     //添加行

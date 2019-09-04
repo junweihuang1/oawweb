@@ -32,7 +32,7 @@ export default {
     };
   },
   mounted() {
-    if(this.companyList==""){
+    if (this.companyList == "") {
       this.getCompanyInf();
     }
   },

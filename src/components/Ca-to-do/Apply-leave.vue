@@ -110,6 +110,14 @@
               >提交</el-button
             >
             <el-button
+              v-if="item == 'Resubmit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >重新提交</el-button
+            >
+            <el-button
               v-else-if="item == 'reject'"
               :key="index"
               type="warning"
@@ -129,22 +137,21 @@
         </el-form-item>
       </div>
     </el-form>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">流程线</el-divider>
-      <el-steps
-        :space="250"
-        :active="current"
-        style="margin-left:50px;"
-        align-center
-      >
-        <el-step
-          :title="item.name"
-          v-for="(item, index) in activityList"
-          :key="index"
-          :description="item.username"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps
+      finish-status="success"
+      :space="250"
+      :active="current"
+      style="margin-left:50px;"
+      align-center
+    >
+      <el-step
+        :title="item.name"
+        v-for="(item, index) in activityList"
+        :key="index"
+        :description="item.username"
+      ></el-step>
+    </el-steps>
     <template v-if="openType != 'add'">
       <el-divider content-position="left">审批流程</el-divider>
       <el-table :data="DataList" border>
@@ -274,20 +281,27 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.activityList = res.activityList.map((item, index) => {
-          if (this.active && item.name == this.active.NAME_) {
-            this.current = index;
-          } else if (res.userlist.userTaskName == "结束") {
-            this.current = res.activityList.length;
-          }
-          return item;
-        });
+        //审批记录
         this.DataList = res.historyList
           ? res.historyList.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
               return item;
             })
           : [];
+        //当前流程节点
+        if (this.DataList == "") {
+          this.activityList = res.activityList;
+        } else {
+          let currentTask = this.DataList[this.DataList.length - 1];
+          //流程线
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        }
+
         this.buttonList = res.startForm.split(",");
         this.userid =
           res.userlist.userList != "" ? res.userlist.userList[0].userid : "";

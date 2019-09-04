@@ -2,7 +2,7 @@ import axios from "axios";
 import QS from "qs";
 import { Message } from "element-ui";
 
-const base_url = "http://192.168.110.158:8081/casd2/admin/";
+const base_url = "http://192.168.110.163:8081/casd2/admin/";
 
 // 默认请求地址
 axios.defaults.baseURL = base_url; //"http://192.168.110.124:8081/casd2/admin/";//39.108.184.20:8080

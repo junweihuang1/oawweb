@@ -5,7 +5,7 @@
       ref="upload"
       :data="{ uploadPath: 'userfile/' }"
       name="pic"
-      action="http://192.168.11.129:8081/casd2/admin/uploadPdf/"
+      :action="upload_url"
       :limit="1"
       :headers="{ token: token }"
       :on-success="handleSuccess"
@@ -32,12 +32,14 @@
 </template>
 
 <script>
+import http from "@/request/http.js";
 import { apiuploadPdf } from "@/request/api.js";
 import { setTimeout } from "timers";
 export default {
   name: "Maillist",
   data() {
     return {
+      upload_url: http.base_url + "uploadPdf/",
       token: localStorage.getItem("token"),
       isdisplay: true,
       boxheight: document.documentElement.scrollHeight * 0.8,
@@ -47,6 +49,7 @@ export default {
   },
   methods: {
     handleSuccess(res) {
+      console.log(res);
       this.$message.success(res.msg);
       this.$refs.upload.clearFiles();
       setTimeout(() => {

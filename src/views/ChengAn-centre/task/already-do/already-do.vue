@@ -250,7 +250,8 @@ export default {
         // });
         this.todoList = res.data.map(item => {
           item.startTime = changetime(item.startTime);
-          item.status = item.status == 0 ? "已结束" : "";
+          item.status =
+            item.status == 0 ? "审核中" : item.status == 1 ? "已结束" : "";
           return item;
         });
       });

@@ -48,7 +48,12 @@
     ></paging>
 
     <el-dialog :visible.sync="isopen" title="合同信息" top="8vh">
-      <echarts :setform="contractform" @setDate="submit" :rows="rows"></echarts>
+      <echarts
+        :setform="contractform"
+        @setDate="submit"
+        :rows="rows"
+        :Type="Type"
+      ></echarts>
     </el-dialog>
   </div>
 </template>
@@ -95,7 +100,8 @@ export default {
       companyName: "",
       projectName: "",
       contractform: {},
-      rows: []
+      rows: [],
+      Type: ""
     };
   },
   components: {
@@ -167,18 +173,7 @@ export default {
           this.rows = res.rows.rows;
         }
       );
-      // this.contractform = {
-      //   manage_contract_num: row.manage_contract_num,
-      //   company_name: row.company_name,
-      //   manage_contract_name: row.manage_contract_name,
-      //   manage_contract_firstParty: row.manage_contract_firstParty,
-      //   manage_contract_address: row.manage_contract_address,
-      //   manage_contract_startTime: row.manage_contract_startTime,
-      //   manage_contract_endTime: row.manage_contract_endTime,
-      //   manage_contract_amount: row.manage_contract_amount,
-      //   manage_contract_visaAmount: row.manage_contract_visaAmount,
-      //   manage_contract_remark: row.manage_contract_remark
-      // };
+      this.Type = "check";
       this.isopen = true;
     },
     addcontract() {
@@ -194,6 +189,7 @@ export default {
         manage_contract_visaAmount: 0,
         manage_contract_remark: ""
       };
+      this.Type = "add";
       this.isopen = true;
     }
   }

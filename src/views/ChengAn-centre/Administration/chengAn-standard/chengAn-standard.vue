@@ -10,12 +10,16 @@
           <el-radio-button label="企业标准"></el-radio-button>
         </el-radio-group>
       </el-form-item>
+      <el-form-item>
+        <el-button type="success" class="el-icon-plus" @click="openAddWin"
+          >新增</el-button
+        >
+      </el-form-item>
     </el-form>
     <rule-table
       style="width:90%;"
       :header="headerList"
       :DataList="DataList"
-      @RowClassName="tableRowClassName"
       @checkleave="opanLeaveList"
       :headle="headle"
       @delete="deletefile"
@@ -31,13 +35,21 @@
     <el-dialog title="模板" :visible.sync="isopen" width="30%">
       <el-form ref="form" :model="form" label-width="100px">
         <el-form-item label="模板编号">
-          <el-input v-model="form.hr_templatel_id" readonly></el-input>
+          <el-input
+            v-model="form.hr_templatel_id"
+            clearable
+            readonly
+          ></el-input>
         </el-form-item>
         <el-form-item label="模板名称">
-          <el-input v-model="form.hr_template_name"></el-input>
+          <el-input v-model="form.hr_template_name" clearable></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="form.hr_templatel_type" placeholder="请选择">
+          <el-select
+            v-model="form.hr_templatel_type"
+            placeholder="请选择"
+            clearable
+          >
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -56,9 +68,15 @@
         </el-form-item>
         <el-form-item>
           <el-upload
+            v-if="isopen"
             ref="upload"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
+            :data="{ uploadPath: 'templatel/' }"
+            name="file"
+            :action="file_src"
+            :limit="1"
+            :headers="{ token: token }"
+            :on-change="handleChange"
+            :on-success="handleSuccess"
             :auto-upload="false"
           >
             <el-button slot="trigger" size="small" type="primary"
@@ -79,13 +97,20 @@
 </template>
 
 <script>
+import http from "@/request/http.js";
 import paging from "@/components/paging/paging";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apitemplatelList, apideleteTemplate } from "@/request/api.js";
+import {
+  apitemplatelList,
+  apideleteTemplate,
+  apisaveTemplatel
+} from "@/request/api.js";
 export default {
   name: "chengan-standard",
   data() {
     return {
+      file_src: http.base_url + "uploadFile",
+      token: localStorage.getItem("token"),
       isopen: false,
       DataList: [],
       headerList: [
@@ -119,7 +144,8 @@ export default {
       currentpage: 1,
       currentlimit: 15,
       templateType: "全部",
-      templateTypeid: ""
+      templateTypeid: "",
+      fileList: []
     };
   },
   components: {
@@ -130,6 +156,12 @@ export default {
     this.getStandardList();
   },
   methods: {
+    openAddWin() {
+      this.form = {
+        hr_templatel_id: 0
+      };
+      this.isopen = true;
+    },
     selectType(e) {
       switch (e) {
         case "全部":
@@ -159,37 +191,59 @@ export default {
       this.currentlimit = e;
       this.getStandardList();
     },
-    tableRowClassName(e) {},
     opanLeaveList(e) {
       this.form = e;
       this.isopen = true;
     },
     //删除文件
     deletefile(e) {
-      //this.$message.warning("此功能暂未开启");
-      apideleteTemplate({
-        biz: e.hr_templatel_id,
-        hr_template_path: e.hr_template_path
-      }).then(res => {
-        this.$message.success(res.Msg);
-        console.log(res);
-      });
+      let fileName = e.hr_template_path.split("/")[
+        e.hr_template_path.split("/").length - 1
+      ];
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apideleteTemplate({
+            biz: e.hr_templatel_id,
+            hr_template_path: `templatel/${fileName}`
+          }).then(res => {
+            this.$message.success(res.Msg);
+            this.getStandardList();
+          });
+        })
+        .catch(() => {});
     },
     download(e) {
       window.open(e.hr_template_path);
     },
-    handlePreview(e) {
-      console.log(e);
+    handleChange(file, fileList) {
+      this.fileList = fileList.map(item => {
+        return item.name;
+      });
     },
-    submitUpload(e) {
-      let data = {
-        hr_templatel_id: this.form.hr_templatel_id,
-        hr_template_name: this.form.hr_template_name,
-        hr_templatel_type: this.form.hr_templatel_type,
-        hr_template_path: this.form.hr_template_path,
-        hr_templatel_describe: this.form.hr_templatel_describe
-      };
-      console.log(data);
+    handleSuccess(res, file, fileList) {
+      this.form.hr_template_path = `templatel/${file.name}`;
+      this.submit();
+    },
+    submitUpload() {
+      console.log(this.form);
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          this.$refs.upload.submit();
+          //当没有附件时单独提交
+          if (this.fileList == "") {
+            this.submit();
+          }
+        })
+        .catch(() => {});
+    },
+    submit() {
+      console.log(this.form);
+      apisaveTemplatel(this.form).then(res => {
+        console.log(res);
+        this.$message.success(res.Msg);
+        this.isopen = false;
+        this.getStandardList();
+      });
     },
     getStandardList() {
       let data = {
@@ -197,7 +251,6 @@ export default {
         limit: this.currentlimit,
         hr_templatel_type: this.templateTypeid
       };
-      console.log(data);
       apitemplatelList(data).then(res => {
         console.log(res);
         this.DataList = res.data.map(item => {

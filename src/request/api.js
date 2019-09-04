@@ -120,6 +120,9 @@ export const apitemplatelList = data => get("templatelLists", data);
 //删除诚安标准模板
 export const apideleteTemplate = data => Delete("deleteTemplate", data);
 
+//保存或修改诚安标准模板
+export const apisaveTemplatel = data => post("saveTemplatel", data);
+
 //上传通讯录
 export const apiuploadPdf = data => post("uploadPdf", data);
 
@@ -209,6 +212,9 @@ export const apiBecome_for = data => get("Become_for", data);
 
 //职员信息-->保存转正申请信息并启动转正申请流程
 export const apisubmitBecome = data => post("submitBecome", data);
+
+//职员信息-->查询出所有员工的打卡信息
+export const apiworkerAttendLists = data => get("workerAttendLists", data);
 
 //职员信息--》新增或修改职员信息
 export const apisavePersonalRecords = data => post("savePersonalRecords", data);
@@ -378,6 +384,9 @@ export const apicontractapproveNew = data => get("contractapproveNew", data);
 //财务中心 --> 合同审批-->提交审批
 export const apisave_conApprove = data => post("save_conApprove", data);
 
+//财务中心 --> 合同审批-->办理合同审批
+export const apicontractapprovePass = data => post("contractapprovePass", data);
+
 //成本中心-->分供方台账-->查询所有供应商信息、
 export const apisupplierList = data => post("supplierList", data);
 
@@ -455,6 +464,10 @@ export const apiConMaterialList = data => get("getConMaterialList", data);
 
 //乙供材料采购获取下一节点和审核人
 export const apiPurchaseProcess = data => get("getPurchaseProcessList", data);
+
+//合同审批获取下一节点和审核人
+export const apiContractapprovePro = data =>
+  get("getContractapproveProcessList", data);
 
 //开票申请获取下一节点和审核人
 export const apiReqfundsProcess = data => get("getReqfundsProcessList", data);

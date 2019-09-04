@@ -42,7 +42,7 @@
                 >未转正</el-button
               >
               <el-button type="warning">离职</el-button
-              ><el-button type="primary">打卡记录</el-button>
+              ><el-button type="primary" @click="openCard">打卡记录</el-button>
             </el-button-group>
           </el-form-item>
         </el-form>
@@ -76,10 +76,14 @@
     <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
       <corrented-Tabs v-if="isopenNoCor"></corrented-Tabs>
     </el-dialog>
+    <el-dialog :visible.sync="isopenCard">
+      <card-record v-if="isopenCard"></card-record>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import cardRecord from "./components/card-record";
 import correntedTabs from "./components/corrented-Tabs";
 import modifyWindow from "./components/modify-window";
 import Paging from "@/components/paging/paging";
@@ -134,20 +138,25 @@ export default {
       userList: {},
       recordList: {},
       submitType: "",
-      company_name: ""
+      company_name: "",
+      isopenCard: false
     };
   },
   components: {
     Paging,
     CaRuleTable,
     modifyWindow,
-    correntedTabs
+    correntedTabs,
+    cardRecord
   },
   mounted() {
     this.getpmuserList();
     this.getuserTree();
   },
   methods: {
+    openCard() {
+      this.isopenCard = true;
+    },
     //打开未转正窗口
     openNotCorrected() {
       this.isopenNoCor = true;

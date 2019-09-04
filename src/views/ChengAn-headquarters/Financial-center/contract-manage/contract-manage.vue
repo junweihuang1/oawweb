@@ -64,7 +64,9 @@
       :append-to-body="true"
     >
       <echarts
+        openType="manage"
         v-if="isopen"
+        :Type="Type"
         :setform="contractform"
         :rows="rows"
         @setDate="submit"
@@ -102,8 +104,7 @@ export default {
         ["1", "建设公司"],
         ["2", "科技公司"],
         ["11", "教育公司"],
-        ["3", "加盟合作"],
-        ["", "诚安时代"]
+        ["3", "加盟合作"]
       ],
       header: [
         ["合同编号", "manage_contract_num", 100],
@@ -118,7 +119,8 @@ export default {
       ],
       headle: ["修改", "删除"],
       contractList: [],
-      rows: []
+      rows: [],
+      Type: ""
     };
   },
   props: {
@@ -152,9 +154,11 @@ export default {
         manage_contract_endTime: "",
         manage_contract_amount: 0,
         manage_contract_visaAmount: 0,
-        manage_contract_remark: ""
+        manage_contract_remark: "",
+        manage_contract_company: 1
       };
       this.rows = [];
+      this.Type = "add";
       this.isopen = true;
     },
     submit(data) {
@@ -181,6 +185,7 @@ export default {
           this.rows = res.rows.rows;
         }
       );
+      this.Type = "check";
       this.isopen = true;
     },
     deleteitem(e) {

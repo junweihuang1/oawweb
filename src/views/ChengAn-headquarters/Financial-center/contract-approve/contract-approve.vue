@@ -22,7 +22,9 @@
         <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="additem">新增</el-button>
+        <el-button type="success" class="el-icon-plus" @click="additem"
+          >新增</el-button
+        >
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -40,28 +42,28 @@
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="275"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
     <el-dialog title="合同信息" :visible.sync="isopen">
-      <dialog-window
-        :isnew="isnew"
-        :isopen="isopen"
+      <add-contract-approve
         :history="history"
+        :openType="openType"
+        v-if="isopen"
         :contractapprove="contractapprove"
-        :activityList="activityList"
         @closewin="closewin"
-      ></dialog-window>
+      ></add-contract-approve>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import dialogWindow from "./components/dialog-window";
+import addContractApprove from "@/components/Ca-to-do/add-contract-approve";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { changetime } from "@/components/global-fn/global-fn.js";
+import http from "@/request/http";
+import { changetime } from "@/components/global-fn/global-fn";
 import {
   apicontractapprove,
   apideleteContract,
@@ -74,6 +76,7 @@ export default {
       isopen: false,
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       company_id: "",
       companyList: [
         ["1", "建设公司"],
@@ -96,10 +99,8 @@ export default {
         ["状态", "manage_status2", 80]
       ],
       headle: ["查看", "删除", "下载"],
-      activityList: [],
       contractapprove: {},
-      history: [],
-      isnew: false
+      history: []
     };
   },
   mounted() {
@@ -108,16 +109,16 @@ export default {
   components: {
     CaRuleTable,
     paging,
-    dialogWindow
+    addContractApprove
   },
   methods: {
     closewin() {
       this.isopen = false;
-      this.isnew = false;
       this.getContractApprove();
     },
     additem() {
-      this.isnew = true;
+      this.history = [];
+      this.openType = "add";
       this.contractapprove = {
         userid: "",
         manage_contractapprove_name: "",
@@ -129,12 +130,10 @@ export default {
         manage_contractapprove_startTime: "",
         manage_contractapprove_endTime: "",
         manage_contractapprove_payment: "",
-        category: "",
+        category: 1,
         manage_contractapprove_remark: "",
-        manage_contractapprove_taxIncluded: ""
+        manage_contractapprove_taxIncluded: 1
       };
-      this.activityList = [];
-      this.history = [];
       this.isopen = true;
     },
     query() {
@@ -149,20 +148,27 @@ export default {
       this.getContractApprove();
     },
     checkitem(row) {
-      this.isopen = true;
+      this.openType = "check";
       apicontractapproveNew({
         manage_contractapprove_id: row.manage_contractapprove_id
       }).then(res => {
-        this.history = res.history.map(item => {
-          item.endtime = item.END_TIME_ ? changetime(item.END_TIME_.time) : "";
-          item.starttime = item.START_TIME_
-            ? changetime(item.START_TIME_.time)
-            : "";
-          return item;
-        });
-        this.contractapprove = res.contractapprove;
-        this.activityList = res.activityList;
         console.log(res);
+        this.contractapprove = res.contractapprove;
+        this.history = res.history
+          ? res.history.map(item => {
+              item.START_TIME_ = item.START_TIME_
+                ? changetime(item.START_TIME_.time)
+                : "";
+              item.END_TIME_ = item.END_TIME_
+                ? changetime(item.END_TIME_.time)
+                : "";
+              return item;
+            })
+          : [];
+        this.isopen = false;
+        this.$nextTick(() => {
+          this.isopen = true;
+        });
       });
     },
     deleteitem(row) {
@@ -194,6 +200,8 @@ export default {
         manage_contractapprove_company: this.company_id
       };
       apicontractapprove(data).then(res => {
+        console.log(res);
+        this.total = res.count;
         this.approveList = res.data.map(item => {
           switch (item.manage_status) {
             case 0:

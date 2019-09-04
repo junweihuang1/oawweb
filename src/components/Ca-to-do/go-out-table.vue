@@ -82,6 +82,14 @@
               >提交</el-button
             >
             <el-button
+              v-if="item == 'Resubmit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headle(true)"
+              >重新提交</el-button
+            >
+            <el-button
               v-else-if="item == 'reject'"
               :key="index"
               type="warning"
@@ -109,18 +117,16 @@
         </el-form-item>
       </template>
     </el-form>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">
-        流程线
-      </el-divider>
-      <el-steps :active="current" :align-center="true">
-        <el-step
-          v-for="(item, index) in activityList"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">
+      流程线
+    </el-divider>
+    <el-steps :active="current" :align-center="true" finish-status="success">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <template v-if="openType != 'add'">
       <el-divider content-position="left">
         审核记录
@@ -253,9 +259,10 @@ export default {
               return item;
             })
           : [];
+        let currentTask = this.hisComment[this.hisComment.length - 1];
         this.activityList = res.activityList.map((item, index) => {
-          if (this.active && item.name == this.active.NAME_) {
-            this.current = index;
+          if (item.name == currentTask.name_) {
+            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
           }
           return item;
         });

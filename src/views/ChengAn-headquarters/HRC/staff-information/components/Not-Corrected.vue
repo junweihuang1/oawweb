@@ -10,7 +10,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       currentlimit: 15,
+      total: 0,
       currentpage: 1,
       NotCorList: [],
       header: [
@@ -69,6 +70,8 @@ export default {
         rows: this.currentlimit,
         page: this.currentpage
       }).then(res => {
+        console.log(res);
+        this.total = res.total;
         this.NotCorList = res.data.map(item => {
           switch (item.status) {
             case 3:

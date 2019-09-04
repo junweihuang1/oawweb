@@ -149,7 +149,7 @@
     <div v-if="openType == 'headle'">
       <el-divider content-position="left">流程审批</el-divider>
       <el-form label-width="70px">
-        <el-row style="width:60%">
+        <el-row style="width:70%">
           <el-col :span="24">
             <el-form-item label="意见">
               <el-input v-model="reasons" type="textarea" :row="3"></el-input>
@@ -158,7 +158,7 @@
 
           <el-col :span="12">
             <el-form-item label="审核人">
-              <el-select v-model="userid" style="width:100%;">
+              <el-select v-model="userid" style="width:80%;">
                 <el-option
                   v-for="(item, index) in userList"
                   :key="index"
@@ -174,40 +174,43 @@
                   v-if="item == 'submit'"
                   :key="index"
                   type="success"
-                  size="mini"
+                  size="small"
                   @click="headleprocess(true)"
                   >提交</el-button
+                >
+                <el-button
+                  v-if="item == 'Resubmit'"
+                  :key="index"
+                  type="success"
+                  size="mini"
+                  @click="headleprocess(true)"
+                  >重新提交</el-button
                 >
                 <el-dropdown
                   split-button
                   type="warning"
-                  size="mini"
+                  size="small"
                   style="margin-left:10px;"
                   :key="index"
                   v-else-if="item == 'reject'"
+                  @click="headleprocess(false)"
+                  @command="getReturnName"
                 >
-                  驳回
+                  驳回到{{ returnName }}
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>黄金糕</el-dropdown-item>
-                    <el-dropdown-item>狮子头</el-dropdown-item>
-                    <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                    <el-dropdown-item>双皮奶</el-dropdown-item>
-                    <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                    <el-dropdown-item
+                      v-for="(item, index) in taskList"
+                      :key="index"
+                      :command="index"
+                      >{{ item.name }}</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </el-dropdown>
-                <!-- <el-button
-                  v-else-if="item == 'reject'"
-                  :key="index"
-                  type="warning"
-                  size="mini"
-                  @click="headleprocess(false)"
-                  >驳回</el-button
-                > -->
                 <el-button
                   v-else-if="item == 'disagree'"
                   :key="index"
                   type="danger"
-                  size="mini"
+                  size="small"
                   @click="headleprocess('finish')"
                   >不同意</el-button
                 >
@@ -217,16 +220,19 @@
         </el-row>
       </el-form>
     </div>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">流程线</el-divider>
-      <el-steps :active="current" :align-center="true" :space="200">
-        <el-step
-          v-for="(item, index) in activityList"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">流程线</el-divider>
+    <el-steps
+      :active="current"
+      :align-center="true"
+      :space="200"
+      finish-status="success"
+    >
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <template v-if="openType != 'add'">
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
@@ -306,12 +312,12 @@ export default {
       userid: 0,
       userList: [],
       current: 1,
-      userTaskName: "",
       buttonList: [],
       activityList: [],
       ProcessList: [],
       usertask: 1,
-      taskList: []
+      taskList: [],
+      returnName: "项目助理" //驳回节点名字
     };
   },
   props: {
@@ -333,23 +339,26 @@ export default {
     this.getprossList();
   },
   methods: {
+    getReturnName(command) {
+      this.taskList.forEach((item, index) => {
+        if (command == index) {
+          this.usertask = index + 1;
+          this.returnName = item.name;
+        }
+      });
+    },
     changeValue(row, filter) {
       if (
         filter == "construct_purchase_applyNum" &&
         row.construct_purchase_quantities - row.construct_purchase_approvalNum <
           parseInt(row.construct_purchase_applyNum)
       ) {
-        console.log(filter);
         this.$message.error("计划采购量已超量");
         return;
       }
     },
     //办理
     headleprocess(type) {
-      if (type == false && this.active.PROC_DEF_ID_.split(":")[1] !== 2) {
-        console.log("驳回");
-        return;
-      }
       if (this.reasons == "") {
         this.$message.error("请填写审核意见");
         return;
@@ -398,24 +407,30 @@ export default {
         console.log(data);
         apiPurchaseProcess(data).then(res => {
           console.log(res);
-          this.activityList = res.activityList.map((item, index) => {
-            if (this.active && item.name == this.active.NAME_) {
-              this.current = index;
-            }
-            return item;
-          });
-          this.taskList = this.activityList.slice(0, this.current);
-          console.info("流程线", this.taskList);
+
           this.ProcessList = res.historyList.map(item => {
             item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
           });
-          this.userTaskName = res.userlist.userTaskName;
+          //当前步骤名称
+          let currentTask = this.ProcessList[this.ProcessList.length - 1];
+
           this.buttonList = res.startForm.split(",");
           this.userid = res.userlist.userList
             ? res.userlist.userList[0].userid
             : "";
           this.userList = res.userlist.userList ? res.userlist.userList : [];
+          //获取驳回节点的数组
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+          //获取驳回节点的数组
+          if (this.active.PROC_DEF_ID_.split(":")[1] !== 2) {
+            this.taskList = this.activityList.slice(0, this.current);
+          }
         });
       }
     },

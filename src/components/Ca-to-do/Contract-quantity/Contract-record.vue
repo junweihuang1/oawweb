@@ -93,9 +93,9 @@ export default {
       let data = {
         project_id: this.projectid,
         type: this.type,
-        construct_material_seriesName: "",
-        construct_material_name: "",
-        construct_material_model_name: "",
+        construct_material_seriesName: this.seriesName,
+        construct_material_name: this.materialName,
+        construct_material_model_name: this.modelName,
         pageSize: this.currentlimit,
         limit: this.currentpage
       };

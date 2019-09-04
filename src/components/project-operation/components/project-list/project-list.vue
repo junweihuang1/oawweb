@@ -106,6 +106,7 @@ export default {
       if (this.activeitem === Object && type !== "add") {
         this.$message.warning("请选择项目");
       } else {
+        console.log(this.activeitem);
         this.$emit("openProject", [type, this.activeitem]);
       }
     },

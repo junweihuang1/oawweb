@@ -5,7 +5,19 @@
         <el-col :span="8" v-for="(item, index) in propsList" :key="index">
           <el-form-item :label="item[0]" :key="index" ref="form" v-model="form">
             <template v-if="item[2] == 'select'">
-              <select-company @setCompanyName="getCompanyName"></select-company>
+              <el-select v-model="form[item[1]]" v-if="openType">
+                <el-option
+                  v-for="(item, index) in companyList"
+                  :key="index"
+                  :label="item[1]"
+                  :value="item[0]"
+                ></el-option>
+              </el-select>
+              <select-company
+                @setCompanyName="getCompanyName"
+                :companyId="form.company_id"
+                v-else
+              ></select-company>
             </template>
             <template v-else-if="item[2] == 'date'">
               <el-date-picker
@@ -22,7 +34,7 @@
             </template>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-if="Type == 'add'">
           <el-form-item label=" "
             ><el-button type="primary" @click="submitContract"
               >保存</el-button
@@ -32,6 +44,7 @@
       </el-form>
     </el-row>
     <can-add-table
+      :Type="Type"
       @setTableList="getTableList"
       :rows="rows"
       @receiveAmount="receiveAmount"
@@ -49,7 +62,7 @@ export default {
     return {
       propsList: [
         ["合同编号", "manage_contract_num"],
-        ["公司名称", "company_name", "select"],
+        ["公司名称", "manage_contract_company", "select"],
         ["项目名称", "manage_contract_name"],
         ["发包方（甲方）", "manage_contract_firstParty"],
         ["项目地址", "manage_contract_address"],
@@ -61,10 +74,16 @@ export default {
       ],
       form: this.setform,
       tableList: [],
-      Companyid: "",
+      Companyid: 1,
       Received: Number,
       noReceived: Number,
-      isshow: true
+      isshow: true,
+      companyList: [
+        [1, "建设公司"],
+        [2, "科技公司"],
+        [11, "教育公司"],
+        [3, "加盟合作"]
+      ]
     };
   },
   components: {
@@ -75,7 +94,9 @@ export default {
     setform: {
       type: Object
     },
-    rows: Array
+    Type: String,
+    rows: Array,
+    openType: String
   },
   watch: {
     setform(value) {
@@ -104,6 +125,7 @@ export default {
       this.tableList = arr;
     },
     submitContract() {
+      console.log(this.form);
       let data = {
         type: "save",
         manage_contract_id: this.form.manage_contract_id,
@@ -117,7 +139,9 @@ export default {
         manage_contract_visaAmount: this.form.manage_contract_visaAmount,
         manage_contract_num: this.form.manage_contract_num,
         manage_contract_remark: this.form.manage_contract_remark,
-        manage_contract_company: 0,
+        manage_contract_company: this.openType
+          ? this.form.manage_contract_company
+          : 0,
         rows: JSON.stringify(this.tableList)
       };
       console.log(data);

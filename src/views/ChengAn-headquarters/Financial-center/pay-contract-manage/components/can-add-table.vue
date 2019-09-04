@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button-group>
+    <el-button-group v-if="Type == 'add'" style="margin-bottom:10px;">
       <el-button type="success" size="mini" @click="addline">添加</el-button>
       <el-button type="primary" size="mini" @click="undoadd"
         >撤销新增</el-button
@@ -64,7 +64,8 @@ export default {
       default: () => {
         return [];
       }
-    }
+    },
+    Type: String
   },
   watch: {
     DataList(val) {

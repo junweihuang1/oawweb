@@ -127,10 +127,24 @@
         openType="headle"
       ></headle-Cost>
     </el-dialog>
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openApply"
+      width="50%"
+      top="8vh"
+    >
+      <headle-contract-approve
+        v-if="openApply"
+        @close="closewin"
+        :active="active"
+        openType="headle"
+      ></headle-contract-approve>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headleContractApprove from "./components/headle-contract-approve";
 import headleCost from "./components/headle-Cost";
 import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import headlePurchase from "./components/headle-Purchase";
@@ -177,6 +191,7 @@ export default {
       openPurchase: false,
       openInvoice: false,
       openCost: false,
+      openApply: false,
       reqfundsId: ""
     };
   },
@@ -189,7 +204,8 @@ export default {
     headlePurchase,
     headleSeal,
     ApplicationForm,
-    headleCost
+    headleCost,
+    headleContractApprove
   },
   mounted() {
     //获取待办类型
@@ -211,6 +227,7 @@ export default {
       this.openPurchase = false;
       this.openInvoice = false;
       this.openCost = false;
+      this.openApply = false;
       this.getToDoList();
     },
     //查询
@@ -267,6 +284,9 @@ export default {
           break;
         case "[资费]-费用申请":
           this.openCost = true;
+          break;
+        case "项目合同申请":
+          this.openApply = true;
           break;
       }
     },

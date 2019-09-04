@@ -142,6 +142,14 @@
               >提交</el-button
             >
             <el-button
+              v-if="item == 'Resubmit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headle(true)"
+              >重新提交</el-button
+            >
+            <el-button
               v-else-if="item == 'reject'"
               :key="index"
               type="warning"
@@ -164,18 +172,16 @@
         <el-button type="primary" size="mini" @click="submit">提交</el-button>
       </el-form-item>
     </el-form>
-    <template v-if="openType == 'headle'">
-      <el-divider content-position="left">
-        流程线
-      </el-divider>
-      <el-steps :active="current" :align-center="true">
-        <el-step
-          v-for="(item, index) in activityList"
-          :title="item.name"
-          :key="index"
-        ></el-step>
-      </el-steps>
-    </template>
+    <el-divider content-position="left">
+      流程线
+    </el-divider>
+    <el-steps :active="current" :align-center="true" finish-status="success">
+      <el-step
+        v-for="(item, index) in activityList"
+        :title="item.name"
+        :key="index"
+      ></el-step>
+    </el-steps>
     <!-- 审核记录表 -->
     <template v-if="openType != 'add'">
       <el-divider content-position="left">
@@ -238,7 +244,7 @@ export default {
         ["序号", "index", 60],
         ["流程节点", "name_", 100],
         ["审核人", "username", 80],
-        ["开始时间", "START_TIME_", 160],
+        ["审核时间", "END_TIME_", 160],
         ["审核意见", "MESSAGE_"]
       ],
       userid: 0,
@@ -278,7 +284,6 @@ export default {
         this.$message.error("没有下一审核人不能提交！");
         return;
       }
-      console.log(this.active);
       let data = {
         taskid: this.active.ID_,
         userid: this.userid,
@@ -333,18 +338,19 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.activityList = res.activityList.map((item, index) => {
-          if (this.active && item.name == this.active.NAME_) {
-            this.current = index;
-          }
-          return item;
-        });
         this.hisComment = res.historyList
           ? res.historyList.map(item => {
-              item.START_TIME_ = changetime(item.START_TIME_);
+              item.END_TIME_ = changetime(item.END_TIME_);
               return item;
             })
           : [];
+        let currentTask = this.hisComment[this.hisComment.length - 1];
+        this.activityList = res.activityList.map((item, index) => {
+          if (item.name == currentTask.name_) {
+            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+          }
+          return item;
+        });
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid
