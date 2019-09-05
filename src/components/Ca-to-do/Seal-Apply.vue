@@ -217,7 +217,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
       let data = {
@@ -282,13 +282,17 @@ export default {
     },
     //改变章类型后获取流程线类型
     changeProcessline(i) {
-      let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
-      this.activityList = this.activityLists[i].map((item, index) => {
-        if (item.name == currentTask.name_) {
-          this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-        }
-        return item;
-      });
+      if (this.Approvaltable != "") {
+        let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
+        this.activityList = this.activityLists[i].map((item, index) => {
+          if (item.name == currentTask.name_) {
+            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+          }
+          return item;
+        });
+      } else {
+        this.activityList = this.activityLists[i];
+      }
     },
     //下载文件
     downfile() {

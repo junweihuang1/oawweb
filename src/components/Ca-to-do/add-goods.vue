@@ -281,7 +281,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
       let data = {
@@ -344,13 +344,19 @@ export default {
               return item;
             })
           : [];
-        let currentTask = this.hisComment[this.hisComment.length - 1];
-        this.activityList = res.activityList.map((item, index) => {
-          if (item.name == currentTask.name_) {
-            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-          }
-          return item;
-        });
+        //当审批记录不为空时，遍历获取当前审核节点
+        console.log(this.hisComment);
+        if (this.hisComment != "") {
+          let currentTask = this.hisComment[this.hisComment.length - 1];
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid

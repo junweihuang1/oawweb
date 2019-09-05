@@ -364,7 +364,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
 
@@ -412,8 +412,6 @@ export default {
             item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
           });
-          //当前步骤名称
-          let currentTask = this.ProcessList[this.ProcessList.length - 1];
 
           this.buttonList = res.startForm.split(",");
           this.userid = res.userlist.userList
@@ -421,12 +419,18 @@ export default {
             : "";
           this.userList = res.userlist.userList ? res.userlist.userList : [];
           //获取驳回节点的数组
-          this.activityList = res.activityList.map((item, index) => {
-            if (item.name == currentTask.name_) {
-              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-            }
-            return item;
-          });
+          //当前步骤名称
+          if (this.ProcessList != "") {
+            let currentTask = this.ProcessList[this.ProcessList.length - 1];
+            this.activityList = res.activityList.map((item, index) => {
+              if (item.name == currentTask.name_) {
+                this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+              }
+              return item;
+            });
+          } else {
+            this.activityList = res.activityList;
+          }
           //获取驳回节点的数组
           if (this.active.PROC_DEF_ID_.split(":")[1] !== 2) {
             this.taskList = this.activityList.slice(0, this.current);

@@ -280,7 +280,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
       let data = {
@@ -330,19 +330,24 @@ export default {
               return item;
             })
           : [];
-        let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
+
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid
           : "";
         this.userList = res.userlist.userList ? res.userlist.userList : [];
         //当进入办理流程后，遍历流程线，判断出当前的节点
-        this.activityList = res.activityList.map((item, index) => {
-          if (item.name == currentTask.name_) {
-            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-          }
-          return item;
-        });
+        if (this.Approvaltable != "") {
+          let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
       });
     },
     //保存

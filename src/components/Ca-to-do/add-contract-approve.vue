@@ -323,7 +323,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
 
@@ -341,6 +341,7 @@ export default {
     getProcessline(val) {
       let processName =
         val == 1 ? "process0" : val == 2 ? "process1" : "process2";
+      //当审批记录存在时，遍历更改时间格式
       if (this.history != "") {
         let currentTask = this.history[this.history.length - 1];
         this.activityList = this.activityLists[processName].map(

@@ -259,13 +259,17 @@ export default {
               return item;
             })
           : [];
-        let currentTask = this.hisComment[this.hisComment.length - 1];
-        this.activityList = res.activityList.map((item, index) => {
-          if (item.name == currentTask.name_) {
-            this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-          }
-          return item;
-        });
+        if (this.hisComment != "") {
+          let currentTask = this.hisComment[this.hisComment.length - 1];
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
         this.buttonList = res.startForm.split(",");
         if (res.userlist.userList) {
           this.userid = res.userlist.userList
@@ -285,7 +289,7 @@ export default {
         return;
       }
       if (this.userid === 0) {
-        this.$message.error("没有下一审核人不能提交！");
+        this.$message.error("审核人为空不能提交！");
         return;
       }
       let data = {

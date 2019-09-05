@@ -180,11 +180,11 @@ export default {
           "",
           [
             ["数量", "construct_project_quantities_num", 100],
-            ["新增数量", "", 100]
+            ["新增数量", "afterAddingNum", 100]
           ]
         ],
         ["辅材数量", "construct_project_quantities_auxiliaryNum", 100],
-        ["已采购量", "", 100],
+        ["已采购量", "purNum", 100],
         ["合同单价", "construct_project_quantities_price", 120],
         ["备注", "construct_project_quantities_remarks"]
       ],

@@ -104,7 +104,14 @@ export default {
         console.log(res);
         this.total = res.total;
         this.RecordList = res.data.map(item => {
-          item.status = item.status == 2 ? "审核通过" : item.status;
+          item.status =
+            item.status == 2
+              ? "审核通过"
+              : item.status == 1
+              ? "审核中"
+              : item.status == 3
+              ? "驳回"
+              : "不同意";
           return item;
         });
       });

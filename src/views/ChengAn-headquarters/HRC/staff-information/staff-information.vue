@@ -41,7 +41,7 @@
               <el-button type="primary" @click="openNotCorrected"
                 >未转正</el-button
               >
-              <el-button type="warning">离职</el-button
+              <el-button type="warning" @click="quit">离职</el-button
               ><el-button type="primary" @click="openCard">打卡记录</el-button>
             </el-button-group>
           </el-form-item>
@@ -50,6 +50,7 @@
           :header="headerList"
           :DataList="staffList"
           :headle="headle"
+          @checkline="checkline"
           @checkleave="edit"
           @delete="deleteline"
         ></Ca-rule-table>
@@ -79,6 +80,35 @@
     <el-dialog :visible.sync="isopenCard">
       <card-record v-if="isopenCard"></card-record>
     </el-dialog>
+    <el-dialog title="启动离职流程" :visible.sync="isstartQuit" width="25%">
+      <el-form size="mini" label-width="110px">
+        <el-form-item label="申请日期">
+          <el-date-picker
+            v-model="quitform.hr_resign_applyDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            readonly
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="预定离职日期">
+          <el-date-picker
+            v-model="quitform.hr_resign_schLeave"
+            type="date"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="离职类型">
+          <el-select v-model="quitform.hr_resign_category">
+            <el-option :value="1" label="离职"></el-option>
+            <el-option :value="2" label="辞退"></el-option>
+            <el-option :value="3" label="合同终止"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="startQuit" type="primary">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -87,11 +117,13 @@ import cardRecord from "./components/card-record";
 import correntedTabs from "./components/corrented-Tabs";
 import modifyWindow from "./components/modify-window";
 import Paging from "@/components/paging/paging";
+import { getDates } from "@/components/global-fn/global-fn";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import {
   apiuserTreeList,
   apipmuserList,
-  apipersonalRecords
+  apipersonalRecords,
+  apiaddResign
 } from "@/request/api.js";
 export default {
   name: "staffInformation",
@@ -139,7 +171,12 @@ export default {
       recordList: {},
       submitType: "",
       company_name: "",
-      isopenCard: false
+      isopenCard: false,
+      activeLine: {},
+      isstartQuit: false,
+      quitform: {
+        hr_resign_applyDate: getDates(new Date())
+      }
     };
   },
   components: {
@@ -154,6 +191,37 @@ export default {
     this.getuserTree();
   },
   methods: {
+    //启动离职流程
+    startQuit() {
+      this.quitform.username = this.activeLine.username;
+      this.quitform.hr_resign_userid = this.activeLine.userid;
+      console.log(this.quitform);
+      this.$confirm(`你确定提交吗?`)
+        .then(() => {
+          apiaddResign(this.quitform).then(res => {
+            console.log(res);
+            this.$message.success(`${res.msg}，${res.message}`);
+            this.isstartQuit = false;
+            this.getpmuserList();
+          });
+        })
+        .catch(() => {});
+    },
+    quit() {
+      console.log(this.activeLine.sex);
+      this.$confirm(
+        `你确定${this.activeLine.sex == "女" ? "她" : "他"}要离职吗？`
+      )
+        .then(() => {
+          this.isstartQuit = true;
+        })
+        .catch(() => {});
+    },
+    //点击行的回调
+    checkline([row, event, column]) {
+      console.log(row);
+      this.activeLine = row;
+    },
     openCard() {
       this.isopenCard = true;
     },

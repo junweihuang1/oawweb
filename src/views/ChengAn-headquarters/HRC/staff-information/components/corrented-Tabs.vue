@@ -10,9 +10,9 @@
       <el-tab-pane label="转正信息" name="2" v-if="isopenDetail">
         <notCorrented-detail
           v-if="isopenDetail"
+          @close="close"
+          :userid="userid"
           style="padding:10px;"
-          :personnel="personnel"
-          :queryList="queryList"
         ></notCorrented-detail>
       </el-tab-pane>
     </el-tabs>
@@ -22,15 +22,13 @@
 <script>
 import notCorrentedDetail from "./notCorrented-detail";
 import NotCorrected from "./Not-Corrected";
-import { apiBecome_for } from "@/request/api.js";
 export default {
   name: "correntedTabs",
   data() {
     return {
       activeName: "1",
-      queryList: [],
       isopenDetail: false,
-      personnel: {}
+      userid: 0
     };
   },
   components: {
@@ -38,24 +36,17 @@ export default {
     notCorrentedDetail
   },
   methods: {
+    close() {
+      this.isopenDetail = false;
+      this.activeName = "1";
+    },
     openCorrent(row) {
-      let data = { userid: row.userid };
-      console.log(data);
-      apiBecome_for(data).then(res => {
-        console.log(res);
-        this.personnel = res.mpaList;
+      this.userid = row.userid;
+      this.isopenDetail = false;
+      this.$nextTick(() => {
         this.isopenDetail = true;
-        this.activeName = "2";
-        this.queryList = res.rows.rows1.rows.map(item => {
-          item.bc_status =
-            item.bc_status == 2
-              ? "转正申请中"
-              : item.bc_status == 0
-              ? "初始录入"
-              : "已转正";
-          return item;
-        });
       });
+      this.activeName = "2";
     }
   }
 };

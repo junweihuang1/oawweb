@@ -3,17 +3,17 @@
     <el-form ref="form" :model="form" label-width="90px">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="申请人">
+          <el-form-item label="姓名">
             <el-input v-model="applicant" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="申请时间">
-            <el-input v-model="nowtime" readonly></el-input>
+          <el-form-item label="职位">
+            <el-input readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="公司部门">
+          <el-form-item label="试用期">
             <el-input
               placeholder="请选择"
               v-model="form.costapp_company"
@@ -22,7 +22,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="申请类型">
+          <el-form-item label="至">
             <el-select v-model="form.costapp_application" style="width:100%;">
               <el-option
                 v-for="(item, index) in applyType"
@@ -34,17 +34,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="费用金额">
+          <el-form-item label="部门">
             <el-input v-model="form.costapp_amount"></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="金额(大写)">
+          <el-form-item label="试用期待遇">
             <el-input v-model="big_costapp_amount" readonly></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="申请事项">
+          <el-form-item label="自我评价">
             <el-input
               type="textarea"
               :row="3"
@@ -147,23 +147,14 @@
 
 <script>
 import selectDepartment from "@/components/Ca-select/select-department";
-import {
-  apisaveCostapp,
-  apimodCostapp,
-  apipassCostapp,
-  apigetProcessList
-} from "@/request/api.js";
-import {
-  getDates,
-  number_chinese,
-  changetime
-} from "@/components/global-fn/global-fn";
+import { apigetProcessList } from "@/request/api.js";
+import { number_chinese, changetime } from "@/components/global-fn/global-fn";
 export default {
-  name: "costDetails",
+  name: "ApplyCorrented",
   data() {
     return {
       applicant: localStorage.getItem("username"),
-      form: this.setform,
+      form: {},
       isopenselect: false,
       applyType: ["费用审批", "借支申请", "报销申请"],
       ApprovalHeaderList: [
@@ -186,37 +177,13 @@ export default {
     selectDepartment
   },
   props: {
-    setform: {
-      type: Object
-      // default: () => {
-      //   return {
-      //     costapp_company: "",
-      //     costapp_appitem: "",
-      //     costapp_amount: "",
-      //     costapp_application: ""
-      //   };
-      // }
-    },
     openType: String,
     active: Object
-  },
-  watch: {
-    setform(val) {
-      this.form = val;
-    }
   },
   mounted() {
     this.getprossList();
   },
   computed: {
-    nowtime() {
-      if (this.openType == "modify") {
-        return getDates(new Date());
-      }
-      return this.form.costapp_time
-        ? this.form.costapp_time
-        : getDates(new Date());
-    },
     big_costapp_amount() {
       return number_chinese(this.form.costapp_amount);
     }
@@ -230,7 +197,7 @@ export default {
           processInstanceId: this.active.PROC_INST_ID_
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
-          key: "costappView", //(必填)流程定义key
+          key: "Become_for", //(必填)流程定义key
           position: this.active.role_name, //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
@@ -238,7 +205,7 @@ export default {
         data = {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
-          key: "costappView", //(必填)流程定义key
+          key: "Become_for", //(必填)流程定义key
           position: localStorage.getItem("role_name"), //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
@@ -271,30 +238,10 @@ export default {
           res.userlist.userList != "" ? res.userlist.userList : [];
       });
     },
-    modify() {
-      let data = {
-        costapp_id: this.form.costapp_id,
-        costapp_company: this.form.costapp_company,
-        costapp_appitem: this.form.costapp_appitem,
-        costapp_amount: this.form.costapp_amount,
-        costapp_application: this.form.costapp_application
-      };
-      apimodCostapp(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
-    },
     submit() {
       console.log(this.form);
       this.$confirm(`确定提交吗？`)
-        .then(() => {
-          apisaveCostapp(this.form).then(res => {
-            console.log(res);
-            this.$message.success(res.msg);
-            this.$emit("close");
-          });
-        })
+        .then(() => {})
         .catch(() => {});
     },
     headle(type) {
@@ -312,10 +259,6 @@ export default {
         reasons: this.reasons, //(必填)审批意见
         type: type //(必填)是否批准(true/false)
       };
-      apipassCostapp(data).then(res => {
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
     },
     getSelectName(row) {
       console.log(row);

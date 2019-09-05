@@ -127,6 +127,7 @@
         openType="headle"
       ></headle-Cost>
     </el-dialog>
+    <!-- 打开项目合同申请 -->
     <el-dialog
       :title="openTitle"
       :visible.sync="openApply"
@@ -140,10 +141,40 @@
         openType="headle"
       ></headle-contract-approve>
     </el-dialog>
+    <!-- 打开离职申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openQuit"
+      width="70%"
+      top="8vh"
+    >
+      <Apply-quit
+        v-if="openQuit"
+        @close="closewin"
+        :active="active"
+        openType="headle"
+      ></Apply-quit>
+    </el-dialog>
+    <!-- 打开转正申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openCorrent"
+      width="70%"
+      top="8vh"
+    >
+      <Apply-corrented
+        v-if="openCorrent"
+        @close="closewin"
+        :active="active"
+        openType="headle"
+      ></Apply-corrented>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
+import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
 import headleContractApprove from "./components/headle-contract-approve";
 import headleCost from "./components/headle-Cost";
 import ApplicationForm from "@/components/Ca-to-do/Application-form";
@@ -160,6 +191,7 @@ import {
   apifindTaskType,
   apipersonManagem_s
 } from "@/request/api";
+import { type } from "os";
 export default {
   name: "todo",
   data() {
@@ -192,6 +224,8 @@ export default {
       openInvoice: false,
       openCost: false,
       openApply: false,
+      openQuit: false,
+      openCorrent: false,
       reqfundsId: ""
     };
   },
@@ -205,7 +239,9 @@ export default {
     headleSeal,
     ApplicationForm,
     headleCost,
-    headleContractApprove
+    headleContractApprove,
+    ApplyQuit,
+    ApplyCorrented
   },
   mounted() {
     //获取待办类型
@@ -228,6 +264,8 @@ export default {
       this.openInvoice = false;
       this.openCost = false;
       this.openApply = false;
+      this.openQuit = false;
+      this.openCorrent = false;
       this.getToDoList();
     },
     //查询
@@ -247,8 +285,15 @@ export default {
     openpic(row) {
       console.log(row);
       apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-        this.img_src = "'data:image/jpg;base64," + res + "'";
-        console.log(this.img_src);
+        let img = document.createElement("img");
+        img.src = window.URL.createObjectURL(
+          new Blob([res], { type: "image/jpeg" })
+        ).substring(5);
+        img.onload = function() {
+          window.URL.revokeObjectURL(this.src);
+        };
+        console.log(img);
+        document.body.appendChild(img);
       });
     },
     //待办
@@ -287,6 +332,12 @@ export default {
           break;
         case "项目合同申请":
           this.openApply = true;
+          break;
+        case "离职申请":
+          this.openQuit = true;
+          break;
+        case "[人事]-转正申请":
+          this.openCorrent = true;
           break;
       }
     },

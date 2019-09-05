@@ -10,6 +10,8 @@ export const apiLogin = login => post("loginVerify", login);
 //当前用户信息
 export const apiUserInf = data => get("getUser", data);
 
+export const apiuserMenuTree = () => get("userMenuTree");
+
 //获取流程代办
 export const apiFindTaskList = data => get("findTaskList", data);
 
@@ -221,6 +223,18 @@ export const apisavePersonalRecords = data => post("savePersonalRecords", data);
 
 //职员信息-->查询角色信息
 export const apipersonalRecords = data => get("personalRecords", data);
+
+//职员信息-->保存并启动离职申请
+export const apiaddResign = data => post("addResign", data);
+
+//职员信息-->查看离职申请詳情
+export const apiresignView = data => get("resignView", data);
+
+//职员信息-->办理离职申请
+export const apiresignPass = data => post("resignPass", data);
+
+//职员信息-->保存签字图片
+export const apiuploadSignature = data => post("uploadSignature", data);
 
 //人力资源中心  --> 公司记录-->查询出所有公司信息
 export const apicompanyList = data => get("companyList", data);

@@ -48,22 +48,12 @@
           ></slide-verify>
           <div>{{ msg }}</div>
         </el-form-item>
-        <!-- <el-form-item>
-          <el-button
-            type="primary"
-            :disabled="disabled"
-            :loading="loading"
-            plain
-            @click="submitForm('formInline')"
-            >登录</el-button
-          >
-        </el-form-item> -->
       </el-form>
     </div>
   </div>
 </template>
 <script>
-import { apiLogin, apiUserInf } from "@/request/api";
+import { apiLogin, apiUserInf, apiuserMenuTree } from "@/request/api";
 export default {
   name: "Login",
   data() {
@@ -134,6 +124,20 @@ export default {
     }
   },
   methods: {
+    getTree() {
+      apiuserMenuTree().then(res => {
+        console.log(res);
+        localStorage.setItem("Tree", res.data);
+        apiUserInf().then(res2 => {
+          console.log(res2);
+          this.$router.replace("/");
+          localStorage.setItem("userid", res2.data.userid);
+          localStorage.setItem("role_name", res2.data.role_name);
+          localStorage.setItem("center_name", res2.data.center_name);
+          localStorage.setItem("company_name", res2.data.company_name);
+        });
+      });
+    },
     onSuccess() {
       this.msg = "验证成功,登录中...";
       setTimeout(() => {
@@ -143,7 +147,7 @@ export default {
           password: this.password
         })
           .then(res => {
-            console.log("res");
+            this.getTree();
             console.log(res);
             localStorage.setItem("token", res.token);
             localStorage.setItem("username", this.username);
@@ -153,14 +157,6 @@ export default {
               type: "success"
             });
             this.$store.commit("clearTabs");
-            apiUserInf().then(res2 => {
-              console.log(res2);
-              this.$router.replace("/");
-              localStorage.setItem("userid", res2.data.userid);
-              localStorage.setItem("role_name", res2.data.role_name);
-              localStorage.setItem("center_name", res2.data.center_name);
-              localStorage.setItem("company_name", res2.data.company_name);
-            });
           })
           .catch(err => {
             console.log(err);

@@ -46,7 +46,7 @@
 
 <script>
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apisubmitBecome } from "@/request/api.js";
+import { apisubmitBecome, apiBecome_for } from "@/request/api.js";
 export default {
   name: "NotCorrectedDetail",
   data() {
@@ -60,32 +60,57 @@ export default {
         ["状态", "bc_status"],
         ["邮箱", ""]
       ],
-      isopen: false
+      isopen: false,
+      personnel: {},
+      queryList: []
     };
   },
   components: {
     CaRuleTable
   },
   props: {
-    personnel: Object,
-    queryList: Array
+    userid: Number
   },
-  mounted() {},
+  mounted() {
+    this.getDetailList();
+  },
   methods: {
-    corrented() {
-      console.log(this.personnel);
-      let data = {
-        user_id: this.personnel.userid, //(必填)：用户id;
-        username: this.personnel.username, //(必填)：转正人姓名；
-        role_name: this.personnel.role_name, //(必填)：转正人职位；
-        incorporation_date: this.personnel.incorporation_date, //(必填)：进入公司日期；
-        close_time: this.personnel.close_time, //(必填)：试用期结束时间；
-        bc_department: this.personnel.department_name, //(必填)：部门 ；
-        on_trial: this.personnel.on_trial //(必填)：试用期待遇；
-      };
-      apisubmitBecome(data).then(res => {
+    getDetailList() {
+      let data = { userid: this.userid };
+      apiBecome_for(data).then(res => {
         console.log(res);
+        this.personnel = res.mpaList;
+        this.queryList = res.rows.rows.map(item => {
+          item.bc_status =
+            item.bc_status == 2
+              ? "转正申请中"
+              : item.bc_status == 0
+              ? "初始录入"
+              : "已转正";
+          return item;
+        });
       });
+    },
+    corrented() {
+      this.$confirm(`你确定提交吗？`)
+        .then(() => {
+          let data = {
+            user_id: this.personnel.userid, //(必填)：用户id;
+            username: this.personnel.username, //(必填)：转正人姓名；
+            role_name: this.personnel.role_name, //(必填)：转正人职位；
+            incorporation_date: this.personnel.incorporation_date, //(必填)：进入公司日期；
+            close_time: this.personnel.close_time, //(必填)：试用期结束时间；
+            bc_department: this.personnel.department_name, //(必填)：部门 ；
+            on_trial: this.personnel.on_trial //(必填)：试用期待遇；
+          };
+          apisubmitBecome(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.isopen = false;
+            this.getDetailList();
+          });
+        })
+        .catch(() => {});
     },
     addApply() {
       this.isopen = true;
