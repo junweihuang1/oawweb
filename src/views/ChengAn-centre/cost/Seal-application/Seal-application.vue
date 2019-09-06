@@ -208,6 +208,7 @@ export default {
         own_seal_filePath: ""
       };
       this.isApplyOpen = true;
+      this.Approvaltable = [];
     },
     opanLeaveList(e) {
       this.openType = "check";

@@ -103,7 +103,7 @@ export default {
           tabs = item;
         } else if (item.children.length > 0) {
           item.children.map(item2 => {
-            if (item2.id === key) {
+            if (item2.id == key) {
               tabs = item2;
             } else if (item2.children.length > 0) {
               item2.children.map(item3 => {
@@ -117,7 +117,7 @@ export default {
       });
       if (flag) {
         this.$store.commit("changeActiveIndex", key);
-      } else {
+      } else if (tabs.route != "") {
         this.$store.commit("addTabs", tabs);
       }
       this.$router.push(tabs.route);

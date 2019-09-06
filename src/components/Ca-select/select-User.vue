@@ -45,11 +45,10 @@ export default {
         ["员工编号", "userid"],
         ["员工名称", "username"],
         ["联系方式", "phone_number"],
-        ["员工职位", "major"],
-        ["部门", "department"],
-        ["中心", "center_id"],
-        ["公司", ""],
-        ["部门id", "department"]
+        ["员工职位", "role_name"],
+        ["部门", "department_name"],
+        ["中心", "center_name"],
+        ["公司", "company_name"]
       ],
       username: "",
       selectForm: {}
@@ -93,9 +92,10 @@ export default {
       this.$emit("setuser", row);
     },
     getUserList() {
+      console.log("res");
       apiuserListChecks({
-        Limit: this.currentPage,
-        pageSize: this.currentlimit,
+        limit: this.currentlimit,
+        page: this.currentPage,
         username: this.username
       }).then(res => {
         console.log(res);

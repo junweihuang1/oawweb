@@ -212,6 +212,9 @@ export const apibecomeList = data => post("becomeList", data);
 //职员信息-->查看指定未转正员工信息
 export const apiBecome_for = data => get("Become_for", data);
 
+//职员信息-->办理转正
+export const apibecome_pass = data => post("become_pass", data);
+
 //职员信息-->保存转正申请信息并启动转正申请流程
 export const apisubmitBecome = data => post("submitBecome", data);
 

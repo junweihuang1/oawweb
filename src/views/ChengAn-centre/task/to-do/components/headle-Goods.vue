@@ -13,7 +13,7 @@
 
 <script>
 import addGoods from "@/components/Ca-to-do/add-goods";
-
+import { changetime } from "@/components/global-fn/global-fn";
 import { apiOwnHeadListById } from "@/request/api.js";
 export default {
   name: "Goods",
@@ -48,10 +48,10 @@ export default {
         this.ownHead = res.data.ownHead;
         this.entryList = res.data.entryList;
         console.log(this.ownHead);
-        // this.hisComment = res.hisComment.map(item => {
-        //   item.START_TIME_ = changetime(item.START_TIME_);
-        //   return item;
-        // });
+        this.hisComment = res.hisComment.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : [];
+          return item;
+        });
       });
     }
   }

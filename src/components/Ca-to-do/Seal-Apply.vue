@@ -51,7 +51,7 @@
           </el-form-item>
         </el-col>
         <template v-if="openType == 'add' || openType == 'headle'">
-          <el-col :span="12" v-if="userList !== ''">
+          <el-col :span="12" v-if="userList != ''">
             <el-form-item label="审核人">
               <el-select v-model="userid" style="width:100%;">
                 <el-option
@@ -79,7 +79,7 @@
                 v-if="form.own_seal_filePath"
                 >下载附件</el-button
               >
-              <div v-if="openType == 'headle'">
+              <template v-if="openType == 'headle'">
                 <template v-for="(item, index) in buttonList">
                   <el-button
                     v-if="item == 'submit'"
@@ -114,7 +114,7 @@
                     >不同意</el-button
                   >
                 </template>
-              </div>
+              </template>
             </el-form-item>
           </el-col>
         </template>
@@ -220,19 +220,25 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let data = {
-        taskid: this.active.ID_, //(必填)流程实例id
-        userid: this.userid, //(必填)下一审核人id
-        reasons: this.reasons, //(必填)审批意见
-        type: type, //(必填)是否批准(true/false)
-        own_seal_chapCategory: this.form.own_seal_chapCategory.join(",") //(必填)盖章类型
-      };
-      console.log(data);
-      apipassSeal(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_, //(必填)流程实例id
+            userid: this.userid, //(必填)下一审核人id
+            reasons: this.reasons, //(必填)审批意见
+            type: type, //(必填)是否批准(true/false)
+            own_seal_chapCategory: this.form.own_seal_chapCategory.join(",") //(必填)盖章类型
+          };
+          console.log(data);
+          apipassSeal(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     //根据盖章类别显示流程线
     getProcessline(row) {

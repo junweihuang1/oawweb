@@ -1,12 +1,12 @@
 import Vue from "vue";
-import Router from "vue-router";
+import VueRouter from "vue-router";
 import Home from "@/views/home/Home";
 import Main from "@/views/main/Main";
 import Login from "@/views/login/Login";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-const router = new Router({
+const router = new VueRouter({
   routes: [
     {
       path: "/",

@@ -52,7 +52,7 @@
       width="35%"
       :append-to-body="true"
     >
-      <Incoming-wages></Incoming-wages>
+      <Incoming-wages v-if="isadd" @close="closewin"></Incoming-wages>
     </el-dialog>
   </div>
 </template>
@@ -112,6 +112,9 @@ export default {
     this.getCostsList();
   },
   methods: {
+    closewin() {
+      this.isadd = false;
+    },
     add() {
       this.isadd = true;
     },
@@ -121,6 +124,8 @@ export default {
         apidele_userWages({ finance_wages_id: e.finance_wages_id }).then(
           res => {
             console.log(res);
+            this.$message.success(res.msg);
+            this.getCostsList();
           }
         );
       });

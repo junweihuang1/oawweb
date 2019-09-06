@@ -138,7 +138,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="userList != ''">
           <el-form-item label="审核人">
             <el-select v-model="userid">
               <el-option
@@ -267,7 +267,9 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      this.$confirm(`确定办理吗？`)
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
         .then(() => {
           this.headForm.taskid = this.active.ID_;
           this.headForm.role_name = this.active.role_name;

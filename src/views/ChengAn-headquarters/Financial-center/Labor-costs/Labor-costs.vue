@@ -91,9 +91,9 @@ export default {
       this.$store.commit("addTabs", {
         route: "/History",
         title: "历史人员成本",
-        id: "99"
+        id: "201"
       });
-      this.$store.commit("changeActiveIndex", "99");
+      this.$store.commit("changeActiveIndex", "201");
       this.$router.push({
         path: "/History"
       });
@@ -108,7 +108,7 @@ export default {
     },
     file(row) {
       let data = {
-        finance_wages_vacaCount: "",
+        finance_wages_vacaCount: "", //休假天数；
         uc_wages_dedu: "", //(必填)：考勤扣除；
         uc_wages_baseTotal: "", //(必填)：应发小计
         uc_wage_tax: "", //(必填)：代扣个税
@@ -119,9 +119,9 @@ export default {
         uc_wage_center_name: "" //必填)：中心名称；
       };
       console.log(row);
-      apisave_userWages(row).then(res => {
-        console.log(res);
-      });
+      // apisave_userWages(row).then(res => {
+      //   console.log(res);
+      // });
     },
     query() {
       this.getCostsList();

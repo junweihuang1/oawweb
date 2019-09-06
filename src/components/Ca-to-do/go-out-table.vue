@@ -59,7 +59,7 @@
           placeholder="必填"
         ></el-input>
       </el-form-item>
-      <el-form-item label="审核人" v-if="username !== ''">
+      <el-form-item label="审核人" v-if="username != ''">
         <el-input v-model="username" readonly />
       </el-form-item>
       <template v-if="openType == 'headle'">
@@ -292,18 +292,24 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let data = {
-        taskid: this.active.ID_,
-        userid: this.userid,
-        reasons: this.reasons,
-        sign: type
-      };
-      console.log(data);
-      apipassField(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("setclose");
-      });
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_,
+            userid: this.userid,
+            reasons: this.reasons,
+            sign: type
+          };
+          console.log(data);
+          apipassField(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("setclose");
+          });
+        })
+        .catch(() => {});
     },
     resetForm(formName) {
       this.reload();

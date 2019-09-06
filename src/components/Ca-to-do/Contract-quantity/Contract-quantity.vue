@@ -99,7 +99,7 @@
       label-position="left"
       label-width="60px"
     >
-      <el-form-item label="审核人">
+      <el-form-item label="审核人" v-if="userList != ''">
         <el-select v-model="userid">
           <el-option
             v-for="(item, index) in userList"
@@ -283,22 +283,28 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let data = {
-        taskid: this.active.ID_,
-        reasons: this.reason,
-        sign: type,
-        taskName: this.active.NAME_,
-        headId: this.projectList.id,
-        type: this.projectList.type,
-        rows: JSON.stringify(this.myDataList),
-        userid: this.userid
-      };
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_,
+            reasons: this.reason,
+            sign: type,
+            taskName: this.active.NAME_,
+            headId: this.projectList.id,
+            type: this.projectList.type,
+            rows: JSON.stringify(this.myDataList),
+            userid: this.userid
+          };
 
-      apipass_record(data).then(res => {
-        console.log(res);
-        this.$message.success(res.Msg);
-        this.$emit("close");
-      });
+          apipass_record(data).then(res => {
+            console.log(res);
+            this.$message.success(res.Msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     getprossList() {
       let data = {};

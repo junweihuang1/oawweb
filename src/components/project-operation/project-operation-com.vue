@@ -148,9 +148,9 @@ export default {
       this.$store.commit("addTabs", {
         route: "/to-do",
         title: "待办事项",
-        id: "3-3-1"
+        id: "51"
       });
-      this.$store.commit("changeActiveIndex", "3-3-1");
+      this.$store.commit("changeActiveIndex", "51");
       this.$router.push({
         path: "/to-do"
       });

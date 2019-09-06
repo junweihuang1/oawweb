@@ -3,7 +3,7 @@
     <el-row :gutter="40" class="panel-group" :style="{ height: cardHeight }">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" :style="{ height: cardHeight }">
-          <!-- <div id="qrcode"></div> -->
+          <div id="qrcode"></div>
           <div style="padding:10px;font-weight: bold;font-size:16px;">
             常用功能
           </div>
@@ -137,14 +137,14 @@ export default {
     }
   },
   mounted() {
-    // let qrcode = new QRCode("qrcode", {
-    //   width: 100,
-    //   height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
-    //   text: "http://arye2p.natappfree.cc" // 二维码内容
-    //   //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
-    //   // background: '#f0f'
-    //   // foreground: '#ff0'
-    // });
+    let qrcode = new QRCode("qrcode", {
+      width: 100,
+      height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
+      text: "http://47.107.175.247:8080/qr" // 二维码内容
+      //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+      // background: '#f0f'
+      // foreground: '#ff0'
+    });
     var _this = this;
     _this.screenHeight = document.documentElement.clientHeight;
     window.onresize = function() {

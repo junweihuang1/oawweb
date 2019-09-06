@@ -35,7 +35,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="费用金额">
-            <el-input v-model="form.costapp_amount"></el-input
+            <el-input v-model="form.costapp_amount" type="number"></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="12">
@@ -52,20 +52,22 @@
             ></el-input
           ></el-form-item>
         </el-col>
-        <el-col :span="12" v-if="userList !== ''">
-          <el-form-item label="审核人">
-            <el-select v-model="userid" style="width:100%;">
-              <el-option
-                v-for="(item, index) in userList"
-                :key="index"
-                :value="item.userid"
-                :label="item.username"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
+        <template v-if="openType != 'check'">
+          <el-col :span="12" v-if="userList != ''">
+            <el-form-item label="审核人">
+              <el-select v-model="userid" style="width:100%;">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </template>
         <el-col :span="24">
-          <el-form-item label=" " v-if="openType == 'new'">
+          <el-form-item label=" " v-if="openType == 'add'">
             <el-button type="primary" @click="submit">提交</el-button>
           </el-form-item>
           <div v-else-if="openType == 'headle'">
@@ -121,19 +123,20 @@
         :key="index"
       ></el-step>
     </el-steps>
-    <el-divider content-position="left">审核记录</el-divider>
-    <el-table :data="Approvaltable" border>
-      <el-table-column
-        v-for="(item, index) in ApprovalHeaderList"
-        :key="index"
-        :label="item[0]"
-        :prop="item[1]"
-        :type="index == 0 ? 'index' : ''"
-        :width="item[2]"
-        align="center"
-      ></el-table-column>
-    </el-table>
-
+    <template v-if="openType != 'add'">
+      <el-divider content-position="left">审核记录</el-divider>
+      <el-table :data="Approvaltable" border>
+        <el-table-column
+          v-for="(item, index) in ApprovalHeaderList"
+          :key="index"
+          :label="item[0]"
+          :prop="item[1]"
+          :type="index == 0 ? 'index' : ''"
+          :width="item[2]"
+          align="center"
+        ></el-table-column>
+      </el-table>
+    </template>
     <el-dialog
       :visible.sync="isopenselect"
       title="选择部门"
@@ -178,7 +181,6 @@ export default {
       userid: 0, //下一审核人id,
       buttonList: [],
       userList: [],
-      Approvaltable: [],
       reasons: ""
     };
   },
@@ -188,17 +190,10 @@ export default {
   props: {
     setform: {
       type: Object
-      // default: () => {
-      //   return {
-      //     costapp_company: "",
-      //     costapp_appitem: "",
-      //     costapp_amount: "",
-      //     costapp_application: ""
-      //   };
-      // }
     },
     openType: String,
-    active: Object
+    active: Object,
+    Approvaltable: Array
   },
   watch: {
     setform(val) {
@@ -247,12 +242,12 @@ export default {
       apigetProcessList(data).then(res => {
         console.log(res);
 
-        this.Approvaltable = res.historyList
-          ? res.historyList.map(item => {
-              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-              return item;
-            })
-          : [];
+        // this.Approvaltable = res.historyList
+        //   ? res.historyList.map(item => {
+        //       item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+        //       return item;
+        //     })
+        //   : [];
         if (this.Approvaltable != "") {
           let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
           this.processLine = res.activityList.map((item, index) => {
@@ -286,9 +281,9 @@ export default {
       });
     },
     submit() {
-      console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {
+          this.form.userid = this.userid;
           apisaveCostapp(this.form).then(res => {
             console.log(res);
             this.$message.success(res.msg);
@@ -306,6 +301,11 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {})
+        .catch(() => {});
       let data = {
         taskid: this.active.ID_, //(必填)流程实例id
         userid: this.userid, //(必填)下一审核人id

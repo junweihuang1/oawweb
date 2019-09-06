@@ -1,46 +1,35 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="90px">
+    <el-form ref="form" label-width="90px">
       <el-row>
         <el-col :span="12">
           <el-form-item label="姓名">
-            <el-input v-model="applicant" readonly></el-input>
+            <el-input v-model="headform.username" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="职位">
-            <el-input readonly></el-input>
+            <el-input v-model="headform.role_name" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="试用期">
-            <el-input
-              placeholder="请选择"
-              v-model="form.costapp_company"
-              @focus="openselect"
-            ></el-input>
+            <el-input v-model="headform.incorporation_date"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="至">
-            <el-select v-model="form.costapp_application" style="width:100%;">
-              <el-option
-                v-for="(item, index) in applyType"
-                :value="item"
-                :label="item"
-                :key="index"
-              ></el-option>
-            </el-select>
+            <el-input v-model="headform.close_time"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="部门">
-            <el-input v-model="form.costapp_amount"></el-input
+            <el-input v-model="headform.department"></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="试用期待遇">
-            <el-input v-model="big_costapp_amount" readonly></el-input
+            <el-input v-model="headform.on_trial" readonly></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="24">
@@ -48,11 +37,11 @@
             <el-input
               type="textarea"
               :row="3"
-              v-model="form.costapp_appitem"
+              v-model="headform.bc_personal"
             ></el-input
           ></el-form-item>
         </el-col>
-        <el-col :span="12" v-if="userList !== ''">
+        <el-col :span="12" v-if="userList != ''">
           <el-form-item label="审核人">
             <el-select v-model="userid" style="width:100%;">
               <el-option
@@ -133,29 +122,21 @@
         align="center"
       ></el-table-column>
     </el-table>
-
-    <el-dialog
-      :visible.sync="isopenselect"
-      title="选择部门"
-      :append-to-body="true"
-      top="8vh"
-    >
-      <select-department @setSelectName="getSelectName"></select-department>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import selectDepartment from "@/components/Ca-select/select-department";
-import { apigetProcessList } from "@/request/api.js";
-import { number_chinese, changetime } from "@/components/global-fn/global-fn";
+import {
+  apigetProcessList,
+  apiBecome_for,
+  apibecome_pass
+} from "@/request/api.js";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "ApplyCorrented",
   data() {
     return {
-      applicant: localStorage.getItem("username"),
-      form: {},
-      isopenselect: false,
+      headform: {},
       applyType: ["费用审批", "借支申请", "报销申请"],
       ApprovalHeaderList: [
         ["序号", "index", 60],
@@ -173,22 +154,34 @@ export default {
       reasons: ""
     };
   },
-  components: {
-    selectDepartment
-  },
   props: {
     openType: String,
     active: Object
   },
   mounted() {
     this.getprossList();
-  },
-  computed: {
-    big_costapp_amount() {
-      return number_chinese(this.form.costapp_amount);
-    }
+    this.getCorrentDetail();
   },
   methods: {
+    //
+    getCorrentDetail() {
+      let id = this.active.BUSINESS_KEY_
+        ? this.active.BUSINESS_KEY_.split(".")[1]
+        : this.active.businessId;
+      let data = {
+        processInstanceId: this.active.PROC_INST_ID_
+          ? this.active.PROC_INST_ID_
+          : this.active.taskid, //(必填)：流程实例id;
+        taskid: this.active.ID_, //(必填)：任务id;
+        bcId: id //(必填)：转正申请id;
+      };
+      console.log(data);
+      apiBecome_for(data).then(res => {
+        console.log(res);
+        this.headform = res.mpaList;
+      });
+    },
+    //获取审核流程信息
     getprossList() {
       let data = {};
       if (this.active) {
@@ -198,7 +191,9 @@ export default {
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
           key: "Become_for", //(必填)流程定义key
-          position: this.active.role_name, //(必填)申请人角色
+          position: this.active.role_name
+            ? this.active.role_name
+            : localStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -213,7 +208,6 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-
         this.Approvaltable = res.historyList
           ? res.historyList.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
@@ -232,14 +226,13 @@ export default {
           this.processLine = res.activityList;
         }
         this.buttonList = res.startForm.split(",");
-        this.userid =
-          res.userlist.userList != "" ? res.userlist.userList[0].userid : "";
-        this.userList =
-          res.userlist.userList != "" ? res.userlist.userList : [];
+        this.userid = res.userlist.userList
+          ? res.userlist.userList[0].userid
+          : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },
     submit() {
-      console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {})
         .catch(() => {});
@@ -257,20 +250,23 @@ export default {
         taskid: this.active.ID_, //(必填)流程实例id
         userid: this.userid, //(必填)下一审核人id
         reasons: this.reasons, //(必填)审批意见
-        type: type //(必填)是否批准(true/false)
+        sign: type, //(必填)是否批准(true/false)
+        role_name: this.headform.role_name,
+        personal: this.headform.bc_personal,
+        bc_id: this.headform.bc_id
       };
-    },
-    getSelectName(row) {
-      console.log(row);
-      this.isopenselect = false;
-      row.company_name = row.company_name ? row.company_name : "";
-      row.center_name = row.center_name ? row.center_name : "";
-      row.department_name = row.department_name ? row.department_name : "";
-      this.form.costapp_company =
-        row.company_name + row.center_name + row.department_name;
-    },
-    openselect() {
-      this.isopenselect = true;
+      console.log(data);
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          apibecome_pass(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     }
   }
 };

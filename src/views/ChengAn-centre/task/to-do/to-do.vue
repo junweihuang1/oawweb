@@ -159,7 +159,7 @@
     <el-dialog
       :title="openTitle"
       :visible.sync="openCorrent"
-      width="70%"
+      width="50%"
       top="8vh"
     >
       <Apply-corrented
@@ -168,6 +168,9 @@
         :active="active"
         openType="headle"
       ></Apply-corrented>
+    </el-dialog>
+    <el-dialog :visible.sync="isopenpic" title="流程图" width="70%">
+      <el-image :src="img_src" v-if="isopenpic" v-loading="loading"></el-image>
     </el-dialog>
   </div>
 </template>
@@ -186,6 +189,7 @@ import headleGoOut from "./components/headle-go-out";
 import headleGoods from "./components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
+import http from "@/request/http";
 import {
   apiFindTaskList,
   apifindTaskType,
@@ -226,6 +230,8 @@ export default {
       openApply: false,
       openQuit: false,
       openCorrent: false,
+      isopenpic: false,
+      loading: true,
       reqfundsId: ""
     };
   },
@@ -283,18 +289,23 @@ export default {
       console.log(Event);
     },
     openpic(row) {
-      console.log(row);
-      apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-        let img = document.createElement("img");
-        img.src = window.URL.createObjectURL(
-          new Blob([res], { type: "image/jpeg" })
-        ).substring(5);
-        img.onload = function() {
-          window.URL.revokeObjectURL(this.src);
-        };
-        console.log(img);
-        document.body.appendChild(img);
-      });
+      this.img_src = `${http.base_url}personManagem_s?processInstanceId=${
+        row.PROC_INST_ID_
+      }`;
+      this.isopenpic = true;
+      this.loading = false;
+      // console.log(row);
+      // apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
+      //   let img = document.createElement("img");
+      //   img.src = window.URL.createObjectURL(
+      //     new Blob([res], { type: "image/jpeg" })
+      //   ).substring(5);
+      //   img.onload = function() {
+      //     window.URL.revokeObjectURL(this.src);
+      //   };
+      //   console.log(img);
+      //   document.body.appendChild(img);
+      // });
     },
     //待办
     openheadle(row) {

@@ -106,10 +106,86 @@
         @close="closewin"
       ></headle-Purchase>
     </el-dialog>
+
+    <!--  -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openInvoice"
+      width="50%"
+      top="8vh"
+    >
+      <Application-form
+        v-if="openInvoice"
+        @close="closewin"
+        :active="active"
+        :reqfundsId="reqfundsId"
+        openType="check"
+      ></Application-form>
+    </el-dialog>
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openCost"
+      width="50%"
+      top="8vh"
+    >
+      <headle-Cost
+        v-if="openCost"
+        @close="closewin"
+        :active="active"
+        openType="check"
+      ></headle-Cost>
+    </el-dialog>
+    <!-- 打开项目合同申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openApply"
+      width="50%"
+      top="8vh"
+    >
+      <headle-contract-approve
+        v-if="openApply"
+        @close="closewin"
+        :active="active"
+        openType="check"
+      ></headle-contract-approve>
+    </el-dialog>
+    <!-- 打开离职申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openQuit"
+      width="70%"
+      top="8vh"
+    >
+      <Apply-quit
+        v-if="openQuit"
+        @close="closewin"
+        :active="active"
+        openType="check"
+      ></Apply-quit>
+    </el-dialog>
+    <!-- 打开转正申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openCorrent"
+      width="50%"
+      top="8vh"
+    >
+      <Apply-corrented
+        v-if="openCorrent"
+        @close="closewin"
+        :active="active"
+        openType="check"
+      ></Apply-corrented>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
+import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
+import headleContractApprove from "../to-do/components/headle-contract-approve";
+import headleCost from "../to-do/components/headle-Cost";
+import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import headlePurchase from "../to-do/components/headle-Purchase";
 import headleSeal from "../to-do/components/headle-Seal";
 import headleLeave from "../to-do/components/headle-leave";
@@ -156,7 +232,15 @@ export default {
       openIncrement: false,
       openleave: false,
       openSeal: false,
-      openPurchase: false
+      openPurchase: false,
+      openInvoice: false,
+      openCost: false,
+      openApply: false,
+      openQuit: false,
+      openCorrent: false,
+      isopenpic: false,
+      loading: true,
+      reqfundsId: ""
     };
   },
   components: {
@@ -167,6 +251,11 @@ export default {
     headleLeave,
     headlePurchase,
     headleSeal,
+    ApplicationForm,
+    headleCost,
+    headleContractApprove,
+    ApplyQuit,
+    ApplyCorrented,
     paging
   },
   mounted() {
@@ -187,7 +276,12 @@ export default {
       this.openleave = false;
       this.openSeal = false;
       this.openPurchase = false;
-      this.getReadyDoList();
+      this.openInvoice = false;
+      this.openCost = false;
+      this.openApply = false;
+      this.openQuit = false;
+      this.openCorrent = false;
+      // this.getReadyDoList();
     },
     //查询
     query() {
@@ -222,6 +316,25 @@ export default {
           break;
         case "材料采购申请(建设)":
           this.openPurchase = true;
+          break;
+        case "[资费]-开票申请":
+          this.openInvoice = true;
+          this.reqfundsId = this.active.BUSINESS_KEY_
+            ? parseInt(this.active.BUSINESS_KEY_.split(".")[1])
+            : parseInt(this.active.businessId);
+          console.log(typeof this.reqfundsId);
+          break;
+        case "[资费]-费用申请":
+          this.openCost = true;
+          break;
+        case "项目合同申请":
+          this.openApply = true;
+          break;
+        case "离职申请":
+          this.openQuit = true;
+          break;
+        case "[人事]-转正申请":
+          this.openCorrent = true;
           break;
       }
     },

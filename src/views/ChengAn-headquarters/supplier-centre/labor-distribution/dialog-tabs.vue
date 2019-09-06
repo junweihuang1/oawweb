@@ -93,8 +93,10 @@ export default {
       let data = {
         suppliermod_worker_apply_proId: row.construct_project_id,
         suppliermod_worker_apply_teamId: row.construct_project_workTeam_id,
-        cid: JSON.stringify(this.idarr)
+        cid: this.idarr.join(","),
+        suppliermod_worker_apply_oldProId: this.Inforlist.construct_project_id
       };
+      console.log(data);
       this.$confirm(
         `确定要把${this.namearr}等${this.namearr.length}人调到${
           row.construct_project_name

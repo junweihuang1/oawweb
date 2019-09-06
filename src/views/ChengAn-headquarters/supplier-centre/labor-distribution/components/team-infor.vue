@@ -17,6 +17,7 @@
       @setselect="getselect"
       :setheight="0.5"
       :DataList="teamList"
+      @checkleave="remove"
       :header="header"
       :headle="headle"
     ></Ca-rule-table>
@@ -27,13 +28,41 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
+    <el-dialog
+      title="调动申请"
+      :visible.sync="isopen"
+      width="20%"
+      :append-to-body="true"
+    >
+      <el-form size="mini" label-width="70px">
+        <el-form-item label="调动项目">
+          <el-input
+            v-model="removeForm.projectName"
+            @focus="openselect"
+            placeholder="请选择"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="原因">
+          <el-input
+            v-model="removeForm.suppliermod_worker_apply_reason"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label=" ">
+          <el-button type="primary" @click="submit">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog :visible.sync="isopenselect" :append-to-body="true">
+      <select-project @setSelectName="getSelectName"></select-project>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectProject from "@/components/Ca-select/select-project";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apiworkerList } from "@/request/api";
+import { apiworkerList, apigetProcessList } from "@/request/api";
 export default {
   name: "teamInfor",
   data() {
@@ -52,11 +81,15 @@ export default {
       headle: ["调动申请", "", "调动记录"],
       summary: [],
       idarr: [],
-      namearr: []
+      namearr: [],
+      isopen: false,
+      isopenselect: false,
+      removeForm: {}
     };
   },
   components: {
     CaRuleTable,
+    selectProject,
     paging
   },
   props: {
@@ -66,6 +99,48 @@ export default {
     this.getTeamList();
   },
   methods: {
+    getprossList() {
+      let data = {
+        taskid: "", //(必填)流程任务id
+        processInstanceId: "", //(必填)流程实例id
+        key: "workerApplyViwe", //(必填)流程定义key
+        position: localStorage.getItem("role_name"), //(必填)申请人角色
+        type: "new" //(必填)新增new/运行中
+      };
+      console.log(data);
+      apigetProcessList(data).then(res => {
+        console.log(res);
+      });
+    },
+    //启动调动
+    submit() {
+      if (!this.removeForm.suppliermod_worker_apply_reason) {
+        this.$message.error("调动原因不能为空");
+        return;
+      }
+      console.log(this.removeForm);
+    },
+    //子組件回調双击选中的信息
+    getSelectName(row) {
+      console.log(row);
+      this.removeForm.projectName = row.construct_project_name;
+      this.removeForm.suppliermod_worker_apply_proId = row.construct_project_id;
+      this.removeForm.suppliermod_worker_apply_teamId =
+        row.construct_project_workTeam_id;
+      this.removeForm.suppliermod_worker_apply_oldProId = this.Inforlist.suppliermod_worker_apply_oldProId;
+      this.removeForm.suppliermod_worker_apply_id = 0;
+      this.isopenselect = false;
+    },
+    //打开选择项目
+    openselect() {
+      this.isopenselect = true;
+    },
+    //单个调动
+    remove(row) {
+      this.isopen = true;
+      this.getprossList();
+      console.log(row);
+    },
     //批量调动
     allremove() {
       if (this.idarr == "") {

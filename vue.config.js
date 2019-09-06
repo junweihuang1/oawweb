@@ -1,10 +1,30 @@
-const CompressionPlugin = require("compression-webpack-plugin");
+// const CompressionPlugin = require("compression-webpack-plugin");
+// const isproduction = process.env.NODE_ENV === "production";
+// const cdn = {
+//   css: [],
+//   js: [
+//     "https://cdn.bootcss.com/vue/2.6.10/vue.min.js",
+//     "https://cdn.bootcss.com/vuex/3.0.1/vuex.min.js",
+//     "https://cdn.bootcss.com/vue-router/3.0.3/vue-router.min.js",
+//     "https://cdn.bootcss.com/axios/0.18.0/axios.min.js",
+//     "https://cdn.bootcss.com/element-ui/2.11.1/index.js",
+//     "https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js"
+//   ]
+// };
 module.exports = {
   // ...
   publicPath: "./",
   productionSourceMap: false,
   // configureWebpack: config => {
-  //   if (process.env.NODE_ENV === "production") {
+  //   if (isproduction) {
+  //     config.externals = {
+  //       vue: "Vue",
+  //       "vue-router": "VueRouter",
+  //       vuex: "Vuex",
+  //       axios: "axios",
+  //       "element-ui": "ELEMENT",
+  //       echarts: "echarts"
+  //     };
   //     return {
   //       plugins: [
   //         new CompressionPlugin({
@@ -16,16 +36,16 @@ module.exports = {
   //     };
   //   }
   // },
-  // configureWebpack: {
-  //   externals: {
-  //     vue: "Vue",
-  //     // "vue-router": "VueRouter",
-  //     vuex: "Vuex",
-  //     axios: "axios",
-  //     "element-ui": "ELEMENT"
-  //   }
-  // },
+
+  // configureWebpack: {},
   chainWebpack: config => {
+    // if (isproduction) {
+    //   // 生产环境注入cdn
+    //   config.plugin("html").tap(args => {
+    //     args[0].cdn = cdn;
+    //     return args;
+    //   });
+    // }
     config.module
       .rule("image-webpack-loader")
       .test(/\.(gif|png|jpe?g|svg)$/i)

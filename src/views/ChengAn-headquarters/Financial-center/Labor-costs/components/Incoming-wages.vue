@@ -70,7 +70,7 @@ export default {
         uc_wage_realhair: ""
       },
       titleList: [
-        ["用户名", "username", "select"],
+        ["用户名", "uc_wage_username", "select"],
         ["中心名称", "uc_wage_center_name"],
         ["公司名称", "uc_wage_company_name"],
         ["出勤天数", "finance_wages_attCount"],
@@ -103,7 +103,8 @@ export default {
       console.log(row);
       this.form.uc_wage_username = row.username;
       this.form.uc_wage_userid = row.userid;
-      // this.form.uc_wage_company_name = row;
+      this.form.uc_wage_company_name = row.company_name;
+      this.form.uc_wage_center_name = row.center_name;
     },
     closewin() {
       this.isopenSelect = false;
@@ -112,8 +113,9 @@ export default {
       console.log(this.form);
       apisaveHistoricalWage(this.form).then(res => {
         console.log(res);
+        this.$message.success(res.msg);
+        this.$emit("close");
       });
-      console.log(this.form);
     },
     openSelect() {
       this.isopenSelect = true;

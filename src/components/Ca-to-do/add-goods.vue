@@ -117,7 +117,7 @@
       </el-table-column>
     </el-table>
     <el-form size="mini" label-width="80px" style="margin-top:10px;">
-      <el-form-item label="审核人" v-if="userList != ''">
+      <el-form-item label="审核人" v-if="userList != '' && openType != 'check'">
         <el-select v-model="userid">
           <el-option
             v-for="(item, index) in userList"
@@ -250,11 +250,11 @@ export default {
       userid: 0,
       userList: [],
       current: 1,
-      hisComment: [],
       buttonList: []
     };
   },
   props: {
+    hisComment: Array,
     ownHead: {
       type: Object
     },
@@ -284,21 +284,27 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let data = {
-        taskid: this.active.ID_,
-        userid: this.userid,
-        reasons: this.reasons,
-        type: type,
-        own_purchase_id: this.active.BUSINESS_KEY_
-          ? this.active.BUSINESS_KEY_.split(".")[1]
-          : this.active.businessId,
-        own_purchase_planMan: this.ownHead.own_purchase_planMan
-      };
-      console.log(data);
-      apipassOwnHead(data).then(res => {
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_,
+            userid: this.userid,
+            reasons: this.reasons,
+            type: type,
+            own_purchase_id: this.active.BUSINESS_KEY_
+              ? this.active.BUSINESS_KEY_.split(".")[1]
+              : this.active.businessId,
+            own_purchase_planMan: this.ownHead.own_purchase_planMan
+          };
+          console.log(data);
+          apipassOwnHead(data).then(res => {
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     submit() {
       console.log(this.form);
@@ -338,12 +344,7 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.hisComment = res.historyList
-          ? res.historyList.map(item => {
-              item.END_TIME_ = changetime(item.END_TIME_);
-              return item;
-            })
-          : [];
+
         //当审批记录不为空时，遍历获取当前审核节点
         console.log(this.hisComment);
         if (this.hisComment != "") {

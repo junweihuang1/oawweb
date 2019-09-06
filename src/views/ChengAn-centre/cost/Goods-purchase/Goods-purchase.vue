@@ -133,7 +133,7 @@ export default {
         this.ownHead = res.data.ownHead;
         this.entryList = res.data.entryList;
         this.hisComment = res.hisComment.map(item => {
-          item.START_TIME_ = changetime(item.START_TIME_);
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
           return item;
         });
         this.isopen = true;
@@ -150,7 +150,8 @@ export default {
     },
     addGoods() {
       this.openType = "add";
-      this.isopen = true;
+      this.entryList = [];
+      this.hisComment = [];
       this.ownHead = {
         own_purchase_companyId: "", //(必填)公司编号
         own_purchase_projectId: "16", //必填)项目编号
@@ -161,6 +162,7 @@ export default {
         own_purchase_type: 1, //必填)采购类型
         userid: 0 //必填)下一审核人id
       };
+      this.isopen = true;
     },
     getGoodsList() {
       let data = {

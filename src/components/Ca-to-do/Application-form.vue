@@ -132,7 +132,11 @@
     <div style="width:100%;text-align:center;">
       <el-form inline size="mini">
         <el-form-item>
-          <el-select v-model="userid" placeholder="请选择" v-if="userid !== ''">
+          <el-select
+            v-model="userid"
+            placeholder="请选择"
+            v-if="AuditorList != ''"
+          >
             <el-option
               v-for="item in AuditorList"
               :key="item.userid"
@@ -275,19 +279,26 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let data = {
-        taskid: this.active.ID_, //(必填)流程实例id
-        userid: this.userid, //(必填)下一审核人id
-        reasons: this.reasons, //(必填)审批意见
-        sign: type, //(必填)是否批准(true/false)
-        taskName: this.active.NAME_
-      };
-      console.log(data);
-      apipassReqfunds(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_, //(必填)流程实例id
+            userid: this.userid, //(必填)下一审核人id
+            reasons: this.reasons, //(必填)审批意见
+            sign: type, //(必填)是否批准(true/false)
+            taskName: this.active.NAME_
+          };
+          console.log(data);
+          apipassReqfunds(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     getSelectName(row) {
       console.log(row);

@@ -146,14 +146,14 @@ export default {
     },
     //新增
     additem() {
-      this.openType = "new";
+      this.openType = "add";
       this.setform = {};
       this.Approvaltable = [];
       this.isopen = true;
     },
     //查看
     details(row) {
-      this.openType = "";
+      this.openType = "check";
       apigetCostappById({
         costapp_id: row.costapp_id
       }).then(res => {

@@ -225,6 +225,7 @@ export default {
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
         // this.headform = res.projectInfo;
+        console.log(res);
         this.Purchase_entryList = res.purchaseEntry;
         if (res.hisComment != null) {
           this.ProcessList = res.hisComment.map(item => {

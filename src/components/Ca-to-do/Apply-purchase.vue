@@ -156,7 +156,7 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="12">
+          <el-col :span="12" v-if="userList != ''">
             <el-form-item label="审核人">
               <el-select v-model="userid" style="width:80%;">
                 <el-option
@@ -368,29 +368,36 @@ export default {
         return;
       }
 
-      let data = {
-        processInstanceId: this.active.PROC_INST_ID_
-          ? this.active.PROC_INST_ID_
-          : this.active.taskid, //(必填)运行时id
-        taskid: this.active.ID_, //(必填)实例id
-        sign: type, //(必填)是否同意
-        reason: this.reasons, //(必填)审核意见
-        usertask: this.usertask, //(必填)驳回节点
-        taskName: this.active.NAME_, //(必填)当前节点id
-        construct_purchase_id: this.active.BUSINESS_KEY_
-          ? this.active.BUSINESS_KEY_.split(".")[1]
-          : this.active.businessId, //(必填)材料单id
-        userid: this.userid //(必填)下一审批人id
-      };
-      console.log(data);
-      apipassPurchase(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            processInstanceId: this.active.PROC_INST_ID_
+              ? this.active.PROC_INST_ID_
+              : this.active.taskid, //(必填)运行时id
+            taskid: this.active.ID_, //(必填)实例id
+            sign: type, //(必填)是否同意
+            reason: this.reasons, //(必填)审核意见
+            usertask: this.usertask, //(必填)驳回节点
+            taskName: this.active.NAME_, //(必填)当前节点id
+            construct_purchase_id: this.active.BUSINESS_KEY_
+              ? this.active.BUSINESS_KEY_.split(".")[1]
+              : this.active.businessId, //(必填)材料单id
+            userid: this.userid //(必填)下一审批人id
+          };
+          console.log(data);
+          apipassPurchase(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     getprossList() {
       let data = {};
+      console.log("data");
       //当active（待办）不为空时
       if (this.active) {
         data = {
@@ -404,10 +411,9 @@ export default {
             ? this.active.BUSINESS_KEY_.split(".")[1]
             : this.active.businessId
         };
-        console.log(data);
+
         apiPurchaseProcess(data).then(res => {
           console.log(res);
-
           this.ProcessList = res.historyList.map(item => {
             item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
             return item;
