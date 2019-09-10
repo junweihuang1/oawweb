@@ -314,13 +314,13 @@ export default {
       current: 1,
       buttonList: [],
       activityList: [],
-      ProcessList: [],
       usertask: 1,
       taskList: [],
       returnName: "项目助理" //驳回节点名字
     };
   },
   props: {
+    ProcessList: Array,
     headform: Object,
     openType: String,
     entryList: Array,
@@ -397,7 +397,6 @@ export default {
     },
     getprossList() {
       let data = {};
-      console.log("data");
       //当active（待办）不为空时
       if (this.active) {
         data = {
@@ -414,11 +413,10 @@ export default {
 
         apiPurchaseProcess(data).then(res => {
           console.log(res);
-          this.ProcessList = res.historyList.map(item => {
-            item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-            return item;
-          });
-
+          // this.ProcessList = res.historyList.map(item => {
+          //   item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          //   return item;
+          // });
           this.buttonList = res.startForm.split(",");
           this.userid = res.userlist.userList
             ? res.userlist.userList[0].userid

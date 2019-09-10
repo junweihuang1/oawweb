@@ -75,14 +75,14 @@
     <Ca-rule-table
       :DataList="entriesList"
       :header="header"
-      :setheight="0.5"
+      :setheight="0.3"
     ></Ca-rule-table>
   </div>
 </template>
 
 <script>
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apigetAPartyPur } from "@/request/api.js";
+import { apigetAPartyPur, apigetProcessList } from "@/request/api.js";
 export default {
   name: "PurchaseDetails",
   data() {
@@ -98,14 +98,17 @@ export default {
         ["累计审批量", "construct_aParty_byedNum", 120],
         ["计划采购量", "construct_Aparty_purEntry_num", 120],
         ["备注", "construct_Aparty_purEntry_remark", 120]
-      ]
+      ],
+      activityList: []
     };
   },
   components: {
     CaRuleTable
   },
   props: {
-    PurchaseId: Number
+    PurchaseId: Number,
+    active: Object,
+    openType: String
   },
   watch: {
     PurchaseId() {
@@ -114,6 +117,7 @@ export default {
   },
   mounted() {
     this.getApartyPur();
+    this.getprocessList();
   },
   methods: {
     getApartyPur() {
@@ -124,6 +128,48 @@ export default {
           this.entriesList = res.data.entries;
         }
       );
+    },
+    getprocessList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
+          key: "aPartyPurView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "aPartyPurView", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.activityList = res.activityList;
+        // if (this.hisComment != "") {
+        //   let currentTask = this.hisComment[this.hisComment.length - 1];
+        //   this.activityList = res.activityList.map((item, index) => {
+        //     if (item.name == currentTask.name_) {
+        //       this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+        //     }
+        //     return item;
+        //   });
+        // } else {
+        //   this.activityList = res.activityList;
+        // }
+        this.buttonList = res.startForm.split(",");
+        this.userid = res.userlist.userList
+          ? res.userlist.userList[0].userid
+          : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : [];
+      });
     }
   }
 };

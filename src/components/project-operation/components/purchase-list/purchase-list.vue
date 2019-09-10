@@ -139,6 +139,7 @@ export default {
     },
     //查看
     checkitem(row) {
+      console.log(row);
       this.$emit("opencheckPurchase", row.construct_purchase_id);
     },
     getPurchaseList() {

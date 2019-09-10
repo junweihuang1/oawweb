@@ -186,6 +186,7 @@
     </template>
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
+        v-if="isopen"
         :projectList="projectList"
         @setQuantity="getQuantity"
       ></select-quantity>
@@ -216,8 +217,8 @@ export default {
         ["原材料名称和规格", "", 150],
         ["单位", "construct_material_model_unit", 65],
         ["主材数量", "construct_project_quantities_num", 90],
-        ["已采购量", "construct_project_quantities_num", 90],
-        ["合同单价", "purNum", 90],
+        ["已采购量", "purNum", 90],
+        ["合同单价", "", 90],
         ["新增主材数量", "afterAddingNum", 110, "", "", true]
       ],
       headle: ["选择", "删除"],
@@ -404,6 +405,7 @@ export default {
     },
     getQuantity(row) {
       //遍历是否有重复选项
+      console.log(row);
       let isrepeat = this.myDataList.some(
         item =>
           item.construct_project_quantities_id ==

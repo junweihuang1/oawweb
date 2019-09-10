@@ -169,6 +169,22 @@
         openType="headle"
       ></Apply-corrented>
     </el-dialog>
+    <!-- 打开甲供材料采购 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openaParty"
+      width="50%"
+      top="8vh"
+    >
+      <aParty-apply-purchase
+        v-if="openaParty"
+        :OrderId="OrderId"
+        :active="active"
+        openType="headle"
+        @close="closewin"
+      ></aParty-apply-purchase>
+    </el-dialog>
+    <!-- 打开流程图 -->
     <el-dialog :visible.sync="isopenpic" title="流程图" width="70%">
       <el-image :src="img_src" v-if="isopenpic" v-loading="loading"></el-image>
     </el-dialog>
@@ -181,6 +197,7 @@ import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
 import headleContractApprove from "./components/headle-contract-approve";
 import headleCost from "./components/headle-Cost";
 import ApplicationForm from "@/components/Ca-to-do/Application-form";
+import aPartyApplyPurchase from "@/components/Ca-to-do/aParty-apply-purchase/aParty-apply-purchase";
 import headlePurchase from "./components/headle-Purchase";
 import headleSeal from "./components/headle-Seal";
 import headleLeave from "./components/headle-leave";
@@ -231,7 +248,9 @@ export default {
       openQuit: false,
       openCorrent: false,
       isopenpic: false,
+      openaParty: false,
       loading: true,
+      OrderId: "",
       reqfundsId: ""
     };
   },
@@ -247,7 +266,8 @@ export default {
     headleCost,
     headleContractApprove,
     ApplyQuit,
-    ApplyCorrented
+    ApplyCorrented,
+    aPartyApplyPurchase
   },
   mounted() {
     //获取待办类型
@@ -272,6 +292,7 @@ export default {
       this.openApply = false;
       this.openQuit = false;
       this.openCorrent = false;
+      this.openaParty = false;
       this.getToDoList();
     },
     //查询
@@ -349,6 +370,12 @@ export default {
           break;
         case "[人事]-转正申请":
           this.openCorrent = true;
+          break;
+        case "[甲供]-材料采购":
+          this.openaParty = true;
+          this.OrderId = this.active.BUSINESS_KEY_
+            ? this.active.BUSINESS_KEY_.split(".")[1]
+            : this.active.businessId;
           break;
       }
     },

@@ -1,12 +1,6 @@
 <template>
   <div>
     <el-form size="mini" inline>
-      <!-- <el-form-item label="流程名称">
-        <el-input v-model="processName" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getProcessdetail">搜索</el-button>
-      </el-form-item> -->
       <el-form-item>
         <el-button type="success" @click="updata">更新</el-button>
       </el-form-item>
@@ -93,7 +87,8 @@ export default {
         ["4", "发起人"]
       ],
       active: {},
-      isselect: false
+      isselect: false,
+      fileName: ""
     };
   },
   props: {

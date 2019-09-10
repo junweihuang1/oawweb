@@ -11,49 +11,47 @@
           @setOrderId="getOrderId"
         ></Apply-purchase>
       </el-tab-pane>
-      <el-tab-pane label="查看订单" name="2" v-if="isOpenDetails">
-        <purchase-details
-          :PurchaseId="PurchaseId"
-          style="padding:10px;"
-        ></purchase-details>
-      </el-tab-pane>
       <el-tab-pane
-        :label="ordertype == 'up' ? '修改订单' : '新增订单'"
-        name="3"
+        :label="
+          openType == 'add'
+            ? '新增订单'
+            : openType == 'check'
+            ? '查看订单'
+            : '修改订单'
+        "
+        name="2"
         v-if="isOpenOrder"
       >
-        <new-order
-          :ProList="projectList"
+        <aParty-apply-purchase
+          v-if="isOpenOrder"
           @close="closeOrder"
           :OrderId="OrderId"
+          :proList="projectList"
+          :openType="openType"
           style="padding:10px;"
-        ></new-order>
+        ></aParty-apply-purchase>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import NewOrder from "./components/new-order";
-import PurchaseDetails from "./components/purchase-details";
+import aPartyApplyPurchase from "@/components/Ca-to-do/aParty-apply-purchase/aParty-apply-purchase";
 import ApplyPurchase from "./components/Apply-purchase";
 export default {
   name: "dialogTabsRecord",
   data() {
     return {
       currentActive: "1",
-      PurchaseId: "",
-      isOpenDetails: false,
       isOpenOrder: false,
       OrderId: "",
-      ordertype: "",
+      openType: "",
       isRefresh: true
     };
   },
   components: {
     ApplyPurchase,
-    PurchaseDetails,
-    NewOrder
+    aPartyApplyPurchase
   },
   props: {
     projectList: Object
@@ -61,10 +59,13 @@ export default {
   watch: {},
   methods: {
     getPurchaseId(id) {
-      this.PurchaseId = id;
+      this.OrderId = id.toString();
       this.currentActive = "2";
-      this.isOpenDetails = true;
       this.isOpenOrder = false;
+      this.$nextTick(() => {
+        this.isOpenOrder = true;
+      });
+      this.openType = "check";
     },
     //新增
     addNeworder() {
@@ -73,9 +74,8 @@ export default {
       this.$nextTick(() => {
         this.isOpenOrder = true;
       });
-      this.isOpenDetails = false;
-      this.currentActive = "3";
-      this.ordertype = "save";
+      this.currentActive = "2";
+      this.openType = "add";
     },
     //修改
     getOrderId(id) {
@@ -84,9 +84,8 @@ export default {
       this.$nextTick(() => {
         this.isOpenOrder = true;
       });
-      this.isOpenDetails = false;
-      this.currentActive = "3";
-      this.ordertype = "up";
+      this.currentActive = "2";
+      this.openType = "modify";
     },
     closeOrder() {
       this.isOpenOrder = false;

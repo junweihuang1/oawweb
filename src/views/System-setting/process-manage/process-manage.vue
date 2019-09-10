@@ -10,6 +10,30 @@
       <el-form-item>
         <el-button type="success" @click="updata">更新</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-upload
+          ref="upload"
+          :headers="{ token: token }"
+          :action="upload_url"
+          :on-success="headleSuccess"
+          :auto-upload="false"
+          :before-upload="beforeUpload"
+        >
+          <el-button slot="trigger" size="mini" type="primary"
+            >选取文件</el-button
+          >
+          <el-button
+            style="margin-left: 10px;"
+            size="mini"
+            type="success"
+            @click="submitUpload"
+            >部署流程文件</el-button
+          >
+          <div slot="tip" class="el-upload__tip upload">
+            只能上传zip文件
+          </div>
+        </el-upload>
+      </el-form-item>
     </el-form>
     <Ca-rule-table
       :DataList="processList"
@@ -36,6 +60,7 @@
 </template>
 
 <script>
+import http from "@/request/http";
 import UpdataProcess from "./components/updata-process";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -48,6 +73,8 @@ export default {
   name: "processManage",
   data() {
     return {
+      token: localStorage.getItem("token"),
+      upload_url: http.base_url + "deploymentProcessDefinition_zip",
       currentlimit: 15,
       currentpage: 1,
       processName: "",
@@ -73,6 +100,23 @@ export default {
     this.getProcessList();
   },
   methods: {
+    headleSuccess(res, file, fileList) {
+      console.log(res);
+    },
+    beforeUpload(file) {
+      console.log(file);
+      this.fileName = file.name;
+      if (
+        file.type !== "application/x-zip-compressed" &&
+        file.type !== "application/zip"
+      ) {
+        this.$message.error("上传文件不是zip压缩文件格式");
+        return false;
+      }
+    },
+    submitUpload() {
+      this.$refs.upload.submit();
+    },
     //关闭窗口
     closewin() {
       this.isopen = false;
@@ -115,4 +159,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.upload {
+  display: inline;
+  margin-left: 10px;
+}
+</style>

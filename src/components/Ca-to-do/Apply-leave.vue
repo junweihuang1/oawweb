@@ -72,7 +72,7 @@
               minlength="300px"
             /> </el-form-item
         ></el-col>
-        <el-col :span="12" v-if="userid !== ''">
+        <el-col :span="12" v-if="userid !== '' && openType != 'check'">
           <el-form-item label="审核人">
             <el-select v-model="userid" style="width:100%;">
               <el-option
@@ -130,7 +130,7 @@
               :key="index"
               type="danger"
               size="mini"
-              @click="headleprocess('finish')"
+              @click="headleprocess(false)"
               >不同意</el-button
             >
           </template>
@@ -171,7 +171,6 @@
 
 <script>
 import DateTime from "@/components/Ca-date-time/Ca-date-time";
-import { changetime } from "@/components/global-fn/global-fn";
 import {
   apisaveLeave,
   apipassLeave,
@@ -213,6 +212,10 @@ export default {
         {
           value: 5,
           label: "年假"
+        },
+        {
+          value: 6,
+          label: "其它"
         }
       ],
       isreload: true,
@@ -221,7 +224,6 @@ export default {
       userid: 0,
       userList: [],
       activityList: [],
-      DataList: [],
       current: 1
     };
   },
@@ -245,6 +247,7 @@ export default {
     DateTime
   },
   props: {
+    DataList: Array,
     form: {
       type: Object,
       default: () => {}
@@ -281,13 +284,6 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-        //审批记录
-        this.DataList = res.historyList
-          ? res.historyList.map(item => {
-              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-              return item;
-            })
-          : [];
         //当前流程节点
         if (this.DataList == "") {
           this.activityList = res.activityList;
@@ -301,7 +297,6 @@ export default {
             return item;
           });
         }
-
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList != ""

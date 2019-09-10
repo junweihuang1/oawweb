@@ -218,6 +218,7 @@ export default {
   },
   methods: {
     getprossList() {
+      console.log(this.active);
       let data = {};
       if (this.active) {
         data = {

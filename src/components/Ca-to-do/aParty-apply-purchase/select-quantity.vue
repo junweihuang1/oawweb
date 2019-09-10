@@ -12,7 +12,7 @@
         <el-input v-model="material_model_name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="query">查询</el-button>
+        <el-button type="primary" @click="getQuantityList">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -28,7 +28,7 @@
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="total"
+      :total="200"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -38,23 +38,21 @@
 <script>
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apiConMaterialList } from "@/request/api.js";
+import { apiaPartyMaterialCheck } from "@/request/api.js";
 export default {
   name: "selectSupplier",
   data() {
     return {
       currentlimit: 15,
       currentpage: 1,
-      total: 0,
       QuantityList: [],
       header: [
-        ["工程量编号", "construct_project_quantities_id", 115],
-        ["材料类别", "construct_material_seriesName", 100],
-        ["材料名称", "construct_material_name", 100],
-        ["材料规格", "construct_material_model_name"],
-        ["原材料名称和规格", "", 160],
-        ["主材数量", "construct_project_quantities_num", 100],
-        ["已采购量", "", 100]
+        ["材料类别", "construct_Aparty_material_category", 100],
+        ["材料名称", "construct_Aparty_material_name", 100],
+        ["材料规格", "construct_Aparty_material_model"],
+        ["单位", "construct_Aparty_material_unit", 80],
+        ["合同量", "construct_Aparty_material_num", 90],
+        ["备注", "construct_Aparty_material_remark", 100]
       ],
       material_category: "",
       material_name: "",
@@ -78,11 +76,6 @@ export default {
     this.getQuantityList();
   },
   methods: {
-    query() {
-      this.currentlimit = 15;
-      this.currentpage = 1;
-      this.getQuantityList();
-    },
     getlimit(e) {
       this.currentlimit = e;
       this.getQuantityList();
@@ -96,17 +89,16 @@ export default {
       this.$emit("setQuantity", row);
     },
     getQuantityList() {
-      apiConMaterialList({
-        type: "BSupply",
-        project_id: this.projectList.construct_project_id,
-        construct_material_seriesName: this.material_category,
-        construct_material_name: this.material_name,
-        construct_material_model_name: this.material_model_name,
+      let data = {
+        construct_project_id: this.projectList.construct_project_id,
+        construct_Aparty_material_category: this.material_category,
+        construct_Aparty_material_name: this.material_name,
+        construct_Aparty_material_model: this.material_model_name,
         pageSize: this.currentlimit,
         limit: this.currentpage
-      }).then(res => {
+      };
+      apiaPartyMaterialCheck(data).then(res => {
         console.log(res);
-        this.total = res.total;
         this.QuantityList = res.data;
         this.loading = false;
       });

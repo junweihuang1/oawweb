@@ -240,10 +240,12 @@ export default {
     },
     //打开查看采购单
     opencheckPurchase(id) {
+      console.log("res");
       this.currentActive = "4";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
         // this.headform = res.projectInfo;
+        console.log(res);
         this.Purchase_entryList = res.purchaseEntry;
         this.ProcessList = res.hisComment.map(item => {
           item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";

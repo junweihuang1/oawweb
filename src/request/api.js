@@ -660,3 +660,7 @@ export const apiprocessDetail = data => get("processDetail", data);
 
 //系统设置-->流程管理-->更新流程关联角色中间表角色绑定信息
 export const apiupdateTaskRoleId = data => post("updateTaskRoleId", data);
+
+//系统设置-->流程管理-->部署流程文件
+export const apiuploadProcess = data =>
+  post("deploymentProcessDefinition_zip", data);

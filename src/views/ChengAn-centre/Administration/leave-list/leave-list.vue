@@ -62,7 +62,8 @@ export default {
       headform: {},
       openType: "",
       entryList: [],
-      total: 0
+      total: 0,
+      leaveType: ["事假", "病假", "婚假", "产假", "丧假", "年假", "其他"]
     };
   },
   components: {
@@ -102,12 +103,7 @@ export default {
               item.status2 = "审批通过";
               break;
           }
-          item.leave_category =
-            item.leave_category == 0
-              ? "事假"
-              : item.leave_category == 1
-              ? "病假"
-              : "其它";
+          item.leave_category = this.leaveType[item.leave_category];
           item.start_time = changetime(item.start_time);
           item.end_time = changetime(item.end_time);
           return item;
@@ -121,7 +117,6 @@ export default {
     },
     opanLeaveList(row) {
       console.log(row);
-      this.isApply = true;
       apiLeaveListById({ id: row.id }).then(res => {
         console.log(res);
         this.entryList = res.hisComment.map(item => {
@@ -132,6 +127,7 @@ export default {
         this.headform.start_time = changetime(this.headform.start_time);
         this.headform.end_time = changetime(this.headform.end_time);
         this.openType = "check";
+        this.isApply = true;
       });
     },
     tableRowClassName(row) {
