@@ -150,7 +150,10 @@
       </el-form-item>
       <el-row>
         <el-col :span="10">
-          <el-form-item label="审核人" v-if="userList != ''">
+          <el-form-item
+            label="审核人"
+            v-if="userList != '' && openType != 'check'"
+          >
             <el-select v-model="userid">
               <el-option
                 v-for="(item, index) in userList"
@@ -298,7 +301,8 @@ export default {
       userList: [],
       activityList: [],
       activityLists: [],
-      reasons: ""
+      reasons: "",
+      fileList: []
     };
   },
   props: {
@@ -400,7 +404,7 @@ export default {
         console.log(res);
         this.activityLists = res.activityList;
         this.userLists = res.userlist;
-        this.getProcessline(1);
+        this.getProcessline(this.contractapprove.category);
         this.buttonList = res.startForm.split(",");
       });
     },
@@ -421,13 +425,14 @@ export default {
     submitUpload() {
       this.contractapprove.userid = this.userid;
       console.log(this.contractapprove);
-
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          this.$refs.upload.submit();
           //当没有附件时单独提交
+          console.log(this.fileList);
           if (this.fileList == "") {
             this.submit();
+          } else {
+            this.$refs.upload.submit();
           }
         })
         .catch(() => {});

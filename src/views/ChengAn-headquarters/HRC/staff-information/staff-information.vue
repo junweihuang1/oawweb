@@ -260,14 +260,38 @@ export default {
       this.getpmuserList();
     },
     getuserTree() {
-      console.log("tree");
       apiuserTreeList().then(res => {
         console.log(res);
         this.TreeList = res.data;
       });
     },
     nodeClick(row) {
-      console.log(row);
+      this.company_name = "";
+      this.centerName = "";
+      this.departmentName = "";
+      this.TreeList.forEach(item => {
+        if (item.id == row.id) {
+          this.company_name = item.name;
+          this.getpmuserList();
+          return;
+        } else {
+          item.children.forEach(item2 => {
+            if (item2.id == row.id) {
+              this.centerName = item2.name;
+              this.getpmuserList();
+              return;
+            } else {
+              item2.children.forEach(item3 => {
+                if (item3.id == row.id) {
+                  this.departmentName = item3.name;
+                  this.getpmuserList();
+                  return;
+                }
+              });
+            }
+          });
+        }
+      });
     },
     getpmuserList() {
       let data = {

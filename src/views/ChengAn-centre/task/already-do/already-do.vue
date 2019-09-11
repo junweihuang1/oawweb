@@ -5,11 +5,14 @@
         <el-select v-model="selectType" placeholder="请选择" clearable>
           <el-option
             v-for="(item, index) in typeList"
-            :value="item"
-            :label="item"
+            :value="item.key"
+            :label="item.name"
             :key="index"
           ></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="applicant" clearable placeholder="申请人"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="query">查询</el-button>
@@ -208,6 +211,7 @@ export default {
       img_src: "",
       todoList: [],
       selectType: "",
+      applicant: "",
       header: [
         ["流水号", "ID_", 90],
         ["流程类型", "processName", 150],
@@ -263,7 +267,10 @@ export default {
     apifindTaskType().then(res => {
       console.log(res);
       this.typeList = res.data.map(item => {
-        return item.NAME_;
+        return {
+          name: item.NAME_,
+          key: item.KEY_
+        };
       });
     });
     this.getReadyDoList();
@@ -285,13 +292,16 @@ export default {
     },
     //查询
     query() {
-      if (this.selectType == "") {
-        this.todoList = this.summary;
-      } else {
-        this.todoList = this.summary.filter(
-          item => item.pdname == this.selectType
-        );
-      }
+      // console.log(this.selectType);
+      // console.log(this.summary);
+      // if (this.selectType == "") {
+      //   this.todoList = this.summary;
+      // } else {
+      //   this.todoList = this.summary.filter(
+      //     item => item.pdname == this.selectType
+      //   );
+      // }
+      this.getReadyDoList();
     },
     //待办
     openheadle(row) {
@@ -348,7 +358,7 @@ export default {
     },
     getReadyDoList() {
       let data = {
-        applicant: "",
+        applicant: this.applicant,
         processKey: this.selectType,
         pageSize: this.currentlimit,
         limit: this.currentpage

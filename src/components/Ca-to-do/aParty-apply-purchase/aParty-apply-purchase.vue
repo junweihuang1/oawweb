@@ -130,14 +130,14 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <template v-if="openType != 'check'">
+        <template v-if="openType != 'check' && userList != ''">
           <el-col :span="8">
             <el-form-item label="下一节点">
               <el-input v-model="userTaskName" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="审核人" v-if="userList != ''">
+            <el-form-item label="审核人">
               <el-select v-model="userid">
                 <el-option
                   v-for="(item, index) in userList"
@@ -198,7 +198,7 @@
     <el-divider content-position="left">流程线</el-divider>
     <el-steps
       :space="250"
-      :active="0"
+      :active="current"
       align-center
       finish-status="success"
       style="margin-left:50px;"
@@ -209,6 +209,20 @@
         :key="index"
       ></el-step>
     </el-steps>
+    <template v-if="openType != 'add'">
+      <el-divider content-position="left">审核记录</el-divider>
+      <el-table :data="hisComment" border style="width:70%;">
+        <el-table-column
+          v-for="(item, index) in ApprovalHeaderList"
+          :key="index"
+          :label="item[0]"
+          :prop="item[1]"
+          :type="index == 0 ? 'index' : ''"
+          :width="item[2]"
+          align="center"
+        ></el-table-column>
+      </el-table>
+    </template>
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
         :projectList="projectList"
@@ -228,6 +242,7 @@ import {
 } from "@/request/api.js";
 import selectQuantity from "./select-quantity";
 import paging from "@/components/paging/paging";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "newOrder",
   data() {
@@ -239,16 +254,25 @@ export default {
       activityList: [],
       entriesList: [],
       buttonList: [],
+      hisComment: [],
       userTaskName: "",
       userid: 0,
+      current: 0,
       userList: [],
       activeList: [], //当前选择的那一行
+      ApprovalHeaderList: [
+        ["序号", "index", 60],
+        ["流程节点", "name_", 140],
+        ["审核人", "username", 80],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ],
       header: [
         ["采购id", "construct_Aparty_purEntry_id", 90],
         ["材料id", "construct_Aparty_purEntry_materialId", 90],
         ["材料分类", "construct_Aparty_material_category", 120],
         ["材料名称", "construct_Aparty_material_name", 100],
-        ["型号规格", "construct_Aparty_material_model", 180],
+        ["型号规格", "construct_Aparty_material_model", 200],
         ["单位", "construct_Aparty_material_unit", 80],
         ["工程量", "construct_Aparty_material_num", 80],
         ["累计审批量", "construct_aParty_byedNum", 100],
@@ -299,7 +323,6 @@ export default {
   },
   mounted() {
     this.getApartyPur();
-    this.getprocessList();
   },
   methods: {
     headle(type) {
@@ -371,18 +394,17 @@ export default {
       }
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.activityList = res.activityList;
-        // if (this.hisComment != "") {
-        //   let currentTask = this.hisComment[this.hisComment.length - 1];
-        //   this.activityList = res.activityList.map((item, index) => {
-        //     if (item.name == currentTask.name_) {
-        //       this.current = currentTask.END_TIME_ == "" ? index : index + 1;
-        //     }
-        //     return item;
-        //   });
-        // } else {
-        //   this.activityList = res.activityList;
-        // }
+        if (this.hisComment != "") {
+          let currentTask = this.hisComment[this.hisComment.length - 1];
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
         this.buttonList = res.startForm.split(",");
         this.userid = res.userlist.userList
           ? res.userlist.userList[0].userid
@@ -539,6 +561,11 @@ export default {
               }
               return item;
             });
+            this.hisComment = res.hisComment.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            });
+            this.getprocessList();
             this.id++;
             this.projectList = res.data.aParty[0];
           }

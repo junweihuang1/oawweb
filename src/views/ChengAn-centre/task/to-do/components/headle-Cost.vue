@@ -5,6 +5,7 @@
       @close="getclose"
       :setform="setform"
       :active="active"
+      :Approvaltable="Approvaltable"
     ></cost-details>
   </div>
 </template>
@@ -18,7 +19,8 @@ export default {
   data() {
     return {
       activeform: {},
-      setform:{}
+      setform: {},
+      Approvaltable: []
     };
   },
   components: {
@@ -42,8 +44,14 @@ export default {
       apigetCostappById({
         costapp_id: id
       }).then(res => {
-        console.log(res);
+        console.log(res); //hisComment
         this.setform = res.data;
+        this.Approvaltable = res.hisComment
+          ? res.hisComment.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
       });
     }
   }

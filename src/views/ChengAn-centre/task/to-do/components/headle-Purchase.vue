@@ -5,6 +5,7 @@
       :active="active"
       :openType="openType"
       :headform="headform"
+      :ProcessList="ProcessList"
       :entryList="DataList"
       :activeForm="activeform"
     ></Apply-purchase>
@@ -14,7 +15,7 @@
 <script>
 import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase";
 import { apigetPurchase } from "@/request/api.js";
-
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "headlePurchase",
   data() {
@@ -22,7 +23,8 @@ export default {
       isopen: false,
       activeform: {},
       DataList: [],
-      headform: {}
+      headform: {},
+      ProcessList: []
     };
   },
   components: {
@@ -52,7 +54,11 @@ export default {
       apigetPurchase({
         construct_purchase_id: id
       }).then(res => {
-        // console.log(res);
+        console.log(res);
+        this.ProcessList = res.hisComment.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
         this.headform = res.projectInfo;
         this.DataList = res.purchaseEntry;
         this.activeform = res.purchaseHead;

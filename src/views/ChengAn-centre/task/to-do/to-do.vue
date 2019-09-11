@@ -5,8 +5,8 @@
         <el-select v-model="selectType" placeholder="请选择" clearable>
           <el-option
             v-for="(item, index) in typeList"
-            :value="item"
-            :label="item"
+            :value="item.key"
+            :label="item.name"
             :key="index"
           ></el-option>
         </el-select>
@@ -90,7 +90,7 @@
     <el-dialog
       :title="openTitle"
       :visible.sync="openPurchase"
-      width="50%"
+      width="75%"
       top="8vh"
     >
       <headle-Purchase
@@ -208,7 +208,7 @@ import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
 import http from "@/request/http";
 import {
-  apiFindTaskList,
+  apifindTaskLists,
   apifindTaskType,
   apipersonManagem_s
 } from "@/request/api";
@@ -274,7 +274,10 @@ export default {
     apifindTaskType().then(res => {
       console.log(res);
       this.typeList = res.data.map(item => {
-        return item.NAME_;
+        return {
+          name: item.NAME_,
+          key: item.KEY_
+        };
       });
     });
     this.getToDoList();
@@ -297,13 +300,14 @@ export default {
     },
     //查询
     query() {
-      if (this.selectType == "") {
-        this.todoList = this.summary;
-      } else {
-        this.todoList = this.summary.filter(
-          item => item.pdname == this.selectType
-        );
-      }
+      this.getToDoList();
+      // if (this.selectType == "") {
+      //   this.todoList = this.summary;
+      // } else {
+      //   this.todoList = this.summary.filter(
+      //     item => item.pdname == this.selectType
+      //   );
+      // }
     },
     //打开流程图
     loadimg(Event) {
@@ -380,18 +384,17 @@ export default {
       }
     },
     getToDoList() {
-      apiFindTaskList({
-        process_name: this.selectType,
-        pageSize: this.currentlimit,
-        limit: this.currentpage
-      }).then(res => {
+      let data = {
+        pdkey: this.selectType
+      };
+      apifindTaskLists(data).then(res => {
         console.log(res);
-        this.summary = res.map(item => {
-          item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
-          return item;
-        });
-        this.todoList = res.map(item => {
-          item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
+        // this.summary = res.map(item => {
+        //   item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
+        //   return item;
+        // });
+        this.todoList = res.data.map(item => {
+          item.CREATE_TIME_ = changetime(item.CREATE_TIME_.time);
           return item;
         });
       });

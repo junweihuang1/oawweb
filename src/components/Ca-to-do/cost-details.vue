@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" label-width="90px">
+    <el-form ref="form" :model="form" label-width="90px" style="width:80%;">
       <el-row>
         <el-col :span="12">
           <el-form-item label="申请人">
@@ -52,10 +52,24 @@
             ></el-input
           ></el-form-item>
         </el-col>
-        <template v-if="openType != 'check'">
-          <el-col :span="12" v-if="userList != ''">
+        <el-col :span="24" v-if="openType == 'headle'">
+          <el-form-item label="意见">
+            <el-input type="textarea" v-model="reasons" :rows="3"></el-input>
+          </el-form-item>
+        </el-col>
+        <template v-if="userTaskName != '结束' && openType != 'check'">
+          <el-col :span="12">
+            <el-form-item label="下一节点">
+              <el-input readonly v-model="userTaskName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="审核人">
-              <el-select v-model="userid" style="width:100%;">
+              <el-select
+                v-model="userid"
+                style="width:100%;"
+                placeholder="没绑定审核人"
+              >
                 <el-option
                   v-for="(item, index) in userList"
                   :key="index"
@@ -70,10 +84,7 @@
           <el-form-item label=" " v-if="openType == 'add'">
             <el-button type="primary" @click="submit">提交</el-button>
           </el-form-item>
-          <div v-else-if="openType == 'headle'">
-            <el-form-item label="意见">
-              <el-input type="textarea" v-model="reasons" :rows="3"></el-input>
-            </el-form-item>
+          <template v-else-if="openType == 'headle'">
             <el-form-item>
               <template v-for="(item, index) in buttonList">
                 <el-button
@@ -111,7 +122,7 @@
                 >
               </template>
             </el-form-item>
-          </div>
+          </template>
         </el-col>
       </el-row>
     </el-form>
@@ -156,11 +167,7 @@ import {
   apipassCostapp,
   apigetProcessList
 } from "@/request/api.js";
-import {
-  getDates,
-  number_chinese,
-  changetime
-} from "@/components/global-fn/global-fn";
+import { getDates, number_chinese } from "@/components/global-fn/global-fn";
 export default {
   name: "costDetails",
   data() {
@@ -181,7 +188,8 @@ export default {
       userid: 0, //下一审核人id,
       buttonList: [],
       userList: [],
-      reasons: ""
+      reasons: "",
+      userTaskName: ""
     };
   },
   components: {
@@ -242,13 +250,6 @@ export default {
       console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
-
-        // this.Approvaltable = res.historyList
-        //   ? res.historyList.map(item => {
-        //       item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-        //       return item;
-        //     })
-        //   : [];
         if (this.Approvaltable != "") {
           let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
           this.processLine = res.activityList.map((item, index) => {
@@ -260,11 +261,16 @@ export default {
         } else {
           this.processLine = res.activityList;
         }
+        this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
         this.userid =
-          res.userlist.userList != "" ? res.userlist.userList[0].userid : "";
+          res.userlist.userList != "" && res.userlist.userList
+            ? res.userlist.userList[0].userid
+            : "";
         this.userList =
-          res.userlist.userList != "" ? res.userlist.userList : [];
+          res.userlist.userList != "" && res.userlist.userList
+            ? res.userlist.userList
+            : [];
       });
     },
     modify() {
@@ -305,18 +311,19 @@ export default {
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
-        .then(() => {})
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_, //(必填)流程实例id
+            userid: this.userid, //(必填)下一审核人id
+            reasons: this.reasons, //(必填)审批意见
+            type: type //(必填)是否批准(true/false)
+          };
+          apipassCostapp(data).then(res => {
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
         .catch(() => {});
-      let data = {
-        taskid: this.active.ID_, //(必填)流程实例id
-        userid: this.userid, //(必填)下一审核人id
-        reasons: this.reasons, //(必填)审批意见
-        type: type //(必填)是否批准(true/false)
-      };
-      apipassCostapp(data).then(res => {
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
     },
     getSelectName(row) {
       console.log(row);

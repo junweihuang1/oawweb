@@ -62,7 +62,11 @@
 import selectProject from "@/components/Ca-select/select-project";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apiworkerList, apigetProcessList } from "@/request/api";
+import {
+  apiworkerList,
+  apigetProcessList,
+  apiworkerApply
+} from "@/request/api";
 export default {
   name: "teamInfor",
   data() {
@@ -84,7 +88,8 @@ export default {
       namearr: [],
       isopen: false,
       isopenselect: false,
-      removeForm: {}
+      removeForm: {},
+      currentList: []
     };
   },
   components: {
@@ -119,16 +124,21 @@ export default {
         return;
       }
       console.log(this.removeForm);
+      apiworkerApply(this.removeForm).then(res => {
+        console.log(res);
+      });
     },
     //子組件回調双击选中的信息
     getSelectName(row) {
       console.log(row);
+      this.removeForm.leaderName = row.construct_project_leader;
       this.removeForm.projectName = row.construct_project_name;
       this.removeForm.suppliermod_worker_apply_proId = row.construct_project_id;
       this.removeForm.suppliermod_worker_apply_teamId =
         row.construct_project_workTeam_id;
-      this.removeForm.suppliermod_worker_apply_oldProId = this.Inforlist.suppliermod_worker_apply_oldProId;
+      this.removeForm.suppliermod_worker_apply_oldProId = this.Inforlist.construct_project_id;
       this.removeForm.suppliermod_worker_apply_id = 0;
+      this.removeForm.suppliermod_worker_apply_userId = row.userid;
       this.isopenselect = false;
     },
     //打开选择项目
@@ -138,6 +148,7 @@ export default {
     //单个调动
     remove(row) {
       this.isopen = true;
+      this.currentList = row;
       this.getprossList();
       console.log(row);
     },
@@ -183,7 +194,7 @@ export default {
         console.log(res);
         this.teamList = res.rows.map(item => {
           item.sex2 = item.sex == 1 ? "男" : "女";
-          item.status2 = item.status == 1 ? "可调动" : "不可调动";
+          item.status2 = item.isOnApply == 1 ? "调动中" : "可调动";
           return item;
         });
         this.summary = [].concat(this.teamList);

@@ -106,6 +106,13 @@
       <el-button type="primary" size="mini" @click="additem">添加行</el-button>
       <el-button type="warning" size="mini" @click="cancel">撤销</el-button>
     </el-button-group>
+    <el-button
+      v-if="currentTaskName == '成本中心经理'"
+      style="margin-bottom:10px;"
+      type="success"
+      @click="chooseSup"
+      >选择供应商</el-button
+    >
     <el-table :data="entryList" border :header-cell-style="getRowClass">
       <el-table-column
         :label="item[0]"
@@ -155,18 +162,29 @@
               <el-input v-model="reasons" type="textarea" :row="3"></el-input>
             </el-form-item>
           </el-col>
-
-          <el-col :span="12" v-if="userList != ''">
-            <el-form-item label="审核人">
-              <el-select v-model="userid" style="width:80%;">
-                <el-option
-                  v-for="(item, index) in userList"
-                  :key="index"
-                  :value="item.userid"
-                  :label="item.username"
-                ></el-option> </el-select
-            ></el-form-item>
-          </el-col>
+          <template v-if="userTaskName != '结束' && openType == 'headle'">
+            <el-col :span="12">
+              <el-form-item label="下一节点">
+                <el-input readonly v-model="userTaskName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="审核人">
+                <el-select
+                  v-model="userid"
+                  style="width:100%;"
+                  placeholder="没绑定审核人"
+                >
+                  <el-option
+                    v-for="(item, index) in userList"
+                    :key="index"
+                    :value="item.userid"
+                    :label="item.username"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </template>
           <el-col :span="12">
             <el-form-item>
               <template v-for="(item, index) in buttonList">
@@ -220,19 +238,21 @@
         </el-row>
       </el-form>
     </div>
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps
-      :active="current"
-      :align-center="true"
-      :space="200"
-      finish-status="success"
-    >
-      <el-step
-        v-for="(item, index) in activityList"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
+    <template v-if="openType == 'headle'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps
+        :active="current"
+        :align-center="true"
+        :space="200"
+        finish-status="success"
+      >
+        <el-step
+          v-for="(item, index) in activityList"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+    </template>
     <template v-if="openType != 'add'">
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
@@ -271,12 +291,12 @@ import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import selectTeams from "@/components/Ca-select/select-teams";
 import selectMaterial from "@/components/Ca-select/select-material";
 import selectMaterialSeries from "@/components/Ca-select/select-material-series";
-import { changetime } from "@/components/global-fn/global-fn";
 import {
   apisavePurchase,
   apimodPurchase,
   apiPurchaseProcess,
-  apipassPurchase
+  apipassPurchase,
+  apichooseSupplier
 } from "@/request/api.js";
 export default {
   name: "projectInfor",
@@ -309,6 +329,8 @@ export default {
       isreviewer: false,
       isplanMan: false,
       reasons: "",
+      userTaskName: "",
+      currentTaskName: "",
       userid: 0,
       userList: [],
       current: 1,
@@ -339,6 +361,32 @@ export default {
     this.getprossList();
   },
   methods: {
+    //选择供应商
+    chooseSup() {
+      let ids = this.entryList.map(item => item.construct_purchase_entryId);
+      apichooseSupplier({
+        entryIds: ids.join(",")
+      }).then(res => {
+        // console.log(res);
+        //遍历回调data数组中的supplier的所有key，获得最大的供应商名称数组
+        let maxlist = [];
+        res.data.forEach(item => {
+          Object.keys(item.supplier).forEach(key => {
+            if (!maxlist.includes(key, 0)) {
+              maxlist.push(key);
+            }
+          });
+        });
+        res.data.forEach(item => {
+          maxlist.forEach(item2 => {
+            if (!item.supplier[item2]) {
+              item.supplier[item2] = 0;
+            }
+          });
+        });
+        console.log(res.data);
+      });
+    },
     getReturnName(command) {
       this.taskList.forEach((item, index) => {
         if (command == index) {
@@ -410,13 +458,9 @@ export default {
             ? this.active.BUSINESS_KEY_.split(".")[1]
             : this.active.businessId
         };
-
         apiPurchaseProcess(data).then(res => {
           console.log(res);
-          // this.ProcessList = res.historyList.map(item => {
-          //   item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-          //   return item;
-          // });
+          this.userTaskName = res.userlist.userTaskName;
           this.buttonList = res.startForm.split(",");
           this.userid = res.userlist.userList
             ? res.userlist.userList[0].userid
@@ -426,8 +470,9 @@ export default {
           //当前步骤名称
           if (this.ProcessList != "") {
             let currentTask = this.ProcessList[this.ProcessList.length - 1];
+            this.currentTaskName = currentTask.name_;
             this.activityList = res.activityList.map((item, index) => {
-              if (item.name == currentTask.name_) {
+              if (item.name == this.currentTaskName) {
                 this.current = currentTask.END_TIME_ == "" ? index : index + 1;
               }
               return item;

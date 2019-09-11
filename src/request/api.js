@@ -416,6 +416,9 @@ export const apisaveSupplier = data => post("saveSupplier", data);
 //成本中心-->分供方台账-->查询指定供应商的台账
 export const apimaterialPrices = data => post("materialPrices", data);
 
+//成本中心-->分供方台账-->保存台账信息
+export const apiaddmaterialprice = data => post("addmaterialprice", data);
+
 //成本中心-->材料管理-->查询所有材料信息
 export const apimaterialSeries = data => get("materialSeries", data);
 
@@ -481,6 +484,9 @@ export const apiConMaterialList = data => get("getConMaterialList", data);
 
 //乙供材料采购获取下一节点和审核人
 export const apiPurchaseProcess = data => get("getPurchaseProcessList", data);
+
+//成本中心选择供应商列表
+export const apichooseSupplier = data => get("chooseSupplier", data);
 
 //合同审批获取下一节点和审核人
 export const apiContractapprovePro = data =>
@@ -648,6 +654,9 @@ export const apisave_Worker = data => post("save_Worker", data);
 
 //供应商中心 -->劳动力分配-->人员批量调动
 export const apimultiplayerApply = data => post("multiplayerApply", data);
+
+//供应商中心 -->劳动力分配-->单个调动
+export const apiworkerApply = data => post("workerApply", data);
 
 //系统设置-->流程管理-->获取所有流程信息
 export const apiprocessList = data => get("processList", data);
