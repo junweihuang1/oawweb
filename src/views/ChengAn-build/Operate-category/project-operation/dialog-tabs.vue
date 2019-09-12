@@ -80,7 +80,7 @@ import ApplicationForm from "@/components/Ca-to-do/Application-form";
 import echarts from "./components/request-funds/echarts";
 import ContractQuantity from "@/components/Ca-to-do/Contract-quantity/Contract-quantity";
 import PartyMaterialList from "@/components/Ca-to-do/Contract-quantity/Party-material-list";
-import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase";
+import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase/Apply-purchase";
 import purchaseList from "./components/purchase-list/purchase-list";
 import ProjectInfor from "./components/project-list/project-infor";
 import ProjectList from "./components/project-list/project-list";

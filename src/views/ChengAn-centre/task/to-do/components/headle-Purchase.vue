@@ -3,6 +3,7 @@
     <Apply-purchase
       @close="close"
       :active="active"
+      v-if="isopen"
       :openType="openType"
       :headform="headform"
       :ProcessList="ProcessList"
@@ -13,7 +14,7 @@
 </template>
 
 <script>
-import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase";
+import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase/Apply-purchase";
 import { apigetPurchase } from "@/request/api.js";
 import { changetime } from "@/components/global-fn/global-fn";
 export default {
@@ -33,11 +34,6 @@ export default {
   props: {
     openType: String,
     active: Object
-  },
-  watch: {
-    openGoods(val) {
-      this.isopen = val;
-    }
   },
   mounted() {
     this.getGoOut();
@@ -62,6 +58,7 @@ export default {
         this.headform = res.projectInfo;
         this.DataList = res.purchaseEntry;
         this.activeform = res.purchaseHead;
+        this.isopen = true;
       });
     }
   }

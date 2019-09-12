@@ -25,7 +25,7 @@ export const apipersonManagem_s = id => get("personManagem_s", id);
 export const apifindTaskType = () => get("findTaskType");
 
 //获取当前用户所有代办信息
-export const apifindTaskLists = data => get("findTaskLists", data);
+export const apifindTaskLists = data => get("findTaskList", data);
 
 //外勤单信息接口
 export const apigetField = data => get("getFieldPersonnelById", data);
@@ -246,7 +246,7 @@ export const apicompanyList = data => get("companyList", data);
 export const apisaveCompany = data => post("saveCompany", data);
 
 //人力资源中心  --> 公司记录-->删除指定公司信息
-export const apideleCompany = id => Delete("deleCompany", id);
+export const apideleCompany = id => post("deleCompany", id);
 
 //人力资源中心  -->公告-->查询所有公告
 export const apinoticeLists = data => get("noticeLists", data);
@@ -273,7 +273,7 @@ export const apicenterHome = data => get("centerHome", data);
 export const apisaveCenter = data => post("saveCenter", data);
 
 //人力资源中心  --> 中心记录-->删除中心信息
-export const apideleCenter = data => Delete("deleCenter", data);
+export const apideleCenter = data => post("deleCenter", data);
 
 //人力资源中心  --> 目标管理-->查看所有用户目标信息
 export const apiownGoalReport = data => post("ownGoalReport", data);
@@ -411,7 +411,7 @@ export const apisupplierList = data => post("supplierList", data);
 export const apideleSupplier = idarr => Delete("deleSupplier", idarr);
 
 //成本中心-->分供方台账-->保存供应商信息、
-export const apisaveSupplier = data => post("saveSupplier", data);
+export const apisaveSupplier = data => post("saveMaterialSupplier", data);
 
 //成本中心-->分供方台账-->查询指定供应商的台账
 export const apimaterialPrices = data => post("materialPrices", data);
@@ -648,6 +648,15 @@ export const apiworkerList = data => get("workerList", data);
 
 //供应商中心 -->劳动力分配-->查询可调动人员信息
 export const apiworkerCheck = data => get("workerCheck", data);
+
+//供应商中心 -->劳动力分配-->查询指定人员调动记录
+export const apiworkerApplyList = data => get("workerApplyList", data);
+
+//获取调动申请信息
+export const apiworkerApplyView = data => get("workerApplyView", data);
+
+//办理调动
+export const apiworkerApplyPass = data => post("workerApplyPass", data);
 
 //供应商中心 -->劳动力分配-->添加人员到指定班组
 export const apisave_Worker = data => post("save_Worker", data);

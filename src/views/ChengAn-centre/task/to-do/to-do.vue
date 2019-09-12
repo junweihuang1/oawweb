@@ -169,6 +169,20 @@
         openType="headle"
       ></Apply-corrented>
     </el-dialog>
+    <!-- 打开调动申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openRemove"
+      width="50%"
+      top="8vh"
+    >
+      <Apply-move
+        v-if="openRemove"
+        @close="closewin"
+        :active="active"
+        openType="headle"
+      ></Apply-move>
+    </el-dialog>
     <!-- 打开甲供材料采购 -->
     <el-dialog
       :title="openTitle"
@@ -192,6 +206,7 @@
 </template>
 
 <script>
+import ApplyMove from "@/components/Ca-to-do/Apply-move";
 import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
 import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
 import headleContractApprove from "./components/headle-contract-approve";
@@ -225,7 +240,7 @@ export default {
         ["流程类型", "pdname", 150],
         ["步骤名称", "NAME_", 150],
         ["任务创建时间", "CREATE_TIME_", 150],
-        ["流程实例id", "EXECUTION_ID_", 120],
+        ["流程实例id", "PROC_INST_ID_", 120],
         ["申请人", "applicant", 120],
         ["单据描述", "illustrate"]
       ],
@@ -249,6 +264,7 @@ export default {
       openCorrent: false,
       isopenpic: false,
       openaParty: false,
+      openRemove: false,
       loading: true,
       OrderId: "",
       reqfundsId: ""
@@ -267,7 +283,8 @@ export default {
     headleContractApprove,
     ApplyQuit,
     ApplyCorrented,
-    aPartyApplyPurchase
+    aPartyApplyPurchase,
+    ApplyMove
   },
   mounted() {
     //获取待办类型
@@ -296,6 +313,7 @@ export default {
       this.openQuit = false;
       this.openCorrent = false;
       this.openaParty = false;
+      this.openRemove = false;
       this.getToDoList();
     },
     //查询
@@ -381,6 +399,9 @@ export default {
             ? this.active.BUSINESS_KEY_.split(".")[1]
             : this.active.businessId;
           break;
+        case "劳动力分配":
+          this.openRemove = true;
+          break;
       }
     },
     getToDoList() {
@@ -389,12 +410,8 @@ export default {
       };
       apifindTaskLists(data).then(res => {
         console.log(res);
-        // this.summary = res.map(item => {
-        //   item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
-        //   return item;
-        // });
-        this.todoList = res.data.map(item => {
-          item.CREATE_TIME_ = changetime(item.CREATE_TIME_.time);
+        this.todoList = res.map(item => {
+          item.CREATE_TIME_ = changetime(item.CREATE_TIME_);
           return item;
         });
       });

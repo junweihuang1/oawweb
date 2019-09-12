@@ -135,6 +135,7 @@ export default {
         this.getCompanyInf();
       });
     },
+    //删除
     deleteitem() {
       if (this.selectList == "") {
         this.$message.error("请选择公司");
@@ -144,7 +145,8 @@ export default {
       apideleCompany({
         ids: JSON.stringify(this.selectList)
       }).then(res => {
-        console.log(res);
+        this.$message.success(res.msg);
+        this.getCompanyInf();
       });
     },
     getselect(val) {

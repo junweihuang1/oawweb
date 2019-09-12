@@ -18,6 +18,7 @@
       :setheight="0.5"
       :DataList="teamList"
       @checkleave="remove"
+      @edit="checkmove"
       :header="header"
       :headle="headle"
     ></Ca-rule-table>
@@ -29,6 +30,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+      top="30vh"
       title="调动申请"
       :visible.sync="isopen"
       width="20%"
@@ -55,10 +57,14 @@
     <el-dialog :visible.sync="isopenselect" :append-to-body="true">
       <select-project @setSelectName="getSelectName"></select-project>
     </el-dialog>
+    <el-dialog :visible.sync="isopenRecord" :append-to-body="true">
+      <remove-record :userId="userId"></remove-record>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import removeRecord from "./remove-record";
 import selectProject from "@/components/Ca-select/select-project";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -87,15 +93,18 @@ export default {
       idarr: [],
       namearr: [],
       isopen: false,
+      isopenRecord: false,
       isopenselect: false,
       removeForm: {},
-      currentList: []
+      currentList: [],
+      userId: 0
     };
   },
   components: {
     CaRuleTable,
     selectProject,
-    paging
+    paging,
+    removeRecord
   },
   props: {
     Inforlist: Object
@@ -104,6 +113,12 @@ export default {
     this.getTeamList();
   },
   methods: {
+    //查看调动记录
+    checkmove(row) {
+      this.isopenRecord = true;
+      this.userId = row.userid;
+      console.log(row);
+    },
     getprossList() {
       let data = {
         taskid: "", //(必填)流程任务id
@@ -124,9 +139,19 @@ export default {
         return;
       }
       console.log(this.removeForm);
-      apiworkerApply(this.removeForm).then(res => {
-        console.log(res);
-      });
+      this.$confirm(`确定调动吗？`)
+        .then(() => {
+          apiworkerApply(this.removeForm)
+            .then(res => {
+              console.log(res);
+              this.$message.success(res.msg);
+              this.isopen = false;
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(() => {});
     },
     //子組件回調双击选中的信息
     getSelectName(row) {
@@ -147,10 +172,10 @@ export default {
     },
     //单个调动
     remove(row) {
+      console.log(row);
       this.isopen = true;
       this.currentList = row;
-      this.getprossList();
-      console.log(row);
+      //this.getprossList();
     },
     //批量调动
     allremove() {

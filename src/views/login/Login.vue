@@ -37,6 +37,7 @@
         </el-form-item>
         <el-form-item>
           <slide-verify
+            v-if="isreload"
             :l="42"
             :r="10"
             :w="310"
@@ -54,7 +55,6 @@
 </template>
 <script>
 import { apiLogin, apiUserInf, apiuserMenuTree } from "@/request/api";
-import { join } from "path";
 export default {
   name: "Login",
   data() {
@@ -87,6 +87,7 @@ export default {
         user: "",
         password: ""
       },
+      isreload: true,
       loading: false,
       disabled: true,
       rules: {
@@ -633,12 +634,13 @@ export default {
             this.$store.commit("clearTabs");
           })
           .catch(err => {
-            console.log(err);
-            this.loading = false;
-            this.$message({
-              message: err.msg,
-              type: "error"
+            this.isreload = false;
+            this.$message.warning("无法登陆，请联系技术人员");
+            this.$nextTick(() => {
+              this.isreload = true;
+              this.msg = "";
             });
+            this.loading = false;
           });
       }, 500);
     },

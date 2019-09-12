@@ -130,7 +130,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <template v-if="openType != 'check' && userList != ''">
+        <template v-if="openType != 'check' && userid !== 0">
           <el-col :span="8">
             <el-form-item label="下一节点">
               <el-input v-model="userTaskName" readonly></el-input>
@@ -138,7 +138,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="审核人">
-              <el-select v-model="userid">
+              <el-select v-model="userid" placeholder="没绑定审核人">
                 <el-option
                   v-for="(item, index) in userList"
                   :key="index"
@@ -330,7 +330,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -405,17 +405,25 @@ export default {
         } else {
           this.activityList = res.activityList;
         }
+        this.userTaskName = res.userlist.userTaskName;
+        console.log(this.userTaskName);
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList[0].userid
-          : "";
-        this.userTaskName = res.userlist.userList
-          ? res.userlist.userTaskName
-          : "";
+        this.userid =
+          res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
+        if (this.userTaskName == "结束") {
+          this.userid = 0;
+        }
+        console.log(this.userid);
         this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },
     submit() {
+      if (this.userid === "") {
+        this.$message.error("审核人为空不能提交！");
+        return;
+      }
       let entries = this.entriesList.map(item => {
         return {
           construct_Aparty_purEntry_materialId:
@@ -550,7 +558,6 @@ export default {
       this.activeList = row;
     },
     getApartyPur() {
-      console.log(this.OrderId);
       if (this.OrderId != "") {
         apigetAPartyPur({ construct_Aparty_purchase_id: this.OrderId }).then(
           res => {
@@ -570,6 +577,8 @@ export default {
             this.projectList = res.data.aParty[0];
           }
         );
+      } else {
+        this.getprocessList();
       }
     }
   }

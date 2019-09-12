@@ -83,11 +83,13 @@
         <el-form-item label="供应商">
           <el-input
             v-model="activeForm.construct_purchase_supplier"
+            readonly
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item label="供应商联系方式">
           <el-input
+            readonly
             clearable
             v-model="activeForm.construct_purchase_supplierTel"
           ></el-input>
@@ -102,18 +104,60 @@
       </el-form>
     </el-row>
     <el-divider content-position="left">班组信息</el-divider>
-    <el-button-group v-if="openType == 'add' || openType == 'edit'">
-      <el-button type="primary" size="mini" @click="additem">添加行</el-button>
-      <el-button type="warning" size="mini" @click="cancel">撤销</el-button>
-    </el-button-group>
-    <el-button
-      v-if="currentTaskName == '成本中心经理'"
-      style="margin-bottom:10px;"
-      type="success"
-      @click="chooseSup"
-      >选择供应商</el-button
+    <el-form inline>
+      <el-form-item v-if="openType == 'add' || openType == 'edit'">
+        <el-button-group>
+          <el-button type="primary" size="mini" @click="additem"
+            >添加行</el-button
+          >
+          <el-button type="warning" size="mini" @click="cancel">撤销</el-button>
+        </el-button-group>
+      </el-form-item>
+      <el-form-item
+        v-if="
+          currentTaskName == '成本中心经理' ||
+            currentTaskName == '成本材料中心总监' ||
+            currentTaskName == '采购核对单价'
+        "
+      >
+        <el-button type="success" @click="chooseSup">选择供应商</el-button>
+      </el-form-item>
+      <el-form-item
+        v-else-if="
+          currentTaskName == '项目部签收' ||
+            currentTaskName == '项目经理签收' ||
+            currentTaskName == '核对签收'
+        "
+      >
+        <el-upload
+          ref="upload"
+          :action="file_url"
+          :headers="{ token: token }"
+          :data="{ construct_purchase_id: activeForm.construct_purchase_id }"
+          :limit="1"
+          :on-success="headleSuccess"
+          :before-upload="beforeUp"
+        >
+          <el-button size="mini" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          :disabled="fileName == '' && activeForm.photo == null ? true : false"
+          type="success"
+          size="mini"
+          @click="openpic"
+          >打开图片</el-button
+        ></el-form-item
+      >
+    </el-form>
+
+    <el-table
+      :data="entryList"
+      border
+      :header-cell-style="getRowClass"
+      show-summary
     >
-    <el-table :data="entryList" border :header-cell-style="getRowClass">
       <el-table-column
         :label="item[0]"
         v-for="(item, index) in header"
@@ -283,10 +327,21 @@
         v-if="isplanMan"
       ></select-teams>
     </el-dialog>
+    <el-dialog :visible.sync="isselect" :append-to-body="true">
+      <select-supplist
+        :Ids="Ids"
+        v-if="isselect"
+        :activeform="activeForm"
+        @close="close"
+        :entryList="entryList"
+      ></select-supplist>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import http from "@/request/http";
+import selectSupplist from "./select-supplist";
 import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import selectTeams from "@/components/Ca-select/select-teams";
 import selectMaterial from "@/components/Ca-select/select-material";
@@ -295,13 +350,15 @@ import {
   apisavePurchase,
   apimodPurchase,
   apiPurchaseProcess,
-  apipassPurchase,
-  apichooseSupplier
+  apipassPurchase
 } from "@/request/api.js";
 export default {
   name: "projectInfor",
   data() {
     return {
+      fileName: "",
+      token: localStorage.getItem("token"),
+      file_url: http.base_url + "uploadPurchasePhoto",
       Process_header: [
         ["步骤名称", "name_", 100],
         ["相关人员", "username", 100],
@@ -328,6 +385,7 @@ export default {
       currentSelect: {},
       isreviewer: false,
       isplanMan: false,
+      isselect: false,
       reasons: "",
       userTaskName: "",
       currentTaskName: "",
@@ -337,6 +395,7 @@ export default {
       buttonList: [],
       activityList: [],
       usertask: 1,
+      Ids: [],
       taskList: [],
       returnName: "项目助理" //驳回节点名字
     };
@@ -355,37 +414,44 @@ export default {
     selectMaterialSeries,
     selectMaterial,
     selectTeams,
-    CaViewProcess
+    CaViewProcess,
+    selectSupplist
   },
   mounted() {
     this.getprossList();
   },
   methods: {
+    //打开图片
+    openpic() {
+      let url =
+        this.activeForm.photo != ""
+          ? this.activeForm.photo
+          : `/PurchasePhoto/${this.fileName}`;
+      if (this.fileName != "" || this.activeForm.photo != "") {
+        window.open("http://file.casdapi.com" + url);
+      } else {
+        this.$message.warning("没上传文件");
+      }
+    },
+    headleSuccess(res) {
+      console.log(res);
+      this.$refs.upload.clearFiles();
+      this.$message.success(res.msg);
+    },
+    //上传
+    beforeUp(file) {
+      this.fileName = file.name;
+    },
+    close(supplist) {
+      console.log(supplist);
+      this.activeForm.construct_purchase_supplier = supplist[0];
+      this.activeForm.construct_purchase_supplierTel = supplist[1];
+      this.isselect = false;
+    },
     //选择供应商
     chooseSup() {
-      let ids = this.entryList.map(item => item.construct_purchase_entryId);
-      apichooseSupplier({
-        entryIds: ids.join(",")
-      }).then(res => {
-        // console.log(res);
-        //遍历回调data数组中的supplier的所有key，获得最大的供应商名称数组
-        let maxlist = [];
-        res.data.forEach(item => {
-          Object.keys(item.supplier).forEach(key => {
-            if (!maxlist.includes(key, 0)) {
-              maxlist.push(key);
-            }
-          });
-        });
-        res.data.forEach(item => {
-          maxlist.forEach(item2 => {
-            if (!item.supplier[item2]) {
-              item.supplier[item2] = 0;
-            }
-          });
-        });
-        console.log(res.data);
-      });
+      this.Ids = this.entryList.map(item => item.construct_purchase_entryId);
+      this.isselect = true;
     },
     getReturnName(command) {
       this.taskList.forEach((item, index) => {
@@ -411,7 +477,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -462,10 +528,16 @@ export default {
           console.log(res);
           this.userTaskName = res.userlist.userTaskName;
           this.buttonList = res.startForm.split(",");
-          this.userid = res.userlist.userList
-            ? res.userlist.userList[0].userid
-            : "";
-          this.userList = res.userlist.userList ? res.userlist.userList : [];
+          this.userid =
+            res.userlist.userList && res.userlist.userList != ""
+              ? this.userTaskName == "结束"
+                ? 0
+                : res.userlist.userList[0].userid
+              : "";
+          this.userList =
+            res.userlist.userList && res.userlist.userList != ""
+              ? res.userlist.userList
+              : [];
           //获取驳回节点的数组
           //当前步骤名称
           if (this.ProcessList != "") {
@@ -513,14 +585,14 @@ export default {
       if (
         this.entryList.some(
           item =>
-            item.construct_project_quantities_id ==
+            item.construct_purchase_quantitiesId ==
             row.construct_project_quantities_id
         )
       ) {
         this.$message.error("该材料已选择");
         return;
       }
-      this.currentSelect.construct_project_quantities_id =
+      this.currentSelect.construct_purchase_quantitiesId =
         row.construct_project_quantities_id;
       this.currentSelect.construct_purchase_material =
         row.construct_project_quantities_name;
@@ -591,6 +663,15 @@ export default {
         this.$message.error("复核员不能为空");
         return;
       }
+      if (
+        this.currentTaskName == "成本中心经理" ||
+        this.currentTaskName == "成本材料中心总监" ||
+        (this.currentTaskName == "采购核对单价" &&
+          this.construct_purchase_supplier == "")
+      ) {
+        this.$message.error("请选择供应商");
+        return;
+      }
       let issubmit = true;
       this.entryList.forEach(item => {
         if (
@@ -605,6 +686,7 @@ export default {
         this.$message.error("计划采购量已超量");
         return;
       }
+      console.log(this.entryList);
       this.activeForm.entry = JSON.stringify(this.entryList);
       if (this.openType == "add") {
         this.$confirm(`确定保存吗？`)
