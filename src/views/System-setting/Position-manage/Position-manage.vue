@@ -56,7 +56,7 @@ export default {
       roleList: [],
       currentPage: 1,
       currentlimit: 15,
-      total: 100,
+      total: 0,
       roleName: "",
       TreeList: [],
       checkList: [],
@@ -127,6 +127,7 @@ export default {
         role_name: roleName
       }).then(res => {
         console.log(res);
+        this.total=res.count
         this.roleList = res.data.map(item => {
           item.state2 = item.state == 1 ? "启用" : "停用";
           return item;

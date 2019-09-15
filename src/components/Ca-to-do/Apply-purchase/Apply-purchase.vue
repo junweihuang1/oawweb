@@ -122,13 +122,12 @@
       >
         <el-button type="success" @click="chooseSup">选择供应商</el-button>
       </el-form-item>
-      <el-form-item
-        v-else-if="
+      <template v-else-if="
           currentTaskName == '项目部签收' ||
             currentTaskName == '项目经理签收' ||
             currentTaskName == '核对签收'
-        "
-      >
+        ">
+      <el-form-item>
         <el-upload
           ref="upload"
           :action="file_url"
@@ -150,6 +149,7 @@
           >打开图片</el-button
         ></el-form-item
       >
+      </template>
     </el-form>
 
     <el-table
@@ -649,6 +649,14 @@ export default {
       });
     },
     save() {
+      if(this.activeForm.construct_purchase_planDate==""){
+        this.$message.error("计划时间不能为空");
+        return;
+      }
+      if(this.activeForm.construct_purchase_arriveDate==""){
+        this.$message.error("希望送到时间不能为空");
+        return;
+      }
       if (
         this.activeForm.construct_purchase_planMan == "" ||
         !this.activeForm.construct_purchase_planMan

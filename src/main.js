@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "@/router";
 import store from "@/store";
 import ELEMENT from "element-ui";
-// import "element-ui/lib/theme-chalk/index.css";
+import "element-ui/lib/theme-chalk/index.css";
 import "../theme/index.css";
 import "./assets/iconfont/iconfont.css";
 import "default-passive-events";
@@ -17,7 +17,7 @@ Vue.use(ELEMENT, { size: "mini", zIndex: 3000 });
 // Vue.use(ELEMENT);
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount("#app");

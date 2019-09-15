@@ -57,7 +57,7 @@
 import Logo from "./Logo";
 
 export default {
-  name: "Nav",
+  name: "Navs",
   data() {
     return {
       isCollapse: false

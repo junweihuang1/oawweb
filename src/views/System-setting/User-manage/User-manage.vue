@@ -2,8 +2,8 @@
   <!--  用户管理页 -->
   <div>
     <el-form size="mini" inline>
-      <el-form-item>
-        <el-input v-model="inputName" placeholder="用户名"></el-input>
+      <el-form-item label="用户名">
+        <el-input v-model="inputName" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -52,7 +52,7 @@ export default {
       currentPage: 1,
       currentlimit: 15,
       inputName: "",
-      total: 100,
+      total: 0,
       userid: "",
       username: "",
       header: [
@@ -107,6 +107,7 @@ export default {
       console.log(data);
       apiuserLists(data).then(res => {
         console.log(res);
+        this.total=res.totalCount
         this.StaffData = res.data.map(item => {
           item.sex = item.sex == 1 ? "男" : "女";
           item.status = item.status == 1 ? "在职" : "离职";

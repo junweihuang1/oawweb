@@ -77,7 +77,7 @@
     <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
       <corrented-Tabs v-if="isopenNoCor"></corrented-Tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenCard">
+    <el-dialog :visible.sync="isopenCard" width="70%">
       <card-record v-if="isopenCard"></card-record>
     </el-dialog>
     <el-dialog title="启动离职流程" :visible.sync="isstartQuit" width="25%">

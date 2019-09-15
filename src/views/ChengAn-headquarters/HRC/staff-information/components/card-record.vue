@@ -28,7 +28,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -52,23 +52,24 @@ export default {
       companyId: "",
       cardRecordList: [],
       header: [
-        ["用户编号", "userid"],
-        ["姓名", "username"],
-        ["打卡日期", "hr_attend_date"],
-        ["上班地址", "hr_attend_workAddress"],
-        ["下班地址", "close_time"],
-        ["上班打卡时间", "hr_attend_startWork"],
-        ["下班打卡时间", ""],
-        ["上班打卡状态", "hr_attend_workingState"],
-        ["下班打卡状态", ""],
-        ["是否加班", "hr_attend_overtime"],
-        ["加班时长", "hr_attend_overtimeDate"],
-        ["工作时长", "hr_attend_overtimeDate"],
-        ["是否补卡", "hr_attend_overtimeDate"],
-        ["补卡原因", "hr_attend_overtimeDate"]
+        ["用户编号", "userid",100],
+        ["姓名", "username",100],
+        ["打卡日期", "hr_attend_date",100],
+        ["上班地址", "hr_attend_workAddress",250],
+        ["下班地址", "hr_attend_offWorkAddress",250],
+        ["上班打卡时间", "hr_attend_startWork",120],
+        ["下班打卡时间", "hr_attend_knockOff",120],
+        ["上班打卡状态", "hr_attend_workingState",120],
+        ["下班打卡状态", "hr_attend_restState",120],
+        ["是否加班", "hr_attend_overtime",100],
+        ["加班时长", "hr_attend_overtimeDate",100],
+        ["工作时长", "hr_attend_overtimeDate",100],
+        ["是否补卡", "hr_attend_overtimeDate",100],
+        ["补卡原因", "hr_attend_overtimeDate",100]
       ],
       isopen: false,
-      queryList: []
+      queryList: [],
+      total:0
     };
   },
   components: { CaRuleTable, paging, selectCompany },
@@ -116,6 +117,7 @@ export default {
         username: this.username
       }).then(res => {
         console.log(res);
+        this.total=res.count
         this.cardRecordList = res.data;
       });
     }

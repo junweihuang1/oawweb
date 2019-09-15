@@ -1,6 +1,7 @@
 <template>
   <div style="border:1px solid #E4E7ED;">
-    <el-tabs tab-position="top" v-model="currentActive" type="card">
+    <el-row><el-col :span="24">
+      <el-tabs tab-position="top" v-model="currentActive" type="card">
       <el-tab-pane label="申请采购" name="1">
         <Apply-purchase
           v-if="isRefresh"
@@ -32,6 +33,7 @@
         ></aParty-apply-purchase>
       </el-tab-pane>
     </el-tabs>
+      </el-col></el-row>
   </div>
 </template>
 

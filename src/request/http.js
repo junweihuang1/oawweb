@@ -2,10 +2,10 @@ import axios from "axios";
 import QS from "qs";
 import { Message } from "element-ui";
 
-const base_url = "http://192.168.110.163:8081/casd2/admin/";
+const base_url = "http://ht5rgf.natappfree.cc/casd2/admin/";
 
 // 默认请求地址
-axios.defaults.baseURL = base_url; //"http://192.168.110.124:8081/casd2/admin/";//39.108.184.20:8080
+axios.defaults.baseURL = base_url; //"http://192.168.110.163:8081/casd2/admin/";//39.108.184.20:8080
 
 // 请求超时时间
 axios.defaults.timeout = 10000;
@@ -14,33 +14,33 @@ axios.defaults.headers["Content-Type"] = "application/x-www-form-urlencoded";
 
 // 请求拦截器
 axios.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.token = token;
+    config => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.token = token;
+        }
+        return config;
+    },
+    error => {
+        return Promise.error(error);
     }
-    return config;
-  },
-  error => {
-    return Promise.error(error);
-  }
 );
 // 响应拦截器
 axios.interceptors.response.use(
-  response => {
-    return response;
-  },
-  error => {
-    console.log(error);
-    if (error.response.data.errorCode === "10002") {
-      // localStorage.removeItem("token");
-      // location.reload();
+    response => {
+        return response;
+    },
+    error => {
+        console.log(error);
+        if (error.response.data.errorCode === "10002") {
+            // localStorage.removeItem("token");
+            // location.reload();
+        }
+        if (error.response.status === "500") {
+            Message.error("服务器内部错误");
+        }
+        return Promise.reject(error.response);
     }
-    if (error.response.status === "500") {
-      Message.error("服务器内部错误");
-    }
-    return Promise.reject(error.response);
-  }
 );
 
 /**
@@ -50,18 +50,18 @@ axios.interceptors.response.use(
  */
 
 export function get(url, params = "") {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(url, {
-        params
-      })
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(err => {
-        reject(err.data);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .get(url, {
+                params
+            })
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject(err.data);
+            });
+    });
 }
 
 /**
@@ -71,18 +71,18 @@ export function get(url, params = "") {
  */
 
 export function Delete(url, params = "") {
-  return new Promise((resolve, reject) => {
-    axios
-      .delete(url, {
-        params
-      })
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(err => {
-        reject(err.data);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .delete(url, {
+                params
+            })
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject(err.data);
+            });
+    });
 }
 
 /**
@@ -92,23 +92,23 @@ export function Delete(url, params = "") {
  */
 
 export function post(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(url, params, {
-        transformRequest: [
-          function(data) {
-            data = QS.stringify(data);
-            return data;
-          }
-        ]
-      })
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(err => {
-        reject(err.data);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .post(url, params, {
+                transformRequest: [
+                    function(data) {
+                        data = QS.stringify(data);
+                        return data;
+                    }
+                ]
+            })
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject(err.data);
+            });
+    });
 }
 
 /**
@@ -118,25 +118,25 @@ export function post(url, params = {}) {
  */
 
 export function put(url, params = {}) {
-  return new Promise((resolve, reject) => {
-    axios
-      .put(url, params, {
-        transformRequest: [
-          function(data) {
-            data = QS.stringify(data);
-            return data;
-          }
-        ]
-      })
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(err => {
-        reject(err.data);
-      });
-  });
+    return new Promise((resolve, reject) => {
+        axios
+            .put(url, params, {
+                transformRequest: [
+                    function(data) {
+                        data = QS.stringify(data);
+                        return data;
+                    }
+                ]
+            })
+            .then(res => {
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject(err.data);
+            });
+    });
 }
 
 export default {
-  base_url
+    base_url
 };

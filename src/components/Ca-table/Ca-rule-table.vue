@@ -14,7 +14,8 @@
       :cell-style="getcellstyle"
       :row-style="{ height: '35px' }"
       :show-summary="issummary"
-      @row-click="clickline"
+      @cell-click="cellClick"
+      @row-click="rowClick"
       @selection-change="handleSelectionChange"
       @row-dblclick="dblclick"
     >
@@ -158,7 +159,12 @@ export default {
     isSpan: {
       type: Boolean,
       default: false
-    }
+    },
+    iscellCilck:{
+      type:Boolean,
+      default:false
+    },
+    cellField:String
   },
   computed: {
     getwidth() {
@@ -271,8 +277,14 @@ export default {
     start(item) {
       this.$emit("start", item);
     },
-    clickline(row, event, column) {
+    rowClick(row, event, column) {
       this.$emit("checkline", [row, event, column]);
+    },
+    cellClick(row, column, cell, event){
+      if(this.iscellCilck&&column.label==this.cellField){
+        this.$emit("cellCilck",row)
+      }
+      
     },
     dblclick(row, event) {
       this.$emit("dblclick", row);
@@ -285,5 +297,16 @@ export default {
 // 全局设置
 body .el-table th.gutter {
   display: table-cell !important;
+}
+
+.el-table__header tr,
+  .el-table__header th {
+    padding: 0;
+    height: 40px;
+}
+.el-table__body tr,
+  .el-table__body td {
+    padding: 0;
+    height: 40px;
 }
 </style>

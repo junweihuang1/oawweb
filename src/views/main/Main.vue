@@ -73,7 +73,7 @@ import CardApprovalTable from "./components/card-Approval-table.vue";
 import ToDoTable from "./components/to-do-table.vue";
 import { apiFindTaskList, apiNotAuditedCard } from "@/request/api";
 export default {
-  name: "Main",
+  name: "Mains",
   components: { ToDoTable, homeMain, CardApprovalTable },
   data() {
     return {

@@ -19,13 +19,12 @@
       :header="header"
       :headle="headle"
       @delete="deleteSupplier"
-      @edit="modifySupplier"
       @checkleave="openAccount"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="50"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -100,13 +99,14 @@ export default {
       currentlimit: 15,
       currentpage: 1,
       supplierList: [],
-      headle: ["台账", "删除", "修改"],
+      headle: ["台账", "删除"],
       isAdd: false,
       isopenselect: false,
       username: "",
       saveform: {},
       isopenAccount: false,
-      accountid: null
+      accountid: null,
+      total:0
     };
   },
   components: {
@@ -127,12 +127,12 @@ export default {
   },
   methods: {
     //修改供应商
-    modifySupplier(row) {
-      console.log(row);
-      this.saveform = row;
-      this.username = row.username;
-      this.isAdd = true;
-    },
+    // modifySupplier(row) {
+    //   console.log(row);
+    //   this.saveform = row;
+    //   this.username = row.username;
+    //   this.isAdd = true;
+    // },
     //保存供应商
     savesupplier() {
       console.log(this.saveform);
@@ -166,10 +166,11 @@ export default {
     //删除指定供应商
     deleteSupplier(row) {
       let id = row.construct_supplier_id + "";
+      console.log(id)
       this.$confirm(`确定删除${row.construct_supplier_name}的所有信息？`).then(
         () => {
-          apideleSupplier({ ids: id }).then(() => {
-            this.$message.success("删除成功");
+          apideleSupplier({ ids: id }).then(res => {
+            this.$message.success(res.msg);
             this.getSupplierList();
           });
         }
@@ -194,6 +195,7 @@ export default {
         page: this.currentpage,
         construct_suppliername: this.supplierName
       }).then(res => {
+        this.total=res.total
         this.supplierList = res.rows;
       });
     }

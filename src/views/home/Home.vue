@@ -2,7 +2,7 @@
   <div id="home" v-loading="loading" element-loading-text="页面初始化...">
     <el-container>
       <el-aside style="width:auto;">
-        <Nav :nav-list="navList" :active-index="activeIndex" />
+        <Nav :nav-list="navList" :active-index="activeIndex" ></Nav>
       </el-aside>
       <el-container>
         <el-header

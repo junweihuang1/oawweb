@@ -32,23 +32,37 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="50"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
+    <el-dialog :visible.sync="isopen" width="70%" title="采购明细">
+      <Apply-purchase
+      @close="close"
+      v-if="isopen"
+      openType="check"
+      :headform="headform"
+      :ProcessList="ProcessList"
+      :entryList="DataList"
+      :activeForm="activeform"
+    ></Apply-purchase>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase/Apply-purchase";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { apimatPurReports } from "@/request/api.js";
+import { changetime } from "@/components/global-fn/global-fn";
+import { apimatPurReports,apigetPurchase } from "@/request/api.js";
 export default {
   name: "PurchaseDetails",
   data() {
     return {
       currentpage: 1,
       currentlimit: 15,
+      total:0,
       projectName: "",
       purchaseStatus: "",
       status: [
@@ -71,12 +85,18 @@ export default {
         ["采购合计", "total", 100],
         ["采购状态", "construct_purchase_status", 120]
       ],
-      headle: ["查看"]
+      headle: ["查看"],
+      isopen:false,
+      ProcessList:[],
+      headform:{},
+      DataList:[],
+      activeform:{}
     };
   },
   components: {
     CaRuleTable,
-    paging
+    paging,
+    ApplyPurchase
   },
   mounted() {
     this.getPurList();
@@ -90,9 +110,25 @@ export default {
       this.currentlimit = val;
       this.getPurList();
     },
+    close(){
+      this.isopen=false
+    },
     //查看
     checkitem(row) {
       console.log(row);
+      apigetPurchase({
+        construct_purchase_id: row.construct_purchase_id
+      }).then(res => {
+        console.log(res);
+        this.ProcessList = res.hisComment.map(item => {
+          item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+          return item;
+        });
+        this.headform = res.projectInfo;
+        this.DataList = res.purchaseEntry;
+        this.activeform = res.purchaseHead;
+        this.isopen = true;
+      });
     },
     getPurList() {
       let data = {
@@ -104,6 +140,7 @@ export default {
       console.log(data);
       apimatPurReports(data).then(res => {
         console.log(res);
+        this.total=res.count
         this.PurList = res.data.map(item => {
           switch (item.construct_purchase_status) {
             case 0:
