@@ -140,7 +140,7 @@
           v-model="contractapprove.manage_contractapprove_remark"
         ></el-input>
       </el-form-item>
-      <el-form-item label="意见">
+      <el-form-item label="意见" v-if="openType==='headle'">
         <el-input
           clearable
           type="textarea"
@@ -149,10 +149,15 @@
         ></el-input>
       </el-form-item>
       <el-row>
+        <template v-if="userTaskName != '结束' && openType != 'check'">
+          <el-col :span="10">
+          <el-form-item label="下一节点">
+                <el-input readonly v-model="userTaskName"></el-input>
+              </el-form-item>
+        </el-col>
         <el-col :span="10">
           <el-form-item
             label="审核人"
-            v-if="userList != '' && openType != 'check'"
           >
             <el-select v-model="userid">
               <el-option
@@ -164,9 +169,11 @@
             </el-select>
           </el-form-item>
         </el-col>
+        </template>
         <el-col :span="12">
           <template v-if="openType == 'add'">
-            <el-upload
+            <el-form-item label=" ">
+              <el-upload
               class="upload-demo"
               ref="upload"
               :action="upload_url"
@@ -188,6 +195,7 @@
                 >提交</el-button
               >
             </el-upload>
+            </el-form-item>
           </template>
           <template v-else-if="openType == 'headle'">
             <el-form-item label=" ">
@@ -302,7 +310,8 @@ export default {
       activityList: [],
       activityLists: [],
       reasons: "",
-      fileList: []
+      fileList: [],
+      userTaskName:""
     };
   },
   props: {
@@ -326,7 +335,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -373,11 +382,10 @@ export default {
           ? this.userLists.chief_leader
           : this.userLists.userList;
       } else {
-        this.userid = this.userLists.userList
-          ? this.userLists.userList[0].userid
-          : "";
+        this.userid =this.userTaskName == "结束"? 0:this.userLists.userList && this.userLists.userList != ""? this.userLists.userList[0].userid:""
         this.userList = this.userLists.userList ? this.userLists.userList : [];
       }
+      console.log(this.userid)
     },
     //获取流程线
     getprossList() {
@@ -404,6 +412,7 @@ export default {
         console.log(res);
         this.activityLists = res.activityList;
         this.userLists = res.userlist;
+        this.userTaskName = res.userlist.userTaskName;
         this.getProcessline(this.contractapprove.category);
         this.buttonList = res.startForm.split(",");
       });

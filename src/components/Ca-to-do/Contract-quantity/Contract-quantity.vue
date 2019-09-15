@@ -97,10 +97,17 @@
       size="mini"
       style="margin-top:10px;"
       label-position="left"
-      label-width="60px"
+      label-width="80px"
     >
-      <el-form-item label="审核人" v-if="userList != ''">
-        <el-select v-model="userid">
+    <template v-if="userTaskName != '结束' && openType !== 'check'">
+      <el-row><el-col :span="8">
+            <el-form-item label="下一节点">
+                <el-input readonly v-model="userTaskName"></el-input>
+              </el-form-item>
+              </el-col>
+              <el-col :span="8">
+      <el-form-item label="审核人">
+        <el-select v-model="userid" placeholder="没绑定审核人">
           <el-option
             v-for="(item, index) in userList"
             :key="index"
@@ -109,6 +116,8 @@
           ></el-option>
         </el-select>
       </el-form-item>
+      </el-col></el-row>
+          </template>          
       <template v-if="openType == 'headle'">
         <el-form-item label="意见">
           <el-input
@@ -239,7 +248,8 @@ export default {
         ["审核意见", "MESSAGE_"]
       ],
       userList: [],
-      myDataList: []
+      myDataList: [],
+      userTaskName:""
     };
   },
   components: {
@@ -280,7 +290,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -337,11 +347,9 @@ export default {
               return item;
             })
           : [];
-
+        this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList[0].userid
-          : "";
+        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
         this.userList = res.userlist.userList ? res.userlist.userList : [];
         //当进入办理流程后，遍历流程线，判断出当前的节点
         if (this.Approvaltable != "") {

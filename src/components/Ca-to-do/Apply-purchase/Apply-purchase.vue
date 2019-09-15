@@ -528,12 +528,7 @@ export default {
           console.log(res);
           this.userTaskName = res.userlist.userTaskName;
           this.buttonList = res.startForm.split(",");
-          this.userid =
-            res.userlist.userList && res.userlist.userList != ""
-              ? this.userTaskName == "结束"
-                ? 0
-                : res.userlist.userList[0].userid
-              : "";
+          this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
           this.userList =
             res.userlist.userList && res.userlist.userList != ""
               ? res.userlist.userList

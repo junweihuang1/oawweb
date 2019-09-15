@@ -117,7 +117,14 @@
       </el-table-column>
     </el-table>
     <el-form size="mini" label-width="80px" style="margin-top:10px;">
-      <el-form-item label="审核人" v-if="userList != '' && openType != 'check'">
+      <template v-if="userTaskName != '结束' && openType != 'check'">
+            <el-col :span="10">
+              <el-form-item label="下一节点">
+                <el-input readonly v-model="userTaskName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+        <el-form-item label="审核人" >
         <el-select v-model="userid">
           <el-option
             v-for="(item, index) in userList"
@@ -127,6 +134,8 @@
           ></el-option>
         </el-select>
       </el-form-item>
+      </el-col>
+      </template>
       <template v-if="openType == 'headle'">
         <el-form-item label="审核意见">
           <el-input type="textarea" :row="2" v-model="reasons"></el-input>
@@ -250,7 +259,8 @@ export default {
       userid: 0,
       userList: [],
       current: 1,
-      buttonList: []
+      buttonList: [],
+      userTaskName:""
     };
   },
   props: {
@@ -280,7 +290,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -358,10 +368,9 @@ export default {
         } else {
           this.activityList = res.activityList;
         }
+        this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList[0].userid
-          : "";
+        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
         this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },

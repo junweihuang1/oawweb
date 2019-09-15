@@ -46,6 +46,7 @@
         </el-form-item>
         <el-form-item label="类型">
           <el-select
+          style="width:100%"
             v-model="form.hr_templatel_type"
             placeholder="请选择"
             clearable
@@ -70,7 +71,7 @@
           <el-upload
             v-if="isopen"
             ref="upload"
-            :data="{ uploadPath: 'templatel/' }"
+            :data="{ uploadPath: 'templatel/',oldfileName:oldFileName }"
             name="file"
             :action="file_src"
             :limit="1"
@@ -79,12 +80,12 @@
             :on-success="handleSuccess"
             :auto-upload="false"
           >
-            <el-button slot="trigger" size="small" type="primary"
+            <el-button slot="trigger" size="mini" type="primary"
               >选取文件</el-button
             >
             <el-button
               style="margin-left: 10px;"
-              size="small"
+              size="mini"
               type="success"
               @click="submitUpload"
               >上传</el-button
@@ -145,7 +146,8 @@ export default {
       currentlimit: 15,
       templateType: "全部",
       templateTypeid: "",
-      fileList: []
+      fileList: [],
+      oldFileName:""
     };
   },
   components: {
@@ -156,11 +158,13 @@ export default {
     this.getStandardList();
   },
   methods: {
+    //新增
     openAddWin() {
       this.form = {
         hr_templatel_id: 0
       };
       this.isopen = true;
+      this.oldFileName=""
     },
     selectType(e) {
       switch (e) {
@@ -191,8 +195,20 @@ export default {
       this.currentlimit = e;
       this.getStandardList();
     },
+    //编辑
     opanLeaveList(e) {
-      this.form = e;
+      this.form = {
+        hr_template_name:e.hr_template_name,
+        hr_template_path:e.hr_template_path,
+        hr_templatel_describe:e.hr_templatel_describe,
+        hr_templatel_id:e.hr_templatel_id,
+        hr_templatel_time:e.hr_templatel_time,
+        hr_templatel_type:e.hr_templatel_type,
+        type:e.type
+      };
+      this.oldFileName=e.hr_template_path.split('/')[e.hr_template_path.split('/').length-1]
+      console.log(this.oldFileName)
+      // console.log(e)
       this.isopen = true;
     },
     //删除文件
@@ -225,6 +241,8 @@ export default {
       this.submit();
     },
     submitUpload() {
+      this.form.oldfileName=this.oldFileName
+      console.log(this.form);
       console.log(this.form);
       this.$confirm(`确定提交吗？`)
         .then(() => {
@@ -237,10 +255,9 @@ export default {
         .catch(() => {});
     },
     submit() {
-      console.log(this.form);
-      apisaveTemplatel(this.form).then(res => {
+        apisaveTemplatel(this.form).then(res => {
         console.log(res);
-        this.$message.success(res.Msg);
+        this.$message.success(res.msg);
         this.isopen = false;
         this.getStandardList();
       });

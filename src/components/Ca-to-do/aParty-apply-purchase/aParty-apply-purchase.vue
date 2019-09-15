@@ -130,7 +130,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <template v-if="openType != 'check' && userid !== 0">
+        <template v-if="openType != 'check' && userTaskName != '结束'">
           <el-col :span="8">
             <el-form-item label="下一节点">
               <el-input v-model="userTaskName" readonly></el-input>
@@ -406,12 +406,8 @@ export default {
           this.activityList = res.activityList;
         }
         this.userTaskName = res.userlist.userTaskName;
-        console.log(this.userTaskName);
         this.buttonList = res.startForm.split(",");
-        this.userid =
-          res.userlist.userList && res.userlist.userList != ""
-            ? res.userlist.userList[0].userid
-            : "";
+        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
         if (this.userTaskName == "结束") {
           this.userid = 0;
         }
