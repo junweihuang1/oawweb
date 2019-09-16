@@ -255,7 +255,8 @@ export default {
       activityList: [],
       reasons: "",
       userid: 0,
-      current: 1
+      current: 1,
+      userTaskName: ""
     };
   },
   components: {
@@ -312,14 +313,18 @@ export default {
       this.isopenDep = true;
     },
     save() {
-      this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
-      this.ApplyForm.manage_vat_category = this.manage_vat_category;
-      this.ApplyForm.userid = this.userid;
-      apistartReqfunds(this.ApplyForm).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
+          this.ApplyForm.manage_vat_category = this.manage_vat_category;
+          this.ApplyForm.userid = this.userid;
+          apistartReqfunds(this.ApplyForm).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     getprossList() {
       let data = {};

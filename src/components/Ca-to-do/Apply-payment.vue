@@ -51,31 +51,29 @@
     <el-row>
       <el-form inline size="mini" label-width="130px" label-position="left">
         <el-form-item label="计划日期">
-          <el-date-picker
-            type="date"
-            style="width:100%;"
+          <el-input
+            readonly
+            clearable
             v-model="activeForm.construct_purchase_planDate"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
+          ></el-input>
         </el-form-item>
         <el-form-item label="希望送达时间">
-          <el-date-picker
-            type="date"
-            style="width:100%;"
+          <el-input
+            readonly
+            clearable
             v-model="activeForm.construct_purchase_arriveDate"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
+          ></el-input>
         </el-form-item>
         <el-form-item label="材料计划员">
           <el-input
-            @focus="openselectplanMan"
             v-model="activeForm.construct_purchase_planMan"
+            readonly
             clearable
           ></el-input>
         </el-form-item>
         <el-form-item label="复核员">
           <el-input
-            @focus="openselectreviewer"
+            readonly
             v-model="activeForm.construct_purchase_reviewer"
             clearable
           ></el-input>
@@ -96,7 +94,7 @@
         </el-form-item>
         <el-form-item label="材料类别" v-if="openType !== 'check'">
           <el-input
-            @focus="openselectMaterialseries"
+            readonly
             clearable
             v-model="activeForm.construct_purchase_materialSerName"
           ></el-input>
@@ -105,14 +103,6 @@
     </el-row>
     <el-divider content-position="left">班组信息</el-divider>
     <el-form inline>
-      <el-form-item v-if="openType == 'add' || openType == 'edit'">
-        <el-button-group>
-          <el-button type="primary" size="mini" @click="additem"
-            >添加行</el-button
-          >
-          <el-button type="warning" size="mini" @click="cancel">撤销</el-button>
-        </el-button-group>
-      </el-form-item>
       <el-form-item
         v-if="
           currentTaskName == '成本中心经理' ||
@@ -141,12 +131,8 @@
           <el-button size="mini" type="primary">点击上传</el-button>
         </el-upload>
       </el-form-item>
-      <el-form-item v-if="current >= picitem">
-        <el-button
-          :disabled="fileName == '' && activeForm.photo == null ? true : false"
-          type="success"
-          size="mini"
-          @click="openpic"
+      <el-form-item v-if="activeForm.photo != null">
+        <el-button type="success" size="mini" @click="openpic"
           >打开图片</el-button
         ></el-form-item
       >
@@ -173,7 +159,6 @@
             class="inputbox"
             v-if="openType !== 'check' && item[0] == '材料名称'"
             placeholder="请选择"
-            @focus="openselectMaterial(row)"
           />
           <input
             type="text"
@@ -189,14 +174,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button
-      v-if="openType == 'add' || openType == 'edit'"
-      type="primary"
-      size="mini"
-      style="float:right;margin:20px 100px 20px 0;"
-      @click="save"
-      >保存</el-button
-    >
     <div v-if="openType == 'headle'">
       <el-divider content-position="left">流程审批</el-divider>
       <el-form label-width="70px">
@@ -301,57 +278,13 @@
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
     </template>
-    <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true">
-      <select-material-series
-        @setSelectName="getSelectName"
-        v-if="isselectMaterialseries"
-      ></select-material-series>
-    </el-dialog>
-    <el-dialog :visible.sync="isselectMaterial" :append-to-body="true">
-      <select-material
-        @setSelectName="getMaterialName"
-        :projectId="headform.construct_project_id"
-        :materialSerId="activeForm.construct_purchase_materialSerId"
-        v-if="isselectMaterial"
-      ></select-material>
-    </el-dialog>
-    <el-dialog :visible.sync="isreviewer" :append-to-body="true">
-      <select-teams
-        @setSelectName="getreviewerName"
-        v-if="isreviewer"
-      ></select-teams>
-    </el-dialog>
-    <el-dialog :visible.sync="isplanMan" :append-to-body="true">
-      <select-teams
-        @setSelectName="getplanManName"
-        v-if="isplanMan"
-      ></select-teams>
-    </el-dialog>
-    <el-dialog :visible.sync="isselect" :append-to-body="true">
-      <select-supplist
-        :Ids="Ids"
-        v-if="isselect"
-        :activeform="activeForm"
-        @close="close"
-        :entryList="entryList"
-      ></select-supplist>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import http from "@/request/http";
-import selectSupplist from "./select-supplist";
 import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
-import selectTeams from "@/components/Ca-select/select-teams";
-import selectMaterial from "@/components/Ca-select/select-material";
-import selectMaterialSeries from "@/components/Ca-select/select-material-series";
-import {
-  apisavePurchase,
-  apimodPurchase,
-  apiPurchaseProcess,
-  apipassPurchase
-} from "@/request/api.js";
+import { apipassPayApply, apigetProcessList } from "@/request/api.js";
 export default {
   name: "projectInfor",
   data() {
@@ -380,11 +313,8 @@ export default {
         ["材料品牌", "construct_purchase_brand", 100, "edit"],
         ["备注", "construct_purchase_remarks", "", "edit"]
       ],
-      isselectMaterialseries: false,
-      isselectMaterial: false,
       currentSelect: {},
       isreviewer: false,
-      isplanMan: false,
       isselect: false,
       reasons: "",
       userTaskName: "",
@@ -412,14 +342,9 @@ export default {
     active: Object
   },
   components: {
-    selectMaterialSeries,
-    selectMaterial,
-    selectTeams,
-    CaViewProcess,
-    selectSupplist
+    CaViewProcess
   },
   mounted() {
-    console.log(this.activeForm);
     this.getprossList();
   },
   methods: {
@@ -484,35 +409,17 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      if (
-        (this.currentTaskName == "成本中心经理" ||
-          this.currentTaskName == "成本材料中心总监" ||
-          this.currentTaskName == "采购核对单价") &&
-        this.activeForm.construct_purchase_supplier == ""
-      ) {
-        this.$message.error("请选择供应商");
-        return;
-      }
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
           let data = {
-            processInstanceId: this.active.PROC_INST_ID_
-              ? this.active.PROC_INST_ID_
-              : this.active.taskid, //(必填)运行时id
-            taskid: this.active.ID_, //(必填)实例id
-            sign: type, //(必填)是否同意
-            reason: this.reasons, //(必填)审核意见
-            usertask: this.usertask, //(必填)驳回节点
-            taskName: this.active.NAME_, //(必填)当前节点id
-            construct_purchase_id: this.active.BUSINESS_KEY_
-              ? this.active.BUSINESS_KEY_.split(".")[1]
-              : this.active.businessId, //(必填)材料单id
-            userid: this.userid //(必填)下一审批人id
+            taskId: this.active.ID_, //(必填)：任务id；
+            comment: this.reasons, //(必填)：办理意见；
+            sign: type //(必填)：是否通过，true骑过，false不通过；
           };
           console.log(data);
-          apipassPurchase(data).then(res => {
+          apipassPayApply(data).then(res => {
             console.log(res);
             this.$message.success(res.msg);
             this.$emit("close");
@@ -529,13 +436,10 @@ export default {
           processInstanceId: this.active.PROC_INST_ID_
             ? this.active.PROC_INST_ID_
             : this.active.taskid,
-          taskName: this.active.NAME_,
-          key: "Purchase_payment",
-          construct_purchase_id: this.active.BUSINESS_KEY_
-            ? this.active.BUSINESS_KEY_.split(".")[1]
-            : this.active.businessId
+          key: "purcase_payapply_process",
+          type: ""
         };
-        apiPurchaseProcess(data).then(res => {
+        apigetProcessList(data).then(res => {
           console.log(res);
           this.userTaskName = res.userlist.userTaskName;
           this.buttonList = res.startForm.split(",");
@@ -558,189 +462,16 @@ export default {
               if (item.name == this.currentTaskName) {
                 this.current = currentTask.END_TIME_ == "" ? index : index + 1;
               }
-              if (
-                item.name == "项目部签收" ||
-                item.name == "项目经理签收" ||
-                item.name == "核对签收"
-              ) {
-                this.picitem = index + 1;
-              }
               return item;
             });
           } else {
             this.activityList = res.activityList;
           }
-          //获取驳回节点的数组
-          if (
-            this.active.PROC_DEF_ID_ &&
-            this.active.PROC_DEF_ID_.split(":")[1] !== 2
-          ) {
-            this.taskList = this.activityList.slice(0, this.current);
-          }
         });
       }
     },
-    //
-    //从子组件获取计划员姓名
-    getplanManName(row) {
-      this.activeForm.construct_purchase_planMan = row.username;
-      this.isplanMan = false;
-    },
-    //从子组件获取复核员姓名
-    getreviewerName(row) {
-      this.activeForm.construct_purchase_reviewer = row.username;
-      this.isreviewer = false;
-    },
-    //打开选择计划员
-    openselectplanMan() {
-      this.isplanMan = true;
-    },
-    //打开选择复核员
-    openselectreviewer() {
-      this.isreviewer = true;
-    },
-    //双击选择材料，接收子组件回调的方法。赋值给点击的行
-    getMaterialName(row) {
-      //判断当前是否有选择该材料
-      console.log(row);
-      if (
-        this.entryList &&
-        this.entryList.some(
-          item =>
-            item.construct_purchase_quantitiesId ==
-            row.construct_project_quantities_id
-        )
-      ) {
-        this.$message.error("该材料已选择");
-        return;
-      }
-      this.currentSelect.construct_purchase_quantitiesId =
-        row.construct_project_quantities_id;
-      this.currentSelect.construct_purchase_material =
-        row.construct_project_quantities_name;
-      this.currentSelect.construct_purchase_model =
-        row.construct_project_quantities_model;
-      this.currentSelect.construct_purchase_unit =
-        row.construct_project_quantities_unit;
-      this.currentSelect.construct_purchase_quantities =
-        row.construct_project_quantities_num;
-      this.currentSelect.construct_purchase_approvalNum = row.sum;
-      this.currentSelect.construct_purchase_contractPrice =
-        row.construct_project_quantities_price;
-      this.currentSelect.construct_purchase_purchasePrice = "";
-      this.currentSelect.construct_purchase_purchaseTotal = "";
-      this.isselectMaterial = false;
-    },
-    openselectMaterial(row) {
-      this.currentSelect = row;
-      this.isselectMaterial = true;
-    },
-    //获取材料系列信息
-    getSelectName(row) {
-      this.activeForm.construct_purchase_materialSerName =
-        row.construct_material_seriesName;
-      this.activeForm.construct_purchase_materialSerId =
-        row.construct_material_seriesID;
-      this.isselectMaterialseries = false;
-    },
-    openselectMaterialseries() {
-      this.isselectMaterialseries = true;
-    },
     cancel() {
       this.entryList.pop();
-    },
-    additem() {
-      let select = this.activeForm.construct_purchase_materialSerName;
-      if (select == "") {
-        this.$message.error("请先选择材料类别");
-        return;
-      }
-      this.entryList.push({
-        construct_purchase_material: "", //(必填)材料名称
-        construct_purchase_model: "", //(必填)型号规格
-        construct_purchase_unit: "", //(必填)单位
-        construct_purchase_quantities: "", //(必填)合同工程量
-        construct_purchase_approvalNum: "", //(必填)累计审批量
-        construct_purchase_applyNum: "", //(必填)计划采购量
-        construct_purchase_contractPrice: "", //(必填)合同单价
-        construct_purchase_purchasePrice: "", //(必填)采购单价
-        construct_purchase_purchaseTotal: "", //(必填)采购小计
-        construct_purchase_remarks: "", //(必填)备注
-        construct_purchase_brand: "", //(必填)品牌
-        construct_purchase_quantitiesId: "" //(必填)合同工程量id
-      });
-    },
-    save() {
-      if (this.activeForm.construct_purchase_planDate == "") {
-        this.$message.error("计划时间不能为空");
-        return;
-      }
-      if (this.activeForm.construct_purchase_arriveDate == "") {
-        this.$message.error("希望送到时间不能为空");
-        return;
-      }
-      if (
-        this.activeForm.construct_purchase_planMan == "" ||
-        !this.activeForm.construct_purchase_planMan
-      ) {
-        this.$message.error("计划员不能为空");
-        return;
-      }
-      if (
-        this.activeForm.construct_purchase_reviewer == "" ||
-        !this.activeForm.construct_purchase_reviewer
-      ) {
-        this.$message.error("复核员不能为空");
-        return;
-      }
-      if (
-        this.currentTaskName == "成本中心经理" ||
-        this.currentTaskName == "成本材料中心总监" ||
-        (this.currentTaskName == "采购核对单价" &&
-          this.construct_purchase_supplier == "")
-      ) {
-        this.$message.error("请选择供应商");
-        return;
-      }
-      let i = 0,
-        len = this.entryList.length;
-      for (i; i < len; i++) {
-        if (this.entryList[i].construct_purchase_applyNum == "") {
-          this.$message.error("计划采购量不能为空");
-          return;
-        }
-        if (
-          this.entryList[i].construct_purchase_quantities -
-            this.entryList[i].construct_purchase_approvalNum <
-          parseInt(this.entryList[i].construct_purchase_applyNum)
-        ) {
-          this.$message.error("计划采购量已超量");
-          return;
-        }
-      }
-      console.log(this.entryList);
-      this.activeForm.entry = JSON.stringify(this.entryList);
-      if (this.openType == "add") {
-        this.$confirm(`确定保存吗？`)
-          .then(() => {
-            apisavePurchase(this.activeForm).then(res => {
-              console.log(res);
-              this.$message.success(res.msg);
-              this.$emit("close");
-            });
-          })
-          .catch(() => {});
-      } else {
-        this.$confirm(`确定修改吗？`)
-          .then(() => {
-            apimodPurchase(this.activeForm).then(res => {
-              console.log(res);
-              this.$message.success(res.msg);
-              this.$emit("close");
-            });
-          })
-          .catch(() => {});
-      }
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {

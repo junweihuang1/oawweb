@@ -102,6 +102,19 @@
     </el-dialog>
     <el-dialog
       :title="openTitle"
+      :visible.sync="openPayment"
+      width="75%"
+      top="8vh"
+    >
+      <headle-payment
+        v-if="openPayment"
+        :active="active"
+        openType="headle"
+        @close="closewin"
+      ></headle-payment>
+    </el-dialog>
+    <el-dialog
+      :title="openTitle"
       :visible.sync="openInvoice"
       width="50%"
       top="8vh"
@@ -206,6 +219,7 @@
 </template>
 
 <script>
+import headlePayment from "./components/headle-payment";
 import ApplyMove from "@/components/Ca-to-do/Apply-move";
 import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
 import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
@@ -265,12 +279,14 @@ export default {
       isopenpic: false,
       openaParty: false,
       openRemove: false,
+      openPayment: false,
       loading: true,
       OrderId: "",
       reqfundsId: ""
     };
   },
   components: {
+    headlePayment,
     CaRuleTable,
     headleGoods,
     headleGoOut,
@@ -314,18 +330,12 @@ export default {
       this.openCorrent = false;
       this.openaParty = false;
       this.openRemove = false;
+      this.openPayment = false;
       this.getToDoList();
     },
     //查询
     query() {
       this.getToDoList();
-      // if (this.selectType == "") {
-      //   this.todoList = this.summary;
-      // } else {
-      //   this.todoList = this.summary.filter(
-      //     item => item.pdname == this.selectType
-      //   );
-      // }
     },
     //打开流程图
     loadimg(Event) {
@@ -337,18 +347,6 @@ export default {
       }`;
       this.isopenpic = true;
       this.loading = false;
-      // console.log(row);
-      // apipersonManagem_s({ processInstanceId: row.PROC_INST_ID_ }).then(res => {
-      //   let img = document.createElement("img");
-      //   img.src = window.URL.createObjectURL(
-      //     new Blob([res], { type: "image/jpeg" })
-      //   ).substring(5);
-      //   img.onload = function() {
-      //     window.URL.revokeObjectURL(this.src);
-      //   };
-      //   console.log(img);
-      //   document.body.appendChild(img);
-      // });
     },
     //待办
     openheadle(row) {
@@ -401,6 +399,9 @@ export default {
           break;
         case "劳动力分配":
           this.openRemove = true;
+          break;
+        case "[材料] 采购单支付申请":
+          this.openPayment = true;
           break;
       }
     },

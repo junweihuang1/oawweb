@@ -1,4 +1,4 @@
-import {get, post, Delete, put } from "./http";
+import { get, post, Delete, put } from "./http";
 // import { publicDecrypt } from "crypto";
 
 // new接口
@@ -50,7 +50,7 @@ export const apiapplyFillCard = data => post("applyFillCard", data);
 
 //获取指定补卡申请的详情
 export const apiApplicationDetails = ApplyId =>
-    get("getAssingnationAttendApply", ApplyId);
+  get("getAssingnationAttendApply", ApplyId);
 
 //获取未审核的补卡审批
 export const apiNotAuditedCard = data => get("getUnreviewedAttendApply", data);
@@ -60,7 +60,7 @@ export const apiagreeAttendApply = ApplyId => get("agreeAttendApply", ApplyId);
 
 //拒绝补卡申请
 export const apirejectAttendApply = ApplyId =>
-    get("rejectAttendApply", ApplyId);
+  get("rejectAttendApply", ApplyId);
 
 //获取所有用户信息
 export const apiuserLists = data => get("userLists", data);
@@ -348,7 +348,7 @@ export const apichengan_dream = data => post("ownGoalList", data);
 export const apiuserWagesLists = data => get("userWagesLists", data);
 
 //财务中心 --> 人员成本汇总-->保存个人工资信息
-export const apisubmitWages = data => post("submitWages", data)
+export const apisubmitWages = data => post("submitWages", data);
 
 //财务中心 --> 人员成本汇总-->查询历史汇总信息
 export const apiuserWagesLibs = data => get("userWagesLibs", data);
@@ -493,7 +493,7 @@ export const apichooseSupplier = data => get("chooseSupplier", data);
 
 //合同审批获取下一节点和审核人
 export const apiContractapprovePro = data =>
-    get("getContractapproveProcessList", data);
+  get("getContractapproveProcessList", data);
 
 //开票申请获取下一节点和审核人
 export const apiReqfundsProcess = data => get("getReqfundsProcessList", data);
@@ -512,7 +512,7 @@ export const apiSealProcessList = data => get("getSealProcessList", data);
 
 //运营类-->甲方材料采购-->查询增量申请记录
 export const apiQuantityRecord = data =>
-    get("changeQuantityRecordRecord", data);
+  get("changeQuantityRecordRecord", data);
 
 //运营类-->甲方材料采购-->获取甲供材料采购信息
 export const apiaPartyPurList = data => get("aPartyPurList", data);
@@ -684,4 +684,13 @@ export const apiupdateTaskRoleId = data => post("updateTaskRoleId", data);
 
 //系统设置-->流程管理-->部署流程文件
 export const apiuploadProcess = data =>
-    post("deploymentProcessDefinition_zip", data);
+  post("deploymentProcessDefinition_zip", data);
+
+//系统设置-->流程管理-->支付流程
+export const apipayApplyProcessInfo = data => get("payApplyProcessInfo", data);
+
+//办理支付
+export const apipassPayApply = data => post("passPayApply", data);
+
+//打印费用申请
+export const apicostappPrint = data => get("costappPrint", data);

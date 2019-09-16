@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table border="1" cellspacing="0" cellpadding="0">
+    <table>
       <tr>
         <th>申请人</th>
         <th>{{ applicant }}</th>
@@ -79,13 +79,14 @@ export default {
 
 <style lang="scss" scoped>
 table {
+  border-collapse: collapse;
+  border: none;
   width: 100%;
-  background: #aaa;
 }
 th {
-  background: #fff;
+  border: solid #aaa 0.5px;
   width: 25%;
-  height: 80px;
+  height: 60px;
   font-size: 16px;
   font-family: "宋体";
 }

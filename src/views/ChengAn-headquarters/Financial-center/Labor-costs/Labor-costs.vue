@@ -18,6 +18,7 @@
       <el-form-item
         ><el-button type="primary" @click="query">查询</el-button>
         <el-button type="primary" @click="openwin">历史</el-button>
+        <el-button type="primary" @click="openprint">打印</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -37,8 +38,31 @@
       :total="total"
     ></paging>
     <el-dialog :visible.sync="isopenEdit" title="编辑工资" width="30%">
-<edit-wages v-if="isopenEdit" :wagesForm="wagesForm" @close="close"></edit-wages>
+      <edit-wages
+        v-if="isopenEdit"
+        :wagesForm="wagesForm"
+        @close="close"
+      ></edit-wages>
     </el-dialog>
+    <div v-if="isprint" class="printTable">
+      <el-table :data="CostsList" border>
+        <el-table-column
+          :width="item[2]"
+          align="center"
+          v-for="(item, index) in print_header"
+          :label="item[0]"
+          :prop="item[1]"
+          :key="index"
+        ></el-table-column>
+      </el-table>
+      <!-- <Ca-rule-table
+        v-if="isprint"
+        :DataList="CostsList"
+        :header="print_header"
+        :iscellCilck="true"
+        cellField="基本工资"
+      ></Ca-rule-table> -->
+    </div>
   </div>
 </template>
 
@@ -47,6 +71,7 @@ import editWages from "./components/edit-wages";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import { apiuserWagesLists, apisave_userWages } from "@/request/api.js";
+import { setTimeout } from "timers";
 export default {
   name: "LaborCosts",
   data() {
@@ -82,39 +107,66 @@ export default {
         ["代扣个税", "uc_wage_tax", 100],
         ["实发工资", "uc_wage_realhair", 100]
       ],
+      print_header: [
+        ["中心名", "center_name", 40],
+        ["用户名", "username", 40],
+        ["出勤天数", "finance_wages_attCount", 40],
+        ["休假天数", "finance_wages_vacaCount", 40],
+        ["请假天数", "finance_wages_leaveCount", 40],
+        ["实际出勤", "uc_wage_actualDay", 40],
+        ["基本工资", "uc_wage_base", 40],
+        ["岗位工资", "uc_wage_post", 40],
+        ["绩效工资", "uc_wage_achieve", 40],
+        ["津贴补助", "uc_wage_subsidy", 40],
+        ["考勤扣除", "uc_wages_dedu", 40],
+        ["应发小计", "uc_wages_baseTotal", 40],
+        ["代扣社保", "uc_wage_socSec", 40],
+        ["公积金", "uc_wage_accFund", 40],
+        ["扣除小计", "", 40],
+        ["代扣个税", "uc_wage_tax", 40],
+        ["实发工资", "uc_wage_realhair", 40]
+      ],
       CostsList: [],
       headle: ["存档"],
-      wagesForm:{},
-      isopenEdit:false
+      wagesForm: {},
+      isopenEdit: false,
+      isprint: false
     };
   },
   components: {
     CaRuleTable,
-    paging,editWages
+    paging,
+    editWages
   },
   mounted() {
     this.getCostsList();
   },
   methods: {
-    close(){
-      this.isopenEdit=false
-      this.getCostsList()
+    openprint() {
+      this.isprint = true;
+      setTimeout(() => {
+        window.print();
+      }, 50);
     },
-    cellCilck(row){
-      console.log(row)
-      this.isopenEdit=true
-      this.wagesForm={
-        uc_wage_userId:row.userid,
-        uc_wage_id:row.uc_wage_id?row.uc_wage_id:0,
-        uc_wage_base:row.uc_wage_base,
-        uc_wage_post:row.uc_wage_post,
-        uc_wage_achieve:row.uc_wage_achieve,
-        uc_wage_actualDay:row.uc_wage_actualDay,
-        uc_wage_subsidy:row.uc_wage_subsidy,
-        uc_wage_socSec:row.uc_wage_socSec,
-        uc_wage_accFund:row.uc_wage_accFund,
-        uc_wage_tax:row.uc_wage_tax
-      }
+    close() {
+      this.isopenEdit = false;
+      this.getCostsList();
+    },
+    cellCilck(row) {
+      console.log(row);
+      this.isopenEdit = true;
+      this.wagesForm = {
+        uc_wage_userid: row.userid,
+        uc_wage_id: row.uc_wage_id ? row.uc_wage_id : 0,
+        uc_wage_base: row.uc_wage_base,
+        uc_wage_post: row.uc_wage_post,
+        uc_wage_achieve: row.uc_wage_achieve,
+        uc_wage_actualDay: row.uc_wage_actualDay,
+        uc_wage_subsidy: row.uc_wage_subsidy,
+        uc_wage_socSec: row.uc_wage_socSec,
+        uc_wage_accFund: row.uc_wage_accFund,
+        uc_wage_tax: row.uc_wage_tax
+      };
     },
     openwin() {
       this.$store.commit("addTabs", {
@@ -137,12 +189,16 @@ export default {
     },
     //存档
     file(row) {
-      row.uc_wage_center_name=row.center_name
+      row.uc_wage_center_name = row.center_name;
+      row.uc_wage_company_name = row.company_name;
       console.log(row);
-      row.data=JSON.stringify(row)
-      apisave_userWages(row).then(res => {
-        console.log(res);
-      });
+      this.$confirm(`是否存档?`)
+        .then(() => {
+          apisave_userWages(row).then(res => {
+            console.log(res);
+          });
+        })
+        .catch(() => {});
     },
     query() {
       this.getCostsList();
@@ -156,13 +212,25 @@ export default {
       };
       apiuserWagesLists(data).then(res => {
         console.log(res);
-        this.total=res.count
+        this.total = res.count;
         this.CostsList = res.data.map(item => {
-          item.finance_wages_vacaCount=31-item.finance_wages_attCount-item.finance_wages_leaveCount;
-          item.uc_wages_dedu=((item.uc_wage_base+item.uc_wage_post)/31*item.finance_wages_vacaCount).toFixed(2)
-          item.uc_wages_baseTotal =(item.uc_wage_post + item.uc_wage_base + item.uc_wage_subsidy-item.uc_wages_dedu).toFixed(2)
-          item.uc_wage_realhair =
-            (item.uc_wages_baseTotal - item.uc_wage_tax - item.uc_wage_socSec).toFixed(2);
+          item.finance_wages_vacaCount =
+            31 - item.finance_wages_attCount - item.finance_wages_leaveCount;
+          item.uc_wages_dedu = (
+            ((item.uc_wage_base + item.uc_wage_post) / 31) *
+            item.finance_wages_vacaCount
+          ).toFixed(2);
+          item.uc_wages_baseTotal = (
+            item.uc_wage_post +
+            item.uc_wage_base +
+            item.uc_wage_subsidy -
+            item.uc_wages_dedu
+          ).toFixed(2);
+          item.uc_wage_realhair = (
+            item.uc_wages_baseTotal -
+            item.uc_wage_tax -
+            item.uc_wage_socSec
+          ).toFixed(2);
           return item;
         });
       });
@@ -171,4 +239,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.printTable {
+  width: 100%;
+  background: #fff;
+  height: 937px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+</style>

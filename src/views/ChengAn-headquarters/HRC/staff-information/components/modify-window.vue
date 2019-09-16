@@ -1,11 +1,20 @@
 <template>
   <div>
+    <el-popover
+      placement="bottom"
+      trigger="hover"
+      style="float:right;text-ailgn:center;"
+    >
+      <div id="qrcode" style="margin:0 atuo;"></div>
+      <el-button slot="reference" type="success">二维码</el-button>
+    </el-popover>
     <el-button
       type="success"
       @click="submitForm"
-      style="float:right;margin:0 30px 20px 0;"
+      style="float:right;margin:0 10px 20px 0;"
       >提交</el-button
     >
+
     <template v-for="(items, index) in formTitleList">
       <el-table :data="form" border :key="index">
         <el-table-column
@@ -137,6 +146,7 @@
 </template>
 
 <script>
+import QRCode from "qrcodejs2";
 import selectRole from "@/components/Ca-select/select-role";
 import selectUser from "@/components/Ca-select/select-User";
 import selectDepartment from "@/components/Ca-select/select-department";
@@ -261,6 +271,18 @@ export default {
     roleList: Array,
     recordList: Object,
     submitType: String
+  },
+  mounted() {
+    let qrcode = new QRCode("qrcode", {
+      width: 100,
+      height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
+      text: `http://47.107.175.247:8080/qr?id=${
+        this.userList.userid
+      }&&department=${this.userList.department}` // 二维码内容
+      //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+      // background: '#f0f'
+      // foreground: '#ff0'
+    });
   },
   methods: {
     selectDate(row) {

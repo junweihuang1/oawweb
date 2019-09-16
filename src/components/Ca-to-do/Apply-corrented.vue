@@ -41,26 +41,42 @@
             ></el-input
           ></el-form-item>
         </el-col>
-        <el-col :span="12" v-if="userList != ''">
-          <el-form-item label="审核人">
-            <el-select v-model="userid" style="width:100%;">
-              <el-option
-                v-for="(item, index) in userList"
-                :key="index"
-                :value="item.userid"
-                :label="item.username"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label=" " v-if="openType == 'new'">
+
+        <el-col :span="24" v-if="openType == 'new'">
+          <el-form-item label=" ">
             <el-button type="primary" @click="submit">提交</el-button>
           </el-form-item>
-          <div v-else-if="openType == 'headle'">
+        </el-col>
+        <template v-else-if="openType == 'headle'">
+          <el-col :span="24">
             <el-form-item label="意见">
               <el-input type="textarea" v-model="reasons" :rows="3"></el-input>
             </el-form-item>
+          </el-col>
+          <template v-if="openType != 'check' && userTaskName != '结束'">
+            <el-col :span="12">
+              <el-form-item label="下一节点">
+                <el-input v-model="userTaskName" readonly></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="审核人">
+                <el-select
+                  v-model="userid"
+                  style="width:100%;"
+                  placeholder="没绑定审核人"
+                >
+                  <el-option
+                    v-for="(item, index) in userList"
+                    :key="index"
+                    :value="item.userid"
+                    :label="item.username"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </template>
+          <el-col :span="24">
             <el-form-item>
               <template v-for="(item, index) in buttonList">
                 <el-button
@@ -98,8 +114,8 @@
                 >
               </template>
             </el-form-item>
-          </div>
-        </el-col>
+          </el-col>
+        </template>
       </el-row>
     </el-form>
     <el-divider content-position="left">流程线</el-divider>
@@ -151,7 +167,8 @@ export default {
       buttonList: [],
       userList: [],
       Approvaltable: [],
-      reasons: ""
+      reasons: "",
+      userTaskName: ""
     };
   },
   props: {
@@ -223,10 +240,18 @@ export default {
         } else {
           this.processLine = res.activityList;
         }
+        this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList[0].userid
-          : "";
+        // this.userid = res.userlist.userList
+        //   ? res.userlist.userList[0].userid
+        //   : "";
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
+
         this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },
@@ -240,7 +265,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }

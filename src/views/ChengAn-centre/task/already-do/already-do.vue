@@ -180,10 +180,56 @@
         openType="check"
       ></Apply-corrented>
     </el-dialog>
+    <!-- 打开调动申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openRemove"
+      width="50%"
+      top="8vh"
+    >
+      <Apply-move
+        v-if="openRemove"
+        @close="closewin"
+        :active="active"
+        openType="check"
+      ></Apply-move>
+    </el-dialog>
+    <!-- 打开甲供材料采购 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openaParty"
+      width="50%"
+      top="8vh"
+    >
+      <aParty-apply-purchase
+        v-if="openaParty"
+        :OrderId="OrderId"
+        :active="active"
+        openType="check"
+        @close="closewin"
+      ></aParty-apply-purchase>
+    </el-dialog>
+    <!-- 支付申请 -->
+    <el-dialog
+      :title="openTitle"
+      :visible.sync="openPayment"
+      width="75%"
+      top="8vh"
+    >
+      <headle-payment
+        v-if="openPayment"
+        :active="active"
+        openType="check"
+        @close="closewin"
+      ></headle-payment>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import headlePayment from "../to-do/components/headle-payment";
+import aPartyApplyPurchase from "@/components/Ca-to-do/aParty-apply-purchase/aParty-apply-purchase";
+import ApplyMove from "@/components/Ca-to-do/Apply-move";
 import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
 import ApplyQuit from "@/components/Ca-to-do/Apply-quit";
 import headleContractApprove from "../to-do/components/headle-contract-approve";
@@ -198,11 +244,7 @@ import headleGoods from "../to-do/components/headle-Goods";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import paging from "@/components/paging/paging";
 import { changetime } from "@/components/global-fn/global-fn";
-import {
-  apialreadyHandleTask,
-  apifindTaskType,
-  apipersonManagem_s
-} from "@/request/api";
+import { apialreadyHandleTask, apifindTaskType } from "@/request/api";
 export default {
   name: "alreadyDo",
   data() {
@@ -243,6 +285,9 @@ export default {
       openQuit: false,
       openCorrent: false,
       isopenpic: false,
+      openRemove: false,
+      openPayment: false,
+      openaParty: false,
       loading: true,
       reqfundsId: ""
     };
@@ -260,7 +305,10 @@ export default {
     headleContractApprove,
     ApplyQuit,
     ApplyCorrented,
-    paging
+    paging,
+    aPartyApplyPurchase,
+    ApplyMove,
+    headlePayment
   },
   mounted() {
     //获取待办类型
@@ -288,6 +336,9 @@ export default {
       this.openApply = false;
       this.openQuit = false;
       this.openCorrent = false;
+      this.openaParty = false;
+      this.openRemove = false;
+      this.openPayment = false;
       // this.getReadyDoList();
     },
     //查询
@@ -345,6 +396,18 @@ export default {
           break;
         case "[人事]-转正申请":
           this.openCorrent = true;
+          break;
+        case "[甲供]-材料采购":
+          this.openaParty = true;
+          this.OrderId = this.active.BUSINESS_KEY_
+            ? this.active.BUSINESS_KEY_.split(".")[1]
+            : this.active.businessId;
+          break;
+        case "劳动力分配":
+          this.openRemove = true;
+          break;
+        case "[材料] 采购单支付申请":
+          this.openPayment = true;
           break;
       }
     },
