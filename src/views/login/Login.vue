@@ -575,14 +575,13 @@ export default {
       var ret = [];
       locatList.forEach(itemA => {
         var r = returnList.find(itemB => itemB.id == itemA.id);
-        // console.log(r);
         if (r) {
           var obj = new Object({
             children: [],
             icon: r.icon ? r.icon : "",
             id: r.id,
             route: r.route ? r.route : "",
-            title: r.title ? r.title : r.text
+            title: itemA.text ? itemA.text : r.title
           });
           ret.push(obj);
           if (itemA.children && r.children) {

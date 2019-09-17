@@ -407,7 +407,12 @@ export default {
         }
         this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
         if (this.userTaskName == "结束") {
           this.userid = 0;
         }
@@ -437,21 +442,23 @@ export default {
       let data;
       if (this.OrderId == "") {
         //当订单id为空时新增
+        data = {
+          construct_Aparty_purchase_constructId: this.projectList
+            .construct_project_id,
+          construct_Aparty_purchase_supplier: this.projectList
+            .construct_Aparty_purchase_supplier,
+          construct_Aparty_purchase_contacts: this.projectList
+            .construct_Aparty_purchase_contacts,
+          construct_Aparty_purchase_tel: this.projectList
+            .construct_Aparty_purchase_tel,
+          construct_Aparty_purchase_remarks: "",
+          userid: this.userid,
+          project_name: this.projectList.construct_project_name,
+          rows: JSON.stringify(entries)
+        };
+        console.log(data);
         this.$confirm(`确定提交吗？`)
           .then(() => {
-            data = {
-              construct_Aparty_purchase_constructId: this.projectList
-                .construct_project_id,
-              construct_Aparty_purchase_supplier: this.projectList
-                .construct_Aparty_purchase_supplier,
-              construct_Aparty_purchase_contacts: this.projectList
-                .construct_Aparty_purchase_contacts,
-              construct_Aparty_purchase_tel: this.projectList
-                .construct_Aparty_purchase_tel,
-              construct_Aparty_purchase_remarks: "",
-              userid: this.userid,
-              rows: JSON.stringify(entries)
-            };
             apisave_aPartyPur(data).then(res => {
               this.$message.success("新增订单成功");
               this.$emit("close");
@@ -542,7 +549,7 @@ export default {
             construct_Aparty_purEntry_num: "",
             construct_Aparty_purEntry_parentId: "",
             construct_Aparty_purEntry_remark: "",
-            construct_aParty_byedNum: ""
+            construct_aParty_byedNum: row.sum
           };
         }
         return item;

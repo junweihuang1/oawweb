@@ -52,6 +52,7 @@ export default {
         ["材料规格", "construct_Aparty_material_model"],
         ["单位", "construct_Aparty_material_unit", 80],
         ["合同量", "construct_Aparty_material_num", 90],
+        ["累计采购量", "sum", 110],
         ["备注", "construct_Aparty_material_remark", 100]
       ],
       material_category: "",

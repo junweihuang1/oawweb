@@ -219,16 +219,20 @@ export default {
   },
   methods: {
     getSelectName(row) {
-      this.isselect = false;
-      this.$nextTick(() => {
-        this.isselect = true;
-      });
-      this.isopenSelect = false;
-      this.form[0].department_name = row.department_name;
-      this.form[0].department = row.department_id;
-      this.form[0].center_name = row.center_name;
-      this.form[0].company_name = row.company_name;
-      this.form[0].center_id = row.center_id;
+      if (row.center_id === 40) {
+        this.isselect = false;
+        this.$nextTick(() => {
+          this.isselect = true;
+        });
+        this.isopenSelect = false;
+        this.form[0].department_name = row.department_name;
+        this.form[0].department = row.department_id;
+        this.form[0].center_name = row.center_name;
+        this.form[0].company_name = row.company_name;
+        this.form[0].center_id = row.center_id;
+      } else {
+        this.$message.error("请选择劳动力分供方");
+      }
       console.log(row);
     },
     openselect() {

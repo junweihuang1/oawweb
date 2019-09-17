@@ -1,39 +1,40 @@
 <template>
   <div style="border:1px solid #E4E7ED;">
-    <el-row><el-col :span="24">
-      <el-tabs tab-position="top" v-model="currentActive" type="card">
-      <el-tab-pane label="申请采购" name="1">
-        <Apply-purchase
-          v-if="isRefresh"
-          style="padding:10px;"
-          :projectList="projectList"
-          @addNeworder="addNeworder"
-          @setPurchaseId="getPurchaseId"
-          @setOrderId="getOrderId"
-        ></Apply-purchase>
-      </el-tab-pane>
-      <el-tab-pane
-        :label="
-          openType == 'add'
-            ? '新增订单'
-            : openType == 'check'
-            ? '查看订单'
-            : '修改订单'
-        "
-        name="2"
-        v-if="isOpenOrder"
-      >
-        <aParty-apply-purchase
-          v-if="isOpenOrder"
-          @close="closeOrder"
-          :OrderId="OrderId"
-          :proList="projectList"
-          :openType="openType"
-          style="padding:10px;"
-        ></aParty-apply-purchase>
-      </el-tab-pane>
-    </el-tabs>
-      </el-col></el-row>
+    <el-row
+      ><el-col :span="24">
+        <el-tabs tab-position="top" v-model="currentActive" type="card">
+          <el-tab-pane label="申请采购" name="1">
+            <Apply-purchase
+              v-if="isRefresh"
+              style="padding:10px;"
+              :projectList="projectList"
+              @addNeworder="addNeworder"
+              @setPurchaseId="getPurchaseId"
+              @setOrderId="getOrderId"
+            ></Apply-purchase>
+          </el-tab-pane>
+          <el-tab-pane
+            :label="
+              openType == 'add'
+                ? '新增订单'
+                : openType == 'check'
+                ? '查看订单'
+                : '修改订单'
+            "
+            name="2"
+            v-if="isOpenOrder"
+          >
+            <aParty-apply-purchase
+              v-if="isOpenOrder"
+              @close="closeOrder"
+              :OrderId="OrderId"
+              :proList="projectList"
+              :openType="openType"
+              style="padding:10px;"
+            ></aParty-apply-purchase>
+          </el-tab-pane>
+        </el-tabs> </el-col
+    ></el-row>
   </div>
 </template>
 

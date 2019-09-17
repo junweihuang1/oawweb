@@ -3,6 +3,7 @@
     <el-popover
       placement="bottom"
       trigger="hover"
+      v-show="submitType !== 'new'"
       style="float:right;text-ailgn:center;"
     >
       <div id="qrcode" style="margin:0 atuo;"></div>

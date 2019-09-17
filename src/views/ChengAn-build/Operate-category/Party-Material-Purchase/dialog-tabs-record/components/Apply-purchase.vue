@@ -23,7 +23,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="950"
+      :total="total"
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
@@ -42,6 +42,7 @@ export default {
       currentpage: 1,
       order_num: "",
       PurList: [],
+      total: 0,
       header: [
         ["订单编号", "construct_Aparty_purchase_orderNum", 120],
         ["创建时间", "construct_Aparty_purchase_creatTime", 100],
@@ -112,6 +113,7 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.PurList = res.data.map(item => {
           switch (item.construct_Aparty_purchase_status) {
             case 0:

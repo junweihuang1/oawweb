@@ -78,6 +78,9 @@
             <el-form-item label="主材数量">
               <el-input
                 clearable
+                :readonly="
+                  addform.construct_project_quantities_num === 0 ? false : true
+                "
                 v-model="addform.construct_project_quantities_num"
               ></el-input>
             </el-form-item>
@@ -135,7 +138,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="isopenMaterial"
-      title="选择材料"
+      title="选择材料11"
       :append-to-body="true"
     >
       <select-material
@@ -248,17 +251,21 @@ export default {
       this.idarr = e.map(item => item.construct_Aparty_material_id);
     },
     saveform() {
-      if (!this.addform.construct_project_quantities_id) {
-        apisaveQuantities(this.addform).then(res => {
-          this.$message.success(res.msg);
-        });
-      } else {
-        apimodQuantities(this.addform).then(res => {
-          this.$message.success(res.msg);
-        });
-      }
-      this.isadd = false;
-      this.getMaterialList();
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          if (!this.addform.construct_project_quantities_id) {
+            apisaveQuantities(this.addform).then(res => {
+              this.$message.success(res.msg);
+            });
+          } else {
+            apimodQuantities(this.addform).then(res => {
+              this.$message.success(res.msg);
+            });
+          }
+          this.isadd = false;
+          this.getMaterialList();
+        })
+        .catch(() => {});
     },
     checkitem(row) {
       this.isadd = true;
@@ -278,11 +285,13 @@ export default {
           row.construct_project_quantities_price, //(必填)单价
         construct_project_quantities_remarks:
           row.construct_project_quantities_remarks, //(必填)备注
-        construct_project_quantities_modelId: row.construct_material_seriesId //(必填)规格id
+        construct_project_quantities_modelId:
+          row.construct_project_quantities_modelId //(必填)规格id
       };
     },
     //打开修改合同工程量窗口
     modifyParty(row) {
+      console.log(row);
       this.opentype = "";
       this.diatitle = "修改合同工程量";
       this.isadd = true;
@@ -300,7 +309,8 @@ export default {
           row.construct_project_quantities_price, //(必填)单价
         construct_project_quantities_remarks:
           row.construct_project_quantities_remarks, //(必填)备注
-        construct_project_quantities_modelId: row.construct_material_seriesId //(必填)规格id
+        construct_project_quantities_modelId:
+          row.construct_project_quantities_modelId //(必填)规格id
       };
     },
     //打开新增合同工程量窗口

@@ -91,6 +91,9 @@
             <el-form-item label="合同工程量">
               <el-input
                 clearable
+                :readonly="
+                  addform.construct_Aparty_material_num == 0 ? false : true
+                "
                 v-model="addform.construct_Aparty_material_num"
               ></el-input>
             </el-form-item>
@@ -156,9 +159,12 @@ export default {
           "",
           "",
           "",
-          [["合同工程量", "", 120], ["新增工程量", "", 120]]
+          [
+            ["合同工程量", "construct_Aparty_material_num", 120],
+            ["新增工程量", "afterAddingNum", 120]
+          ]
         ],
-        ["已采购数量", "", 120],
+        ["已采购数量", "sum", 120],
         ["可采购数量", "", 120],
         ["备注", "construct_Aparty_material_remark", 90]
       ],

@@ -25,6 +25,7 @@
       :DataList="CostsList"
       :header="header"
       :iscellCilck="true"
+      :Judge_field="Judge_field"
       cellField="基本工资"
       @cellCilck="cellCilck"
       :headle="headle"
@@ -44,34 +45,25 @@
         @close="close"
       ></edit-wages>
     </el-dialog>
+    <el-dialog :visible.sync="isprint" :show-close="true" :fullscreen="true">
+    </el-dialog>
     <div v-if="isprint" class="printTable">
-      <el-table :data="CostsList" border>
-        <el-table-column
-          :width="item[2]"
-          align="center"
-          v-for="(item, index) in print_header"
-          :label="item[0]"
-          :prop="item[1]"
-          :key="index"
-        ></el-table-column>
-      </el-table>
-      <!-- <Ca-rule-table
+      <print-table
+        @close="close"
+        :CostsList="CostsList"
         v-if="isprint"
-        :DataList="CostsList"
-        :header="print_header"
-        :iscellCilck="true"
-        cellField="基本工资"
-      ></Ca-rule-table> -->
+        :print_header="print_header"
+      ></print-table>
     </div>
   </div>
 </template>
 
 <script>
+import printTable from "./components/print-table";
 import editWages from "./components/edit-wages";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import { apiuserWagesLists, apisave_userWages } from "@/request/api.js";
-import { setTimeout } from "timers";
 export default {
   name: "LaborCosts",
   data() {
@@ -108,35 +100,37 @@ export default {
         ["实发工资", "uc_wage_realhair", 100]
       ],
       print_header: [
-        ["中心名", "center_name", 40],
-        ["用户名", "username", 40],
-        ["出勤天数", "finance_wages_attCount", 40],
-        ["休假天数", "finance_wages_vacaCount", 40],
-        ["请假天数", "finance_wages_leaveCount", 40],
-        ["实际出勤", "uc_wage_actualDay", 40],
-        ["基本工资", "uc_wage_base", 40],
-        ["岗位工资", "uc_wage_post", 40],
-        ["绩效工资", "uc_wage_achieve", 40],
-        ["津贴补助", "uc_wage_subsidy", 40],
-        ["考勤扣除", "uc_wages_dedu", 40],
-        ["应发小计", "uc_wages_baseTotal", 40],
-        ["代扣社保", "uc_wage_socSec", 40],
-        ["公积金", "uc_wage_accFund", 40],
-        ["扣除小计", "", 40],
-        ["代扣个税", "uc_wage_tax", 40],
-        ["实发工资", "uc_wage_realhair", 40]
+        ["中心名", "center_name", 2],
+        ["用户名", "username", 3],
+        ["出勤天数", "finance_wages_attCount", 2],
+        ["休假天数", "finance_wages_vacaCount", 2],
+        ["请假天数", "finance_wages_leaveCount", 2],
+        ["实际出勤", "uc_wage_actualDay", 2],
+        ["基本工资", "uc_wage_base", 4],
+        ["岗位工资", "uc_wage_post", 2],
+        ["绩效工资", "uc_wage_achieve", 2],
+        ["津贴补助", "uc_wage_subsidy", 2],
+        ["考勤扣除", "uc_wages_dedu", 2],
+        ["应发小计", "uc_wages_baseTotal", 2],
+        ["代扣社保", "uc_wage_socSec", 2],
+        ["公积金", "uc_wage_accFund", 2],
+        ["扣除小计", "", 2],
+        ["代扣个税", "uc_wage_tax", 2],
+        ["实发工资", "uc_wage_realhair", 2]
       ],
       CostsList: [],
       headle: ["存档"],
       wagesForm: {},
       isopenEdit: false,
-      isprint: false
+      isprint: false,
+      Judge_field: "uc_wage_status" //判断是否禁用的字段
     };
   },
   components: {
     CaRuleTable,
     paging,
-    editWages
+    editWages,
+    printTable
   },
   mounted() {
     this.getCostsList();
@@ -144,11 +138,9 @@ export default {
   methods: {
     openprint() {
       this.isprint = true;
-      setTimeout(() => {
-        window.print();
-      }, 50);
     },
     close() {
+      this.isprint = false;
       this.isopenEdit = false;
       this.getCostsList();
     },
@@ -169,11 +161,14 @@ export default {
       };
     },
     openwin() {
-      this.$store.commit("addTabs", {
-        route: "/History",
-        title: "历史人员成本",
-        id: "201"
-      });
+      //遍历打开的标签，没有201就加上
+      if (!this.$store.state.openTabs.some(item => item.id == "201")) {
+        this.$store.commit("addTabs", {
+          route: "/History",
+          title: "历史人员成本",
+          id: "201"
+        });
+      }
       this.$store.commit("changeActiveIndex", "201");
       this.$router.push({
         path: "/History"
@@ -189,6 +184,7 @@ export default {
     },
     //存档
     file(row) {
+      row.uc_wage_userid = row.uc_wage_userId;
       row.uc_wage_center_name = row.center_name;
       row.uc_wage_company_name = row.company_name;
       console.log(row);
@@ -196,6 +192,7 @@ export default {
         .then(() => {
           apisave_userWages(row).then(res => {
             console.log(res);
+            this.getCostsList();
           });
         })
         .catch(() => {});
@@ -244,6 +241,7 @@ export default {
   width: 100%;
   background: #fff;
   height: 937px;
+
   position: fixed;
   top: 0;
   left: 0;

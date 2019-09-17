@@ -305,6 +305,8 @@ export default {
         status: this.form.status == "" ? 0 : this.form.status
       };
       apipmuserList(data).then(res => {
+        console.log(res);
+        this.total = res.total;
         this.staffList = res.data.map(item => {
           item.sex = item.sex == 1 ? "男" : "女";
           switch (item.status) {

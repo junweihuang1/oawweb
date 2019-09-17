@@ -59,6 +59,7 @@
             <el-button
               type="success"
               size="mini"
+              :disabled="row[Judge_field] === 1 && Judge_field ? true : false"
               v-if="index == 0 && item != ''"
               @click="checkleave(row)"
               plain
@@ -160,11 +161,12 @@ export default {
       type: Boolean,
       default: false
     },
-    iscellCilck:{
-      type:Boolean,
-      default:false
+    iscellCilck: {
+      type: Boolean,
+      default: false
     },
-    cellField:String
+    cellField: String,
+    Judge_field: String //判断是否禁用的字段
   },
   computed: {
     getwidth() {
@@ -280,11 +282,10 @@ export default {
     rowClick(row, event, column) {
       this.$emit("checkline", [row, event, column]);
     },
-    cellClick(row, column, cell, event){
-      if(this.iscellCilck&&column.label==this.cellField){
-        this.$emit("cellCilck",row)
+    cellClick(row, column, cell, event) {
+      if (this.iscellCilck && column.label == this.cellField) {
+        this.$emit("cellCilck", row);
       }
-      
     },
     dblclick(row, event) {
       this.$emit("dblclick", row);
@@ -300,13 +301,13 @@ body .el-table th.gutter {
 }
 
 .el-table__header tr,
-  .el-table__header th {
-    padding: 0;
-    height: 40px;
+.el-table__header th {
+  padding: 0;
+  height: 40px;
 }
 .el-table__body tr,
-  .el-table__body td {
-    padding: 0;
-    height: 40px;
+.el-table__body td {
+  padding: 0;
+  height: 40px;
 }
 </style>

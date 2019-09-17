@@ -23,7 +23,6 @@
       <el-form-item v-if="openType">
         <el-radio-group v-model="mycompanyId" @change="getProjectList">
           <el-radio-button :label="2">改造项目</el-radio-button>
-          <el-radio-button :label="3">加盟项目</el-radio-button>
           <el-radio-button :label="4">保养项目</el-radio-button>
           <el-radio-button :label="5">检测项目</el-radio-button>
         </el-radio-group>
@@ -145,13 +144,13 @@ export default {
     render() {
       this.isopenlist = false;
       //路由重定向到待办页
-      if(this.$store.openTabs.some(item=>item.id!="51")){
-          this.$store.commit("addTabs", {
-        route: "/to-do",
-        title: "待办事项",
-        id: "51"
-      });
-      }      
+      if (this.$store.openTabs.some(item => item.id != "51")) {
+        this.$store.commit("addTabs", {
+          route: "/to-do",
+          title: "待办事项",
+          id: "51"
+        });
+      }
       this.$store.commit("changeActiveIndex", "51");
       this.$router.push({
         path: "/to-do"
@@ -166,22 +165,26 @@ export default {
     },
     //提交
     submit() {
-      if (
-        this.activeForm.constuct_project_dep_id &&
-        this.activeForm.constuct_project_dep_id != ""
-      ) {
-        apimodprojectDep(this.activeForm).then(res => {
-          this.$message.success(res.msg);
-          this.isopenmodify = false;
-          this.getProjectList();
-        });
-      } else {
-        apisaveprojectDep(this.activeForm).then(res => {
-          this.$message.success(res.msg);
-          this.isopenmodify = false;
-          this.getProjectList();
-        });
-      }
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          if (
+            this.activeForm.constuct_project_dep_id &&
+            this.activeForm.constuct_project_dep_id != ""
+          ) {
+            apimodprojectDep(this.activeForm).then(res => {
+              this.$message.success(res.msg);
+              this.isopenmodify = false;
+              this.getProjectList();
+            });
+          } else {
+            apisaveprojectDep(this.activeForm).then(res => {
+              this.$message.success(res.msg);
+              this.isopenmodify = false;
+              this.getProjectList();
+            });
+          }
+        })
+        .catch(() => {});
     },
     //修改项目
     modify(row) {

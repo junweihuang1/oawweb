@@ -97,7 +97,7 @@
       </el-form-item>
     </el-form>
 
-    <el-divider content-position="left">流程线</el-divider>
+    <!-- <el-divider content-position="left">流程线</el-divider>
     <el-steps
       :space="250"
       :active="0"
@@ -109,7 +109,7 @@
         v-for="(item, index) in activityList"
         :key="index"
       ></el-step>
-    </el-steps>
+    </el-steps> -->
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
         :projectList="projectList"
@@ -137,7 +137,7 @@ export default {
         ["原材料名称和规格", "", 150],
         ["单位", "construct_material_model_unit", 65],
         ["主材数量", "construct_project_quantities_num", 90],
-        ["已采购量", "construct_project_quantities_num", 90],
+        ["已采购量", "", 90],
         ["合同单价", "purNum", 90],
         ["新增主材数量", "afterAddingNum", 110, "", "", true]
       ],
@@ -207,6 +207,7 @@ export default {
     },
     getQuantity(row) {
       //遍历是否有重复选项
+      console.log(row);
       let isrepeat = this.DataList.some(
         item =>
           item.construct_project_quantities_id ==

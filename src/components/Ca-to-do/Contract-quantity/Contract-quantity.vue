@@ -99,25 +99,26 @@
       label-position="left"
       label-width="80px"
     >
-    <template v-if="userTaskName != '结束' && openType !== 'check'">
-      <el-row><el-col :span="8">
+      <template v-if="userTaskName != '结束' && openType !== 'check'">
+        <el-row
+          ><el-col :span="8">
             <el-form-item label="下一节点">
-                <el-input readonly v-model="userTaskName"></el-input>
-              </el-form-item>
-              </el-col>
-              <el-col :span="8">
-      <el-form-item label="审核人">
-        <el-select v-model="userid" placeholder="没绑定审核人">
-          <el-option
-            v-for="(item, index) in userList"
-            :key="index"
-            :value="item.userid"
-            :label="item.username"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      </el-col></el-row>
-          </template>          
+              <el-input readonly v-model="userTaskName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核人">
+              <el-select v-model="userid" placeholder="没绑定审核人">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item> </el-col
+        ></el-row>
+      </template>
       <template v-if="openType == 'headle'">
         <el-form-item label="意见">
           <el-input
@@ -249,7 +250,7 @@ export default {
       ],
       userList: [],
       myDataList: [],
-      userTaskName:""
+      userTaskName: ""
     };
   },
   components: {
@@ -349,7 +350,12 @@ export default {
           : [];
         this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
         this.userList = res.userlist.userList ? res.userlist.userList : [];
         //当进入办理流程后，遍历流程线，判断出当前的节点
         if (this.Approvaltable != "") {

@@ -11,6 +11,9 @@
             <el-button-group>
               <el-button type="primary" @click="getWorkerList">查询</el-button>
               <el-button type="primary" @click="isopenwin">新增</el-button>
+              <el-button type="primary" @click="joinproject"
+                >加盟项目</el-button
+              >
             </el-button-group>
           </el-form-item>
         </el-form>
@@ -36,10 +39,14 @@
         :submitType="submitType"
       ></modify-window>
     </el-dialog>
+    <el-dialog :visible.sync="isopenJoin" top="8vh" width="60%">
+      <join-project v-if="isopenJoin"></join-project>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import joinProject from "./components/join-project";
 import CaTree from "@/components/Ca-tree/Ca-tree";
 import ModifyWindow from "./components/modify-window";
 import paging from "@/components/paging/paging";
@@ -69,14 +76,16 @@ export default {
       isopen: false,
       userList: [],
       submitType: "",
-      roleList: []
+      roleList: [],
+      isopenJoin: false
     };
   },
   components: {
     CaRuleTable,
     paging,
     ModifyWindow,
-    CaTree
+    CaTree,
+    joinProject
   },
   mounted() {
     this.getWorkerList();
@@ -147,6 +156,9 @@ export default {
           return item;
         });
       });
+    },
+    joinproject() {
+      this.isopenJoin = true;
     }
   }
 };

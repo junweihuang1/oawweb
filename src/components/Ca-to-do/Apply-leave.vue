@@ -72,9 +72,13 @@
               minlength="300px"
             /> </el-form-item
         ></el-col>
-        <el-col :span="12" v-if="userid !== '' && openType != 'check'">
+        <el-col :span="12" v-if="userTaskName != '结束' && openType != 'check'">
           <el-form-item label="审核人">
-            <el-select v-model="userid" style="width:100%;">
+            <el-select
+              v-model="userid"
+              style="width:100%;"
+              placeholder="没绑定审核人"
+            >
               <el-option
                 v-for="(item, index) in userList"
                 :key="index"
@@ -180,6 +184,7 @@ export default {
   name: "leavetable",
   data() {
     return {
+      userTaskName: "",
       ApprovalHeaderList: [
         ["序号", "index", 60],
         ["流程节点", "name_", 100],
@@ -297,12 +302,14 @@ export default {
             return item;
           });
         }
+        this.userTaskName = res.userList.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList != ""
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
             ? res.userlist.userList[0].userid
-            : ""
-          : "无绑定";
+            : "";
         console.log(this.userid);
         this.userList = res.userlist.userList
           ? res.userlist.userList != ""
@@ -317,7 +324,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "") {
         this.$message.error("审核人为空不能提交！");
         return;
       }
