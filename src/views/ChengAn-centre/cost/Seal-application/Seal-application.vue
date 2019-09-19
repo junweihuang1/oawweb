@@ -29,6 +29,7 @@
       :visible.sync="isApplyOpen"
       width="35%"
       top="10vh"
+      v-dialogDrag
     >
       <Seal-Apply
         :form="addform"
@@ -45,6 +46,7 @@
       :fullscreen="true"
       :show-close="false"
       top="8vh"
+      v-dialogDrag
     >
       <details-print
         v-if="isprint"

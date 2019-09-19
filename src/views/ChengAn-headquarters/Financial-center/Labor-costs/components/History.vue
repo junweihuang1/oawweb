@@ -47,6 +47,7 @@
       :total="total"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isadd"
       title="添加工资记录"
       width="35%"

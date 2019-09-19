@@ -29,9 +29,10 @@
         ></paging>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="isopen" width="70%">
+    <el-dialog :visible.sync="isopen" width="70%" v-dialogDrag>
       <modify-window
         @close="close"
+        v-if="isopen"
         :roleList="roleList"
         :userList="userList"
         :submitType="submitType"

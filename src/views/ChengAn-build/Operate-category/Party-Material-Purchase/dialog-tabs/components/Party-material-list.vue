@@ -47,6 +47,7 @@
       @setpage="getpage"
     ></paging>
     <el-dialog
+    v-dialogDrag
       top="8vh"
       :title="diatitle"
       :visible.sync="isadd"
@@ -113,6 +114,7 @@
       </el-form>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopen_ContractRecord"
       title="新增合同工程量记录"
       :append-to-body="true"

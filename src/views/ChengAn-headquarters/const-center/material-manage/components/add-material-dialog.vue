@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :visible.sync="myadd" title="材料系列" @close="closewin">
+    <el-dialog :visible.sync="myadd" title="材料系列" @close="closewin" v-dialogDrag>
       <el-form size="mini" inline>
         <el-form-item label="材料系列">
           <el-input v-model="materialCategory" clearable></el-input>
@@ -50,6 +50,7 @@
       >
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       title="选择供应商"
       :visible.sync="isselect"
       :append-to-body="true"

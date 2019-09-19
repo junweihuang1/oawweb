@@ -25,11 +25,12 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       top="30vh"
       title="调动申请"
       :visible.sync="isopen"
@@ -54,10 +55,10 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog :visible.sync="isopenselect" :append-to-body="true">
+    <el-dialog :visible.sync="isopenselect" :append-to-body="true" v-dialogDrag>
       <select-project @setSelectName="getSelectName"></select-project>
     </el-dialog>
-    <el-dialog :visible.sync="isopenRecord" :append-to-body="true">
+    <el-dialog :visible.sync="isopenRecord" :append-to-body="true" v-dialogDrag>
       <remove-record :userId="userId"></remove-record>
     </el-dialog>
   </div>
@@ -79,6 +80,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total:0,
       workerName: "",
       teamList: [],
       header: [
@@ -217,6 +219,7 @@ export default {
           .construct_project_workTeam_id
       }).then(res => {
         console.log(res);
+        this.total=res.total
         this.teamList = res.rows.map(item => {
           item.sex2 = item.sex == 1 ? "男" : "女";
           item.status2 = item.isOnApply == 1 ? "调动中" : "可调动";

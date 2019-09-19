@@ -27,7 +27,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" title="费用申请单" top="8vh">
+    <el-dialog :visible.sync="isopen" title="费用申请单" top="8vh" v-dialogDrag>
       <cost-details
         v-if="isopen"
         :openType="openType"
@@ -43,6 +43,7 @@
       :fullscreen="true"
       :show-close="false"
       top="8vh"
+      v-dialogDrag
     >
       <cost-details-print
         v-if="isprint"

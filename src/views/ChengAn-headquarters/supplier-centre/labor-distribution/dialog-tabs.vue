@@ -75,11 +75,12 @@ export default {
           .construct_project_workTeam_id,
         supplierMod_worker_userId: row.userid
       };
-      apisave_Worker(data).then(res => {
+        apisave_Worker(data).then(res => {
+          this.$message.success(res.msg)
         this.isopenadd = false;
         this.isopenmove = false;
         this.currentActive = "1";
-      });
+      })
     },
     openmove([idarr, namearr]) {
       this.idarr = idarr;

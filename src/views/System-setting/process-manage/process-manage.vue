@@ -49,7 +49,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" :title="opentitle">
+    <el-dialog :visible.sync="isopen" :title="opentitle" v-dialogDrag>
       <updata-process
         :activeform="activeform"
         v-if="isopen"

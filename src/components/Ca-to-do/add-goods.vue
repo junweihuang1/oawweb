@@ -208,7 +208,7 @@
         ></el-table-column>
       </el-table>
     </template>
-    <el-dialog :visible.sync="isselect" :append-to-body="true">
+    <el-dialog :visible.sync="isselect" :append-to-body="true" v-dialogDrag>
       <select-project
         v-if="isselect"
         @setSelectName="getSelectName"

@@ -211,6 +211,7 @@
       </el-table>
     </div>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenDep"
       title="选择部门"
       :append-to-body="true"

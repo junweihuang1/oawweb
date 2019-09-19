@@ -14,12 +14,6 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
-    <!-- <el-dialog title="未转正详情" :visible.sync="isopen" :append-to-body="true">
-      <notCorrented-detail
-        v-if="isopen"
-        
-      ></notCorrented-detail>
-    </el-dialog> -->
   </div>
 </template>
 

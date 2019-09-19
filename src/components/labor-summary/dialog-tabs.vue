@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+    v-dialogDrag
       :visible.sync="myopen"
       top="8vh"
       width="85%"

@@ -27,7 +27,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="ismodify" width="20%" title="总裁办信息编辑">
+    <el-dialog :visible.sync="ismodify" width="20%" title="总裁办信息编辑" v-dialogDrag>
       <el-form :model="dialogForm" ref="dialogForm" label-width="80px">
         <el-form-item label="公司">
           <select-company @setCompanyName="getCompanyName"></select-company>
@@ -50,7 +50,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog :visible.sync="isopenSelect" title="选择上一级">
+    <el-dialog :visible.sync="isopenSelect" title="选择上一级" v-dialogDrag>
       <select-level @setLevel="getLevel"></select-level>
     </el-dialog>
   </div>

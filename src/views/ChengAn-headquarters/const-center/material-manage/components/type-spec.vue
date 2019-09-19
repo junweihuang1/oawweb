@@ -26,7 +26,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" width="15%" :append-to-body="true">
+    <el-dialog :visible.sync="isopen" width="15%" :append-to-body="true" v-dialogDrag>
       <el-form size="mini">
         <el-form-item label="型号名称">
           <el-input v-model="addform.model_name"></el-input>

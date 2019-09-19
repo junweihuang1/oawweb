@@ -31,7 +31,7 @@
         :setselect="isselect"
         @setselect="getselect"
       ></Ca-rule-table>
-      <el-dialog :visible.sync="isopen" title="部门信息" width="30%">
+      <el-dialog :visible.sync="isopen" title="部门信息" width="30%" v-dialogDrag>
         <el-form ref="form" :model="form" label-width="90px">
           <el-form-item label="部门名称" prop="department_name">
             <el-input

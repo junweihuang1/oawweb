@@ -38,8 +38,8 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen">
-      <select-project @setProject="getProject"></select-project>
+    <el-dialog :visible.sync="isopen" v-dialogDrag>
+      <select-project @setProject="getProject" v-if="isopen"></select-project>
     </el-dialog>
   </div>
 </template>

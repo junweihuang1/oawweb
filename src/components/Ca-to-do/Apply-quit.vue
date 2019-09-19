@@ -228,6 +228,7 @@
       ></el-step>
     </el-steps>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopen"
       title="签字版"
       :append-to-body="true"

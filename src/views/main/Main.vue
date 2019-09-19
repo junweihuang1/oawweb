@@ -53,17 +53,17 @@
       </el-col>
     </el-row>
     <home-main></home-main>
-    <el-dialog title="待办任务" :visible.sync="processTable">
+    <el-dialog title="待办任务" :visible.sync="processTable" v-dialogDrag>
       <to-do-table
         :processList="processList"
         @reload="handleApiFindTaskList"
       ></to-do-table>
     </el-dialog>
-    <el-dialog title="新消息" :visible.sync="messageTable"> </el-dialog>
-    <el-dialog title="补卡审批" :visible.sync="newVisitisTable">
+    <el-dialog title="新消息" :visible.sync="messageTable" v-dialogDrag> </el-dialog>
+    <el-dialog title="补卡审批" :visible.sync="newVisitisTable" v-dialogDrag>
       <card-Approval-table :processList="noApprovalList"></card-Approval-table>
     </el-dialog>
-    <el-dialog title="我的出勤" :visible.sync="attendanceTable"> </el-dialog>
+    <el-dialog title="我的出勤" :visible.sync="attendanceTable" v-dialogDrag> </el-dialog>
   </div>
 </template>
 

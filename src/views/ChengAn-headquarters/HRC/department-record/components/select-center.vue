@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+    v-dialogDrag
       :visible="myopenSelect"
       title="选择中心名称"
       @close="closewin"

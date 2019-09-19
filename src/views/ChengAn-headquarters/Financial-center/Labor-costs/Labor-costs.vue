@@ -38,7 +38,7 @@
       @setlimit="getlimit"
       :total="total"
     ></paging>
-    <el-dialog :visible.sync="isopenEdit" title="编辑工资" width="30%">
+    <el-dialog :visible.sync="isopenEdit" title="编辑工资" width="30%" v-dialogDrag>
       <edit-wages
         v-if="isopenEdit"
         :wagesForm="wagesForm"

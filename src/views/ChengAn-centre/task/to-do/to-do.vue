@@ -23,7 +23,7 @@
       @edit="openpic"
     ></Ca-rule-table>
     <!-- 打开办理普通采购的窗口 -->
-    <el-dialog :title="openTitle" :visible.sync="openGoods" top="8vh">
+    <el-dialog :title="openTitle" :visible.sync="openGoods" top="8vh" v-dialogDrag>
       <headle-Goods
         v-if="openGoods"
         :active="active"
@@ -34,6 +34,7 @@
     </el-dialog>
     <!-- 打开办理外勤窗口 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openGoOut"
       width="35%"
@@ -49,6 +50,7 @@
     </el-dialog>
     <!-- 打开办理增量流程窗口 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openIncrement"
       width="50%"
@@ -62,6 +64,7 @@
       ></headle-Increment>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openleave"
       width="50%"
@@ -75,6 +78,7 @@
       ></headle-leave>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openSeal"
       width="50%"
@@ -88,6 +92,7 @@
       ></headle-Seal>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openPurchase"
       width="75%"
@@ -101,6 +106,7 @@
       ></headle-Purchase>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openPayment"
       width="75%"
@@ -114,6 +120,7 @@
       ></headle-payment>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openInvoice"
       width="50%"
@@ -128,6 +135,7 @@
       ></Application-form>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openCost"
       width="50%"
@@ -142,6 +150,7 @@
     </el-dialog>
     <!-- 打开项目合同申请 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openApply"
       width="50%"
@@ -156,6 +165,7 @@
     </el-dialog>
     <!-- 打开离职申请 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openQuit"
       width="70%"
@@ -170,6 +180,7 @@
     </el-dialog>
     <!-- 打开转正申请 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openCorrent"
       width="50%"
@@ -184,6 +195,7 @@
     </el-dialog>
     <!-- 打开调动申请 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openRemove"
       width="50%"
@@ -198,6 +210,7 @@
     </el-dialog>
     <!-- 打开甲供材料采购 -->
     <el-dialog
+    v-dialogDrag
       :title="openTitle"
       :visible.sync="openaParty"
       width="50%"
@@ -212,7 +225,7 @@
       ></aParty-apply-purchase>
     </el-dialog>
     <!-- 打开流程图 -->
-    <el-dialog :visible.sync="isopenpic" title="流程图" width="70%">
+    <el-dialog :visible.sync="isopenpic" title="流程图" width="70%" v-dialogDrag>
       <el-image :src="img_src" v-if="isopenpic" v-loading="loading"></el-image>
     </el-dialog>
   </div>

@@ -26,7 +26,7 @@
       :setselect="isselect"
       @setselect="getselect"
     ></Ca-rule-table>
-    <el-dialog :visible.sync="isopen" title="公司信息" width="30%">
+    <el-dialog :visible.sync="isopen" title="公司信息" width="30%" v-dialogDrag>
       <el-form ref="form" :model="form" label-width="90px">
         <el-form-item label="新公司名称">
           <el-input v-model="form.company_name"></el-input>

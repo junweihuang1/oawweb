@@ -74,7 +74,7 @@
         </el-table-column>
       </el-table>
     </template>
-    <el-dialog
+    <el-dialog v-dialogDrag
       :visible.sync="isopenSelect"
       title="部门信息"
       :append-to-body="true"

@@ -26,7 +26,7 @@
       :setselect="isselect"
       @setselect="getselect"
     ></Ca-rule-table>
-    <el-dialog :visible.sync="isopen" title="中心信息" width="30%">
+    <el-dialog :visible.sync="isopen" title="中心信息" width="30%" v-dialogDrag>
       <el-form ref="form" :model="form" label-width="90px">
         <el-form-item label="中心名称" prop="center_name">
           <el-input v-model="form.center_name" autofocus="true"></el-input>

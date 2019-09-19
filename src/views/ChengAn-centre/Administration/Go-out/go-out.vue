@@ -23,7 +23,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="发起外勤申请" :visible.sync="isgoout" width="35%">
+    <el-dialog title="发起外勤申请" :visible.sync="isgoout" width="35%" v-dialogDrag>
       <go-out-table
         :openType="openType"
         @setclose="getclose"

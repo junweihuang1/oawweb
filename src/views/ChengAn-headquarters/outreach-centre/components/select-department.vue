@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+    v-dialogDrag
       :visible.sync="myopenSelect"
       title="部门信息"
       @close="closewin"

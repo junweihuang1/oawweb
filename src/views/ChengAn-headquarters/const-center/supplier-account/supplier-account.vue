@@ -29,7 +29,7 @@
       @setpage="getpage"
     ></paging>
     <!-- 打卡添加供应商或修改供应商窗口 -->
-    <el-dialog :visible.sync="isAdd" title="添加供应商" width="25%">
+    <el-dialog :visible.sync="isAdd" title="添加供应商" width="25%" v-dialogDrag>
       <el-form size="mini" label-width="80px">
         <el-form-item label="名称">
           <el-input
@@ -63,12 +63,12 @@
       </el-form>
     </el-dialog>
     <!-- 选择负责人 -->
-    <el-dialog :visible.sync="isopenselect" title="选择负责人" width="45%">
-      <selectUser @setuser="getuser"></selectUser>
+    <el-dialog :visible.sync="isopenselect" title="选择负责人" width="45%" v-dialogDrag>
+      <selectUser @setuser="getuser" v-if="isopenselect"></selectUser>
     </el-dialog>
     <!-- 打开台账 -->
-    <el-dialog :visible.sync="isopenAccount" width="60%">
-      <account :accountid="accountid"></account>
+    <el-dialog :visible.sync="isopenAccount" width="60%" v-dialogDrag>
+      <account :accountid="accountid" v-if="isopenAccount"></account>
     </el-dialog>
   </div>
 </template>

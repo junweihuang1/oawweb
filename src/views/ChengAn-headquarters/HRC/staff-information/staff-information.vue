@@ -63,7 +63,7 @@
       </el-col>
     </el-row>
 
-    <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh">
+    <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh" v-dialogDrag>
       <modify-window
         v-if="isadd"
         :submitType="submitType"
@@ -73,13 +73,13 @@
         :userList="userList"
       ></modify-window>
     </el-dialog>
-    <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh">
+    <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh" v-dialogDrag>
       <corrented-Tabs v-if="isopenNoCor"></corrented-Tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenCard" width="70%">
+    <el-dialog :visible.sync="isopenCard" width="70%" v-dialogDrag>
       <card-record v-if="isopenCard"></card-record>
     </el-dialog>
-    <el-dialog title="启动离职流程" :visible.sync="isstartQuit" width="25%">
+    <el-dialog title="启动离职流程" :visible.sync="isstartQuit" width="25%" v-dialogDrag>
       <el-form size="mini" label-width="110px">
         <el-form-item label="申请日期">
           <el-date-picker

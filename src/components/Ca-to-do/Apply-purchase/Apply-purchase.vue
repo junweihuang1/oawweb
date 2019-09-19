@@ -309,13 +309,13 @@
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
     </template>
-    <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true">
+    <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true" v-dialogDrag>
       <select-material-series
         @setSelectName="getSelectName"
         v-if="isselectMaterialseries"
       ></select-material-series>
     </el-dialog>
-    <el-dialog :visible.sync="isselectMaterial" :append-to-body="true">
+    <el-dialog :visible.sync="isselectMaterial" :append-to-body="true" v-dialogDrag>
       <select-material
         @setSelectName="getMaterialName"
         :projectId="headform.construct_project_id"
@@ -323,19 +323,19 @@
         v-if="isselectMaterial"
       ></select-material>
     </el-dialog>
-    <el-dialog :visible.sync="isreviewer" :append-to-body="true">
+    <el-dialog :visible.sync="isreviewer" :append-to-body="true" v-dialogDrag>
       <select-teams
         @setSelectName="getreviewerName"
         v-if="isreviewer"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isplanMan" :append-to-body="true">
+    <el-dialog :visible.sync="isplanMan" :append-to-body="true" v-dialogDrag>
       <select-teams
         @setSelectName="getplanManName"
         v-if="isplanMan"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isselect" :append-to-body="true">
+    <el-dialog :visible.sync="isselect" :append-to-body="true" v-dialogDrag>
       <select-supplist
         :Ids="Ids"
         v-if="isselect"

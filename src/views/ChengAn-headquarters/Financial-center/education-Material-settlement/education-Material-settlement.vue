@@ -21,7 +21,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" title="项目列表">
+    <el-dialog :visible.sync="isopen" title="项目列表" v-dialogDrag>
       <el-form inline size="mini">
         <el-form-item label="项目名称">
           <el-input

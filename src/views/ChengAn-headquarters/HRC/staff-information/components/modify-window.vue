@@ -113,6 +113,7 @@
       v-if="recordList"
     ></Tabs>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenSelect"
       title="部门信息"
       :append-to-body="true"
@@ -125,6 +126,7 @@
       ></select-department>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopensup"
       title="上级信息"
       :append-to-body="true"
@@ -139,6 +141,7 @@
     </el-dialog>
 
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenCompsup"
       title="上级信息"
       :append-to-body="true"

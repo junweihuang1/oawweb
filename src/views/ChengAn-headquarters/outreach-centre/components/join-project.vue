@@ -16,6 +16,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenlist"
       top="6vh"
       width="75%"
@@ -27,7 +28,7 @@
         @render="render"
       ></dialog-tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenmodify" width="20%" :append-to-body="true">
+    <el-dialog :visible.sync="isopenmodify" width="20%" :append-to-body="true" v-dialogDrag>
       <div style="width:90%;">
         <el-form label-width="90px" size="mini" label-position="left">
           <el-form-item label="分类">

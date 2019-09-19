@@ -222,7 +222,7 @@
         ></el-table-column>
       </el-table>
     </template>
-    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
+    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh" v-dialogDrag>
       <select-quantity
         :projectList="projectList"
         @setQuantity="getQuantity"

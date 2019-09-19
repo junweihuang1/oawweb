@@ -31,7 +31,6 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
-    <el-dialog></el-dialog>
   </div>
 </template>
 

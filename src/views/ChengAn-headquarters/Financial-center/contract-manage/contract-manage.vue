@@ -65,6 +65,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopen"
       title="合同信息"
       top="8vh"

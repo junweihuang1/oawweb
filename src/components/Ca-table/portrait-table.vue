@@ -1,7 +1,7 @@
 // 竖向表头的table
 <template>
   <div style="text-align:center;">
-    <el-dialog :visible.sync="myopen" @close="closewin" width="40%" top="8vh">
+    <el-dialog :visible.sync="myopen" @close="closewin" width="40%" top="8vh" v-dialogDrag>
       <h2>诚安时代绩效考核评定表</h2>
       <h3>{{ setDate }}</h3>
       <el-table

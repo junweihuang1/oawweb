@@ -66,7 +66,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="isopen" style="z-index: 3;">
+    <el-dialog :visible.sync="isopen" style="z-index: 3;" v-dialogDrag>
       <add-notice v-if="isopen"></add-notice>
     </el-dialog>
   </div>

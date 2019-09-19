@@ -149,6 +149,7 @@
       </el-table>
     </template>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenselect"
       title="选择部门"
       :append-to-body="true"

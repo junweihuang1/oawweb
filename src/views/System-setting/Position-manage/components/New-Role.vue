@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="修改职位" :visible.sync="myNewRole" @close="closeNewRole">
+    <el-dialog title="修改职位" :visible.sync="myNewRole" @close="closeNewRole" v-dialogDrag>
       <el-row>
         <el-col :span="12">
           <div class="Tree-line">

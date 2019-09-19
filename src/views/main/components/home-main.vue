@@ -59,7 +59,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="补卡申请" :visible.sync="isApply" width="30%">
+    <el-dialog title="补卡申请" :visible.sync="isApply" width="30%" v-dialogDrag>
       <div class="Apply-line">
         <span>补卡类型：</span>
         <el-radio v-model="ApplyForm.ApplyType" label="上班" border

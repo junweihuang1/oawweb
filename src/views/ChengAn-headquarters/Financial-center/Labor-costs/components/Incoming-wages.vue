@@ -31,6 +31,7 @@
       </el-form-item>
     </el-form>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenSelect"
       title="选择用户"
       :append-to-body="true"

@@ -25,7 +25,7 @@
       :setselect="isselect"
       @setselect="getselect"
     ></Ca-rule-table>
-    <el-dialog :visible.sync="isopen" title="地址信息" width="30%">
+    <el-dialog :visible.sync="isopen" title="地址信息" width="30%" >
       <el-form ref="form" :model="form" label-width="90px">
         <el-form-item label="项目地址" prop="project_address_name">
           <el-input v-model="form.project_address_name"></el-input>
@@ -53,6 +53,7 @@
       :currentlimit="currentlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenSelect"
       title="选择项目名称"
       top="8vh"

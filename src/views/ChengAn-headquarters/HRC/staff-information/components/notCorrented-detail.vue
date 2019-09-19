@@ -7,6 +7,7 @@
       :setheight="0.6"
     ></Ca-rule-table>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopen"
       title="添加员工转正信息"
       :append-to-body="true"

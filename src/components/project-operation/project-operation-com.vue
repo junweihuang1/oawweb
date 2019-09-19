@@ -43,14 +43,14 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
-    <el-dialog :visible.sync="isopenlist" top="6vh" width="75%">
+    <el-dialog :visible.sync="isopenlist" top="6vh" width="75%" v-dialogDrag>
       <dialog-tabs
         v-if="isopenlist"
         :activeForm="activeForm"
         @render="render"
       ></dialog-tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenmodify" width="20%">
+    <el-dialog :visible.sync="isopenmodify" width="20%" v-dialogDrag>
       <div style="width:90%;">
         <el-form label-width="90px" size="mini" label-position="left">
           <el-form-item label="分类">

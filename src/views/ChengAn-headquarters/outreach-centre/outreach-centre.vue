@@ -32,7 +32,7 @@
         ></paging>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="isopen" width="70%">
+    <el-dialog :visible.sync="isopen" width="70%" v-dialogDrag>
       <modify-window
         @close="close"
         :roleList="roleList"
@@ -40,7 +40,7 @@
         :submitType="submitType"
       ></modify-window>
     </el-dialog>
-    <el-dialog :visible.sync="isopenJoin" top="8vh" width="60%">
+    <el-dialog :visible.sync="isopenJoin" top="8vh" width="60%" v-dialogDrag>
       <join-project v-if="isopenJoin"></join-project>
     </el-dialog>
   </div>

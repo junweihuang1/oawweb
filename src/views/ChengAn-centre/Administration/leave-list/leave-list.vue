@@ -22,7 +22,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="请假详情" :visible.sync="isApply" width="35%">
+    <el-dialog title="请假详情" :visible.sync="isApply" width="35%" v-dialogDrag>
       <Apply-leave
         v-if="isApply"
         :form="headform"

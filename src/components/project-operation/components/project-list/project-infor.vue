@@ -106,25 +106,26 @@
         >保存</el-button
       >
     </div>
-    <el-dialog :visible.sync="isselect" :append-to-body="true">
+    <el-dialog :visible.sync="isselect" :append-to-body="true" v-dialogDrag>
       <select-teams
         @setSelectName="getSelectName"
         v-if="isselect"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isselectProjectManager" :append-to-body="true">
+    <el-dialog :visible.sync="isselectProjectManager" :append-to-body="true" v-dialogDrag>
       <select-teams
         @setSelectName="getProjectManager"
         v-if="isselectProjectManager"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isselectdep" :append-to-body="true">
+    <el-dialog :visible.sync="isselectdep" :append-to-body="true" v-dialogDrag>
       <select-project-dep
         @setSelectName="getProjectDepName"
         v-if="isselectdep"
       ></select-project-dep>
     </el-dialog>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isselectContract"
       :append-to-body="true"
       top="8vh"

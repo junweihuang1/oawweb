@@ -198,7 +198,7 @@
         :ApprovalHeaderList="ApprovalHeaderList"
       ></Ca-view-process>
     </template>
-    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
+    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh" v-dialogDrag>
       <select-quantity
         v-if="isopen"
         :projectList="projectList"

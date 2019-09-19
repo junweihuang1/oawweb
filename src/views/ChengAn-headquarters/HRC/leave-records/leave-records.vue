@@ -53,8 +53,9 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen">
+    <el-dialog :visible.sync="isopen" v-dialogDrag>
       <Apply-leave
+      v-if="isopen"
         openType="check"
         @close="getclose"
         :form="activeform"

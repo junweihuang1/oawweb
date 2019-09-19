@@ -46,7 +46,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="合同信息" :visible.sync="isopen">
+    <el-dialog title="合同信息" :visible.sync="isopen" v-dialogDrag>
       <add-contract-approve
         :history="history"
         :openType="openType"

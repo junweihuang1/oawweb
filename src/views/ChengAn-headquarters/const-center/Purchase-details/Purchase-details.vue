@@ -36,7 +36,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen" width="70%" title="采购明细">
+    <el-dialog :visible.sync="isopen" width="70%" title="采购明细" v-dialogDrag>
       <Apply-purchase
         @close="close"
         v-if="isopen"

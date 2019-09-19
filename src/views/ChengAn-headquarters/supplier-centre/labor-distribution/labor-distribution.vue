@@ -17,11 +17,11 @@
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="120"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen">
+    <el-dialog :visible.sync="isopen"  v-dialogDrag>      
       <dialog-tabs :Inforlist="Inforlist" v-if="isopen"></dialog-tabs>
     </el-dialog>
   </div>
@@ -38,6 +38,8 @@ export default {
     return {
       projectName: "",
       laborList: [],
+      total:0,
+      isfull:false,
       currentpage: 1,
       currentlimit: 15,
       header: [
@@ -86,6 +88,7 @@ export default {
         page: this.currentpage,
         construct_project_name: this.projectName
       }).then(res => {
+        this.total=res.total
         this.laborList = res.rows.map(item => {
           item.construct_project_workTeam_category =
             item.construct_project_workTeam_category == 1
@@ -102,4 +105,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.dialog-title{
+  position: absolute;
+  right: 30px;
+}</style>

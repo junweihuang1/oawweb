@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-dialog
+    v-dialogDrag
       title="修改密码"
       :visible.sync="myChange"
       width="20%"

@@ -47,6 +47,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isselect"
       title="选择角色"
       :append-to-body="true"

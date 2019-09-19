@@ -40,8 +40,8 @@
       @closewin="finishSubmit"
     ></add-material-dialog>
 
-    <el-dialog :visible.sync="showlist" top="8vh">
-      <dialog-tabs :seriesID="materialID"></dialog-tabs>
+    <el-dialog :visible.sync="showlist" top="8vh" v-dialogDrag>
+      <dialog-tabs :seriesID="materialID" v-if="showlist"></dialog-tabs>
     </el-dialog>
   </div>
 </template>

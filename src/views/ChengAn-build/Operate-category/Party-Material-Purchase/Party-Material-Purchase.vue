@@ -29,6 +29,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
+    v-dialogDrag
       :visible.sync="isopenMaterial"
       title="甲方材料单"
       top="8vh"
@@ -37,7 +38,7 @@
       <dialog-tabs :projectList="projectList" v-if="isopenMaterial">
       </dialog-tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenRecord" top="8vh" width="75%">
+    <el-dialog :visible.sync="isopenRecord" top="8vh" width="75%" v-dialogDrag>
       <dialog-tabs-record :projectList="projectList" v-if="isopenRecord">
       </dialog-tabs-record>
     </el-dialog>
