@@ -6,9 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" @click="getCompanyInf"
-            >查询</el-button
-          >
+          <el-button type="primary" size="mini" @click="query">查询</el-button>
           <el-button type="success" size="mini" @click="addCompanyInf"
             >新增</el-button
           >
@@ -88,6 +86,11 @@ export default {
     this.getCompanyInf();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getCompanyInf();
+    },
     //获取当前页数
     getpage(e) {
       this.currentpage = e;

@@ -19,7 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getCardList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -35,7 +35,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -53,6 +53,7 @@ export default {
       currentlimit: 15,
       currentpage: 1,
       queryYear: "",
+      total: 15,
       projectName: "",
       cardList: [],
       header: [
@@ -96,6 +97,11 @@ export default {
     this.getCardList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getCardList();
+    },
     openlist(row) {
       this.$emit("openTeamList", row);
     },
@@ -119,6 +125,7 @@ export default {
       console.log(data);
       apifirmLaborCostPro(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.cardList = res.data;
       });
     }

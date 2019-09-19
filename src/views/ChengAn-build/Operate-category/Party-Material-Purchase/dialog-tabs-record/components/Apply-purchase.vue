@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" @click="getMaterialList">查询</el-button>
+          <el-button type="primary" @click="query">查询</el-button>
           <el-button type="success" @click="isaddform">新增</el-button>
         </el-button-group>
       </el-form-item>
@@ -69,6 +69,11 @@ export default {
     this.getMaterialList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getMaterialList();
+    },
     //修改
     modifyOrder(row) {
       this.$emit("setOrderId", row.construct_Aparty_purchase_id);
@@ -121,6 +126,12 @@ export default {
               break;
             case 1:
               item.construct_Aparty_purchase_status = "审核中";
+              break;
+            case 2:
+              item.construct_Aparty_purchase_status = "审核通过";
+              break;
+            case 3:
+              item.construct_Aparty_purchase_status = "驳回";
               break;
           }
           return item;

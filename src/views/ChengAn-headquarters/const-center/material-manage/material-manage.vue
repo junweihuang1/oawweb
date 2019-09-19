@@ -5,7 +5,7 @@
         <el-input v-model="seriesName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getmaterialList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -85,6 +85,11 @@ export default {
     dialogTabs
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getmaterialList();
+    },
     //修改材料系列
     modifymarterial(row) {
       apiselectData({ cid: row.construct_material_seriesID }).then(res => {

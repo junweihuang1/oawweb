@@ -107,7 +107,7 @@ export default {
       console.log(data);
       apiuserLists(data).then(res => {
         console.log(res);
-        this.total=res.totalCount
+        this.total = res.totalCount;
         this.StaffData = res.data.map(item => {
           item.sex = item.sex == 1 ? "男" : "女";
           item.status = item.status == 1 ? "在职" : "离职";

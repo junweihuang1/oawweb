@@ -117,7 +117,6 @@ export default {
     // },
     //打印
     print(row) {
-      this.isprint = true;
       apigetCostappById({
         costapp_id: row.costapp_id
       }).then(res => {
@@ -126,6 +125,7 @@ export default {
           return item;
         });
         this.setform = res.data;
+        this.isprint = true;
         setTimeout(() => {
           this.isprint = false;
         }, 100);

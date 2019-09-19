@@ -14,7 +14,7 @@
         <el-input v-model="addform.manage_contract_num"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getprojectList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -54,7 +54,7 @@ export default {
       projectList: [],
       currentpage: 1,
       currentlimit: 15,
-      total: 130,
+      total: 0,
       header: [
         ["项目名称", "constuct_project_dep_name", 100],
         ["项目部负责人", "constuct_project_dep_leader", 160]
@@ -69,6 +69,11 @@ export default {
     this.getprojectList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getprojectList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -84,6 +89,7 @@ export default {
     getprojectList() {
       apigetContractItem(this.addform).then(res => {
         console.log(res);
+        this.total = res.total;
         this.projectList = res.data;
       });
     }

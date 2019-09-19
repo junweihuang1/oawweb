@@ -339,19 +339,11 @@ export default {
       this.openaParty = false;
       this.openRemove = false;
       this.openPayment = false;
-      // this.getReadyDoList();
     },
     //查询
     query() {
-      // console.log(this.selectType);
-      // console.log(this.summary);
-      // if (this.selectType == "") {
-      //   this.todoList = this.summary;
-      // } else {
-      //   this.todoList = this.summary.filter(
-      //     item => item.pdname == this.selectType
-      //   );
-      // }
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getReadyDoList();
     },
     //待办

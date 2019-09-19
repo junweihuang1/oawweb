@@ -16,7 +16,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getTeamList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -33,7 +33,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -50,6 +50,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       userName: "",
       queryYearMonth: "",
       workerList: [],
@@ -83,6 +84,11 @@ export default {
     this.getTeamList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getTeamList();
+    },
     opendetaillist(row) {
       this.$emit("opendetaillist", row);
     },
@@ -104,6 +110,7 @@ export default {
       };
       apifirmLaborCostPerson(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.workerList = res.data.map(item => {
           item.construct_project_workTeam_category =
             item.construct_project_workTeam_category == 2

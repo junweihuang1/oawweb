@@ -56,7 +56,7 @@ export default {
           item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
           return item;
         });
-        // this.headform = res.entryInfo;
+        this.headform = res.projectInfo;
         this.DataList = res.entryInfo;
         this.activeform = res.payApply;
         this.isopen = true;

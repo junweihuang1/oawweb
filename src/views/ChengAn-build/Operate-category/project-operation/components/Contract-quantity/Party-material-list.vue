@@ -11,7 +11,7 @@
         <el-input v-model="material_model_name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getMaterialList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -216,6 +216,11 @@ export default {
     this.getMaterialList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getMaterialList();
+    },
     //获取选择的材料信息，赋值到要保存的合同工程量
     getMaterialName(row) {
       this.addform.construct_project_quantities_name =

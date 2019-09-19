@@ -19,7 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getSummaryList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -99,6 +99,11 @@ export default {
     this.getSummaryList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getSummaryList();
+    },
     closedialog() {
       this.isopen = false;
       this.$store.state.dialog_openTabs = [false, false, false];

@@ -6,9 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" @click="queryCompanyInf"
-            >查询</el-button
-          >
+          <el-button type="primary" size="mini" @click="query">查询</el-button>
           <el-button type="success" size="mini" @click="addCenterInf"
             >新增</el-button
           >
@@ -34,7 +32,11 @@
           <el-input v-model="form.center_name" autofocus="true"></el-input>
         </el-form-item>
         <el-form-item label="公司名称" prop="company_id">
-          <el-select v-model="form.company_id" placeholder="请选择" style="width:100%;">
+          <el-select
+            v-model="form.company_id"
+            placeholder="请选择"
+            style="width:100%;"
+          >
             <el-option
               v-for="item in companyList"
               :key="item.company_id"
@@ -45,7 +47,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="排序" prop="order">
-          <el-input v-model="form.order" ></el-input>
+          <el-input v-model="form.order"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="success" @click="modify">提交</el-button>
@@ -117,7 +119,7 @@ export default {
         company_id: "",
         company_name: "",
         center_name: "",
-        order:0,
+        order: 0,
         center_id: ""
       };
       this.isopen = true;
@@ -125,7 +127,9 @@ export default {
         this.getCompanyInf();
       }
     },
-    queryCompanyInf() {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getCenterInf();
     },
     getCenterInf() {
@@ -134,7 +138,7 @@ export default {
         page: this.currentpage,
         center_name: this.centerName
       }).then(res => {
-        console.log(res)
+        console.log(res);
         this.total = res.total;
         this.centerList = res.data;
       });
@@ -165,18 +169,20 @@ export default {
       });
     },
     modify() {
-      this.$confirm(`确定提交吗？`).then(()=>{
-        apisaveCenter({
-        center_id: this.form.center_id,
-        center_name: this.form.center_name,
-        center_companyId: this.form.company_id,
-        order:this.form.order
-      }).then(res => {
-        this.$message.success(res.msg);
-        this.getCenterInf();
-        this.isopen = false;
-      });
-      }).catch(()=>{})
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisaveCenter({
+            center_id: this.form.center_id,
+            center_name: this.form.center_name,
+            center_companyId: this.form.company_id,
+            order: this.form.order
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.getCenterInf();
+            this.isopen = false;
+          });
+        })
+        .catch(() => {});
     },
     deleteitem() {
       if (this.selectList == "") {
@@ -184,15 +190,15 @@ export default {
         return;
       }
       console.log(JSON.stringify(this.selectList));
-      this.$confirm(`确定删除吗？`).then(res=>{
+      this.$confirm(`确定删除吗？`).then(res => {
         apideleCenter({
-        ids: JSON.stringify(this.selectList)
-      }).then(res => {
-        this.$message.success(res.msg)
-        this.getCenterInf()
-        console.log(res);
+          ids: JSON.stringify(this.selectList)
+        }).then(res => {
+          this.$message.success(res.msg);
+          this.getCenterInf();
+          console.log(res);
+        });
       });
-      })
     },
     getselect(val) {
       this.selectList = val.map(item => item.center_id);

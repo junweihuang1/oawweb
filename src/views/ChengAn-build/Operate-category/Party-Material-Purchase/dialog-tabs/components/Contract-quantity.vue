@@ -4,13 +4,25 @@
     <el-form size="mini" inline label-width="100px">
       <el-form-item label="项目名称">
         <el-input
+          v-if="projectList.construct_project_name"
           v-model="projectList.construct_project_name"
+          readonly
+        ></el-input>
+        <el-input
+          v-else
+          v-model="projectList.manage_contract_name"
           readonly
         ></el-input>
       </el-form-item>
       <el-form-item label="工程地址">
         <el-input
+          v-if="projectList.construct_project_addr"
           v-model="projectList.construct_project_addr"
+          readonly
+        ></el-input>
+        <el-input
+          v-else
+          v-model="projectList.manage_contract_address"
           readonly
         ></el-input>
       </el-form-item>
@@ -23,17 +35,14 @@
       </el-form-item>
     </el-form>
     <el-divider content-position="left">材料单</el-divider>
-    <el-form inline>
+    <el-form inline v-if="current == 1">
       <el-form-item>
-        <el-button type="primary" @click="additem">添加行</el-button>
+        <el-button type="primary" @click="additem" size="mini"
+          >添加行</el-button
+        >
       </el-form-item>
     </el-form>
-    <el-table
-      :data="DataList"
-      border
-      @cell-click="clickinp"
-      :height="maxheight"
-    >
+    <el-table :data="myDataList" border :height="maxheight">
       <el-table-column
         align="center"
         :label="item[0]"
@@ -43,18 +52,24 @@
         :key="index"
       >
         <template slot-scope="{ row, column }">
-          <el-input
+          <input
             size="mini"
-            v-if="column.label == '新增主材数量' && row.isinput"
+            v-if="column.label == '新增主材数量'"
             type="text"
+            class="inputbox"
             placeholder="请输入"
             v-model="row[item[1]]"
-            style="border:none;outline:none;height:25px;width:100%;margin:5px 0;"
           />
           <span v-else>{{ row[item[1]] }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="160" fixed="right">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="160"
+        fixed="right"
+        v-if="!active"
+      >
         <template slot-scope="scope">
           <el-button
             type="success"
@@ -76,42 +91,116 @@
     <paging
       :currentlimit="15"
       :currentpage="1"
-      :total="DataList.length"
+      :total="myDataList.length"
     ></paging>
     <el-form
       size="mini"
       style="margin-top:10px;"
       label-position="left"
-      label-width="60px"
+      label-width="80px"
     >
-      <el-form-item label="意见">
-        <el-input
-          type="textarea"
-          :rows="2"
-          style="width:50%;"
-          placeholder="请输入内容"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label=" ">
+      <template v-if="userTaskName != '结束' && openType !== 'check'">
+        <el-row
+          ><el-col :span="8">
+            <el-form-item label="下一节点">
+              <el-input
+                readonly
+                v-model="userTaskName"
+                style="width:60%"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核人">
+              <el-select v-model="userid" placeholder="没绑定审核人">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item> </el-col
+        ></el-row>
+      </template>
+      <template v-if="openType == 'headle'">
+        <el-form-item label="意见">
+          <el-input
+            type="textarea"
+            :rows="2"
+            v-model="reason"
+            style="width:50%;"
+            placeholder="请输入内容"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label=" ">
+          <template v-for="(item, index) in buttonList">
+            <el-button
+              v-if="item == 'submit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >提交</el-button
+            >
+            <el-button
+              v-if="item == 'Resubmit'"
+              :key="index"
+              type="success"
+              size="mini"
+              @click="headleprocess(true)"
+              >重新提交</el-button
+            >
+            <el-button
+              v-else-if="item == 'reject'"
+              :key="index"
+              type="warning"
+              size="mini"
+              @click="headleprocess(false)"
+              >驳回</el-button
+            >
+            <el-button
+              v-else-if="item == 'disagree'"
+              :key="index"
+              type="danger"
+              size="mini"
+              @click="headleprocess('finish')"
+              >不同意</el-button
+            >
+          </template>
+        </el-form-item>
+      </template>
+      <el-form-item label=" " v-else-if="openType == 'add'">
         <el-button type="primary" size="mini" @click="submit">提交</el-button>
       </el-form-item>
     </el-form>
-
-    <!-- <el-divider content-position="left">流程线</el-divider>
+    <el-divider content-position="left">流程线</el-divider>
     <el-steps
-      :space="250"
-      :active="0"
       finish-status="success"
+      :space="250"
+      :active="current"
       style="margin-left:50px;"
+      align-center
     >
       <el-step
         :title="item.name"
         v-for="(item, index) in activityList"
         :key="index"
+        :description="item.username"
       ></el-step>
-    </el-steps> -->
+    </el-steps>
+    <template v-if="openType !== 'add'">
+      <el-divider content-position="left">审批流程</el-divider>
+      <Ca-view-process
+        style="width:75%;"
+        :Approvaltable="Approvaltable"
+        :ApprovalHeaderList="ApprovalHeaderList"
+      ></Ca-view-process>
+    </template>
     <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh">
       <select-quantity
+        v-if="isopen"
         :projectList="projectList"
         @setQuantity="getQuantity"
       ></select-quantity>
@@ -120,14 +209,19 @@
 </template>
 
 <script>
-import { apistart_record } from "@/request/api.js";
+import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
+import {
+  apistart_record,
+  apigetProcessList,
+  apipass_record
+} from "@/request/api.js";
 import selectQuantity from "./select-quantity";
 import paging from "@/components/paging/paging";
+import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "ContractQuantity",
   data() {
     return {
-      DataList: [],
       maxheight: document.documentElement.scrollHeight * 0.25,
       header: [
         ["工程量编号", "construct_project_quantities_id", 100],
@@ -137,57 +231,176 @@ export default {
         ["原材料名称和规格", "", 150],
         ["单位", "construct_material_model_unit", 65],
         ["主材数量", "construct_project_quantities_num", 90],
-        ["已采购量", "", 90],
-        ["合同单价", "purNum", 90],
+        ["已采购量", "purNum", 90],
+        ["合同单价", "", 90],
         ["新增主材数量", "afterAddingNum", 110, "", "", true]
       ],
       headle: ["选择", "删除"],
       isopen: false,
       addid: 1,
       activeList: [],
-      activityList: []
+      current: 1,
+      activityList: [],
+      reason: "",
+      userid: 0,
+      buttonList: [],
+      Approvaltable: [],
+      ApprovalHeaderList: [
+        ["序号", "index", 80],
+        ["流程节点", "name_", 100],
+        ["审核人", "username", 100],
+        ["审核时间", "END_TIME_", 160],
+        ["审核意见", "MESSAGE_"]
+      ],
+      userList: [],
+      myDataList: [],
+      userTaskName: ""
     };
   },
   components: {
     selectQuantity,
-    paging
+    paging,
+    CaViewProcess
   },
   props: {
-    projectList: Object
+    projectList: Object,
+    DataList: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+    },
+    openType: String,
+    active: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  watch: {
+    DataList() {
+      this.myDataList = this.DataList;
+      console.log(this.myDataList);
+    }
+  },
+  mounted() {
+    this.myDataList = this.DataList;
+    console.log(this.myDataList);
+    this.getprossList();
   },
   methods: {
-    submit() {
-      let rows = this.DataList.map(item => {
-        delete item.id;
-        return item;
+    //办理
+
+    headleprocess(type) {
+      if (this.reason == "") {
+        this.$message.error("请填写审核意见");
+        return;
+      }
+      if (this.userid === "") {
+        this.$message.error("审核人为空不能提交！");
+        return;
+      }
+      this.$confirm(
+        `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
+      )
+        .then(() => {
+          let data = {
+            taskid: this.active.ID_,
+            reasons: this.reason,
+            sign: type,
+            taskName: this.active.NAME_,
+            headId: this.projectList.id,
+            type: this.projectList.type,
+            rows: JSON.stringify(this.myDataList),
+            userid: this.userid
+          };
+
+          apipass_record(data).then(res => {
+            console.log(res);
+            this.$message.success(res.Msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
+    },
+    getprossList() {
+      let data = {};
+      if (this.active) {
+        data = {
+          taskid: this.active.ID_, //(必填)流程任务id
+          processInstanceId: this.active.PROC_INST_ID_
+            ? this.active.PROC_INST_ID_
+            : this.active.taskid, //(必填)流程实例id
+          key: "afterAddingNum", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "" //(必填)新增new/运行中
+        };
+      } else {
+        data = {
+          taskid: "", //(必填)流程任务id
+          processInstanceId: "", //(必填)流程实例id
+          key: "afterAddingNum", //(必填)流程定义key
+          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          type: "new" //(必填)新增new/运行中
+        };
+      }
+      console.log(data);
+      apigetProcessList(data).then(res => {
+        console.log(res);
+        this.Approvaltable = res.historyList
+          ? res.historyList.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
+        this.userTaskName = res.userlist.userTaskName;
+        this.buttonList = res.startForm.split(",");
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
+        this.userList = res.userlist.userList ? res.userlist.userList : [];
+        //当进入办理流程后，遍历流程线，判断出当前的节点
+        if (this.Approvaltable != "") {
+          let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
+          this.activityList = res.activityList.map((item, index) => {
+            if (item.name == currentTask.name_) {
+              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            }
+            return item;
+          });
+        } else {
+          this.activityList = res.activityList;
+        }
       });
+    },
+    //保存
+    submit() {
       let data = {
         type: "ASupply",
         construct_project_id: this.projectList.construct_project_id,
-        rows: JSON.stringify(rows),
-        userid: "1054"
+        rows: JSON.stringify(this.myDataList),
+        userid: this.userid
       };
-      apistart_record(data).then(res => {
-        console.log(res);
-        this.$message.success("提交成功");
-        this.$emit("close");
-      });
-    },
-    clickinp(row, column) {
-      this.DataList = this.DataList.map(item => {
-        item.isinput = false;
-        if (item.id == row.id && column.label == "新增主材数量") {
-          item.isinput = true;
-        }
-        return item;
-      });
+      console.log(data);
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apistart_record(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     deleteitem(row) {
-      this.DataList = this.DataList.filter(item => item.id !== row.id);
+      console.log(this.myDataList);
+      this.myDataList = this.myDataList.filter(item => item.id !== row.id);
     },
     //添加行
     additem() {
-      this.DataList.push({
+      this.myDataList.push({
         id: this.addid,
         construct_project_quantities_id: "",
         construct_material_seriesName: "",
@@ -196,8 +409,7 @@ export default {
         construct_material_model_unit: "",
         construct_project_quantities_num: "",
         afterAddingNum: "",
-        purNum: "",
-        isinput: false
+        purNum: ""
       });
       this.addid++;
     },
@@ -208,7 +420,7 @@ export default {
     getQuantity(row) {
       //遍历是否有重复选项
       console.log(row);
-      let isrepeat = this.DataList.some(
+      let isrepeat = this.myDataList.some(
         item =>
           item.construct_project_quantities_id ==
           row.construct_project_quantities_id
@@ -218,7 +430,7 @@ export default {
         return;
       }
       this.isopen = false;
-      this.DataList = this.DataList.map(item => {
+      this.myDataList = this.myDataList.map(item => {
         if (item.id == this.activeList.id) {
           item = {
             id: item.id,
@@ -231,15 +443,15 @@ export default {
             construct_project_quantities_num:
               row.construct_project_quantities_num,
             afterAddingNum: item.afterAddingNum,
-            purNum: item.purNum
+            purNum: row.purNum
           };
         }
         return item;
       });
-      console.log(this.DataList);
+      console.log(this.myDataList);
     }
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

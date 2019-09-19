@@ -3,10 +3,18 @@
   <div>
     <el-form inline size="mini">
       <el-form-item label="节点名字">
-        <el-input v-model="framework_name" placeholder="用户名" clearable></el-input>
+        <el-input
+          v-model="framework_name"
+          placeholder="用户名"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item label="公司">
-        <el-input v-model="company_name" placeholder="用户名" clearable></el-input>
+        <el-input
+          v-model="company_name"
+          placeholder="用户名"
+          clearable
+        ></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getDataList">搜索</el-button>
@@ -38,7 +46,7 @@ export default {
     return {
       currentPage: 1,
       currentlimit: 15,
-      total:0,
+      total: 0,
       tableData: [],
       header: [
         ["公司", "company_name", 120],
@@ -47,7 +55,7 @@ export default {
         ["描述", "uc_framework_describe"]
       ],
       framework_name: "",
-      company_name:"",
+      company_name: ""
     };
   },
   props: {
@@ -79,17 +87,17 @@ export default {
       this.$emit("setLevel", row);
     },
     getDataList() {
-      let data={
+      let data = {
         rows: this.currentlimit,
         page: this.currentPage,
         framework_name: this.framework_name,
         company: this.company_name
-      }
-      console.log(data)
+      };
+      console.log(data);
       apiframeWorkList(data).then(res => {
-          this.total=res.total
-          this.tableData = res.data;
-        })
+        this.total = res.total;
+        this.tableData = res.data;
+      });
     }
   }
 };

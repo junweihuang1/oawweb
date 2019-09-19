@@ -13,7 +13,7 @@
           <el-input v-model="centerName"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="queryCenter">查询</el-button>
+          <el-button type="success" @click="query">查询</el-button>
         </el-form-item>
       </el-form>
       <Ca-rule-table
@@ -26,8 +26,8 @@
         @setpage="getpage"
         @setlimit="getlimit"
         :total="total"
-        :currentlimit="currentlimit2"
-        :currentpage="currentpage2"
+        :currentlimit="currentlimit"
+        :currentpage="currentpage"
       ></paging>
     </el-dialog>
   </div>
@@ -44,8 +44,8 @@ export default {
       myopenSelect: this.isopenSelect,
       centerName: "",
       centerList: [],
-      currentpage2: 1,
-      currentlimit2: 15,
+      currentpage: 1,
+      currentlimit: 15,
       total: 130,
       header: [
         ["中心编号", "center_id"],
@@ -77,14 +77,16 @@ export default {
       this.$emit("setSelectName", row);
     },
     getpage(e) {
-      this.currentpage2 = e;
+      this.currentpage = e;
       this.getcenterList();
     },
     getlimit(e) {
-      this.currentlimit2 = e;
+      this.currentlimit = e;
       this.getcenterList();
     },
-    queryCenter() {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getcenterList();
     },
     closewin() {
@@ -94,9 +96,11 @@ export default {
     getcenterList() {
       apicenterHome({
         center_name: this.centerName,
-        rows: this.currentlimit2,
-        page: this.currentpage2
+        rows: this.currentlimit,
+        page: this.currentpage
       }).then(res => {
+        console.log(res);
+        this.total = res.total;
         this.centerList = res.data;
       });
     }

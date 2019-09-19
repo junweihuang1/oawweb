@@ -12,7 +12,7 @@
         <el-input v-model="material_model_name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getQuantityList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -28,7 +28,7 @@
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -45,6 +45,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       QuantityList: [],
       header: [
         ["工程量编号", "construct_project_quantities_id", 115],
@@ -77,6 +78,11 @@ export default {
     this.getQuantityList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getQuantityList();
+    },
     getlimit(e) {
       this.currentlimit = e;
       this.getQuantityList();
@@ -100,6 +106,7 @@ export default {
         limit: this.currentpage
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.QuantityList = res.data;
         this.loading = false;
       });

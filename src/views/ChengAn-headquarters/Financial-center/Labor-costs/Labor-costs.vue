@@ -198,6 +198,8 @@ export default {
         .catch(() => {});
     },
     query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getCostsList();
     },
     getCostsList() {

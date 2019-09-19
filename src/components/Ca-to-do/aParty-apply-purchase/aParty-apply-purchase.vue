@@ -116,7 +116,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <paging :currentlimit="15" :currentpage="1"></paging>
     <el-form size="mini" style="margin-top:10px;" label-width="80px">
       <el-row
         ><el-col :span="24" v-if="openType == 'headle'">
@@ -238,10 +237,9 @@ import {
   apiupdateAPartyPur,
   apisave_aPartyPur,
   apigetProcessList,
-  apipass_record
+  apipass_aPartyPur
 } from "@/request/api.js";
 import selectQuantity from "./select-quantity";
-import paging from "@/components/paging/paging";
 import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "newOrder",
@@ -287,8 +285,7 @@ export default {
     };
   },
   components: {
-    selectQuantity,
-    paging
+    selectQuantity
   },
   props: {
     proList: {
@@ -334,27 +331,10 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
-      let row = [];
-      row = this.entriesList.map(item => {
-        return {
-          construct_project_quantities_id: item.construct_Aparty_material_id, //(必填)材料id
-          construct_material_seriesName: item.construct_Aparty_category, //(必填)材料类别
-          construct_material_name: item.construct_Aparty_entryName, //(必填)材料名称
-          construct_material_model_name: item.construct_Aparty_material_model, //(必填)型号规格
-          construct_material_model_unit: item.construct_Aparty_material_unit, //(必填)单位
-          construct_project_quantities_num: item.construct_Aparty_material_num, //(必填)主材数量
-          purNum: item.construct_aParty_byedNum, //(必填)已采购数
-          afterAddingNum: item.construct_Aparty_purEntry_num //(必填)新增数量
-        };
-      });
       let data = {
         taskid: this.active.ID_,
         reasons: this.reasons,
         sign: type,
-        taskName: this.active.NAME_,
-        headId: this.projectList.construct_Aparty_purchase_id,
-        type: "ASupply",
-        rows: JSON.stringify(row),
         userid: this.userid
       };
       console.log(data);
@@ -362,9 +342,9 @@ export default {
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
-          apipass_record(data).then(res => {
+          apipass_aPartyPur(data).then(res => {
             console.log(res);
-            this.$message.success(res.Msg);
+            this.$message.success("办理成功");
             this.$emit("close");
           });
         })
@@ -380,7 +360,9 @@ export default {
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
           key: "aPartyPurView", //(必填)流程定义key
-          position: this.active.role_name, //(必填)申请人角色
+          position: this.active.role_name
+            ? this.active.role_name
+            : localStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -392,6 +374,7 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
+      console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
         if (this.hisComment != "") {
@@ -460,6 +443,7 @@ export default {
         this.$confirm(`确定提交吗？`)
           .then(() => {
             apisave_aPartyPur(data).then(res => {
+              console.log(res);
               this.$message.success("新增订单成功");
               this.$emit("close");
             });

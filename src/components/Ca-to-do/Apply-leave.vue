@@ -302,7 +302,7 @@ export default {
             return item;
           });
         }
-        this.userTaskName = res.userList.userTaskName;
+        this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
         this.userid =
           this.userTaskName == "结束"

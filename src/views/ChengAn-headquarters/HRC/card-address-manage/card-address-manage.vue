@@ -6,9 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" @click="queryAddressInf"
-            >查询</el-button
-          >
+          <el-button type="primary" size="mini" @click="query">查询</el-button>
           <el-button type="success" size="mini" @click="addCompanyInf"
             >新增</el-button
           >
@@ -142,7 +140,9 @@ export default {
       this.isopen = true;
     },
     //查询公司信息
-    queryAddressInf() {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getCardAddressInf();
     },
     //获取所有打卡地址信息
@@ -150,14 +150,10 @@ export default {
       apiattendAddress({
         pageSize: this.currentlimit,
         limit: this.currentpage
-      })
-        .then(res => {
-          console.log(res);
-          this.cardAddressList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      }).then(res => {
+        this.total = res.total;
+        this.cardAddressList = res.data;
+      });
     },
     //打开编辑窗口
     openwindow(e) {
@@ -187,22 +183,6 @@ export default {
           console.log(res);
         });
       }
-      //   apisaveCompany({
-      //     company_id: this.form.company_id,
-      //     company_name: this.form.company_name
-      //   }).then(res => {
-      //     console.log(res);
-      //     this.cardAddressList.forEach(item => {
-      //       if (item.company_id == this.form.company_id) {
-      //         item.company_name = this.form.company_name;
-      //       }
-      //     });
-      //     this.$message.success("修改成功");
-      //     setTimeout(() => {
-      //       this.form.old_name = this.form.company_name;
-      //       this.isopen = false;
-      //     }, 1500);
-      //   });
     },
     addAddress() {
       addattendAddress({
@@ -229,11 +209,6 @@ export default {
         this.$message.error("请选择公司");
         return;
       }
-      //   apideleCompany({
-      //     ids: this.selectList
-      //   }).then(res => {
-      //     console.log(res);
-      //   });
     },
     getselect(val) {
       this.selectList = val.map(item => item.company_id);

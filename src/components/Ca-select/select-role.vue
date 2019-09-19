@@ -92,6 +92,7 @@ export default {
         role_name: this.roleName
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.roleList = res.data.map(item => {
           item.state2 = item.state == 1 ? "启用" : "停用";
           return item;

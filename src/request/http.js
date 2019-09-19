@@ -2,7 +2,7 @@ import axios from "axios";
 import QS from "qs";
 import { Message } from "element-ui";
 
-const base_url = "http://fqrayf.natappfree.cc/casd2/admin/";
+const base_url = "http://192.168.110.163:8081/casd2/admin/";
 
 // 默认请求地址
 axios.defaults.baseURL = base_url; //"http://192.168.110.163:8081/casd2/admin/";//39.108.184.20:8080
@@ -33,8 +33,8 @@ axios.interceptors.response.use(
   error => {
     console.log(error);
     if (error.response.data.errorCode === "10002") {
-      // localStorage.removeItem("token");
-      // location.reload();
+      localStorage.removeItem("token");
+      location.reload();
     }
     if (error.response.status === "500") {
       Message.error("服务器内部错误");

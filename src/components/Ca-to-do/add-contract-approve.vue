@@ -140,7 +140,7 @@
           v-model="contractapprove.manage_contractapprove_remark"
         ></el-input>
       </el-form-item>
-      <el-form-item label="意见" v-if="openType==='headle'">
+      <el-form-item label="意见" v-if="openType === 'headle'">
         <el-input
           clearable
           type="textarea"
@@ -151,50 +151,48 @@
       <el-row>
         <template v-if="userTaskName != '结束' && openType != 'check'">
           <el-col :span="10">
-          <el-form-item label="下一节点">
-                <el-input readonly v-model="userTaskName"></el-input>
-              </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item
-            label="审核人"
-          >
-            <el-select v-model="userid">
-              <el-option
-                v-for="(item, index) in userList"
-                :key="index"
-                :value="item.userid"
-                :label="item.username"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
+            <el-form-item label="下一节点">
+              <el-input readonly v-model="userTaskName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="审核人">
+              <el-select v-model="userid">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </template>
         <el-col :span="12">
           <template v-if="openType == 'add'">
             <el-form-item label=" ">
               <el-upload
-              class="upload-demo"
-              ref="upload"
-              :action="upload_url"
-              :limit="1"
-              :on-change="handleChange"
-              :headers="{ token: token }"
-              :on-success="handleSuccess"
-              :on-error="headleError"
-              :auto-upload="false"
-            >
-              <el-button slot="trigger" type="primary" size="mini"
-                >选取文件</el-button
+                class="upload-demo"
+                ref="upload"
+                :action="upload_url"
+                :limit="1"
+                :on-change="handleChange"
+                :headers="{ token: token }"
+                :on-success="handleSuccess"
+                :on-error="headleError"
+                :auto-upload="false"
               >
-              <el-button
-                style="margin-left: 10px;"
-                size="mini"
-                type="success"
-                @click="submitUpload"
-                >提交</el-button
-              >
-            </el-upload>
+                <el-button slot="trigger" type="primary" size="mini"
+                  >选取文件</el-button
+                >
+                <el-button
+                  style="margin-left: 10px;"
+                  size="mini"
+                  type="success"
+                  @click="submitUpload"
+                  >提交</el-button
+                >
+              </el-upload>
             </el-form-item>
           </template>
           <template v-else-if="openType == 'headle'">
@@ -311,7 +309,7 @@ export default {
       activityLists: [],
       reasons: "",
       fileList: [],
-      userTaskName:""
+      userTaskName: ""
     };
   },
   props: {
@@ -382,10 +380,15 @@ export default {
           ? this.userLists.chief_leader
           : this.userLists.userList;
       } else {
-        this.userid =this.userTaskName == "结束"? 0:this.userLists.userList && this.userLists.userList != ""? this.userLists.userList[0].userid:""
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : this.userLists.userList && this.userLists.userList != ""
+            ? this.userLists.userList[0].userid
+            : "";
         this.userList = this.userLists.userList ? this.userLists.userList : [];
       }
-      console.log(this.userid)
+      console.log(this.userid);
     },
     //获取流程线
     getprossList() {

@@ -138,9 +138,9 @@ export default {
       this.currentpage = e;
       this.getCostsList();
     },
-    file() {},
     query() {
-      console.log(this.query_month);
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getCostsList();
     },
     getCostsList() {
@@ -153,6 +153,7 @@ export default {
       };
       apiuserWagesLibs(data).then(res => {
         console.log(res);
+        this.total = res.count;
         this.CostsList = res.data;
       });
     }

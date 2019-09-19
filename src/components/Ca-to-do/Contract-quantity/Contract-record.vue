@@ -23,7 +23,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getQuantityRecord">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -63,7 +63,7 @@ export default {
         ["主材数量", "construct_project_quantities_num", 100],
         ["已采购数量", "purNum", 120],
         ["新增数量", "afterAddingNum", 100],
-        ["步骤名称", "", 100],
+        ["步骤名称", "NAME_", 100],
         ["状态", "status", 80],
         ["修改时间", "change_time", 100]
       ]
@@ -81,6 +81,11 @@ export default {
     this.getQuantityRecord();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getQuantityRecord();
+    },
     getlimit(val) {
       this.currentlimit = val;
       this.getQuantityRecord();

@@ -12,7 +12,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getTeamList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -26,7 +26,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -43,6 +43,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       queryYearMonth: "",
       teamList: [],
       header: [
@@ -78,6 +79,11 @@ export default {
     this.getTeamList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getTeamList();
+    },
     getpage(val) {
       this.currentpage = val;
       this.getTeamList();
@@ -95,6 +101,7 @@ export default {
         limit: this.currentpage
       };
       apidetailedCard(data).then(res => {
+        this.total = res.total;
         this.teamList = res.data;
       });
     }

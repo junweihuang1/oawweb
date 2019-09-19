@@ -91,9 +91,7 @@
             <el-form-item label="合同工程量">
               <el-input
                 clearable
-                :readonly="
-                  addform.construct_Aparty_material_num == 0 ? false : true
-                "
+                :readonly="isedit"
                 v-model="addform.construct_Aparty_material_num"
               ></el-input>
             </el-form-item>
@@ -176,7 +174,9 @@ export default {
       idarr: [],
       contractForm: {},
       isopenContract: false,
-      isopen_ContractRecord: false
+      isopen_ContractRecord: false,
+      isedit: false,
+      openType: ""
     };
   },
   components: {
@@ -228,6 +228,7 @@ export default {
       console.log(row);
       this.diatitle = "修改合同工程量";
       this.isadd = true;
+      this.isedit = row.construct_Aparty_material_num === 0 ? false : true;
       this.addform = {
         construct_Aparty_material_id: row.construct_Aparty_material_id,
         construct_Aparty_material_name: row.construct_Aparty_material_name,
@@ -267,9 +268,12 @@ export default {
         .catch(() => {});
     },
     query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.loading = true;
       this.getMaterialList();
     },
+
     getpage(val) {
       this.loading = true;
       this.currentpage = val;

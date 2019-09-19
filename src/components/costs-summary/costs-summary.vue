@@ -19,7 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getLaborList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -34,7 +34,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="70"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -61,6 +61,7 @@ export default {
       projectName: "",
       currentlimit: 15,
       currentpage: 1,
+      total: 15,
       SummaryList: [],
       isopen: false,
       header: [
@@ -100,6 +101,11 @@ export default {
     this.getLaborList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getLaborList();
+    },
     closedialog() {
       this.isopen = false;
       this.$store.state.dialog_openTabs = [false, false, false];
@@ -127,6 +133,7 @@ export default {
       };
       apilaborCostMon(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.SummaryList = res.data.map(item => {
           switch (item.construct_project_workTeam_category) {
             case 1:

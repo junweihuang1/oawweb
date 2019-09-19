@@ -189,14 +189,18 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-button
-      v-if="openType == 'add' || openType == 'edit'"
-      type="primary"
-      size="mini"
-      style="float:right;margin:20px 100px 20px 0;"
-      @click="save"
-      >保存</el-button
-    >
+    <el-form>
+      <el-form-item style="text-align:right;">
+        <el-button
+          v-if="openType == 'add' || openType == 'edit'"
+          type="primary"
+          size="mini"
+          style="margin:20px 100px 20px 0;"
+          @click="save"
+          >保存</el-button
+        >
+      </el-form-item>
+    </el-form>
     <div v-if="openType == 'headle'">
       <el-divider content-position="left">流程审批</el-divider>
       <el-form label-width="70px">

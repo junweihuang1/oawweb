@@ -1,15 +1,29 @@
 <template>
   <div>
     <el-form inline size="mini">
-      <el-form-item label="公司">
-        <el-input placeholder="请输入"></el-input>
-      </el-form-item>
-      <el-form-item label="月份">
-        <el-input placeholder="请输入"></el-input>
+      <el-form-item label="上传时间">
+        <el-date-picker
+          type="date"
+          value-format="yyyy-MM-dd"
+          v-model="query_time"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
-        <el-button type="success">新增</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-upload
+          :headers="{ token: token }"
+          :on-error="headleError"
+          :on-success="headleSuccess"
+          :data="{ supplierform_id: '' }"
+          class="upload-demo"
+          name="pic"
+          :action="upload_url"
+          :limit="1"
+        >
+          <el-button size="mini" type="success">新增</el-button>
+        </el-upload>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -32,6 +46,7 @@
 </template>
 
 <script>
+import http from "@/request/http";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apisupplierformList, apisupplierformView } from "@/request/api.js";
@@ -40,7 +55,9 @@ export default {
   name: "supplierContrast",
   data() {
     return {
-      query_month: "",
+      token: localStorage.getItem("token"),
+      upload_url: http.base_url + "uup",
+      query_time: "",
       currentpage: 1,
       currentlimit: 15,
       evaluateList: [],
@@ -61,6 +78,20 @@ export default {
     this.getevaluateList();
   },
   methods: {
+    headleError(err, file, fileList) {
+      console.log(this.upload_url);
+      console.log(err);
+      console.log(file);
+    },
+    headleSuccess(res, file, fileList) {
+      console.log(res);
+      console.log(file);
+    },
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getevaluateList();
+    },
     getpage(e) {
       this.currentpage = e;
       this.getevaluateList();
@@ -81,7 +112,7 @@ export default {
       apisupplierformList({
         rows: this.currentlimit,
         page: this.currentpage,
-        supplierform_date: this.query_month
+        supplierform_date: this.query_time
       }).then(res => {
         console.log(res);
         this.evaluateList = res.data;

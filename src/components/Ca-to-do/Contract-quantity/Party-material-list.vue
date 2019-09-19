@@ -11,7 +11,7 @@
         <el-input v-model="material_model_name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getMaterialList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -78,9 +78,7 @@
             <el-form-item label="主材数量">
               <el-input
                 clearable
-                :readonly="
-                  addform.construct_project_quantities_num === 0 ? false : true
-                "
+                :readonly="isedit"
                 v-model="addform.construct_project_quantities_num"
               ></el-input>
             </el-form-item>
@@ -200,7 +198,8 @@ export default {
       isopenContract: false,
       isopen_ContractRecord: false,
       isopenMaterial: false,
-      opentype: ""
+      opentype: "",
+      isedit: false
     };
   },
   components: {
@@ -223,6 +222,11 @@ export default {
     this.getMaterialList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getMaterialList();
+    },
     //获取选择的材料信息，赋值到要保存的合同工程量
     getMaterialName(row) {
       this.addform.construct_project_quantities_name =
@@ -271,6 +275,7 @@ export default {
       this.isadd = true;
       this.diatitle = "查看合同工程量";
       this.opentype = "check";
+      this.isedit = row.construct_project_quantities_num === 0 ? false : true;
       this.addform = {
         construct_project_quantities_id: row.construct_project_quantities_id,
         construct_project_quantities_conId: this.projectList
@@ -295,6 +300,7 @@ export default {
       this.opentype = "";
       this.diatitle = "修改合同工程量";
       this.isadd = true;
+      this.isedit = row.construct_project_quantities_num === 0 ? false : true;
       this.addform = {
         construct_project_quantities_id: row.construct_project_quantities_id,
         construct_project_quantities_conId: this.projectList
@@ -312,6 +318,7 @@ export default {
         construct_project_quantities_modelId:
           row.construct_project_quantities_modelId //(必填)规格id
       };
+      console.log(this.isedit);
     },
     //打开新增合同工程量窗口
     isaddform() {

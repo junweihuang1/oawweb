@@ -4,13 +4,15 @@
       <el-form-item label="年度">
         <el-input v-model="queryYear" clearable></el-input>
       </el-form-item>
-      <el-form-item> <el-button type="primary">查询</el-button> </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="query">查询</el-button>
+      </el-form-item>
     </el-form>
     <Ca-rule-table :DataList="dreamList" :header="header"></Ca-rule-table>
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="0"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -38,7 +40,8 @@ export default {
         ["是否完成", ""]
       ],
       currentpage: 1,
-      currentlimit: 15
+      currentlimit: 15,
+      total: 0
     };
   },
   components: {
@@ -50,6 +53,11 @@ export default {
     this.getDreamList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getDreamList();
+    },
     getpage(val) {
       this.currentpage = val;
       this.getDreamList();
@@ -65,6 +73,7 @@ export default {
         goal_year: this.queryYear
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.dreamList = res.data;
       });
     }

@@ -16,12 +16,12 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" @click="getProjectList">查询</el-button>
+          <el-button type="primary" @click="query">查询</el-button>
           <el-button type="success" @click="additem">新增</el-button>
         </el-button-group>
       </el-form-item>
       <el-form-item v-if="openType">
-        <el-radio-group v-model="mycompanyId" @change="getProjectList">
+        <el-radio-group v-model="mycompanyId" @change="query">
           <el-radio-button :label="2">改造项目</el-radio-button>
           <el-radio-button :label="4">保养项目</el-radio-button>
           <el-radio-button :label="5">检测项目</el-radio-button>
@@ -141,6 +141,11 @@ export default {
     }
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getProjectList();
+    },
     render() {
       this.isopenlist = false;
       //路由重定向到待办页

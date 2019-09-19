@@ -29,7 +29,7 @@
           :activeForm="headform"
         ></purchase-list>
       </el-tab-pane>
-      <el-tab-pane label="新增采购申请" name="4" v-if="isopen[2]" closable>
+      <el-tab-pane :label="pruchase_title" name="4" v-if="isopen[2]" closable>
         <Apply-purchase
           style="padding:10px;"
           :entryList="Purchase_entryList"
@@ -105,7 +105,8 @@ export default {
       ApplyFormopenType: "",
       ProcessList: [],
       headform2: {},
-      isreload: true
+      isreload: true,
+      pruchase_title: ""
     };
   },
   props: {
@@ -221,6 +222,7 @@ export default {
     },
     //打开修改采购单
     openeditPurchase(id) {
+      this.pruchase_title = "修改采购申请";
       this.currentActive = "4";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
@@ -240,12 +242,10 @@ export default {
     },
     //打开查看采购单
     opencheckPurchase(id) {
-      console.log("res");
+      this.pruchase_title = "查看采购申请";
       this.currentActive = "4";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
-        // this.headform = res.projectInfo;
-        console.log(res);
         this.Purchase_entryList = res.purchaseEntry;
         this.ProcessList = res.hisComment.map(item => {
           item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
@@ -257,6 +257,7 @@ export default {
     },
     //打開采购申请列表
     openaddPurchase() {
+      this.pruchase_title = "新增采购申请";
       this.currentActive = "4";
       this.isopen[2] = true;
       this.Purchase_entryList = [];

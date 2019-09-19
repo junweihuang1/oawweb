@@ -8,7 +8,7 @@
         <el-input v-model="modelType" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getmaterialList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -65,6 +65,11 @@ export default {
     this.getmaterialList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getmaterialList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -89,6 +94,7 @@ export default {
       console.log(data);
       apiselMaterial(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.materialList = res.data;
       });
     }

@@ -14,6 +14,7 @@
       @checkleave="opanLeaveList"
       @delete="deleteApply"
       @edit="downfile"
+      @modify="print"
       :headle="headle"
     ></rule-table>
     <paging
@@ -37,14 +38,29 @@
         @close="closeApplyWidow"
       ></Seal-Apply>
     </el-dialog>
+    <el-dialog
+      width="100%"
+      :visible.sync="isprint"
+      title="盖章申请"
+      :fullscreen="true"
+      :show-close="false"
+      top="8vh"
+    >
+      <details-print
+        v-if="isprint"
+        :setform="setform"
+        :Approvaltable="Approvaltable"
+      ></details-print>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import detailsPrint from "./components/details-print";
 import paging from "@/components/paging/paging";
 import SealApply from "@/components/Ca-to-do/Seal-Apply";
 import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { getDate_cn } from "@/components/global-fn/global-fn";
+import { getDate_cn, changetime } from "@/components/global-fn/global-fn";
 import { apigetSealList, apiSealById, apidelSeal } from "@/request/api.js";
 export default {
   name: "Sealappliction",
@@ -62,7 +78,7 @@ export default {
         ["状态", "own_seal_status", 80],
         ["备注", "own_seal_remark"]
       ],
-      headle: ["查看", "删除", "下载"],
+      headle: ["查看", "删除", "下载", "打印"],
       isopen: false,
       selectList: {},
       ProcessHeader: [
@@ -81,23 +97,55 @@ export default {
         ["审核意见", "MESSAGE_"]
       ],
       Approvaltable: [],
+      setform: {},
       isApplyOpen: false,
       currentlimit: 15,
       currentpage: 1,
       total: 0,
       addform: {},
-      openType: ""
+      openType: "",
+      isprint: false,
+      Seals: [
+        ["1", "公章"],
+        ["2", "业务章"],
+        ["3", "出图章"],
+        ["4", "竣工章"],
+        ["5", "项目章"]
+      ]
     };
   },
   components: {
     ruleTable,
     SealApply,
-    paging
+    paging,
+    detailsPrint
   },
   mounted() {
     this.getsealList();
   },
   methods: {
+    print(row) {
+      apiSealById({
+        own_seal_id: row.own_seal_id
+      }).then(res => {
+        this.Approvaltable = res.hisComment.map(item => {
+          item.START_TIME_ = changetime(item.START_TIME_);
+          return item;
+        });
+        this.setform = res.data;
+        this.setform.own_seal_chapCategory = this.setform.own_seal_chapCategory
+          .split(",")
+          .map(item => {
+            return this.Seals[item - 1][1];
+          });
+        this.setform.Category = this.setform.own_seal_chapCategory.join("、");
+        console.log(this.setform);
+        this.isprint = true;
+        setTimeout(() => {
+          this.isprint = false;
+        }, 100);
+      });
+    },
     downfile(row) {
       if (row.own_seal_filePath && row.own_seal_filePath !== "") {
         window.open(

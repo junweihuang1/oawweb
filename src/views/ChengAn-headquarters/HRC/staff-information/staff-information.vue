@@ -8,9 +8,8 @@
         </div>
         <el-tree
           :data="TreeList"
-          @node-click="nodeClick"
-          accordion
           :props="defaultProps"
+          @node-click="nodeClick"
           style="padding:5px;background:#E4E7ED;"
         ></el-tree>
       </el-col>
@@ -33,7 +32,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getpmuserList">查询</el-button>
+            <el-button type="success" @click="query">查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button-group>
@@ -191,6 +190,11 @@ export default {
     this.getuserTree();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getpmuserList();
+    },
     //启动离职流程
     startQuit() {
       this.quitform.username = this.activeLine.username;
@@ -337,7 +341,10 @@ export default {
       this.$nextTick(() => {
         this.isadd = true;
       });
-      this.userList = {};
+      this.userList = {
+        type: 2,
+        status: 1
+      };
       this.submitType = "new";
       if (this.roleList == "") {
         apipersonalRecords().then(res => {

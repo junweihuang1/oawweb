@@ -16,7 +16,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getevaluateList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
         <el-button type="primary" @click="additem">新增</el-button>
       </el-form-item>
     </el-form>
@@ -92,6 +92,11 @@ export default {
     this.getevaluateList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getevaluateList();
+    },
     //子组件回调的保存方法
     Savelist([row, id]) {
       let data = {

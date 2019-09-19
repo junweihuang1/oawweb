@@ -12,7 +12,6 @@
       @current-change="handleCurrentChange"
       :span-method="objectSpanMethod"
       :cell-style="getcellstyle"
-      :row-style="{ height: '35px' }"
       :show-summary="issummary"
       @cell-click="cellClick"
       @row-click="rowClick"
@@ -51,8 +50,8 @@
         label="操作"
         align="center"
         v-if="headle"
-        :width="getwidth"
         fixed="right"
+        :width="getwidth"
       >
         <template slot-scope="{ row }">
           <template v-for="(item, index) in headle">

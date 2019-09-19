@@ -303,28 +303,28 @@ export default {
                 }
               ]
             },
-            {
-              id: "85",
-              title: "监察中心",
-              route: "",
-              children: [
-                {
-                  id: "74",
-                  title: "管理考评",
-                  route: "/manage-evaluate"
-                },
-                {
-                  id: "75",
-                  title: "绩效考评",
-                  route: "/merits-evaluate"
-                },
-                {
-                  id: "104",
-                  title: "劳动力供应商对比表",
-                  route: "/supplier-contrast"
-                }
-              ]
-            },
+            // {
+            //   id: "85",
+            //   title: "监察中心",
+            //   route: "",
+            //   children: [
+            //     {
+            //       id: "74",
+            //       title: "管理考评",
+            //       route: "/manage-evaluate"
+            //     },
+            //     {
+            //       id: "75",
+            //       title: "绩效考评",
+            //       route: "/merits-evaluate"
+            //     },
+            //     {
+            //       id: "104",
+            //       title: "劳动力供应商对比表",
+            //       route: "/supplier-contrast"
+            //     }
+            //   ]
+            // },
             {
               id: "19",
               title: "财务中心",
@@ -632,7 +632,7 @@ export default {
             });
             this.$store.commit("clearTabs");
           })
-          .catch(err => {
+          .catch(() => {
             this.isreload = false;
             this.$message.warning("无法登陆，请联系技术人员");
             this.$nextTick(() => {

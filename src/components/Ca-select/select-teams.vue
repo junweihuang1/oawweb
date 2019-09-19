@@ -56,6 +56,11 @@ export default {
     this.getprojectList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getprojectList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -75,6 +80,7 @@ export default {
         pageSize: this.currentlimit
       };
       apigetProjectManager(data).then(res => {
+        this.total = res.total;
         this.teamList = res.data;
       });
     }

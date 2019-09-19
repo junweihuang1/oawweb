@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" @click="getmaterialList">查询</el-button>
+          <el-button type="primary" @click="query">查询</el-button>
           <el-button type="success" @click="addmaterial">新增材料</el-button>
         </el-button-group>
       </el-form-item>
@@ -81,6 +81,11 @@ export default {
     this.getmaterialList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getmaterialList();
+    },
     //提交材料
     submitmaterial() {
       apimaterialset(this.addform).then(res => {

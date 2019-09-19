@@ -31,11 +31,14 @@
         </el-input>
       </el-form-item>
       <el-form-item label="类型">
-        <el-input readonly value="乙供材"></el-input>
+        <el-input
+          readonly
+          :value="projectList.type == 'ASupply' ? '甲供材' : '乙供材'"
+        ></el-input>
       </el-form-item>
     </el-form>
     <el-divider content-position="left">材料单</el-divider>
-    <el-form inline v-if="current == 1">
+    <el-form inline v-if="openType == 'add'">
       <el-form-item>
         <el-button type="primary" @click="additem" size="mini"
           >添加行</el-button
@@ -103,7 +106,11 @@
         <el-row
           ><el-col :span="8">
             <el-form-item label="下一节点">
-              <el-input readonly v-model="userTaskName"></el-input>
+              <el-input
+                readonly
+                v-model="userTaskName"
+                style="width:60%"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -443,7 +450,7 @@ export default {
             construct_project_quantities_num:
               row.construct_project_quantities_num,
             afterAddingNum: item.afterAddingNum,
-            purNum: item.purNum
+            purNum: row.purNum
           };
         }
         return item;

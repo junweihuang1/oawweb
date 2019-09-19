@@ -19,7 +19,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getCardList">
+        <el-button type="primary" @click="query">
           查询
         </el-button>
       </el-form-item>
@@ -35,7 +35,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -52,12 +52,13 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       queryYear: "",
       projectName: "",
       cardList: [],
       header: [
-        ["项目", "construct_project_name", 90],
-        ["负责人", "construct_project_leader"],
+        ["项目", "construct_project_name", 150],
+        ["负责人", "construct_project_leader", 90],
         ["合同总金额", "conAmount", 110],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["年度", "firmYear", 75],
@@ -96,6 +97,11 @@ export default {
     this.getCardList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getCardList();
+    },
     openlist(row) {
       this.$emit("openTeamList", row);
     },
@@ -117,6 +123,8 @@ export default {
         limit: this.currentpage
       };
       apifirmLaborCostPro(data).then(res => {
+        console.log(res);
+        this.total = res.total;
         this.cardList = res.data;
       });
     }

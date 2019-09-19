@@ -26,12 +26,6 @@
       :currentpage="currentPage"
       :currentlimit="currentlimit"
     ></paging>
-    <!-- <Permission-Tree
-      :isPerTree="isPerTree"
-      :TreeList="TreeList"
-      :checkList="checkList"
-      @closePerRole="tarnsferValue"
-    ></Permission-Tree> -->
     <New-Role
       :isNewRole="isNewRole"
       :rule_name="rule_name"
@@ -47,7 +41,6 @@
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import NewRole from "./components/New-Role";
-// import PermissionTree from "./components/Permission-Tree";
 import { apiroleLists, apimenuTreeList, apideleRole } from "@/request/api.js";
 export default {
   name: "StaffInfo",
@@ -127,7 +120,7 @@ export default {
         role_name: roleName
       }).then(res => {
         console.log(res);
-        this.total=res.count
+        this.total = res.count;
         this.roleList = res.data.map(item => {
           item.state2 = item.state == 1 ? "启用" : "停用";
           return item;

@@ -2,11 +2,11 @@
   <div>
     <el-row :gutter="40" class="panel-group" :style="{ height: cardHeight }">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" :style="{ height: cardHeight }">
+        <!-- <div class="card-panel" :style="{ height: cardHeight }">
           <div style="padding:10px;font-weight: bold;font-size:16px;">
             常用功能
           </div>
-        </div>
+        </div> -->
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
@@ -121,7 +121,8 @@ export default {
         desc: ""
       },
       cardHeight: 0,
-      screenHeight: null
+      screenHeight: null,
+      instance: ""
     };
   },
   components: {
@@ -201,6 +202,7 @@ export default {
             knockOff: res.data.hr_attend_knockOff,
             startWork: res.data.hr_attend_startWork
           };
+
           this.$notify({
             type: "success",
             title: data,
@@ -209,14 +211,14 @@ export default {
               res.data.hr_attend_startWork +
               " 下班：" +
               res.data.hr_attend_knockOff,
-            position: "bottom-right"
+            position: "top-right"
           });
         } else {
           this.$notify({
             type: "success",
             title: data,
             message: "无打卡记录",
-            position: "bottom-right"
+            position: "top-right"
           });
         }
       });
@@ -237,6 +239,7 @@ export default {
         hr_attend_startWork: this.punchYear,
         hr_attend_knockOff: this.punchMonth
       }).then(res => {
+        console.log(res);
         res.data.forEach(element => {
           this.markarr.push(element.date);
         });

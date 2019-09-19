@@ -18,7 +18,7 @@
     <paging
       :currentpage="currentPage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -35,6 +35,7 @@ export default {
     return {
       currentPage: 1,
       currentlimit: 15,
+      total: 0,
       workerList: [],
       header: [
         ["员工编号", "userid", 110],
@@ -78,6 +79,7 @@ export default {
         departmentId: this.Inforlist.department
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.workerList = res.rows.map(item => {
           item.sex2 = item.sex == 1 ? "男" : "女";
           return item;

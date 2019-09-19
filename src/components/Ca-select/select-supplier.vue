@@ -22,7 +22,7 @@
     <paging
       :currentpage="currentPage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -39,6 +39,7 @@ export default {
     return {
       currentPage: 1,
       currentlimit: 15,
+      total: 0,
       supplierList: [],
       header: [
         ["供应商编号", "construct_supplier_id", 110],
@@ -76,6 +77,7 @@ export default {
         page: this.currentPage,
         construct_suppliername: this.supplierName
       }).then(res => {
+        this.total = res.total;
         this.supplierList = res.rows;
       });
     }

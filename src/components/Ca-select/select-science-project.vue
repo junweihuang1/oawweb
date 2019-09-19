@@ -18,7 +18,7 @@
     <paging
       :currentpage="currentPage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -35,6 +35,7 @@ export default {
     return {
       currentPage: 1,
       currentlimit: 15,
+      total: 0,
       projectList: [],
       header: [
         ["项目编号", "construct_project_id", 110],
@@ -75,6 +76,7 @@ export default {
         construct_project_name: this.projectName
       }).then(res => {
         console.log(res);
+        this.total = res.total;
         this.projectList = res.data;
       });
     }

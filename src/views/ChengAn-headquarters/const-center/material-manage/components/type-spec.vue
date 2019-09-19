@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" @click="getSpecList">查询</el-button>
+          <el-button type="primary" @click="query">查询</el-button>
           <el-button type="success" @click="openSpecWin">新增规格</el-button>
         </el-button-group>
       </el-form-item>
@@ -89,6 +89,11 @@ export default {
     this.getSpecList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getSpecList();
+    },
     getlimit(val) {
       this.currentlimit = val;
       this.getSpecList();

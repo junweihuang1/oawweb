@@ -335,6 +335,8 @@ export default {
     },
     //查询
     query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getToDoList();
     },
     //打开流程图

@@ -5,7 +5,7 @@
         <el-input v-model="departmentName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getdepartmentList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -54,6 +54,11 @@ export default {
     this.getdepartmentList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getdepartmentList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -74,6 +79,7 @@ export default {
       })
         .then(res => {
           console.log(res);
+          this.total = res.count;
           this.departmentList = res.data;
         })
         .catch(err => {

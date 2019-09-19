@@ -19,7 +19,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getPurList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -38,14 +38,14 @@
     ></paging>
     <el-dialog :visible.sync="isopen" width="70%" title="采购明细">
       <Apply-purchase
-      @close="close"
-      v-if="isopen"
-      openType="check"
-      :headform="headform"
-      :ProcessList="ProcessList"
-      :entryList="DataList"
-      :activeForm="activeform"
-    ></Apply-purchase>
+        @close="close"
+        v-if="isopen"
+        openType="check"
+        :headform="headform"
+        :ProcessList="ProcessList"
+        :entryList="DataList"
+        :activeForm="activeform"
+      ></Apply-purchase>
     </el-dialog>
   </div>
 </template>
@@ -55,14 +55,14 @@ import ApplyPurchase from "@/components/Ca-to-do/Apply-purchase/Apply-purchase";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { changetime } from "@/components/global-fn/global-fn";
-import { apimatPurReports,apigetPurchase } from "@/request/api.js";
+import { apimatPurReports, apigetPurchase } from "@/request/api.js";
 export default {
   name: "PurchaseDetails",
   data() {
     return {
       currentpage: 1,
       currentlimit: 15,
-      total:0,
+      total: 0,
       projectName: "",
       purchaseStatus: "",
       status: [
@@ -86,11 +86,11 @@ export default {
         ["采购状态", "construct_purchase_status", 120]
       ],
       headle: ["查看"],
-      isopen:false,
-      ProcessList:[],
-      headform:{},
-      DataList:[],
-      activeform:{}
+      isopen: false,
+      ProcessList: [],
+      headform: {},
+      DataList: [],
+      activeform: {}
     };
   },
   components: {
@@ -102,6 +102,11 @@ export default {
     this.getPurList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getPurList();
+    },
     getpage(val) {
       this.currentpage = val;
       this.getPurList();
@@ -110,8 +115,8 @@ export default {
       this.currentlimit = val;
       this.getPurList();
     },
-    close(){
-      this.isopen=false
+    close() {
+      this.isopen = false;
     },
     //查看
     checkitem(row) {
@@ -140,7 +145,7 @@ export default {
       console.log(data);
       apimatPurReports(data).then(res => {
         console.log(res);
-        this.total=res.count
+        this.total = res.count;
         this.PurList = res.data.map(item => {
           switch (item.construct_purchase_status) {
             case 0:

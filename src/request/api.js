@@ -183,7 +183,7 @@ export const apiNextProcess = data => get("getOwnHeadProcessList", data);
 export const apiframeWorkList = data => post("frameWorkList", data);
 
 //删除总裁办信息
-export const apidelframeWork = data => post("save_frameWork", data);
+export const apidelframeWork = data => Delete("save_frameWork", data);
 
 //保存总裁办信息
 export const apiaddframeWork = data => post("save_frameWork", data);
@@ -481,6 +481,9 @@ export const apiupdateAParty = data => post("updateAPartyMaterial", data);
 
 //运营类-->甲方材料采购-->删除甲供材料
 export const apideleteAParty = data => post("deleteAPartyMaterial", data);
+
+//运营类-->甲方材料采购-->办理甲供材料
+export const apipass_aPartyPur = data => post("pass_aPartyPur", data);
 
 //运营类-->甲方材料采购-->增加合同工程量获取材料
 export const apiConMaterialList = data => get("getConMaterialList", data);

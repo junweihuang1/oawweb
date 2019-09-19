@@ -5,7 +5,7 @@
         <el-input v-model="projectName"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getprojectList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -60,6 +60,11 @@ export default {
     this.getprojectList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getprojectList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -80,6 +85,7 @@ export default {
       };
       console.log(data);
       apiconstructCheck(data).then(res => {
+        this.total = res.total;
         this.projectList = res.data.map(item => {
           item.construct_project_workTeam_category =
             item.construct_project_workTeam_category == 1

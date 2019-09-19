@@ -54,7 +54,7 @@ export default {
         ["材料规格", "construct_material_model_name"],
         ["原材料名称和规格", "", 160],
         ["主材数量", "construct_project_quantities_num", 100],
-        ["已采购量", "", 100]
+        ["已采购量", "purNum", 100]
       ],
       material_category: "",
       material_name: "",

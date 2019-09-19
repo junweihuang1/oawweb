@@ -8,7 +8,7 @@
         ><el-input v-model="company_name" clearable></el-input
       ></el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getDataList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
         <el-button type="success" @click="addFrameWork">添加</el-button>
       </el-form-item>
     </el-form>
@@ -100,6 +100,11 @@ export default {
     this.getDataList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getDataList();
+    },
     //从子组件获取上一级
     getLevel(row) {
       console.log(row);

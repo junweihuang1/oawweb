@@ -35,7 +35,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getLeaveRecord">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -55,11 +55,11 @@
     ></paging>
     <el-dialog :visible.sync="isopen">
       <Apply-leave
-      openType="check"
-      @close="getclose"
-      :form="activeform"
-      :DataList="entryList"
-    ></Apply-leave>
+        openType="check"
+        @close="getclose"
+        :form="activeform"
+        :DataList="entryList"
+      ></Apply-leave>
     </el-dialog>
   </div>
 </template>
@@ -68,8 +68,12 @@
 import ApplyLeave from "@/components/Ca-to-do/Apply-leave";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
-import { getDates,changetime } from "@/components/global-fn/global-fn";
-import { apiLeaveList2, apideleLeave,apiLeaveListById } from "@/request/api.js";
+import { getDates, changetime } from "@/components/global-fn/global-fn";
+import {
+  apiLeaveList2,
+  apideleLeave,
+  apiLeaveListById
+} from "@/request/api.js";
 export default {
   name: "leaveRecord",
   data() {
@@ -107,10 +111,10 @@ export default {
         ["状态", "status", 100]
       ],
       headle: ["查看", "删除"],
-      isopen:false,
-      entryList:[],
-      activeform:{},
-      total:0
+      isopen: false,
+      entryList: [],
+      activeform: {},
+      total: 0
     };
   },
   components: {
@@ -122,13 +126,18 @@ export default {
     this.getLeaveRecord();
   },
   methods: {
-    getclose(){
-      this.isopen=false
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getLeaveRecord();
     },
-    checkleave(row){
-      console.log(row)
-      apiLeaveListById({id:row.id}).then(res=>{
-        console.log(res)
+    getclose() {
+      this.isopen = false;
+    },
+    checkleave(row) {
+      console.log(row);
+      apiLeaveListById({ id: row.id }).then(res => {
+        console.log(res);
         this.entryList = res.hisComment.map(item => {
           item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
           return item;
@@ -136,8 +145,8 @@ export default {
         this.activeform = res.data[0];
         this.activeform.start_time = changetime(this.activeform.start_time);
         this.activeform.end_time = changetime(this.activeform.end_time);
-        this.isopen=true
-      })
+        this.isopen = true;
+      });
     },
     //删除
     deleteitem(row) {
@@ -146,7 +155,7 @@ export default {
           apideleLeave({
             leaveId: row.id
           }).then(res => {
-            this.$message.success(res.msg)
+            this.$message.success(res.msg);
             this.getLeaveRecord();
           });
         })
@@ -172,7 +181,7 @@ export default {
         rows: this.currentlimit
       };
       apiLeaveList2(data).then(res => {
-        this.total=res.total
+        this.total = res.total;
         this.leaveList = res.data.map(item => {
           item.status = this.statuslist[item.status];
           item.start_time = getDates(item.start_time);

@@ -111,13 +111,16 @@ export default {
           });
           break;
         case "message":
-          this.messageTable = true;
+          // this.messageTable = true;
+          this.$message.warning("此功能目前没开放");
           break;
         case "attendance":
-          this.attendanceTable = true;
+          // this.attendanceTable = true;
+          this.$message.warning("此功能目前没开放");
           break;
         case "newVisitis":
-          this.newVisitisTable = true;
+          // this.newVisitisTable = true;
+          this.$message.warning("此功能目前没开放");
           break;
         default:
           this.$message({

@@ -12,9 +12,7 @@
       </el-form-item>
       <el-form-item>
         <el-button-group>
-          <el-button type="primary" size="mini" @click="getDepartmentInf"
-            >查询</el-button
-          >
+          <el-button type="primary" size="mini" @click="query">查询</el-button>
           <el-button type="success" size="mini" @click="addCompanyInf"
             >新增</el-button
           >
@@ -46,12 +44,17 @@
             <el-input
               v-model="form.center_name"
               readonly="readonly"
+              placeholder="请选择"
               clearable
               @focus="openSelect"
             ></el-input>
           </el-form-item>
           <el-form-item label="公司名称" prop="company_name">
-            <el-input v-model="form.company_name" :disabled="true" clearable></el-input>
+            <el-input
+              v-model="form.company_name"
+              :disabled="true"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item label="排序" prop="order">
             <el-input v-model="form.order" clearable></el-input>
@@ -121,6 +124,11 @@ export default {
     this.getDepartmentInf();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getDepartmentInf();
+    },
     //子组件选择中心名称后回调
     setSelectName(row) {
       this.form.center_id = row.center_id;
@@ -148,7 +156,7 @@ export default {
         company_id: "",
         company_name: "",
         center_id: "",
-        order:0,
+        order: 0,
         center_name: "",
         department_id: "",
         department_name: ""
@@ -169,6 +177,7 @@ export default {
     },
     openwindow(e) {
       this.form = {
+        order: e.order,
         company_id: e.company_id,
         company_name: e.company_name,
         center_id: e.center_id,
@@ -179,21 +188,23 @@ export default {
       this.isopen = true;
     },
     modify() {
-      console.log(this.form)
-      this.$confirm(`确定提交吗？`).then(()=>{
-        apisaveDepartment({
-        department_id: this.form.department_id,
-        department_name: this.form.department_name,
-        department_centerId: this.form.center_id,
-        department_companyId: this.form.company_id,
-        order:this.form.order
-      }).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.isopen = false;
-        this.getDepartmentInf();
-      });
-      }).catch(()=>{})
+      console.log(this.form);
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisaveDepartment({
+            department_id: this.form.department_id,
+            department_name: this.form.department_name,
+            department_centerId: this.form.center_id,
+            department_companyId: this.form.company_id,
+            order: this.form.order
+          }).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.isopen = false;
+            this.getDepartmentInf();
+          });
+        })
+        .catch(() => {});
     },
     deleteitem() {
       if (this.selectList == "") {
@@ -201,14 +212,16 @@ export default {
         return;
       }
       console.log(JSON.stringify(this.selectList));
-      this.$confirm(`确定删除吗？`).then(()=>{
-        apideleDepartment({
-        ids: JSON.stringify(this.selectList)
-      }).then(res => {
-        this.$message.success(res.msg)
-        this.getDepartmentInf()
-      });
-      }).catch(()=>{})
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apideleDepartment({
+            ids: JSON.stringify(this.selectList)
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.getDepartmentInf();
+          });
+        })
+        .catch(() => {});
     },
     getselect(val) {
       this.selectList = val.map(item => item.department_id);

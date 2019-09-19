@@ -5,7 +5,7 @@
         <el-input v-model="projectName"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -100,6 +100,11 @@ export default {
     this.getdetails();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getdetails();
+    },
     //查看项目
     checkProject(type) {
       if (this.activeitem === Object && type !== "add") {
@@ -123,7 +128,7 @@ export default {
     getdetails() {
       apiprojectdetail({
         constuct_project_dep_id: this.activeForm.constuct_project_dep_id,
-        construct_project_name: this.activeForm.construct_project_name,
+        construct_project_name: this.projectName,
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {

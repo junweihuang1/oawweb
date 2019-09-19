@@ -7,7 +7,7 @@ const cdn = {
     "https://cdn.bootcss.com/vuex/3.0.1/vuex.min.js",
     "https://cdn.bootcss.com/vue-router/3.0.3/vue-router.min.js",
     "https://cdn.bootcss.com/axios/0.18.0/axios.min.js",
-    "https://cdn.bootcss.com/element-ui/2.11.1/index.js",
+    "https://cdn.bootcss.com/element-ui/2.12.0/index.js",
     "https://cdn.bootcss.com/echarts/4.2.1/echarts.min.js"
   ]
 };
@@ -46,9 +46,9 @@ module.exports = {
       });
     }
     // 移除 prefetch 插件
-    config.plugins.delete('prefetch')
+    config.plugins.delete("prefetch");
     // 移除 preload 插件
-    config.plugins.delete('preload');
+    config.plugins.delete("preload");
     config.module
       .rule("image-webpack-loader")
       .test(/\.(gif|png|jpe?g|svg)$/i)

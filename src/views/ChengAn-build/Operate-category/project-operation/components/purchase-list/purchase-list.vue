@@ -5,7 +5,7 @@
         <el-input v-model="supplierName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getPurchaseList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="success" class="el-icon-plus" @click="openPurchase"
@@ -82,6 +82,11 @@ export default {
     this.getPurchaseList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getPurchaseList();
+    },
     //启动
     start(row) {
       this.$confirm(`确定启动流程吗？`)

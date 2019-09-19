@@ -23,7 +23,7 @@
     <paging
       :currentpage="currentPage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -40,6 +40,7 @@ export default {
     return {
       currentPage: 1,
       currentlimit: 15,
+      total: 0,
       userList: [],
       header: [
         ["员工编号", "userid"],
@@ -98,6 +99,7 @@ export default {
         page: this.currentPage,
         username: this.username
       }).then(res => {
+        this.total = res.count;
         console.log(res);
         this.userList = res.data;
       });

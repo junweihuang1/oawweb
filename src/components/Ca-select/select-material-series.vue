@@ -5,7 +5,7 @@
         <el-input v-model="construct_material_seriesName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getmaterialList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -36,7 +36,7 @@ export default {
       materialList: [],
       currentpage: 1,
       currentlimit: 15,
-      total: 130,
+      total: 0,
       header: [
         ["系列编号", "construct_material_num", 120],
         ["材料系列", "construct_material_seriesName", 120],
@@ -52,6 +52,11 @@ export default {
     this.getmaterialList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getmaterialList();
+    },
     dblclick(row) {
       this.$emit("setSelectName", row);
     },
@@ -72,6 +77,7 @@ export default {
       };
       apiselMaterialSeries(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.materialList = res.data;
       });
     }

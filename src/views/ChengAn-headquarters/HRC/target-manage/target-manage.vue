@@ -2,18 +2,16 @@
   <div>
     <el-form label-width="40px" inline size="mini">
       <el-form-item label="年度">
-        <el-input v-model="yearNum" />
+        <el-input v-model="yearNum" clearable />
       </el-form-item>
       <el-form-item label="公司">
-        <el-input v-model="companyName" />
+        <el-input v-model="companyName" clearable />
       </el-form-item>
       <el-form-item label="中心">
-        <el-input v-model="centerName" />
+        <el-input v-model="centerName" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="mini" @click="getCompanyInf"
-          >查询</el-button
-        >
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table :DataList="targetList" :header="headerList"></Ca-rule-table>
@@ -74,6 +72,11 @@ export default {
     this.getCompanyInf();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getCompanyInf();
+    },
     //获取当前页数
     getpage(e) {
       this.currentpage = e;
@@ -92,14 +95,11 @@ export default {
         page: this.currentpage,
         company: this.companyName,
         center: this.centerName
-      })
-        .then(res => {
-          console.log(res);
-          this.targetList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      }).then(res => {
+        console.log(res);
+        this.total = res.total;
+        this.targetList = res.data;
+      });
     },
     deleteitem() {
       if (this.selectList == "") {

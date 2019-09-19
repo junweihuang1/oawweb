@@ -79,7 +79,8 @@ export default {
   },
   methods: {
     query() {
-      this.userName = "";
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.company_name = "";
       this.getTaskList();
     },
