@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item label="类型">
           <el-select
-          style="width:100%"
+            style="width:100%"
             v-model="form.hr_templatel_type"
             placeholder="请选择"
             clearable
@@ -71,7 +71,7 @@
           <el-upload
             v-if="isopen"
             ref="upload"
-            :data="{ uploadPath: 'templatel/',oldfileName:oldFileName }"
+            :data="{ uploadPath: 'templatel/', oldfileName: oldFileName }"
             name="file"
             :action="file_src"
             :limit="1"
@@ -147,7 +147,7 @@ export default {
       templateType: "全部",
       templateTypeid: "",
       fileList: [],
-      oldFileName:""
+      oldFileName: ""
     };
   },
   components: {
@@ -164,7 +164,7 @@ export default {
         hr_templatel_id: 0
       };
       this.isopen = true;
-      this.oldFileName=""
+      this.oldFileName = "";
     },
     selectType(e) {
       switch (e) {
@@ -198,16 +198,18 @@ export default {
     //编辑
     opanLeaveList(e) {
       this.form = {
-        hr_template_name:e.hr_template_name,
-        hr_template_path:e.hr_template_path,
-        hr_templatel_describe:e.hr_templatel_describe,
-        hr_templatel_id:e.hr_templatel_id,
-        hr_templatel_time:e.hr_templatel_time,
-        hr_templatel_type:e.hr_templatel_type,
-        type:e.type
+        hr_template_name: e.hr_template_name,
+        hr_template_path: e.hr_template_path,
+        hr_templatel_describe: e.hr_templatel_describe,
+        hr_templatel_id: e.hr_templatel_id,
+        hr_templatel_time: e.hr_templatel_time,
+        hr_templatel_type: e.hr_templatel_type,
+        type: e.type
       };
-      this.oldFileName=e.hr_template_path.split('/')[e.hr_template_path.split('/').length-1]
-      console.log(this.oldFileName)
+      this.oldFileName = e.hr_template_path.split("/")[
+        e.hr_template_path.split("/").length - 1
+      ];
+      console.log(this.oldFileName);
       // console.log(e)
       this.isopen = true;
     },
@@ -241,7 +243,7 @@ export default {
       this.submit();
     },
     submitUpload() {
-      this.form.oldfileName=this.oldFileName
+      this.form.oldfileName = this.oldFileName;
       console.log(this.form);
       console.log(this.form);
       this.$confirm(`确定提交吗？`)
@@ -255,7 +257,7 @@ export default {
         .catch(() => {});
     },
     submit() {
-        apisaveTemplatel(this.form).then(res => {
+      apisaveTemplatel(this.form).then(res => {
         console.log(res);
         this.$message.success(res.msg);
         this.isopen = false;

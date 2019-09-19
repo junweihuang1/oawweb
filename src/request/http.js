@@ -35,6 +35,9 @@ axios.interceptors.response.use(
     if (error.response.data.errorCode === "10002") {
       localStorage.removeItem("token");
       location.reload();
+      setTimeout(() => {
+        Message.warning("登录失效，请重新登录");
+      }, 1000);
     }
     if (error.response.status === "500") {
       Message.error("服务器内部错误");

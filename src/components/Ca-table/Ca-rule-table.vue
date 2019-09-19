@@ -30,7 +30,7 @@
         :show-overflow-tooltip="item[3]"
         align="center"
         :key="index"
-        :width="item[2]"
+        :min-width="item[2]"
       >
         <template v-if="item[4] != ''">
           <el-table-column
@@ -41,7 +41,7 @@
             :show-overflow-tooltip="item[3]"
             align="center"
             :key="index2"
-            :width="item2[2]"
+            :min-width="item2[2]"
           >
           </el-table-column>
         </template>
@@ -176,7 +176,7 @@ export default {
         ? "200"
         : width.length == 1
         ? "100"
-        : "320";
+        : "300";
     },
     span() {
       //listarr是分配每行中的每个键值的数量，例：[[3,2,1],[0,0,1],[0,1,1]]
@@ -294,11 +294,19 @@ export default {
 </script>
 
 <style lang="scss">
-// 全局设置
-body .el-table th.gutter {
-  display: table-cell !important;
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table__body tr.current-row > td {
+  background-color: rgb(252, 233, 199);
 }
 
+.el-table--striped .el-table__body tr.hover-row.el-table__row--striped > td,
+.el-table__body tr.hover-row > td {
+  background-color: #d9ecff !important;
+}
+// 全局设置
+body .el-table td.gutter th.gutter {
+  display: table-cell !important;
+}
 .el-table__header tr,
 .el-table__header th {
   padding: 0;

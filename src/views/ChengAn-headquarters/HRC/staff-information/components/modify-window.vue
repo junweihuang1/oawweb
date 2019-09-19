@@ -107,7 +107,11 @@
         </el-table-column>
       </el-table>
     </template>
-    <Tabs @setJobChanges="getJobChanges" :DataList="recordList"></Tabs>
+    <Tabs
+      @setJobChanges="getJobChanges"
+      :DataList="recordList"
+      v-if="recordList"
+    ></Tabs>
     <el-dialog
       :visible.sync="isopenSelect"
       title="部门信息"
@@ -274,12 +278,13 @@ export default {
     submitType: String
   },
   mounted() {
+    console.log(this.userList);
     let qrcode = new QRCode("qrcode", {
       width: 100,
       height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
-      text: `http://47.107.175.247:8080/qr?id=${
+      text: `http://47.107.175.247:8080/qr?cid=${
         this.userList.userid
-      }&&department=${this.userList.department}` // 二维码内容
+      }&&department=` // 二维码内容
       //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
       // background: '#f0f'
       // foreground: '#ff0'
@@ -362,13 +367,18 @@ export default {
       console.log(this.recordList);
       if (this.submitType == "new") {
         data.userid = 0;
+        data.user_num = 0;
       }
       console.log(data);
-      apisavePersonalRecords(data).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisavePersonalRecords(data).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     }
   }
 };

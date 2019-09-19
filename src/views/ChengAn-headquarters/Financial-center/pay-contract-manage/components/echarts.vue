@@ -34,7 +34,7 @@
             </template>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="Type == 'add'">
+        <el-col :span="8" v-if="Type != 'check'">
           <el-form-item label=" "
             ><el-button type="primary" @click="submitContract"
               >保存</el-button

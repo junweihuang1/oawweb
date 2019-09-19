@@ -105,7 +105,7 @@ export default {
               id: "51"
             });
           }
-          this.$store.commit("changeActiveIndex", "3-3-1");
+          this.$store.commit("changeActiveIndex", "51");
           this.$router.push({
             path: "/to-do"
           });

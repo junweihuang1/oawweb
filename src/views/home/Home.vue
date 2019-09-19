@@ -2,7 +2,7 @@
   <div id="home" v-loading="loading" element-loading-text="页面初始化...">
     <el-container>
       <el-aside style="width:auto;">
-        <Nav :nav-list="navList" :active-index="activeIndex" ></Nav>
+        <Nav :nav-list="navList" :active-index="activeIndex"></Nav>
       </el-aside>
       <el-container>
         <el-header
@@ -10,8 +10,6 @@
           :style="{ background: this.$store.state.theme }"
         >
           <el-radio-group size="mini" :fill="this.$store.state.theme">
-            <!-- <el-radio-button :label="false">展开</el-radio-button>
-            <el-radio-button :label="true">收起</el-radio-button> -->
           </el-radio-group>
           <header-r />
         </el-header>
@@ -62,7 +60,6 @@ export default {
     }, 1000);
   },
   mounted() {
-    console.log(this.navList);
     // 刷新时以当前路由做为tab加入tabs
     // 当前路由不是首页时，添加首页以及另一页到store里，并设置激活状态
     // 当当前路由是首页时，添加首页到store，并设置激活状态

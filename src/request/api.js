@@ -414,7 +414,11 @@ export const apisupplierList = data => post("supplierList", data);
 export const apideleSupplier = idarr => Delete("deleSupplier", idarr);
 
 //成本中心-->分供方台账-->保存供应商信息、
-export const apisaveSupplier = data => post("saveMaterialSupplier", data);
+export const apisaveMaterialSupplier = data =>
+  post("saveMaterialSupplier", data);
+
+//成本中心-->分供方台账-->保存供应商信息、
+export const apisaveSupplier = data => post("saveSupplier", data);
 
 //成本中心-->分供方台账-->查询指定供应商的台账
 export const apimaterialPrices = data => post("materialPrices", data);
@@ -697,3 +701,6 @@ export const apipassPayApply = data => post("passPayApply", data);
 
 //打印费用申请
 export const apicostappPrint = data => get("costappPrint", data);
+
+//打印采购单
+export const apipurchaseExcelprint = data => get("purchaseExcelprint", data);

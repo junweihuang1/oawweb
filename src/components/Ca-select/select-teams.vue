@@ -5,7 +5,7 @@
         <el-input v-model="userName"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="success" @click="getprojectList">查询</el-button>
+        <el-button type="success" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table

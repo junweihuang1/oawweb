@@ -9,7 +9,7 @@
           </el-form-item>
           <el-form-item>
             <el-button-group>
-              <el-button type="primary" @click="getWorkerList">查询</el-button>
+              <el-button type="primary" @click="query">查询</el-button>
               <el-button type="primary" @click="isopenwin">新增</el-button>
             </el-button-group>
           </el-form-item>
@@ -31,6 +31,7 @@
     </el-row>
     <el-dialog :visible.sync="isopen" width="70%">
       <modify-window
+        @close="close"
         :roleList="roleList"
         :userList="userList"
         :submitType="submitType"
@@ -84,6 +85,15 @@ export default {
     this.getWorkerList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getWorkerList();
+    },
+    close() {
+      this.isopen = false;
+      this.getWorkerList();
+    },
     //点击树形菜单获取部门名称
     nodeClick(data) {
       if (data.name != "劳动力分供方" && data.name != "分供方") {

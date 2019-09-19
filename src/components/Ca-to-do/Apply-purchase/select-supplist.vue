@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { apichooseSupplier, apisaveSupplier } from "@/request/api";
+import { apichooseSupplier, apisaveMaterialSupplier } from "@/request/api";
 export default {
   name: "selectSupplier",
   data() {
@@ -98,7 +98,7 @@ export default {
             construct_purchase_supplierTel: this.selectSupplier[1] //(必填)供应商联系方式
           };
           console.log(data);
-          apisaveSupplier(data).then(res => {
+          apisaveMaterialSupplier(data).then(res => {
             console.log(res);
             this.$message.success(res.msg);
             this.$emit("close", this.selectSupplier);

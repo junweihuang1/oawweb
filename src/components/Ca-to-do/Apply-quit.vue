@@ -78,35 +78,60 @@
         <el-divider content-position="left">部门手续</el-divider>
         <el-form inline size="mini" label-width="100px">
           <el-form-item label="工作交接">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_workHandover"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item label="资料交接">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_dataHandover"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item label="文具交接">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_stationeryHandover"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item label="其它事项">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_otherHandover"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-divider content-position="left">资源中心手续</el-divider>
           <el-form-item label="意见">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_hrOpinion"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-divider content-position="left">财务部手续</el-divider>
           <el-form-item label="工资计发">
-            <el-input></el-input>
+            <el-input v-model="headForm.hr_resign_payroll" clearable></el-input>
           </el-form-item>
           <el-form-item label="其它事项">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_financeOthers"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-divider content-position="left">董事长意见</el-divider>
           <el-form-item label="意见">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_topOpinion"
+              clearable
+            ></el-input>
           </el-form-item>
           <el-divider content-position="left">申请人确认</el-divider>
           <el-form-item label="确认时间">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_confirmTime"
+              readonly
+              clearable
+            ></el-input>
           </el-form-item>
           <el-form-item label="申请人签字">
             <el-button
@@ -119,7 +144,10 @@
           </el-form-item>
           <el-divider content-position="left">技术部手续</el-divider>
           <el-form-item label="系统账号管理">
-            <el-input></el-input>
+            <el-input
+              v-model="headForm.hr_resign_sysManage"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -140,7 +168,7 @@
         </el-col>
         <el-col :span="12" v-if="userList != ''">
           <el-form-item label="审核人">
-            <el-select v-model="userid">
+            <el-select v-model="userid" placeholder="没绑定审核人">
               <el-option
                 v-for="(item, index) in userList"
                 :key="index"
@@ -224,7 +252,7 @@ export default {
       examineHeader: [
         ["审核人", "username"],
         ["步骤名称", "name_"],
-        ["审核意见", ""],
+        ["审核意见", "MESSAGE_"],
         ["审核时间", "START_TIME_"],
         ["中心", "center_name"],
         ["部门", ""]
@@ -235,7 +263,8 @@ export default {
       buttonList: [],
       userList: [],
       Approvaltable: [],
-      isopen: false
+      isopen: false,
+      currentTask: {} //当前审核人信息
     };
   },
   components: {
@@ -253,12 +282,58 @@ export default {
     //办理离职
     close(url) {
       this.isopen = false;
-      this.form.hr_resign_autoPath = url;
+      this.headForm.hr_resign_autoPath = url;
+      this.headForm.hr_resign_confirmTime = changetime(new Date());
     },
     openSign() {
       this.isopen = true;
     },
     headle(type) {
+      if (
+        (!this.headForm.hr_resign_workHandover ||
+          !this.headForm.hr_resign_dataHandover ||
+          !this.headForm.hr_resign_stationeryHandover ||
+          !this.headForm.hr_resign_otherHandover) &&
+        this.currentTask.name_ == "部门经理"
+      ) {
+        this.$message.warning("请补充部门手续相关信息");
+        return;
+      }
+      if (
+        !this.headForm.hr_resign_hrOpinion &&
+        this.currentTask.name_ == "人力资源中心"
+      ) {
+        this.$message.warning("请补充资源中心手续相关信息");
+        return;
+      }
+      if (
+        !this.headForm.hr_resign_hrOpinion &&
+        this.currentTask.name_ == "人力资源中心"
+      ) {
+        this.$message.warning("请补充资源中心手续相关信息");
+        return;
+      }
+      if (
+        this.headForm.hr_resign_autoPath == "" &&
+        this.currentTask.name_ == "申请人确认签名"
+      ) {
+        this.$message.warning("请补充确认签名");
+        return;
+      }
+      if (
+        !this.headForm.hr_resign_sysManage &&
+        this.currentTask.name_ == "技术部注销账户"
+      ) {
+        this.$message.warning("请补充技术部手续相关信息");
+        return;
+      }
+      if (
+        !this.headForm.hr_resign_reason ||
+        this.headForm.hr_resign_reason == ""
+      ) {
+        this.$message.warning("请填写离职原因意见");
+        return;
+      }
       if (!this.headForm.reasons) {
         this.$message.error("请填写意见");
         return;
@@ -310,7 +385,6 @@ export default {
       apigetProcessList(data).then(res => {
         console.log(res);
         //获取审核记录
-
         this.examineList = res.historyList
           ? res.historyList.map(item => {
               item.START_TIME_ = item.START_TIME_
@@ -321,21 +395,23 @@ export default {
           : [];
         //获取流程线
         if (this.examineList != "") {
-          let currentTask = this.examineList[this.examineList.length - 1];
+          this.currentTask = this.examineList[this.examineList.length - 1];
           let lastTask = {};
           //若审核记录不止一条，则再获取上一记录
           if (this.examineList.length > 1) {
             lastTask = this.examineList[this.examineList.length - 2];
           }
+          console.log(this.currentTask);
           this.processLine = res.activityList.map((item, index) => {
-            if (item.name == currentTask.name_) {
+            if (item.name == this.currentTask.name_ && index > 0) {
               //没有上一记录，或者上一审核步骤等于上一审核记录步骤的时候，获取当前流程点
               if (
                 !lastTask ||
                 (lastTask &&
                   lastTask.name_ == res.activityList[index - 1].name_)
               ) {
-                this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+                this.current =
+                  this.currentTask.END_TIME_ == "" ? index : index + 1;
               }
             }
             return item;
@@ -345,7 +421,9 @@ export default {
         }
         this.buttonList = res.startForm.split(",");
         this.userid =
-          res.userlist.userList != "" ? res.userlist.userList[0].userid : "";
+          res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
         this.userList =
           res.userlist.userList != "" ? res.userlist.userList : [];
       });

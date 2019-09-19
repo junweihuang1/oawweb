@@ -581,7 +581,7 @@ export default {
             icon: r.icon ? r.icon : "",
             id: r.id,
             route: r.route ? r.route : "",
-            title: itemA.text ? itemA.text : r.title
+            title: itemA.text
           });
           ret.push(obj);
           if (itemA.children && r.children) {
@@ -622,7 +622,6 @@ export default {
         })
           .then(res => {
             this.getTree();
-            console.log(res);
             localStorage.setItem("token", res.token);
             localStorage.setItem("username", this.username);
             this.loading = false;
@@ -672,7 +671,6 @@ export default {
             });
             this.$store.commit("clearTabs");
             apiUserInf().then(res2 => {
-              console.log(res2);
               this.$router.replace("/");
               localStorage.setItem("userid", res2.data.userid);
               localStorage.setItem("role_name", res2.data.role_name);
@@ -681,7 +679,6 @@ export default {
             });
           })
           .catch(err => {
-            console.log(err);
             this.loading = false;
             this.$message({
               message: err.msg,

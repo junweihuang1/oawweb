@@ -50,19 +50,26 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <template v-if="openType == 'add' || openType == 'headle'">
-          <el-col :span="12" v-if="userList != ''">
-            <el-form-item label="审核人">
-              <el-select v-model="userid" style="width:100%;">
-                <el-option
-                  v-for="(item, index) in userList"
-                  :key="index"
-                  :value="item.userid"
-                  :label="item.username"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <template v-if="openType != 'check'">
+          <template v-if="userTaskName != '结束'">
+            <el-col :span="12">
+              <el-form-item label="下一节点">
+                <el-input readonly v-model="userTaskName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" v-if="userList != ''">
+              <el-form-item label="审核人">
+                <el-select v-model="userid" style="width:100%;">
+                  <el-option
+                    v-for="(item, index) in userList"
+                    :key="index"
+                    :value="item.userid"
+                    :label="item.username"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </template>
           <el-col :span="24" v-if="openType == 'headle'">
             <el-form-item label="意见">
               <el-input type="textarea" :row="3" v-model="reasons"></el-input>
@@ -161,8 +168,10 @@
         :description="item.username"
       ></el-step>
     </el-steps>
-    <el-divider content-position="left">审核记录</el-divider>
-    <Ca-view-process :Approvaltable="Approvaltable"></Ca-view-process>
+    <template v-if="openType != 'add'">
+      <el-divider content-position="left">审核记录</el-divider>
+      <Ca-view-process :Approvaltable="Approvaltable"></Ca-view-process>
+    </template>
   </div>
 </template>
 
@@ -192,9 +201,11 @@ export default {
       username: "",
       userList: [],
       activityList: [],
+      userLists: [],
       activityLists: [],
       current: 1, //当前流程节点
-      reasons: ""
+      reasons: "",
+      userTaskName: ""
     };
   },
   props: {
@@ -241,12 +252,84 @@ export default {
         .catch(() => {});
     },
     //根据盖章类别显示流程线
+    // this.userList =
+    //       res.userlist.userList != "" && res.userlist.userList
+    //         ? res.userlist.userList
+    //         : [];
     getProcessline(row) {
       if (row[0] == "1") {
         this.changeProcessline("process0");
+        if (this.userLists.chiefLeader) {
+          this.userTaskName = this.userLists.chiefLeader
+            ? this.userLists.chiefLeader.userTaskName
+            : this.userLists.userTaskName;
+          this.userid = this.userLists.chiefLeader.userList
+            ? this.userLists.chiefLeader.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.chiefLeader.userList &&
+            this.userLists.chiefLeader.userList != ""
+              ? this.userLists.chiefLeader.userList
+              : [];
+        } else {
+          this.userTaskName = this.userLists
+            ? this.userLists.userTaskName
+            : this.userLists.userTaskName;
+          this.userid = this.userLists.userList
+            ? this.userLists.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.userList && this.userLists.userList != ""
+              ? this.userLists.userList
+              : [];
+        }
       } else if (row[0] == "5") {
         this.changeProcessline("process2");
+        if (this.userLists.leader) {
+          this.userTaskName = this.userLists.leader.userTaskName;
+          this.userid = this.userLists.leader.userList
+            ? this.userLists.leader.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.leader.userList &&
+            this.userLists.leader.userList != ""
+              ? this.userLists.leader.userList
+              : [];
+        } else {
+          this.userTaskName = this.userLists.userTaskName;
+          this.userid = this.userLists.userList
+            ? this.userLists.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.userList && this.userLists.userList != ""
+              ? this.userLists.userList
+              : [];
+        }
       } else if (row[0] == "2" || row[0] == "3" || row[0] == "4") {
+        if (this.userLists.chiefLeader) {
+          this.userTaskName = this.userLists.chiefLeader
+            ? this.userLists.chiefLeader.userTaskName
+            : this.userLists.userTaskName;
+          this.userid = this.userLists.chiefLeader.userList
+            ? this.userLists.chiefLeader.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.chiefLeader.userList &&
+            this.userLists.chiefLeader.userList != ""
+              ? this.userLists.chiefLeader.userList
+              : [];
+        } else {
+          this.userTaskName = this.userLists
+            ? this.userLists.userTaskName
+            : this.userLists.userTaskName;
+          this.userid = this.userLists.userList
+            ? this.userLists.userList[0].userid
+            : "";
+          this.userList =
+            this.userLists.userList && this.userLists.userList != ""
+              ? this.userLists.userList
+              : [];
+        }
         this.changeProcessline("process1");
       }
       if (
@@ -278,10 +361,7 @@ export default {
       apiSealProcessList(data).then(res => {
         console.log(res);
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist.userList
-          ? res.userlist.userList[0].userid
-          : "";
-        this.userList = res.userlist.userList ? res.userlist.userList : "";
+        this.userLists = res.userlist;
         this.activityLists = res.activityList;
         this.getProcessline(this.form.own_seal_chapCategory);
       });
@@ -345,12 +425,10 @@ export default {
         .catch(() => {});
     },
     submit() {
-      console.log("this.form");
       this.form.own_seal_chapCategory = this.form.own_seal_chapCategory.join(
         ","
       );
       this.form.userid = this.userid;
-      console.log(this.form);
       apisaveSeal(this.form).then(res => {
         this.$message.success(res.msg);
         this.$emit("close");

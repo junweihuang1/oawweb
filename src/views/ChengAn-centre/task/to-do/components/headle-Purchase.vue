@@ -56,7 +56,12 @@ export default {
           return item;
         });
         this.headform = res.projectInfo;
-        this.DataList = res.purchaseEntry;
+        this.DataList = res.purchaseEntry.map(item => {
+          item.construct_purchase_purchaseTotal = item.construct_purchase_purchaseTotal
+            ? item.construct_purchase_purchaseTotal.toFixed(2)
+            : "";
+          return item;
+        });
         this.activeform = res.purchaseHead;
         this.isopen = true;
       });

@@ -2,7 +2,7 @@
   <div>
     <el-form inline size="mini">
       <el-form-item label="项目名称">
-        <el-input v-model="projectName"></el-input>
+        <el-input v-model="projectName" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="query">查询</el-button>

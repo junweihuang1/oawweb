@@ -50,7 +50,6 @@ import http from "@/request/http";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apisupplierformList, apisupplierformView } from "@/request/api.js";
-import { getDate_cn } from "@/components/global-fn/global-fn.js";
 export default {
   name: "supplierContrast",
   data() {

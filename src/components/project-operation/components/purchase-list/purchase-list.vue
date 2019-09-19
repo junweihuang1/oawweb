@@ -53,6 +53,7 @@ export default {
       purchaseList: [],
       header: [
         ["采购单号", "construct_purchase_id", 100],
+        ["采购类别", "construct_purchase_materialSerName", 100],
         ["项目名称", "construct_project_name", 100],
         ["工程地址", "construct_project_addr", 100],
         ["项目经理", "construct_project_leader", 100],

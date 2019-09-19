@@ -1,11 +1,15 @@
 <template>
   <div class="main">
+    <el-tooltip placement="bottom-start" content="全屏">
+      <div class="left">
+        <div @click="handleFullScreen">
+          <i class="el-icon-monitor elclick" />
+        </div>
+      </div>
+    </el-tooltip>
     <el-tooltip placement="bottom-start" content="单页刷新">
       <div class="left">
-        <!-- <div class="wind hover" @click="handleFullScreen">
-        <i class="iconfont iconShapecopy" />
-      </div> -->
-        <i class="iconfont icon-huanyipi" @click="reloadPage"></i>
+        <i class="iconfont icon-huanyipi elclick" @click="reloadPage"></i>
       </div>
     </el-tooltip>
     <div>
@@ -87,13 +91,13 @@ export default {
       this.fullscreen = !this.fullscreen;
     },
     handleLoginOut() {
-      // localStorage.removeItem("token");
-      this.$store.state.token = "";
-      localStorage.clear();
-      // localStorage.removeItem("username");
-      // localStorage.removeItem("role_name");
-      // localStorage.removeItem("userid");
-      // localStorage.removeItem("center_name");
+      localStorage.removeItem("token");
+      // this.$store.state.token = "";
+      // localStorage.clear();
+      localStorage.removeItem("username");
+      localStorage.removeItem("role_name");
+      localStorage.removeItem("userid");
+      localStorage.removeItem("center_name");
 
       this.$router.push("/login");
     }
@@ -102,16 +106,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.icon-huanyipi {
-  color: #0190a0;
-  font-size: 20px;
-  font-weight: 800;
-}
 .left {
   height: 30px;
   width: 30px;
   line-height: 30px;
   text-align: center;
+  margin-right: 10px;
   border-radius: 50%;
   background: #fff;
 }
@@ -139,5 +139,10 @@ export default {
 }
 .el-menu-item {
   text-align: center;
+}
+.elclick {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0190a0;
 }
 </style>

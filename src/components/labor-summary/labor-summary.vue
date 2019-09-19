@@ -65,7 +65,7 @@ export default {
       isopen: false,
       header: [
         ["项目部", "constuct_project_dep_name", 90],
-        ["项目负责人", "constuct_project_dep_leader"],
+        ["项目负责人", "constuct_project_dep_leader", 120],
         ["合同总金额", "conAmount", 120],
         ["单价（天/人）", "construct_project_workTeam_price", 130],
         ["年度", "firmYear", 75],

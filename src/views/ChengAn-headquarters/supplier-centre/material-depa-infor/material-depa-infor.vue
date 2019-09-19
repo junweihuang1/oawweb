@@ -31,6 +31,7 @@
     </el-row>
     <el-dialog :visible.sync="isopen" width="70%">
       <modify-window
+        @close="close"
         :roleList="roleList"
         :userList="userList"
         :submitType="submitType"
@@ -82,6 +83,10 @@ export default {
     this.getWorkerList();
   },
   methods: {
+    close() {
+      this.isopen = false;
+      this.getWorkerList();
+    },
     nodeClick(data) {
       if (data.name != "分供方") {
         this.currentpage = 1;

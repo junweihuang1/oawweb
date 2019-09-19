@@ -5,7 +5,7 @@
         <el-input v-model="projectName" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getloborList">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -62,6 +62,11 @@ export default {
     this.getloborList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getloborList();
+    },
     checkTeam(row) {
       this.isopen = true;
       this.Inforlist = row;

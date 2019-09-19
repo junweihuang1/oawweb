@@ -106,7 +106,7 @@ export default {
       saveform: {},
       isopenAccount: false,
       accountid: null,
-      total:0
+      total: 0
     };
   },
   components: {
@@ -126,23 +126,20 @@ export default {
     }
   },
   methods: {
-    //修改供应商
-    // modifySupplier(row) {
-    //   console.log(row);
-    //   this.saveform = row;
-    //   this.username = row.username;
-    //   this.isAdd = true;
-    // },
     //保存供应商
     savesupplier() {
       console.log(this.saveform);
-      apisaveSupplier(this.saveform).then(() => {
-        this.$message.success("提交成功");
-        setTimeout(() => {
-          this.isAdd = false;
-          this.getSupplierList();
-        }, 500);
-      });
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisaveSupplier(this.saveform).then(() => {
+            this.$message.success("提交成功");
+            setTimeout(() => {
+              this.isAdd = false;
+              this.getSupplierList();
+            }, 500);
+          });
+        })
+        .catch(() => {});
     },
     //双击从子组件获取用户信息
     getuser(row) {
@@ -165,16 +162,15 @@ export default {
     },
     //删除指定供应商
     deleteSupplier(row) {
-      let id = row.construct_supplier_id + "";
-      console.log(id)
-      this.$confirm(`确定删除${row.construct_supplier_name}的所有信息？`).then(
-        () => {
+      let id = row.construct_supplier_id;
+      this.$confirm(`确定删除${row.construct_supplier_name}的所有信息？`)
+        .then(() => {
           apideleSupplier({ ids: id }).then(res => {
             this.$message.success(res.msg);
             this.getSupplierList();
           });
-        }
-      );
+        })
+        .catch(() => {});
     },
     getlimit(e) {
       this.currentlimit = e;
@@ -195,7 +191,7 @@ export default {
         page: this.currentpage,
         construct_suppliername: this.supplierName
       }).then(res => {
-        this.total=res.total
+        this.total = res.total;
         this.supplierList = res.rows;
       });
     }

@@ -16,6 +16,13 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
+        <el-input
+          clearable
+          placeholder="发包方"
+          v-model="form.manage_contract_firstParty"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-date-picker
           v-model="form.manage_contract_startTime"
           type="year"
@@ -26,7 +33,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="query('')">搜索</el-button>
+        <el-button type="primary" @click="query('')">查询</el-button>
       </el-form-item>
       <el-form-item>
         <el-button-group>
@@ -185,7 +192,7 @@ export default {
           this.rows = res.rows.rows;
         }
       );
-      this.Type = "check";
+      this.Type = "modify";
       this.isopen = true;
     },
     deleteitem(e) {

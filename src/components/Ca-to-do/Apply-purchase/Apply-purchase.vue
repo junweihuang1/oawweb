@@ -141,6 +141,7 @@
           <el-button size="mini" type="primary">点击上传</el-button>
         </el-upload>
       </el-form-item>
+
       <el-form-item v-if="current >= picitem">
         <el-button
           :disabled="fileName == '' && activeForm.photo == null ? true : false"
@@ -150,6 +151,9 @@
           >打开图片</el-button
         ></el-form-item
       >
+      <el-form-item v-if="openType == 'headle'">
+        <el-button type="success" @click="print">打印</el-button>
+      </el-form-item>
     </el-form>
 
     <el-table
@@ -354,7 +358,8 @@ import {
   apisavePurchase,
   apimodPurchase,
   apiPurchaseProcess,
-  apipassPurchase
+  apipassPurchase,
+  apipurchaseExcelprint
 } from "@/request/api.js";
 export default {
   name: "projectInfor",
@@ -427,6 +432,13 @@ export default {
     this.getprossList();
   },
   methods: {
+    //导出表格
+    print() {
+      window.location.href =
+        http.base_url +
+        "purchaseExcelprint?bizId=" +
+        this.active.BUSINESS_KEY_.split(".")[1];
+    },
     //打开图片
     openpic() {
       console.log(this.activeForm.photo);

@@ -9,7 +9,7 @@
           </el-form-item>
           <el-form-item>
             <el-button-group>
-              <el-button type="primary" @click="getWorkerList">查询</el-button>
+              <el-button type="primary" @click="query">查询</el-button>
               <el-button type="primary" @click="isopenwin">新增</el-button>
               <el-button type="primary" @click="joinproject"
                 >加盟项目</el-button
@@ -34,6 +34,7 @@
     </el-row>
     <el-dialog :visible.sync="isopen" width="70%">
       <modify-window
+        @close="close"
         :roleList="roleList"
         :userList="userList"
         :submitType="submitType"
@@ -61,16 +62,16 @@ export default {
       username: "",
       WorkerList: [],
       header: [
-        ["工号", "user_num"],
-        ["姓名", "username"],
-        ["电话号码", "phone_number"],
-        ["性别", "sex2"],
-        ["公司", "company_name"],
-        ["中心", "center_name"],
-        ["中心id", "center_id"],
-        ["部门", "department"],
-        ["身份证号码", "user_card"],
-        ["身份证地址", "card_address"]
+        ["工号", "user_num", 80],
+        ["姓名", "username", 80],
+        ["电话号码", "phone_number", 120],
+        ["性别", "sex", 80],
+        ["邮箱", "email", 160],
+        ["公司", "company_name", 130],
+        ["中心", "center_name", 130],
+        ["部门", "department_name", 130],
+        ["身份证号码", "user_card", 180],
+        ["身份证地址", "card_address", 270]
       ],
       headle: ["编辑"],
       isopen: false,
@@ -91,6 +92,15 @@ export default {
     this.getWorkerList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getWorkerList();
+    },
+    close() {
+      this.isopen = false;
+      this.getWorkerList();
+    },
     nodeClick(data) {
       if (data.name != "分供方") {
         this.currentpage = 1;

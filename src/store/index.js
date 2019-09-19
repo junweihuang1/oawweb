@@ -5,7 +5,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    token: "",
     openTabs: [],
     todoList: "",
     activeIndex: "1",
@@ -15,9 +14,6 @@ export default new Vuex.Store({
     dialog_openTabs: [false, false, false]
   },
   mutations: {
-    savetoken(state, token) {
-      console.log(token);
-    },
     addTabs(state, Tabs) {
       state.openTabs.push(Tabs);
     },

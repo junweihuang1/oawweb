@@ -9,7 +9,7 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getRemoveRecord">查询</el-button>
+        <el-button type="primary" @click="query">查询</el-button>
       </el-form-item>
     </el-form>
     <Ca-rule-table
@@ -61,6 +61,11 @@ export default {
     this.getRemoveRecord();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getRemoveRecord();
+    },
     getlimit(val) {
       this.currentlimit = val;
       this.getRemoveRecord();

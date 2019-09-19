@@ -118,23 +118,23 @@
     </el-table>
     <el-form size="mini" label-width="80px" style="margin-top:10px;">
       <template v-if="userTaskName != '结束' && openType != 'check'">
-            <el-col :span="10">
-              <el-form-item label="下一节点">
-                <el-input readonly v-model="userTaskName"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-        <el-form-item label="审核人" >
-        <el-select v-model="userid">
-          <el-option
-            v-for="(item, index) in userList"
-            :key="index"
-            :value="item.userid"
-            :label="item.username"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      </el-col>
+        <el-col :span="10">
+          <el-form-item label="下一节点">
+            <el-input readonly v-model="userTaskName"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="审核人">
+            <el-select v-model="userid">
+              <el-option
+                v-for="(item, index) in userList"
+                :key="index"
+                :value="item.userid"
+                :label="item.username"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </template>
       <template v-if="openType == 'headle'">
         <el-form-item label="审核意见">
@@ -260,7 +260,7 @@ export default {
       userList: [],
       current: 1,
       buttonList: [],
-      userTaskName:""
+      userTaskName: ""
     };
   },
   props: {
@@ -339,7 +339,7 @@ export default {
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
           key: "ownHeadView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: this.active.role_name, //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -370,7 +370,12 @@ export default {
         }
         this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
-        this.userid =this.userTaskName == "结束"? 0:res.userlist.userList && res.userlist.userList != ""? res.userlist.userList[0].userid:""
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList && res.userlist.userList != ""
+            ? res.userlist.userList[0].userid
+            : "";
         this.userList = res.userlist.userList ? res.userlist.userList : [];
       });
     },

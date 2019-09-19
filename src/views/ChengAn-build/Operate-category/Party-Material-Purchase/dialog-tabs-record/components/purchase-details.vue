@@ -138,7 +138,7 @@ export default {
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
           key: "aPartyPurView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: this.active.role_name, //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {

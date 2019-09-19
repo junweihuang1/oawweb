@@ -248,9 +248,15 @@ export default {
         data.user_num = 0;
       }
       console.log(data);
-      apisavePersonalRecords(data).then(res => {
-        console.log(res);
-      });
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisavePersonalRecords(data).then(res => {
+            this.$message.success(res.msg);
+            this.$emit("close");
+            console.log(res);
+          });
+        })
+        .catch(() => {});
     }
   }
 };

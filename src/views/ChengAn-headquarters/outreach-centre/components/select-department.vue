@@ -88,6 +88,8 @@ export default {
       this.getdepartmentList();
     },
     queryCenter() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getdepartmentList();
     },
     closewin() {
