@@ -103,7 +103,7 @@ export default {
         supOpinion_selfEva: row[4].value, //(必填)：公司/部门自评
         supOpinion_result: row[5].value, //(必填)：监察评定结果
         supOpinion_title: getYearMonth_cn(new Date()), //(必填)：日期，默认
-        username: localStorage.getItem("userid") //(必填)：用户id;
+        username: sessionStorage.getItem("userid") //(必填)：用户id;
       };
       console.log(data);
       apisave_supOpinion(data).then(res => {

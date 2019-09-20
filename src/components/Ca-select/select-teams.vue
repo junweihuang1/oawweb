@@ -36,7 +36,7 @@ export default {
       teamList: [],
       currentpage: 1,
       currentlimit: 15,
-      total: 130,
+      total: 0,
       header: [
         ["员工编号", "userid", 100],
         ["员工姓名", "username", 100],

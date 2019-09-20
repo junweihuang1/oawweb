@@ -73,7 +73,7 @@ export default {
   name: "processManage",
   data() {
     return {
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       upload_url: http.base_url + "deploymentProcessDefinition_zip",
       currentlimit: 15,
       currentpage: 1,

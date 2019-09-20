@@ -15,6 +15,7 @@
       >
         <el-input type="password" style="display: none;" />
         <el-form-item prop="checkUser">
+          <el-input style="position:fixed;bottom:-99999px;"></el-input>
           <el-input
             v-model="formInline.checkUser"
             prefix-icon="iconfont iconpeople_fill"
@@ -26,6 +27,10 @@
         <!-- 
             @keyup.enter.native="submitForm('formInline')" -->
         <el-form-item prop="checkPassword">
+          <el-input
+            style="position:fixed;bottom:-99999px;"
+            type="password"
+          ></el-input>
           <el-input
             v-model="formInline.checkPassword"
             type="password"
@@ -602,13 +607,14 @@ export default {
           icon: "icon-home",
           children: []
         });
-        localStorage.setItem("tree", JSON.stringify(newTree));
+
+        sessionStorage.setItem("tree", JSON.stringify(newTree));
         apiUserInf().then(res2 => {
           this.$router.replace("/");
-          localStorage.setItem("userid", res2.data.userid);
-          localStorage.setItem("role_name", res2.data.role_name);
-          localStorage.setItem("center_name", res2.data.center_name);
-          localStorage.setItem("company_name", res2.data.company_name);
+          sessionStorage.setItem("userid", res2.data.userid);
+          sessionStorage.setItem("role_name", res2.data.role_name);
+          sessionStorage.setItem("center_name", res2.data.center_name);
+          sessionStorage.setItem("company_name", res2.data.company_name);
         });
       });
     },
@@ -622,8 +628,8 @@ export default {
         })
           .then(res => {
             this.getTree();
-            localStorage.setItem("token", res.token);
-            localStorage.setItem("username", this.username);
+            sessionStorage.setItem("token", res.token);
+            sessionStorage.setItem("username", this.username);
             this.loading = false;
             this.$message({
               message: "登录成功",
@@ -631,13 +637,17 @@ export default {
             });
             this.$store.commit("clearTabs");
           })
-          .catch(() => {
-            this.isreload = false;
-            this.$message.warning("无法登陆，请联系技术人员");
+          .catch(err => {
+            if (err && err.errorCode == "10004") {
+              this.$message.warning(err.msg);
+            } else {
+              this.$message.warning("无法登陆，请联系技术人员");
+            }
             this.$nextTick(() => {
               this.isreload = true;
               this.msg = "";
             });
+            this.isreload = false;
             this.loading = false;
           });
       }, 500);
@@ -648,45 +658,45 @@ export default {
     onRefresh() {
       this.msg = "";
     },
-    submitForm() {
-      this.loading = true;
-      if (this.msg !== "验证成功") {
-        this.$message.error("图片验证失败，请重试");
-        this.loading = false;
-        return;
-      }
-      setTimeout(() => {
-        apiLogin({
-          pcOrApp: "pc",
-          username: this.username,
-          password: this.password
-        })
-          .then(res => {
-            localStorage.setItem("token", res.token);
-            localStorage.setItem("username", this.username);
-            this.loading = false;
-            this.$message({
-              message: "登录成功",
-              type: "success"
-            });
-            this.$store.commit("clearTabs");
-            apiUserInf().then(res2 => {
-              this.$router.replace("/");
-              localStorage.setItem("userid", res2.data.userid);
-              localStorage.setItem("role_name", res2.data.role_name);
-              localStorage.setItem("center_name", res2.data.center_name);
-              localStorage.setItem("company_name", res2.data.company_name);
-            });
-          })
-          .catch(err => {
-            this.loading = false;
-            this.$message({
-              message: err.msg,
-              type: "error"
-            });
-          });
-      }, 500);
-    },
+    // submitForm() {
+    //   this.loading = true;
+    //   if (this.msg !== "验证成功") {
+    //     this.$message.error("图片验证失败，请重试");
+    //     this.loading = false;
+    //     return;
+    //   }
+    //   setTimeout(() => {
+    //     apiLogin({
+    //       pcOrApp: "pc",
+    //       username: this.username,
+    //       password: this.password
+    //     })
+    //       .then(res => {
+    //         sessionStorage.setItem("token", res.token);
+    //         sessionStorage.setItem("username", this.username);
+    //         this.loading = false;
+    //         this.$message({
+    //           message: "登录成功",
+    //           type: "success"
+    //         });
+    //         this.$store.commit("clearTabs");
+    //         apiUserInf().then(res2 => {
+    //           this.$router.replace("/");
+    //           sessionStorage.setItem("userid", res2.data.userid);
+    //           sessionStorage.setItem("role_name", res2.data.role_name);
+    //           sessionStorage.setItem("center_name", res2.data.center_name);
+    //           sessionStorage.setItem("company_name", res2.data.company_name);
+    //         });
+    //       })
+    //       .catch(err => {
+    //         this.loading = false;
+    //         this.$message({
+    //           message: err.msg,
+    //           type: "error"
+    //         });
+    //       });
+    //   }, 500);
+    // },
     handleEnter(e) {
       this.submitForm(e);
     }

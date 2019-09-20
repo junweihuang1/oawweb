@@ -26,7 +26,7 @@
     <paging
       :currentpage="currentPage"
       :currentlimit="currentlimit"
-      :total="200"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -44,6 +44,7 @@ export default {
       currentPage: 1,
       currentlimit: 15,
       roleList: [],
+      total: 0,
       header: [
         ["职位编号", "role_id", 100],
         ["职位名称", "role_name"],

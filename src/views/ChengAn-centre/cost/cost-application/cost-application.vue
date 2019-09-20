@@ -75,8 +75,8 @@ export default {
       costList: [],
       header: [
         ["ID", "costapp_id", 70],
-        ["公司部门", "costapp_company", 250],
-        ["申请事项", "costapp_appitem"],
+        ["公司部门", "costapp_company", 160],
+        ["申请事项", "costapp_appitem", 160],
         ["申请类型", "costapp_application", 100],
         ["建单时间", "costapp_time", 100],
         ["费用金额", "costapp_amount", 100],
@@ -104,19 +104,6 @@ export default {
       this.isopen = false;
       this.getCostList();
     },
-    //修改
-    // modify(row) {
-    //   apigetCostappById({
-    //     costapp_id: row.costapp_id
-    //   }).then(res => {
-    //     console.log(res);
-    //     this.Approvaltable = res.hisComment;
-    //     this.setform = res.data;
-    //     this.openType = "modify";
-    //     this.isopen = true;
-    //   });
-    // },
-    //打印
     print(row) {
       apigetCostappById({
         costapp_id: row.costapp_id
@@ -126,6 +113,7 @@ export default {
           return item;
         });
         this.setform = res.data;
+        this.setform.username = res.applyUser.username;
         this.isprint = true;
         setTimeout(() => {
           this.isprint = false;
@@ -148,7 +136,9 @@ export default {
     //新增
     additem() {
       this.openType = "add";
-      this.setform = {};
+      this.setform = {
+        username: sessionStorage.getItem("username")
+      };
       this.Approvaltable = [];
       this.isopen = true;
     },
@@ -167,6 +157,7 @@ export default {
           });
         }
         this.setform = res.data;
+        this.setform.username = res.applyUser.username;
         this.isopen = true;
       });
     },

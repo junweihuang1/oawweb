@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="申请人">
-            <el-input v-model="applicant" readonly></el-input>
+            <el-input v-model="form.username" readonly></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -23,7 +23,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="申请类型">
-            <el-select v-model="form.costapp_application" style="width:100%;">
+            <el-select
+              v-model="form.costapp_application"
+              style="width:100%;"
+              :disabled="isedit"
+            >
               <el-option
                 v-for="(item, index) in applyType"
                 :value="item"
@@ -35,7 +39,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="费用金额">
-            <el-input v-model="form.costapp_amount" type="number"></el-input
+            <el-input
+              v-model="form.costapp_amount"
+              type="number"
+              :readonly="isedit"
+            ></el-input
           ></el-form-item>
         </el-col>
         <el-col :span="12">
@@ -48,6 +56,7 @@
             <el-input
               type="textarea"
               :row="3"
+              :readonly="isedit"
               v-model="form.costapp_appitem"
             ></el-input
           ></el-form-item>
@@ -149,7 +158,7 @@
       </el-table>
     </template>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopenselect"
       title="选择部门"
       :append-to-body="true"
@@ -173,7 +182,7 @@ export default {
   name: "costDetails",
   data() {
     return {
-      applicant: localStorage.getItem("username"),
+      isedit: this.openType == "headle" ? true : false, //办理时不能编辑内容
       form: this.setform,
       isopenselect: false,
       applyType: ["费用审批", "借支申请", "报销申请"],
@@ -227,7 +236,6 @@ export default {
   },
   methods: {
     getprossList() {
-      console.log(this.active);
       let data = {};
       if (this.active) {
         data = {
@@ -244,7 +252,7 @@ export default {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
           key: "costappView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: sessionStorage.getItem("role_name"), //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
       }
@@ -305,7 +313,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -336,7 +344,9 @@ export default {
         row.company_name + row.center_name + row.department_name;
     },
     openselect() {
-      this.isopenselect = true;
+      if (!this.isedit) {
+        this.isopenselect = true;
+      }
     }
   }
 };

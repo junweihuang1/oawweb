@@ -23,11 +23,16 @@
     <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
-      :total="15"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isadd" width="15%" :append-to-body="true" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isadd"
+      width="15%"
+      :append-to-body="true"
+      v-dialogDrag
+    >
       <el-form size="mini">
         <el-form-item label="材料名称">
           <el-input v-model="addform.material_name"></el-input>
@@ -53,6 +58,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
+      total: 0,
       materialName: "",
       materialList: [],
       header: [
@@ -139,6 +145,7 @@ export default {
       };
       apimaterialList(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.materialList = res.data;
       });
     }

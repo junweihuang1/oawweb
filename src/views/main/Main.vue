@@ -15,6 +15,17 @@
         </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
+          <div class="card-panel-icon-wrapper icon-money">
+            <i class="icon el-icon-upload" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">补卡审批</div>
+            <span class="panel-num">{{ noApprovalList.length }}</span>
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('message')">
           <div class="card-panel-icon-wrapper icon-message">
             <i class="icon el-icon-bell" />
@@ -24,17 +35,6 @@
               消息通知
             </div>
             <span class="panel-num">{{ messageList.length }}</span>
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
-          <div class="card-panel-icon-wrapper icon-money">
-            <i class="icon el-icon-upload" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">补卡审批</div>
-            <span class="panel-num">{{ noApprovalList.length }}</span>
           </div>
         </div>
       </el-col>
@@ -59,11 +59,13 @@
         @reload="handleApiFindTaskList"
       ></to-do-table>
     </el-dialog>
-    <el-dialog title="新消息" :visible.sync="messageTable" v-dialogDrag> </el-dialog>
+    <el-dialog title="新消息" :visible.sync="messageTable" v-dialogDrag>
+    </el-dialog>
     <el-dialog title="补卡审批" :visible.sync="newVisitisTable" v-dialogDrag>
       <card-Approval-table :processList="noApprovalList"></card-Approval-table>
     </el-dialog>
-    <el-dialog title="我的出勤" :visible.sync="attendanceTable" v-dialogDrag> </el-dialog>
+    <el-dialog title="我的出勤" :visible.sync="attendanceTable" v-dialogDrag>
+    </el-dialog>
   </div>
 </template>
 
@@ -119,8 +121,8 @@ export default {
           this.$message.warning("此功能目前没开放");
           break;
         case "newVisitis":
-          // this.newVisitisTable = true;
-          this.$message.warning("此功能目前没开放");
+          this.newVisitisTable = true;
+          // this.$message.warning("此功能目前没开放");
           break;
         default:
           this.$message({
@@ -142,7 +144,7 @@ export default {
             message: err.msg,
             type: "warning"
           });
-          localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
           location.reload();
         });
     },

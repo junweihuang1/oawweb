@@ -46,6 +46,7 @@ export default {
       }).then(res => {
         console.log(res); //hisComment
         this.setform = res.data;
+        this.setform.username = res.applyUser.username;
         this.Approvaltable = res.hisComment
           ? res.hisComment.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";

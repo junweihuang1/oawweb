@@ -1,12 +1,26 @@
 <template>
   <div>
-    <el-button
-      type="success"
-      style="margin-bottom:20px;"
-      @click="openApply"
-      size="mini"
-      >申请盖章</el-button
-    >
+    <el-form inline size="mini">
+      <el-form-item>
+        <select-company @setCompanyName="getCompanyName"></select-company>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          v-model="fileName"
+          clearable
+          placeholder="文件名称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" @click="openApply" size="mini"
+          >申请盖章</el-button
+        >
+      </el-form-item>
+    </el-form>
+
     <rule-table
       :setheight="0.77"
       :header="headerList"
@@ -58,6 +72,7 @@
 </template>
 
 <script>
+import selectCompany from "@/components/Ca-select/select-company";
 import detailsPrint from "./components/details-print";
 import paging from "@/components/paging/paging";
 import SealApply from "@/components/Ca-to-do/Seal-Apply";
@@ -69,6 +84,8 @@ export default {
   data() {
     return {
       dialogtitle: "盖章详情",
+      fileName: "",
+      companyName: "",
       DataList: [],
       headerList: [
         ["ID", "own_seal_id", 80],
@@ -120,12 +137,21 @@ export default {
     ruleTable,
     SealApply,
     paging,
-    detailsPrint
+    detailsPrint,
+    selectCompany
   },
   mounted() {
     this.getsealList();
   },
   methods: {
+    getCompanyName(val) {
+      this.companyName = val;
+    },
+    query() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
+      this.getsealList();
+    },
     print(row) {
       apiSealById({
         own_seal_id: row.own_seal_id
@@ -159,6 +185,8 @@ export default {
     },
     getsealList() {
       apigetSealList({
+        own_seal_fileName: this.fileName,
+        own_seal_company: this.companyName,
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {

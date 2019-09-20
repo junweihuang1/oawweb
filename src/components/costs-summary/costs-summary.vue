@@ -65,7 +65,7 @@ export default {
       SummaryList: [],
       isopen: false,
       header: [
-        ["项目", "construct_project_name", 90],
+        ["项目", "construct_project_name", 140],
         ["施工项目", "construct_project_workTeam_category", 100],
         ["施工项目id", "construct_project_workTeam_id", 120],
         ["班组", "username", 75],

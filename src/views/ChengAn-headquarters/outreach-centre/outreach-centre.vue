@@ -41,13 +41,18 @@
       ></modify-window>
     </el-dialog>
     <el-dialog :visible.sync="isopenJoin" top="8vh" width="60%" v-dialogDrag>
-      <join-project v-if="isopenJoin"></join-project>
+      <!-- <join-project v-if="isopenJoin"></join-project> -->
+      <project-operation-com
+        :companyId="3"
+        openType="Business"
+      ></project-operation-com>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import joinProject from "./components/join-project";
+import projectOperationCom from "@/components/project-operation/project-operation-com";
+// import joinProject from "./components/join-project";
 import CaTree from "@/components/Ca-tree/Ca-tree";
 import ModifyWindow from "./components/modify-window";
 import paging from "@/components/paging/paging";
@@ -65,7 +70,7 @@ export default {
         ["工号", "user_num", 80],
         ["姓名", "username", 80],
         ["电话号码", "phone_number", 120],
-        ["性别", "sex", 80],
+        ["性别", "sex2", 80],
         ["邮箱", "email", 160],
         ["公司", "company_name", 130],
         ["中心", "center_name", 130],
@@ -86,7 +91,7 @@ export default {
     paging,
     ModifyWindow,
     CaTree,
-    joinProject
+    projectOperationCom
   },
   mounted() {
     this.getWorkerList();

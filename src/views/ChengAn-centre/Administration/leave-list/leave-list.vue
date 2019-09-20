@@ -22,7 +22,12 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="请假详情" :visible.sync="isApply" width="35%" v-dialogDrag>
+    <el-dialog
+      title="请假详情"
+      :visible.sync="isApply"
+      width="35%"
+      v-dialogDrag
+    >
       <Apply-leave
         v-if="isApply"
         :form="headform"
@@ -88,7 +93,7 @@ export default {
       apiLeaveList({
         pageSize: this.currentlimit,
         limit: this.currentpage,
-        token: localStorage.getItem("token")
+        token: sessionStorage.getItem("token")
       }).then(res => {
         this.total = res.totalCount;
         this.DataList = res.data.map(item => {
@@ -141,8 +146,8 @@ export default {
       this.openType = "add";
       this.isApply = true;
       this.headform = {
-        applicant: localStorage.getItem("username"),
-        position: localStorage.getItem("role_name"),
+        applicant: sessionStorage.getItem("username"),
+        position: sessionStorage.getItem("role_name"),
         start_time: "",
         end_time: "",
         leave_category: "",

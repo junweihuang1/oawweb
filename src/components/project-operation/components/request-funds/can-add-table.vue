@@ -18,8 +18,9 @@
     >
       <el-table-column
         :label="item[0]"
-        :width="item[3]"
+        :min-width="item[3]"
         align="center"
+        :show-overflow-tooltip="item[4]"
         v-for="(item, index) in titleList"
         :key="index"
       >
@@ -58,7 +59,7 @@
             <el-button type="success" @click="checkitem(row)">通过</el-button>
           </template>
           <template v-else-if="row.manage_status">
-            <el-button type="text" style="color:#F56C6C;">审核中</el-button>
+            <el-button type="warning" @click="checkitem(row)">审核中</el-button>
           </template>
         </template>
       </el-table-column>
@@ -73,13 +74,13 @@ export default {
   data() {
     return {
       titleList: [
-        ["请款时间", "manage_reqfunds_time", "date"],
-        ["请款金额", "manage_reqfunds_amount", ""],
-        ["开票日期", "manage_reqfunds_ticketDate", "date"],
-        ["开票金额", "manage_reqfunds_ticketAmount", ""],
-        ["付款日期", "manage_reqfunds_receiveDate", "date"],
-        ["付款金额", "manage_reqfunds_receiveAmount", ""],
-        ["备注", "manage_reqfunds_remark", ""]
+        ["请款时间", "manage_reqfunds_time", "date", 90],
+        ["请款金额", "manage_reqfunds_amount", "", 90],
+        ["开票日期", "manage_reqfunds_ticketDate", "date", 90],
+        ["开票金额", "manage_reqfunds_ticketAmount", "", 90],
+        ["付款日期", "manage_reqfunds_receiveDate", "date", 100],
+        ["付款金额", "manage_reqfunds_receiveAmount", "", 100],
+        ["备注", "manage_reqfunds_remark", "", 140, true]
       ],
       DataList: this.rows,
       ischeck: true,

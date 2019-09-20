@@ -158,7 +158,7 @@ export default {
       });
       this.currentActive = "8";
       this.reqfundsId = id;
-      this.ApplyFormopenType = "";
+      this.ApplyFormopenType = "check";
     },
     //关闭标签
     removeTab(e) {

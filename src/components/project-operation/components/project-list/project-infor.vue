@@ -112,7 +112,11 @@
         v-if="isselect"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isselectProjectManager" :append-to-body="true" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isselectProjectManager"
+      :append-to-body="true"
+      v-dialogDrag
+    >
       <select-teams
         @setSelectName="getProjectManager"
         v-if="isselectProjectManager"
@@ -125,7 +129,7 @@
       ></select-project-dep>
     </el-dialog>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isselectContract"
       :append-to-body="true"
       top="8vh"
@@ -159,7 +163,8 @@ export default {
       isselectdep: false,
       isselectProjectManager: false,
       isselectContract: false,
-      projectList: ["预埋", "消防水", "消防电", "防排烟", "消防水电"]
+      projectList: ["预埋", "消防水", "消防电", "防排烟", "消防水电"],
+      entryListLen: this.entryList.length
     };
   },
   props: {
@@ -233,7 +238,11 @@ export default {
     },
     //撤销
     cancel() {
-      this.entryList.pop();
+      if (this.entryList.length > this.entryListLen) {
+        this.entryList.pop();
+      } else {
+        this.$message.warning("原有项目不能删除");
+      }
     },
     //保存
     save() {

@@ -39,7 +39,7 @@ export default {
   name: "costDetails",
   data() {
     return {
-      applicant: localStorage.getItem("username"),
+      applicant: sessionStorage.getItem("username"),
       form: this.setform,
       nowtime: getDates(new Date())
     };

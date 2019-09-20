@@ -47,7 +47,7 @@
       @setpage="getpage"
     ></paging>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       top="8vh"
       :title="diatitle"
       :visible.sync="isadd"

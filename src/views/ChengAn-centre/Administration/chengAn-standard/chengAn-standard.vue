@@ -111,7 +111,7 @@ export default {
   data() {
     return {
       file_src: http.base_url + "uploadFile",
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       isopen: false,
       DataList: [],
       headerList: [

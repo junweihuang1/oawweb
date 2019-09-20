@@ -131,12 +131,8 @@
     </div>
     <div style="width:100%;text-align:center;">
       <el-form inline size="mini">
-        <el-form-item>
-          <el-select
-            v-model="userid"
-            placeholder="请选择"
-            v-if="AuditorList != ''"
-          >
+        <el-form-item v-if="openType != 'check'">
+          <el-select v-model="userid" placeholder="没绑定审核人">
             <el-option
               v-for="item in AuditorList"
               :key="item.userid"
@@ -211,7 +207,7 @@
       </el-table>
     </div>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopenDep"
       title="选择部门"
       :append-to-body="true"
@@ -277,7 +273,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }

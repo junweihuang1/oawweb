@@ -107,7 +107,7 @@ export default {
         achReview_dirOpinion: row[2].value,
         achReview_comOpinion: row[3].value,
         achReview_month: getYearMonth_cn(new Date()),
-        username: localStorage.getItem("userid")
+        username: sessionStorage.getItem("userid")
       };
       console.log(data);
       apisave_achReview(data).then(res => {

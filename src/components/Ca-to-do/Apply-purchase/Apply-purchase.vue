@@ -151,7 +151,7 @@
           >打开图片</el-button
         ></el-form-item
       >
-      <el-form-item v-if="openType == 'headle'">
+      <el-form-item v-if="openType !== 'add'">
         <el-button type="success" @click="print">打印</el-button>
       </el-form-item>
     </el-form>
@@ -309,13 +309,21 @@
       <el-divider content-position="left">审批记录</el-divider>
       <Ca-view-process :Approvaltable="ProcessList"></Ca-view-process>
     </template>
-    <el-dialog :visible.sync="isselectMaterialseries" :append-to-body="true" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isselectMaterialseries"
+      :append-to-body="true"
+      v-dialogDrag
+    >
       <select-material-series
         @setSelectName="getSelectName"
         v-if="isselectMaterialseries"
       ></select-material-series>
     </el-dialog>
-    <el-dialog :visible.sync="isselectMaterial" :append-to-body="true" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isselectMaterial"
+      :append-to-body="true"
+      v-dialogDrag
+    >
       <select-material
         @setSelectName="getMaterialName"
         :projectId="headform.construct_project_id"
@@ -366,7 +374,7 @@ export default {
   data() {
     return {
       fileName: "",
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       file_url: http.base_url + "uploadPurchasePhoto",
       Process_header: [
         ["步骤名称", "name_", 100],
@@ -428,16 +436,17 @@ export default {
     selectSupplist
   },
   mounted() {
-    console.log(this.activeForm);
     this.getprossList();
   },
   methods: {
     //导出表格
     print() {
-      window.location.href =
-        http.base_url +
-        "purchaseExcelprint?bizId=" +
-        this.active.BUSINESS_KEY_.split(".")[1];
+      window.open(
+        `${http.base_url}purchaseExcelprint?bizId=${
+          this.activeForm.construct_purchase_id
+        }`
+      );
+      // window.location.href = ;
     },
     //打开图片
     openpic() {
@@ -496,7 +505,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === "") {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -504,7 +513,8 @@ export default {
         (this.currentTaskName == "成本中心经理" ||
           this.currentTaskName == "成本材料中心总监" ||
           this.currentTaskName == "采购核对单价") &&
-        this.activeForm.construct_purchase_supplier == ""
+        this.activeForm.construct_purchase_supplier == "" &&
+        type
       ) {
         this.$message.error("请选择供应商");
         return;

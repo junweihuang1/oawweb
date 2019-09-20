@@ -38,7 +38,7 @@ export default {
     return {
       winHeight: "100%",
       loading: true,
-      navList: JSON.parse(localStorage.getItem("tree"))
+      navList: JSON.parse(sessionStorage.getItem("tree"))
     };
   },
   methods: {

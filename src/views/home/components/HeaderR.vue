@@ -53,9 +53,9 @@ export default {
     };
   },
   created() {
-    this.username = localStorage.getItem("username");
-    this.company_name = localStorage.getItem("company_name");
-    this.center_name = localStorage.getItem("center_name");
+    this.username = sessionStorage.getItem("username");
+    this.company_name = sessionStorage.getItem("company_name");
+    this.center_name = sessionStorage.getItem("center_name");
   },
   methods: {
     reloadPage() {
@@ -91,13 +91,13 @@ export default {
       this.fullscreen = !this.fullscreen;
     },
     handleLoginOut() {
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       // this.$store.state.token = "";
-      // localStorage.clear();
-      localStorage.removeItem("username");
-      localStorage.removeItem("role_name");
-      localStorage.removeItem("userid");
-      localStorage.removeItem("center_name");
+      // sessionStorage.clear();
+      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("role_name");
+      sessionStorage.removeItem("userid");
+      sessionStorage.removeItem("center_name");
 
       this.$router.push("/login");
     }

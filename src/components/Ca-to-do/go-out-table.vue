@@ -245,7 +245,7 @@ export default {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
           key: "findFieldpView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: sessionStorage.getItem("role_name"), //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
       }
@@ -288,7 +288,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }

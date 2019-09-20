@@ -12,7 +12,7 @@
             <el-input v-model="form.position" readonly />
           </el-form-item>
         </el-col>
-        <div v-if="openType == 'check'">
+        <div v-if="openType !== 'add'">
           <el-col :span="12">
             <el-form-item label="开始时间">
               <el-input v-model="form.start_time" readonly></el-input>
@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="共计天数">
-            <el-input v-model="form.day_count" />
+            <el-input v-model="day_count" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -232,22 +232,38 @@ export default {
       current: 1
     };
   },
-  // computed: {
-  //   day_count() {
-  //     let count = 0;
-  //     let leave_time =
-  //       new Date(this.form.end_time) - new Date(this.form.start_time);
-  //     leave_time /= 60 * 1000 * 60;
-  //     if (leave_time > 0 && leave_time <= 4) {
-  //       count = 0.5;
-  //     } else if (leave_time > 4 && leave_time <= 10) {
-  //       count = 1;
-  //     } else if (leave_time > 10) {
-  //       count = Math.floor(leave_time / 24);
-  //     }
-  //     return count;
-  //   }
-  // },
+  computed: {
+    day_count() {
+      let count = 0;
+      let start = new Date(this.form.start_time);
+      let end = new Date(this.form.end_time);
+      let start_hour = start.getHours();
+      let leave_time = (end - start) / 3600000;
+      console.log(start_hour);
+      if (start_hour >= 12) {
+        if (leave_time <= 12) {
+          count = 0.5;
+        } else if (leave_time > 12 && leave_time <= 24) {
+          count = 1;
+        } else if (leave_time > 24) {
+          count =
+            Math.floor(leave_time / 24) + (leave_time % 24 <= 12 ? 0.5 : 1);
+        }
+      } else {
+        if (leave_time <= 4) {
+          count = 0.5;
+        } else if (leave_time > 4 && leave_time <= 10) {
+          count = 1;
+        } else if (leave_time > 10) {
+          count =
+            Math.floor(leave_time / 24) +
+            ((leave_time % 24) + start_hour <= 14 ? 0.5 : 1);
+        }
+      }
+      console.log(leave_time);
+      return count;
+    }
+  },
   components: {
     DateTime
   },
@@ -282,7 +298,7 @@ export default {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
           key: "Leave_flow", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: this.form.position, //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
       }
@@ -324,7 +340,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === "") {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -353,8 +369,8 @@ export default {
         this.isreload = true;
       });
       this.form = {
-        applicant: localStorage.getItem("username"),
-        position: localStorage.getItem("role_name"),
+        applicant: sessionStorage.getItem("username"),
+        position: sessionStorage.getItem("role_name"),
         start_time: "",
         end_time: "",
         leave_category: "",

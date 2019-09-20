@@ -283,7 +283,7 @@ export default {
   data() {
     return {
       upload_url: http.base_url + "uploadContractFile",
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       HeaderList: [
         ["序号", ""],
         ["步骤名称", "name_"],
@@ -333,7 +333,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === "") {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }

@@ -34,7 +34,7 @@
     <paging
       :currentlimit="currentlimit"
       :currentpage="currentpage"
-      :total="70"
+      :total="total"
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
@@ -59,6 +59,7 @@ export default {
     return {
       queryYear: "",
       projectName: "",
+      total: 0,
       currentlimit: 15,
       currentpage: 1,
       SummaryList: [],
@@ -130,6 +131,7 @@ export default {
       };
       apifirmLaborCost(data).then(res => {
         console.log(res);
+        this.total = this.total;
         this.SummaryList = res.data;
       });
     }

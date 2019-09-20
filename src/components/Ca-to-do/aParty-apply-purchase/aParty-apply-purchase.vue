@@ -222,7 +222,12 @@
         ></el-table-column>
       </el-table>
     </template>
-    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isopen"
+      :append-to-body="true"
+      top="8vh"
+      v-dialogDrag
+    >
       <select-quantity
         :projectList="projectList"
         @setQuantity="getQuantity"
@@ -327,7 +332,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === "") {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -337,7 +342,6 @@ export default {
         sign: type,
         userid: this.userid
       };
-      console.log(data);
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
@@ -362,7 +366,7 @@ export default {
           key: "aPartyPurView", //(必填)流程定义key
           position: this.active.role_name
             ? this.active.role_name
-            : localStorage.getItem("role_name"), //(必填)申请人角色
+            : sessionStorage.getItem("role_name"), //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -370,7 +374,7 @@ export default {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
           key: "aPartyPurView", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: sessionStorage.getItem("role_name"), //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
       }
@@ -555,10 +559,14 @@ export default {
               }
               return item;
             });
-            this.hisComment = res.hisComment.map(item => {
-              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-              return item;
-            });
+            this.hisComment = res.hisComment
+              ? res.hisComment.map(item => {
+                  item.END_TIME_ = item.END_TIME_
+                    ? changetime(item.END_TIME_)
+                    : "";
+                  return item;
+                })
+              : [];
             this.getprocessList();
             this.id++;
             this.projectList = res.data.aParty[0];

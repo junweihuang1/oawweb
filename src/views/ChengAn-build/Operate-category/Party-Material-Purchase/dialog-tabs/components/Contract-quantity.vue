@@ -198,7 +198,12 @@
         :ApprovalHeaderList="ApprovalHeaderList"
       ></Ca-view-process>
     </template>
-    <el-dialog :visible.sync="isopen" :append-to-body="true" top="8vh" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isopen"
+      :append-to-body="true"
+      top="8vh"
+      v-dialogDrag
+    >
       <select-quantity
         v-if="isopen"
         :projectList="projectList"
@@ -339,7 +344,7 @@ export default {
           taskid: "", //(必填)流程任务id
           processInstanceId: "", //(必填)流程实例id
           key: "afterAddingNum", //(必填)流程定义key
-          position: localStorage.getItem("role_name"), //(必填)申请人角色
+          position: sessionStorage.getItem("role_name"), //(必填)申请人角色
           type: "new" //(必填)新增new/运行中
         };
       }

@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       upload_url: http.base_url + "uploadPdf/",
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       isdisplay: true,
       boxheight: document.documentElement.scrollHeight * 0.8,
       fileList: [],

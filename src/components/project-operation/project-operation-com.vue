@@ -4,7 +4,7 @@
       <el-form-item label="项目部名称">
         <el-input v-model="projectName" clearable></el-input>
       </el-form-item>
-      <el-form-item label="年度">
+      <!-- <el-form-item label="年度">
         <el-select v-model="years" clearable>
           <el-option
             v-for="(item, index) in yearList"
@@ -13,14 +13,15 @@
             :label="item"
           ></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button-group>
           <el-button type="primary" @click="query">查询</el-button>
           <el-button type="success" @click="additem">新增</el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item v-if="openType">
+      <el-form-item v-if="openType == 'science'">
+        <!-- Business -->
         <el-radio-group v-model="mycompanyId" @change="query">
           <el-radio-button :label="2">改造项目</el-radio-button>
           <el-radio-button :label="4">保养项目</el-radio-button>
@@ -29,9 +30,10 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-      style="width:60%"
+      :style="{ width: openType == 'Business' ? '100%' : '60%' }"
       :DataList="projectList"
       :headle="headle"
+      :setheight="openType == 'Business' ? 0.5 : 0.74"
       :header="header"
       @edit="modify"
       @checkleave="checklist"
@@ -43,14 +45,25 @@
       @setlimit="getlimit"
       @setpage="getpage"
     ></paging>
-    <el-dialog :visible.sync="isopenlist" top="6vh" width="75%" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isopenlist"
+      top="6vh"
+      width="75%"
+      v-dialogDrag
+      :append-to-body="true"
+    >
       <dialog-tabs
         v-if="isopenlist"
         :activeForm="activeForm"
         @render="render"
       ></dialog-tabs>
     </el-dialog>
-    <el-dialog :visible.sync="isopenmodify" width="20%" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isopenmodify"
+      width="20%"
+      v-dialogDrag
+      :append-to-body="true"
+    >
       <div style="width:90%;">
         <el-form label-width="90px" size="mini" label-position="left">
           <el-form-item label="分类">
@@ -104,7 +117,7 @@ export default {
       projectList: [],
       header: [
         ["项目部名称", "constuct_project_dep_name", 110],
-        ["项目负责人", "constuct_project_dep_leader"],
+        ["项目负责人", "constuct_project_dep_leader", 110],
         ["合同总金额", "total", 110],
         ["采购成本", "purchaseCost", 110],
         ["人工成本", "laborCost", 110]
@@ -221,6 +234,7 @@ export default {
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {
+        console.log(res);
         this.total = res.total;
         this.projectList = res.data;
       });

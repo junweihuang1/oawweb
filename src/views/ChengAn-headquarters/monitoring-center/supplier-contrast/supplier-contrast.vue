@@ -54,7 +54,7 @@ export default {
   name: "supplierContrast",
   data() {
     return {
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       upload_url: http.base_url + "uup",
       query_time: "",
       currentpage: 1,

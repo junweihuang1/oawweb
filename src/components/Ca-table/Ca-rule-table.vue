@@ -27,7 +27,7 @@
         :label="item[0]"
         :prop="item[1]"
         sortable
-        :show-overflow-tooltip="item[3]"
+        :show-overflow-tooltip="true"
         align="center"
         :key="index"
         :min-width="item[2]"
@@ -38,7 +38,7 @@
             :label="item2[0]"
             :prop="item2[1]"
             sortable
-            :show-overflow-tooltip="item[3]"
+            :show-overflow-tooltip="true"
             align="center"
             :key="index2"
             :min-width="item2[2]"

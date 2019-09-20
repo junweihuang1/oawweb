@@ -30,7 +30,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       top="30vh"
       title="调动申请"
       :visible.sync="isopen"
@@ -80,7 +80,7 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
-      total:0,
+      total: 0,
       workerName: "",
       teamList: [],
       header: [
@@ -126,7 +126,7 @@ export default {
         taskid: "", //(必填)流程任务id
         processInstanceId: "", //(必填)流程实例id
         key: "workerApplyViwe", //(必填)流程定义key
-        position: localStorage.getItem("role_name"), //(必填)申请人角色
+        position: sessionStorage.getItem("role_name"), //(必填)申请人角色
         type: "new" //(必填)新增new/运行中
       };
       console.log(data);
@@ -219,7 +219,7 @@ export default {
           .construct_project_workTeam_id
       }).then(res => {
         console.log(res);
-        this.total=res.total
+        this.total = res.total;
         this.teamList = res.rows.map(item => {
           item.sex2 = item.sex == 1 ? "男" : "女";
           item.status2 = item.isOnApply == 1 ? "调动中" : "可调动";

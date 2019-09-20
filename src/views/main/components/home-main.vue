@@ -2,11 +2,27 @@
   <div>
     <el-row :gutter="40" class="panel-group" :style="{ height: cardHeight }">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <!-- <div class="card-panel" :style="{ height: cardHeight }">
-          <div style="padding:10px;font-weight: bold;font-size:16px;">
+        <div :style="{ height: cardHeight }">
+          <!-- class="card-panel" -->
+          <div
+            style="padding:10px;font-weight: bold;font-size:16px;text-align:center;"
+          >
             常用功能
           </div>
-        </div> -->
+          <div style="text-align:left;">
+            <el-button
+              type="primary"
+              size="mini"
+              plain
+              v-for="(item, index) in commonUse"
+              :key="index"
+              style="margin:5px;"
+              @click="openRoute(item)"
+            >
+              {{ item.title }}</el-button
+            >
+          </div>
+        </div>
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col"></el-col>
@@ -59,7 +75,12 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="补卡申请" :visible.sync="isApply" width="30%" v-dialogDrag>
+    <el-dialog
+      title="补卡申请"
+      :visible.sync="isApply"
+      width="30%"
+      v-dialogDrag
+    >
       <div class="Apply-line">
         <span>补卡类型：</span>
         <el-radio v-model="ApplyForm.ApplyType" label="上班" border
@@ -122,13 +143,17 @@ export default {
       },
       cardHeight: 0,
       screenHeight: null,
-      instance: ""
+      instance: "",
+      commonUse: this.$store.state.commonUse
     };
   },
   components: {
     Calendar
   },
   watch: {
+    commonUse(val) {
+      this.commonUse = val;
+    },
     screenHeight(val) {
       if (val && document.getElementsByClassName("panel-group").length != 0) {
         this.cardHeight = val - 290 + "px";
@@ -152,27 +177,52 @@ export default {
     this.getPunchInfo();
   },
   methods: {
-    SubmitApplyCard() {
-      apiapplyFillCard({
-        hr_attend_apply_data: this.ApplyForm.date,
-        hr_attend_apply_reason: this.ApplyForm.desc,
-        hr_attend_typeCard: this.ApplyForm.ApplyType
-      }).then(res => {
-        if (res.msg) {
-          this.$message({
-            message: res.msg,
-            type: "success"
-          });
-          this.ApplyForm = {
-            ApplyType: "上班",
-            date: "",
-            desc: ""
-          };
-          setTimeout(() => {
-            this.isApply = false;
-          }, 500);
-        }
+    openRoute(active) {
+      if (
+        !this.$store.state.openTabs.some(item => item.title == active.title)
+      ) {
+        this.$store.commit("addTabs", active);
+      }
+      this.$store.commit("changeActiveIndex", active.id);
+      this.$router.push({
+        path: active.route
       });
+      console.log(active);
+    },
+    SubmitApplyCard() {
+      if (this.ApplyForm.date == "") {
+        this.$message.warning("请选择时间");
+        return;
+      }
+      if (this.ApplyForm.desc == "") {
+        this.$message.warning("请填写原因");
+        return;
+      }
+
+      this.$confirm(`确定提交补卡申请吗？`)
+        .then(() => {
+          apiapplyFillCard({
+            hr_attend_apply_data: this.ApplyForm.date,
+            hr_attend_apply_reason: this.ApplyForm.desc,
+            hr_attend_typeCard: this.ApplyForm.ApplyType
+          }).then(res => {
+            if (res.msg) {
+              this.$message({
+                message: res.msg,
+                type: "success"
+              });
+              this.ApplyForm = {
+                ApplyType: "上班",
+                date: "",
+                desc: ""
+              };
+              setTimeout(() => {
+                this.isApply = false;
+              }, 500);
+            }
+          });
+        })
+        .catch(() => {});
     },
     ApplyCard() {
       this.isApply = true;
@@ -250,10 +300,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-panel {
-  text-align: center;
-  font-weight: bold;
-}
 .card-box {
   text-align: center;
   width: 100%;

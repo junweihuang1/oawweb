@@ -186,7 +186,7 @@ export default {
   data() {
     return {
       upload_url: http.base_url + "uploadSealFile",
-      token: localStorage.getItem("token"),
+      token: sessionStorage.getItem("token"),
       Seals: [
         ["1", "公章"],
         ["2", "业务章"],
@@ -227,7 +227,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === 0) {
+      if (this.userid == "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
