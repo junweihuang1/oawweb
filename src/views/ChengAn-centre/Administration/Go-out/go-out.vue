@@ -23,8 +23,14 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog title="发起外勤申请" :visible.sync="isgoout" width="35%" v-dialogDrag>
+    <el-dialog
+      title="外勤申请"
+      :visible.sync="isgoout"
+      width="35%"
+      v-dialogDrag
+    >
       <go-out-table
+        :hisComment="hisComment"
         :openType="openType"
         @setclose="getclose"
         v-if="isgoout"
@@ -38,6 +44,7 @@
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import GoOutTable from "@/components/Ca-to-do/go-out-table";
+import { changetime } from "@/components/global-fn/global-fn";
 import {
   apiFieldPersonnelList,
   apigetField,
@@ -60,14 +67,15 @@ export default {
         ["车牌号", "field_personnel_license", 90],
         ["是否用车", "field_personnel_car2", 100],
         ["驾驶员", "field_personnel_driver", 90],
-        ["外出事由", "field_personnel_cause"],
-        ["开始时间", "start_time", 150],
-        ["结束时间", "end_time", 150],
+        ["外出事由", "field_personnel_cause", 170],
+        ["开始时间", "start_time", 130],
+        ["结束时间", "end_time", 130],
         ["状态", "field_personnel_status2", 80]
       ],
       headle: ["编辑", "删除"],
       activeform: {},
-      openType: ""
+      openType: "",
+      hisComment: []
     };
   },
   components: {
@@ -114,11 +122,17 @@ export default {
         });
     },
     edit(e) {
-      this.openType = "edit";
-      this.activeform = e;
+      this.openType = "check";
       console.log(e);
       this.isgoout = true;
       apigetField({ id: e.field_personnel_id }).then(res => {
+        this.activeform = res.data;
+        this.hisComment = res.hisComment
+          ? res.hisComment.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
         console.log(res);
       });
     },

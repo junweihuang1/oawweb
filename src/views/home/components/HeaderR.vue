@@ -27,7 +27,7 @@
               style="width:30px;border-radius:50%;"
             />
             <span style="margin-left:10px;"
-              >{{ company_name }}/{{ center_name }}/{{ username }}</span
+              >{{ company_name }}{{ center_name }}{{ username }}</span
             >
           </template>
           <el-menu-item index="1-1" @click="handleLoginOut"
@@ -54,8 +54,14 @@ export default {
   },
   created() {
     this.username = sessionStorage.getItem("username");
-    this.company_name = sessionStorage.getItem("company_name");
-    this.center_name = sessionStorage.getItem("center_name");
+    this.company_name =
+      sessionStorage.getItem("company_name") != "undefined"
+        ? `${sessionStorage.getItem("company_name")}/`
+        : "";
+    this.center_name =
+      sessionStorage.getItem("center_name") != "undefined"
+        ? `${sessionStorage.getItem("center_name")}/`
+        : "";
   },
   methods: {
     reloadPage() {

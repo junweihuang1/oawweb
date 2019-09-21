@@ -60,7 +60,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="共计天数">
-            <el-input v-model="day_count" />
+            <el-input
+              :value="form.day_count != '' ? form.day_count : day_count"
+              readonly
+            />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -72,6 +75,11 @@
               minlength="300px"
             /> </el-form-item
         ></el-col>
+        <el-col :span="24" v-if="openType == 'headle'">
+          <el-form-item label="意见">
+            <el-input type="textarea" :row="3" v-model="reasons"></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="12" v-if="userTaskName != '结束' && openType != 'check'">
           <el-form-item label="审核人">
             <el-select
@@ -97,12 +105,6 @@
         </el-form-item>
       </div>
       <div v-else-if="openType == 'headle'">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="意见">
-              <el-input type="textarea" :row="3" v-model="reasons"></el-input>
-            </el-form-item> </el-col
-        ></el-row>
         <el-form-item>
           <template v-for="(item, index) in buttonList">
             <el-button
@@ -239,7 +241,6 @@ export default {
       let end = new Date(this.form.end_time);
       let start_hour = start.getHours();
       let leave_time = (end - start) / 3600000;
-      console.log(start_hour);
       if (start_hour >= 12) {
         if (leave_time <= 12) {
           count = 0.5;
@@ -260,7 +261,6 @@ export default {
             ((leave_time % 24) + start_hour <= 14 ? 0.5 : 1);
         }
       }
-      console.log(leave_time);
       return count;
     }
   },
@@ -302,7 +302,6 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
-      console.log(data);
       apigetProcessList(data).then(res => {
         console.log(res);
         //当前流程节点
@@ -326,7 +325,6 @@ export default {
             : res.userlist.userList && res.userlist.userList != ""
             ? res.userlist.userList[0].userid
             : "";
-        console.log(this.userid);
         this.userList = res.userlist.userList
           ? res.userlist.userList != ""
             ? res.userlist.userList
@@ -392,13 +390,25 @@ export default {
         this.$message.error("开始时间须早于结束时间");
         return;
       }
+      if (this.userid === "") {
+        this.$message.warning("审核人为空不能提交");
+        return;
+      }
+      if (!this.form.reason || this.form.reason == "") {
+        this.$message.warning("请补充请假事由");
+        return;
+      }
       this.form.userid = this.userid;
-      console.log(this.form);
-      apisaveLeave(this.form).then(res => {
-        console.log(res);
-        this.$message.success(res.msg);
-        this.$emit("close");
-      });
+      this.form.day_count = this.day_count;
+      this.$confirm(`确定请假吗？`)
+        .then(() => {
+          apisaveLeave(this.form).then(res => {
+            console.log(res);
+            this.$message.success(res.msg);
+            this.$emit("close");
+          });
+        })
+        .catch(() => {});
     },
     //从组件获取结束时间
     getEndTime(time) {
@@ -412,4 +422,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table__body tr.current-row > td {
+  background-color: rgb(252, 233, 199);
+}
+
+.el-table--striped .el-table__body tr.hover-row.el-table__row--striped > td,
+.el-table__body tr.hover-row > td {
+  background-color: #d9ecff !important;
+}
+</style>

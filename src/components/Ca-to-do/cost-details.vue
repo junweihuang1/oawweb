@@ -273,7 +273,9 @@ export default {
         this.userTaskName = res.userlist.userTaskName;
         this.buttonList = res.startForm.split(",");
         this.userid =
-          res.userlist.userList != "" && res.userlist.userList
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist.userList != "" && res.userlist.userList
             ? res.userlist.userList[0].userid
             : "";
         this.userList =
@@ -297,6 +299,10 @@ export default {
       });
     },
     submit() {
+      if (!this.form.costapp_amount || this.form.costapp_amount == "") {
+        this.$message.warning("请填写费用金额");
+        return;
+      }
       this.$confirm(`确定提交吗？`)
         .then(() => {
           this.form.userid = this.userid;
@@ -313,6 +319,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
+      console.log(this.userid);
       if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;

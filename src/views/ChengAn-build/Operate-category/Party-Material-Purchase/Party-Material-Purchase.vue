@@ -29,7 +29,7 @@
       @setlimit="getlimit"
     ></paging>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopenMaterial"
       title="甲方材料单"
       top="8vh"
@@ -62,8 +62,8 @@ export default {
       PartyConList: [],
       header: [
         ["项目编号", "construct_project_id", 100],
-        ["项目名称", "construct_project_name"],
-        ["工程地址", "construct_project_addr"],
+        ["项目名称", "construct_project_name", 300],
+        ["工程地址", "construct_project_addr", 200],
         ["项目经理", "construct_project_leader", 100],
         ["项目经理联系方式", "construct_project_leaderTel", 160],
         ["合同项目开始时间", "construct_project_startDate", 160],

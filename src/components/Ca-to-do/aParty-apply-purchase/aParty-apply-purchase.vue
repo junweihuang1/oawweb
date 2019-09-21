@@ -70,12 +70,17 @@
       v-if="openType == 'add'"
       >添加行</el-button
     >
-    <el-table :data="entriesList" border :height="maxheight">
+    <el-table
+      :data="entriesList"
+      border
+      :height="maxheight"
+      :header-cell-style="getRowClass"
+    >
       <el-table-column
         align="center"
         :label="item[0]"
         :prop="item[1]"
-        :width="item[2]"
+        :min-width="item[2]"
         v-for="(item, index) in header"
         :key="index"
       >
@@ -217,7 +222,7 @@
           :label="item[0]"
           :prop="item[1]"
           :type="index == 0 ? 'index' : ''"
-          :width="item[2]"
+          :min-width="item[2]"
           align="center"
         ></el-table-column>
       </el-table>
@@ -327,6 +332,16 @@ export default {
     this.getApartyPur();
   },
   methods: {
+    //给表单的表头添加背景颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex === 0) {
+        return `background: ${
+          this.$store.state.tableColor
+        };color:#fff;height:40px;padding:0px;`;
+      } else {
+        return "height:40px;padding:0px;";
+      }
+    },
     headle(type) {
       if (this.reasons == "") {
         this.$message.error("请填写审核意见");
@@ -537,7 +552,7 @@ export default {
             construct_Aparty_purEntry_num: "",
             construct_Aparty_purEntry_parentId: "",
             construct_Aparty_purEntry_remark: "",
-            construct_aParty_byedNum: row.sum
+            construct_aParty_byedNum: row.sum ? row.sum : 0
           };
         }
         return item;

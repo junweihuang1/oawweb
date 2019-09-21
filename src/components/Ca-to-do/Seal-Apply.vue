@@ -51,6 +51,11 @@
           </el-form-item>
         </el-col>
         <template v-if="openType != 'check'">
+          <el-col :span="24" v-if="openType == 'headle'">
+            <el-form-item label="意见">
+              <el-input type="textarea" :row="3" v-model="reasons"></el-input>
+            </el-form-item>
+          </el-col>
           <template v-if="userTaskName != '结束'">
             <el-col :span="12">
               <el-form-item label="下一节点">
@@ -70,11 +75,6 @@
               </el-form-item>
             </el-col>
           </template>
-          <el-col :span="24" v-if="openType == 'headle'">
-            <el-form-item label="意见">
-              <el-input type="textarea" :row="3" v-model="reasons"></el-input>
-            </el-form-item>
-          </el-col>
         </template>
         <template v-if="openType == 'check' || openType == 'headle'">
           <el-col :span="24">
@@ -176,7 +176,6 @@
 </template>
 
 <script>
-//"http://192.168.3.27:8081/casd2/admin/uploadSealFile"
 import http from "@/request/http.js";
 import CaViewProcess from "@/components/Ca-view-process/Ca-view-process";
 import selectCompany from "@/components/Ca-select/select-company";
@@ -223,11 +222,12 @@ export default {
   },
   methods: {
     headleprocess(type) {
+      console.log(this.userid);
       if (this.reasons == "") {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid == "" && type) {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -263,9 +263,12 @@ export default {
           this.userTaskName = this.userLists.chiefLeader
             ? this.userLists.chiefLeader.userTaskName
             : this.userLists.userTaskName;
-          this.userid = this.userLists.chiefLeader.userList
-            ? this.userLists.chiefLeader.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.chiefLeader.userList
+              ? this.userLists.chiefLeader.userList[0].userid
+              : "";
           this.userList =
             this.userLists.chiefLeader.userList &&
             this.userLists.chiefLeader.userList != ""
@@ -275,9 +278,12 @@ export default {
           this.userTaskName = this.userLists
             ? this.userLists.userTaskName
             : this.userLists.userTaskName;
-          this.userid = this.userLists.userList
-            ? this.userLists.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.userList
+              ? this.userLists.userList[0].userid
+              : "";
           this.userList =
             this.userLists.userList && this.userLists.userList != ""
               ? this.userLists.userList
@@ -287,9 +293,12 @@ export default {
         this.changeProcessline("process2");
         if (this.userLists.leader) {
           this.userTaskName = this.userLists.leader.userTaskName;
-          this.userid = this.userLists.leader.userList
-            ? this.userLists.leader.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.leader.userList
+              ? this.userLists.leader.userList[0].userid
+              : "";
           this.userList =
             this.userLists.leader.userList &&
             this.userLists.leader.userList != ""
@@ -297,9 +306,12 @@ export default {
               : [];
         } else {
           this.userTaskName = this.userLists.userTaskName;
-          this.userid = this.userLists.userList
-            ? this.userLists.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.userList
+              ? this.userLists.userList[0].userid
+              : "";
           this.userList =
             this.userLists.userList && this.userLists.userList != ""
               ? this.userLists.userList
@@ -310,9 +322,12 @@ export default {
           this.userTaskName = this.userLists.chiefLeader
             ? this.userLists.chiefLeader.userTaskName
             : this.userLists.userTaskName;
-          this.userid = this.userLists.chiefLeader.userList
-            ? this.userLists.chiefLeader.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.chiefLeader.userList
+              ? this.userLists.chiefLeader.userList[0].userid
+              : "";
           this.userList =
             this.userLists.chiefLeader.userList &&
             this.userLists.chiefLeader.userList != ""
@@ -322,9 +337,12 @@ export default {
           this.userTaskName = this.userLists
             ? this.userLists.userTaskName
             : this.userLists.userTaskName;
-          this.userid = this.userLists.userList
-            ? this.userLists.userList[0].userid
-            : "";
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : this.userLists.userList
+              ? this.userLists.userList[0].userid
+              : "";
           this.userList =
             this.userLists.userList && this.userLists.userList != ""
               ? this.userLists.userList

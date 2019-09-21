@@ -305,8 +305,8 @@ export default {
           apigetTeamByProject({
             construct_project_id: val.construct_project_id
           }).then(res => {
+            console.log(res);
             this.getopenList();
-            this.isopen[0] = true;
             this.openType = "modify";
             this.currentActive = "2";
             this.entryList = res.entry.map(item => {
@@ -329,6 +329,7 @@ export default {
               }
               return item;
             });
+            this.isopen[0] = true;
             this.headform = res.head[0];
           });
 

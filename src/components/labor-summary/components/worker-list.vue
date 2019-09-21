@@ -90,6 +90,7 @@ export default {
       this.getTeamList();
     },
     opendetaillist(row) {
+      console.log(row);
       this.$emit("opendetaillist", row);
     },
     getpage(val) {

@@ -11,6 +11,7 @@
       size="mini"
       @current-change="handleCurrentChange"
       :span-method="objectSpanMethod"
+      :row-style="getrowstyle"
       :cell-style="getcellstyle"
       :show-summary="issummary"
       @cell-click="cellClick"
@@ -229,6 +230,9 @@ export default {
           colspan: 1
         };
       }
+    },
+    getrowstyle({ row, rowIndex }) {
+      return "height:35px;";
     },
     //改变单元格样色
     getcellstyle({ row, column, rowIndex, columnIndex }) {

@@ -157,7 +157,7 @@
     </el-form>
 
     <el-table
-      :data="entryList"
+      :data="f_entryList"
       border
       :header-cell-style="getRowClass"
       show-summary
@@ -190,6 +190,15 @@
           <span v-else>
             {{ row[item[1]] }}
           </span>
+        </template>
+      </el-table-column>
+      <el-table-column label="" width="80" align="center" fixed="right">
+        <template slot-scope="{ row }">
+          <el-button
+            class="el-icon-delete-solid"
+            type="warning"
+            @click="deleteitem(row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -349,7 +358,7 @@
         v-if="isselect"
         :activeform="activeForm"
         @close="close"
-        :entryList="entryList"
+        :entryList="f_entryList"
       ></select-supplist>
     </el-dialog>
   </div>
@@ -415,7 +424,9 @@ export default {
       Ids: [],
       taskList: [],
       picitem: 2, //可以打开图片的节点
-      returnName: "项目助理" //驳回节点名字
+      returnName: "项目助理", //驳回节点名字
+      maxid: 0,
+      f_entryList: this.entryList //从父组件传过来的材料列表不能删除，只能赋值后再删除
     };
   },
   props: {
@@ -438,7 +449,30 @@ export default {
   mounted() {
     this.getprossList();
   },
+  watch: {
+    f_entryList(val) {
+      if (val != "") {
+        this.maxid = val[0].construct_purchase_entryId;
+        val.forEach(item => {
+          if (item.construct_purchase_entryId > this.maxid) {
+            this.maxid = item.construct_purchase_entryId;
+          }
+        });
+        this.maxid++;
+      }
+    },
+    entryList(val) {
+      console.log(val);
+      this.f_entryList = val;
+    }
+  },
   methods: {
+    deleteitem(row) {
+      this.f_entryList = this.f_entryList.filter(
+        item =>
+          item.construct_purchase_entryId !== row.construct_purchase_entryId
+      );
+    },
     //导出表格
     print() {
       window.open(
@@ -477,7 +511,7 @@ export default {
     },
     //选择供应商
     chooseSup() {
-      this.Ids = this.entryList.map(item => item.construct_purchase_entryId);
+      this.Ids = this.f_entryList.map(item => item.construct_purchase_entryId);
       this.isselect = true;
     },
     getReturnName(command) {
@@ -505,7 +539,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid === "" && type) {
+      if (this.userid == "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -630,8 +664,8 @@ export default {
       //判断当前是否有选择该材料
       console.log(row);
       if (
-        this.entryList &&
-        this.entryList.some(
+        this.f_entryList &&
+        this.f_entryList.some(
           item =>
             item.construct_purchase_quantitiesId ==
             row.construct_project_quantities_id
@@ -673,7 +707,7 @@ export default {
       this.isselectMaterialseries = true;
     },
     cancel() {
-      this.entryList.pop();
+      this.f_entryList.pop();
     },
     additem() {
       let select = this.activeForm.construct_purchase_materialSerName;
@@ -681,7 +715,9 @@ export default {
         this.$message.error("请先选择材料类别");
         return;
       }
-      this.entryList.push({
+      //construct_purchase_entryId
+      this.f_entryList.push({
+        construct_purchase_entryId: this.maxid,
         construct_purchase_material: "", //(必填)材料名称
         construct_purchase_model: "", //(必填)型号规格
         construct_purchase_unit: "", //(必填)单位
@@ -695,6 +731,7 @@ export default {
         construct_purchase_brand: "", //(必填)品牌
         construct_purchase_quantitiesId: "" //(必填)合同工程量id
       });
+      this.maxid++;
     },
     save() {
       if (this.activeForm.construct_purchase_planDate == "") {
@@ -729,23 +766,23 @@ export default {
         return;
       }
       let i = 0,
-        len = this.entryList.length;
+        len = this.f_entryList.length;
       for (i; i < len; i++) {
-        if (this.entryList[i].construct_purchase_applyNum == "") {
+        if (this.f_entryList[i].construct_purchase_applyNum == "") {
           this.$message.error("计划采购量不能为空");
           return;
         }
         if (
-          this.entryList[i].construct_purchase_quantities -
-            this.entryList[i].construct_purchase_approvalNum <
-          parseInt(this.entryList[i].construct_purchase_applyNum)
+          this.f_entryList[i].construct_purchase_quantities -
+            this.f_entryList[i].construct_purchase_approvalNum <
+          parseInt(this.f_entryList[i].construct_purchase_applyNum)
         ) {
           this.$message.error("计划采购量已超量");
           return;
         }
       }
-      console.log(this.entryList);
-      this.activeForm.entry = JSON.stringify(this.entryList);
+      console.log(this.f_entryList);
+      this.activeForm.entry = JSON.stringify(this.f_entryList);
       if (this.openType == "add") {
         this.$confirm(`确定保存吗？`)
           .then(() => {

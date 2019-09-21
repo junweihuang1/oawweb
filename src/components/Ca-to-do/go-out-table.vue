@@ -3,7 +3,10 @@
     <el-form ref="form" :model="form" label-width="80px" :rules="rules2">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="开始时间">
+          <el-form-item label="开始时间" v-if="form.start_time">
+            <el-input v-model="form.start_time" readonly></el-input>
+          </el-form-item>
+          <el-form-item label="开始时间" v-else>
             <date-time
               v-if="nextopen == true"
               :startstauts="true"
@@ -12,7 +15,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="结束时间">
+          <el-form-item label="结束时间" v-if="form.end_time">
+            <el-input v-model="form.end_time" readonly></el-input>
+          </el-form-item>
+          <el-form-item label="结束时间" v-else>
             <date-time
               v-if="nextopen == true"
               @settime="getEndTime"
@@ -47,20 +53,41 @@
           </el-col>
         </el-row>
       </template>
-      <el-form-item label="外出地点" prop="field_personnel_place">
-        <el-input
-          v-model="form.field_personnel_place"
-          placeholder="必填"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="外出内容" prop="field_personnel_cause">
-        <el-input
-          v-model="form.field_personnel_cause"
-          placeholder="必填"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="审核人" v-if="username != ''">
-        <el-input v-model="username" readonly />
+      <el-row
+        ><el-col :span="12">
+          <el-form-item label="外出地点" prop="field_personnel_place">
+            <el-input
+              v-model="form.field_personnel_place"
+              placeholder="必填"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="外出内容" prop="field_personnel_cause">
+            <el-input
+              v-model="form.field_personnel_cause"
+              placeholder="必填"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item
+        label="审核人"
+        v-if="userTaskName != '结束' && openType != 'check'"
+      >
+        <el-select
+          v-model="userid"
+          style="width:100%;"
+          placeholder="没绑定审核人"
+        >
+          <el-option
+            v-for="(item, index) in userList"
+            :key="index"
+            :value="item.userid"
+            :label="item.username"
+          ></el-option>
+        </el-select>
+        <!-- <el-input v-model="userList" readonly /> -->
       </el-form-item>
       <template v-if="openType == 'headle'">
         <el-form-item label="意见">
@@ -149,18 +176,18 @@
 <script>
 import DateTime from "@/components/Ca-date-time/Ca-date-time";
 import { apigoout, apipassField, apigetProcessList } from "@/request/api.js";
-import { changetime } from "@/components/global-fn/global-fn";
 export default {
   name: "goouttable",
   data() {
     var validatecontent = (rule, value, callback) => {
-      if (value == "") {
+      if (value == "" || !value) {
         return callback("外出内容不能为空");
       }
       callback();
     };
     var validateaddress = (rule, value, callback) => {
-      if (value == "") {
+      console.log(value);
+      if (value == "" || !value) {
         return callback("外出地点不能为空");
       }
       callback();
@@ -176,18 +203,18 @@ export default {
       },
       reasons: "",
       userid: 0,
-      username: "",
+      userList: [],
       current: 1,
       buttonList: [],
       activityList: [],
-      hisComment: [],
       ApprovalHeaderList: [
         ["序号", "index", 60],
         ["流程节点", "name_", 140],
         ["审核人", "username", 80],
         ["审核时间", "END_TIME_", 160],
         ["审核意见", "MESSAGE_"]
-      ]
+      ],
+      userTaskName: ""
     };
   },
   components: {
@@ -214,7 +241,8 @@ export default {
         return "";
       }
     },
-    active: Object
+    active: Object,
+    hisComment: Array
   },
   watch: {
     //监听窗口状态
@@ -249,17 +277,11 @@ export default {
           type: "new" //(必填)新增new/运行中
         };
       }
-      console.log(data);
-
       apigetProcessList(data).then(res => {
         console.log(res);
-        this.hisComment = res.historyList
-          ? res.historyList.map(item => {
-              item.END_time = item.END_time ? changetime(item.END_time) : "";
-              return item;
-            })
-          : [];
+        this.userTaskName = res.userlist.userTaskName;
         if (this.hisComment != "") {
+          console.log(this.hisComment);
           let currentTask = this.hisComment[this.hisComment.length - 1];
           this.activityList = res.activityList.map((item, index) => {
             if (item.name == currentTask.name_) {
@@ -272,12 +294,13 @@ export default {
         }
         this.buttonList = res.startForm.split(",");
         if (res.userlist.userList) {
-          this.userid = res.userlist.userList
-            ? res.userlist.userList[0].userid
-            : "";
-          this.username = res.userlist.userList
-            ? res.userlist.userList[0].username
-            : [];
+          this.userid =
+            this.userTaskName == "结束"
+              ? 0
+              : res.userlist.userList && res.userlist.userList != ""
+              ? res.userlist.userList[0].userid
+              : "";
+          this.userList = res.userlist.userList ? res.userlist.userList : [];
         } else {
           this.current = 2;
         }
@@ -292,17 +315,17 @@ export default {
         this.$message.error("审核人为空不能提交！");
         return;
       }
+      let data = {
+        taskid: this.active.ID_,
+        userid: this.userid,
+        reasons: this.reasons,
+        sign: type
+      };
+      console.log(data);
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
-          let data = {
-            taskid: this.active.ID_,
-            userid: this.userid,
-            reasons: this.reasons,
-            sign: type
-          };
-          console.log(data);
           apipassField(data).then(res => {
             console.log(res);
             this.$message.success(res.msg);
@@ -350,10 +373,10 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.form.userid = this.userid;
+          console.log(this.form);
           this.$confirm(`确定提交外勤申请吗？`)
             .then(() => {
-              this.form.userid = this.userid;
-              console.log(this.form);
               apigoout(this.form)
                 .then(res => {
                   this.$message.success(res.msg);

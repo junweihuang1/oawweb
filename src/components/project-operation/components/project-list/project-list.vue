@@ -79,8 +79,8 @@ export default {
       lists: [],
       header: [
         ["项目编号", "construct_project_id", 100],
-        ["项目名称", "manage_contract_name", 280],
-        ["甲方", "manage_contract_firstParty"],
+        ["项目名称", "manage_contract_name", 160],
+        ["甲方", "manage_contract_firstParty", 160],
         ["工程地址", "manage_contract_address", 150],
         ["项目经理", "construct_project_leader", 100],
         ["项目经理联系方式", "construct_project_leaderTel", 160],

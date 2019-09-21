@@ -4,16 +4,6 @@
       <el-form-item label="项目部名称">
         <el-input v-model="projectName" clearable></el-input>
       </el-form-item>
-      <!-- <el-form-item label="年度">
-        <el-select v-model="years" clearable>
-          <el-option
-            v-for="(item, index) in yearList"
-            :key="index"
-            :value="item"
-            :label="item"
-          ></el-option>
-        </el-select>
-      </el-form-item> -->
       <el-form-item>
         <el-button-group>
           <el-button type="primary" @click="query">查询</el-button>
@@ -62,10 +52,17 @@
       :visible.sync="isopenmodify"
       width="20%"
       v-dialogDrag
+      @close="close"
       :append-to-body="true"
     >
       <div style="width:90%;">
-        <el-form label-width="90px" size="mini" label-position="left">
+        <el-form
+          ref="activeForm"
+          :model="activeForm"
+          label-width="100px"
+          size="mini"
+          label-position="left"
+        >
           <el-form-item label="分类">
             <el-select v-model="category">
               <el-option
@@ -76,16 +73,28 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目部名称">
+          <el-form-item
+            label="项目部名称"
+            prop="constuct_project_dep_name"
+            :rules="[
+              { required: true, message: '请输入项目部名称', trigger: 'blur' }
+            ]"
+          >
             <el-input v-model="activeForm.constuct_project_dep_name"></el-input>
           </el-form-item>
-          <el-form-item label="负责人">
+          <el-form-item
+            label="负责人"
+            prop="constuct_project_dep_leader"
+            :rules="[
+              { required: true, message: '请输入负责人名称', trigger: 'blur' }
+            ]"
+          >
             <el-input
               v-model="activeForm.constuct_project_dep_leader"
             ></el-input>
           </el-form-item>
           <el-form-item label=" ">
-            <el-button type="primary" @click="submit">
+            <el-button type="primary" @click="submit('activeForm')">
               提交
             </el-button>
           </el-form-item>
@@ -177,32 +186,41 @@ export default {
     //新增
     additem() {
       this.activeForm = {
-        constuct_project_dep_company: this.companyId
+        constuct_project_dep_company: this.mycompanyId,
+        constuct_project_dep_name: "",
+        constuct_project_dep_leader: ""
       };
       this.isopenmodify = true;
     },
     //提交
-    submit() {
-      this.$confirm(`确定提交吗？`)
-        .then(() => {
-          if (
-            this.activeForm.constuct_project_dep_id &&
-            this.activeForm.constuct_project_dep_id != ""
-          ) {
-            apimodprojectDep(this.activeForm).then(res => {
-              this.$message.success(res.msg);
-              this.isopenmodify = false;
-              this.getProjectList();
-            });
-          } else {
-            apisaveprojectDep(this.activeForm).then(res => {
-              this.$message.success(res.msg);
-              this.isopenmodify = false;
-              this.getProjectList();
-            });
-          }
-        })
-        .catch(() => {});
+    submit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$confirm(`确定提交吗？`)
+            .then(() => {
+              if (
+                this.activeForm.constuct_project_dep_id &&
+                this.activeForm.constuct_project_dep_id != ""
+              ) {
+                apimodprojectDep(this.activeForm).then(res => {
+                  this.$message.success(res.msg);
+                  this.isopenmodify = false;
+                  this.getProjectList();
+                });
+              } else {
+                apisaveprojectDep(this.activeForm).then(res => {
+                  this.$message.success(res.msg);
+                  this.isopenmodify = false;
+                  this.getProjectList();
+                });
+              }
+            })
+            .catch(() => {});
+        }
+      });
+    },
+    close() {
+      this.$refs["activeForm"].resetFields();
     },
     //修改项目
     modify(row) {
@@ -210,7 +228,7 @@ export default {
         constuct_project_dep_id: row.constuct_project_dep_id,
         constuct_project_dep_name: row.constuct_project_dep_name,
         constuct_project_dep_leader: row.constuct_project_dep_leader,
-        constuct_project_dep_company: this.companyId
+        constuct_project_dep_company: this.mycompanyId
       };
       this.isopenmodify = true;
     },
