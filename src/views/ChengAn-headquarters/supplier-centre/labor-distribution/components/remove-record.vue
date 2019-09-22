@@ -74,14 +74,14 @@ export default {
       this.currentpage = val;
       this.getRemoveRecord();
     },
-    getRemoveRecord() {
-      console.log(this.ApplyTime);
+    getRemoveRecord() {      
       let data = {
         rows: this.currentlimit,
         page: this.currentpage,
         supplierMod_worker_userId: this.userId,
         suppliermod_worker_apply_creatTime: this.ApplyTime
       };
+      console.log(data);
       apiworkerApplyList(data).then(res => {
         console.log(res);
         this.total = res.total;

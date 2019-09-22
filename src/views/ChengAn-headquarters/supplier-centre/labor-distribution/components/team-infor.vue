@@ -99,7 +99,8 @@ export default {
       isopenselect: false,
       removeForm: {},
       currentList: [],
-      userId: 0
+      userId: 0,
+      activeform:{}
     };
   },
   components: {
@@ -140,6 +141,7 @@ export default {
         this.$message.error("调动原因不能为空");
         return;
       }
+      console.log(this.Inforlist)
       console.log(this.removeForm);
       this.$confirm(`确定调动吗？`)
         .then(() => {
@@ -158,14 +160,14 @@ export default {
     //子組件回調双击选中的信息
     getSelectName(row) {
       console.log(row);
-      this.removeForm.leaderName = row.construct_project_leader;
+      this.removeForm.leaderName = this.Inforlist.construct_project_leader;
       this.removeForm.projectName = row.construct_project_name;
       this.removeForm.suppliermod_worker_apply_proId = row.construct_project_id;
       this.removeForm.suppliermod_worker_apply_teamId =
         row.construct_project_workTeam_id;
       this.removeForm.suppliermod_worker_apply_oldProId = this.Inforlist.construct_project_id;
       this.removeForm.suppliermod_worker_apply_id = 0;
-      this.removeForm.suppliermod_worker_apply_userId = row.userid;
+      this.removeForm.suppliermod_worker_apply_userId = this.activeform.userid
       this.isopenselect = false;
     },
     //打开选择项目
@@ -175,9 +177,9 @@ export default {
     //单个调动
     remove(row) {
       console.log(row);
+      this.activeform=row
       this.isopen = true;
       this.currentList = row;
-      //this.getprossList();
     },
     //批量调动
     allremove() {
@@ -198,9 +200,9 @@ export default {
       this.$emit("openadd");
     },
     query() {
-      this.teamList = this.summary.filter(item => {
-        return item.username.indexOf(this.workerName) !== -1;
-      });
+      this.currentlimit=15
+      this.currentpage=1
+      this.getTeamList()
     },
     getpage(val) {
       this.currentpage = val;
@@ -211,17 +213,19 @@ export default {
       this.getTeamList();
     },
     getTeamList() {
-      apiworkerList({
+      let data={
         rows: this.currentlimit,
         page: this.currentpage,
         construct_project_id: this.Inforlist.construct_project_id,
         construct_project_workTeam_id: this.Inforlist
-          .construct_project_workTeam_id
-      }).then(res => {
+          .construct_project_workTeam_id,
+          username:this.workerName
+      }
+      apiworkerList(data).then(res => {
         console.log(res);
         this.total = res.total;
         this.teamList = res.rows.map(item => {
-          item.sex2 = item.sex == 1 ? "男" : "女";
+          item.sex2 = item.sex == 1 ? "男" : item.sex == 2 ?"女":'';
           item.status2 = item.isOnApply == 1 ? "调动中" : "可调动";
           return item;
         });

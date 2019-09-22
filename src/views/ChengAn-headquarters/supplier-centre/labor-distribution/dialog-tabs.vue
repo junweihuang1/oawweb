@@ -3,6 +3,7 @@
     <el-tabs tab-position="top" v-model="currentActive" type="card">
       <el-tab-pane label="班组人员" name="1">
         <team-infor
+        v-if="isreload"
           :Inforlist="Inforlist"
           style="padding:10px;"
           @openadd="openadd"
@@ -43,7 +44,8 @@ export default {
       isopenadd: false,
       isopenmove: false,
       idarr: [],
-      namearr: []
+      namearr: [],
+      isreload:true
     };
   },
   components: {
@@ -75,12 +77,17 @@ export default {
           .construct_project_workTeam_id,
         supplierMod_worker_userId: row.userid
       };
-        apisave_Worker(data).then(res => {
+        this.$confirm(`确定要添加<span style="color:red;">${row.username}</span>到<span style="color:red;">${this.Inforlist.construct_project_name}</span>吗？`,
+        {
+          dangerouslyUseHTMLString: true
+        }).then(()=>{
+          apisave_Worker(data).then(res => {
           this.$message.success(res.msg)
         this.isopenadd = false;
         this.isopenmove = false;
         this.currentActive = "1";
       })
+        }).catch(()=>{})
     },
     openmove([idarr, namearr]) {
       this.idarr = idarr;
@@ -105,11 +112,15 @@ export default {
       )
         .then(() => {
           apimultiplayerApply(data).then(res => {
-            this.$message.success(res.Msg);
+            this.$message.success(res.msg);
             this.currentActive = "1";
             this.isopenadd = false;
             this.isopenmove = false;
-          });
+            this.isreload=false
+            this.$nextTick(()=>{
+              this.isreload=true
+            })
+          })
         })
         .catch(() => {});
     }
