@@ -121,11 +121,11 @@ export default {
     },
     getpage(val) {
       this.currentpage = val;
-      this.getProjectList();
+      this.getdetails();
     },
     getlimit(val) {
       this.currentlimit = val;
-      this.getProjectList();
+      this.getdetails();
     },
     getdetails() {
       let data = {

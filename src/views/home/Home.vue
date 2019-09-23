@@ -1,9 +1,13 @@
 <template>
   <div id="home" v-loading="loading" element-loading-text="页面初始化...">
     <el-container>
+      <!-- <el-row>
+        <el-col :xs="3" :sm="3" :md="3" :lg="3" :xl="3"> -->
       <el-aside style="width:auto;">
         <Nav :nav-list="navList" :active-index="activeIndex"></Nav>
       </el-aside>
+      <!-- </el-col>
+        <el-col :xs="21" :sm="21" :md="21" :lg="21" :xl="21"> -->
       <el-container>
         <el-header
           height="50px"
@@ -22,6 +26,8 @@
           </transition>
         </el-main>
       </el-container>
+      <!-- </el-col>
+      </el-row> -->
     </el-container>
   </div>
 </template>

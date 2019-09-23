@@ -26,14 +26,16 @@
       :currentpage="currentPage"
       :currentlimit="currentlimit"
     ></paging>
-    <New-Role
-      :isNewRole="isNewRole"
-      :rule_name="rule_name"
-      :state="state"
-      @myNewRole="tarnsferValue"
-      :TreeList="TreeList"
-      :checkList="checkList"
-    ></New-Role>
+    <el-dialog title="修改职位" :visible.sync="isNewRole" v-dialogDrag>
+      <New-Role
+        :openType="openType"
+        v-if="isNewRole"
+        :activeform="activeform"
+        @close="tarnsferValue"
+        :TreeList="TreeList"
+        :checkList="checkList"
+      ></New-Role>
+    </el-dialog>
   </div>
 </template>
 
@@ -41,7 +43,12 @@
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import NewRole from "./components/New-Role";
-import { apiroleLists, apimenuTreeList, apideleRole } from "@/request/api.js";
+import {
+  apiroleLists,
+  apimenuTreeList,
+  apideleRole,
+  apieditRole
+} from "@/request/api.js";
 export default {
   name: "StaffInfo",
   data() {
@@ -61,8 +68,8 @@ export default {
         ["状态", "state2", 80]
       ],
       headle: ["编辑", "删除"],
-      state: "",
-      rule_name: ""
+      openType: "",
+      activeform: {}
     };
   },
   components: {
@@ -75,25 +82,34 @@ export default {
   },
   methods: {
     tarnsferValue(e) {
-      this.isPerTree = e;
-      this.isNewRole = e;
+      this.isPerTree = false;
+      this.isNewRole = false;
     },
     //编辑
     edit(e) {
-      this.rule_name = e.role_name;
-      this.state = e.state.toString();
-      this.isNewRole = true;
+      // apieditRole({ cid: e.role_id }).then(res => {
+      //   console.log(res);
+      // });
+      console.log(e);
+      this.activeform = {
+        state: e.state,
+        role_id: e.role_id,
+        role_name: e.role_name
+      };
+      this.openType = "edit";
+
       this.getRoleTree(e.role_name);
     },
     //新增
     addNewRole() {
-      this.rule_name = "";
-      this.state = "1";
-      this.isNewRole = true;
+      this.activeform = {
+        state: 1
+      };
+      this.openType = "add";
       this.getRoleTree("");
     },
     delRole(e) {
-      this.$confirm(`确定删除${e.role_name}？`)
+      this.$confirm(`确定删除${e.role_name}吗？`)
         .then(() => {
           apideleRole({ roleId: e }).then(res => {
             console.log(res);
@@ -102,7 +118,9 @@ export default {
         .catch(() => {});
     },
     searchRole() {
-      this.getroleLists(this.roleName);
+      this.currentPage = 1;
+      this.currentlimit = 15;
+      this.getroleLists();
     },
     handleSizeChange(e) {
       this.currentlimit = e;
@@ -112,12 +130,12 @@ export default {
       this.currentPage = e;
       this.getroleLists();
     },
-    getroleLists(roleName = "") {
+    getroleLists() {
       apiroleLists({
         page: this.currentPage,
         limit: this.currentlimit,
         roleid: "",
-        role_name: roleName
+        role_name: this.roleName
       }).then(res => {
         console.log(res);
         this.total = res.count;
@@ -134,6 +152,7 @@ export default {
       apimenuTreeList({
         roleName: roleName
       }).then(res => {
+        console.log(res);
         this.TreeList = res.data;
         res.data.forEach(item => {
           if (item.children) {
@@ -148,6 +167,7 @@ export default {
             });
           }
         });
+        this.isNewRole = true;
       });
     }
   }

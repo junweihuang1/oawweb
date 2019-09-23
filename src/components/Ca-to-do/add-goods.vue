@@ -65,7 +65,7 @@
             <el-input v-model="ownHead.own_purchase_brand"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item label="">
             <el-radio v-model="ownHead.own_purchase_type" :label="1"
               >普通采购</el-radio
@@ -118,23 +118,25 @@
     </el-table>
     <el-form size="mini" label-width="80px" style="margin-top:10px;">
       <template v-if="userTaskName != '结束' && openType != 'check'">
-        <el-col :span="10">
-          <el-form-item label="下一节点">
-            <el-input readonly v-model="userTaskName"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="10">
-          <el-form-item label="审核人">
-            <el-select v-model="userid">
-              <el-option
-                v-for="(item, index) in userList"
-                :key="index"
-                :value="item.userid"
-                :label="item.username"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="下一节点">
+              <el-input readonly v-model="userTaskName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="审核人">
+              <el-select v-model="userid">
+                <el-option
+                  v-for="(item, index) in userList"
+                  :key="index"
+                  :value="item.userid"
+                  :label="item.username"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </template>
       <template v-if="openType == 'headle'">
         <el-form-item label="审核意见">
@@ -317,11 +319,12 @@ export default {
         .catch(() => {});
     },
     submit() {
+      this.ownHead.userid = this.userid;
+      this.ownHead.ownEntry = JSON.stringify(this.entryList);
       console.log(this.form);
+      console.log(this.ownHead);
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          this.ownHead.userid = this.userid;
-          this.ownHead.ownEntry = JSON.stringify(this.entryList);
           apisaveOwnHead(this.form).then(res => {
             this.$message.success(res.msg);
             this.$emit("close");

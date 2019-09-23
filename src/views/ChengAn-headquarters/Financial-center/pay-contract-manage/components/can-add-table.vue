@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-button-group v-if="Type == 'add'" style="margin-bottom:10px;">
+    <el-button-group
+      v-if="Type == 'add' || Type == 'modify'"
+      style="margin-bottom:10px;"
+    >
       <el-button type="success" size="mini" @click="addline">添加</el-button>
       <el-button type="primary" size="mini" @click="undoadd"
         >撤销新增</el-button
@@ -24,6 +27,7 @@
         <template slot-scope="{ row }">
           <template v-if="item[2] == 'date'">
             <el-date-picker
+              class="noneborder"
               style="width:100%;"
               format="yyyy-MM-dd"
               v-model="row[item[1]]"
@@ -90,6 +94,7 @@ export default {
         start_time: "",
         contract_amount: "",
         paymentdate: "",
+        manage_reqfunds_receiveAmount: 0,
         payment_amount: "",
         remark: ""
       };
@@ -127,5 +132,8 @@ export default {
 }
 .el-table--small td {
   padding: 0;
+}
+.noneborder {
+  border: none;
 }
 </style>

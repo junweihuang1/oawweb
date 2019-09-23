@@ -21,6 +21,10 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
+      v-loading="loading"
+      element-loading-text="拼命导出中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(255, 255, 255, 0.6)"
       :DataList="cardRecordList"
       :header="header"
       :setheight="0.6"
@@ -69,7 +73,8 @@ export default {
       ],
       isopen: false,
       queryList: [],
-      total: 0
+      total: 0,
+      loading: false
     };
   },
   components: { CaRuleTable, paging, selectCompany },
@@ -79,17 +84,30 @@ export default {
   methods: {
     //excel数据导出
     exportToExcel() {
-      require.ensure([], () => {
-        const { export_json_to_excel } = require("@/assets/js/Export2Excel");
-        const tHeader = this.header.map(item => {
-          return item[0];
+      this.loading = true;
+      apiworkerAttendLists({
+        limit: this.total,
+        page: this.currentpage,
+        company_id: this.companyId,
+        start_time: this.start_time,
+        end_time: this.end_time,
+        username: this.username
+      }).then(res => {
+        this.total = res.count;
+        this.cardRecordList = res.data;
+        this.loading = false;
+        require.ensure([], () => {
+          const { export_json_to_excel } = require("@/assets/js/Export2Excel");
+          const tHeader = this.header.map(item => {
+            return item[0];
+          });
+          const filterVal = this.header.map(item => {
+            return item[1];
+          });
+          const list = this.cardRecordList;
+          const data = this.formatJson(filterVal, list);
+          export_json_to_excel(tHeader, data, "打卡记录");
         });
-        const filterVal = this.header.map(item => {
-          return item[1];
-        });
-        const list = this.cardRecordList;
-        const data = this.formatJson(filterVal, list);
-        export_json_to_excel(tHeader, data, "打卡记录");
       });
     },
     formatJson(filterVal, jsonData) {

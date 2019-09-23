@@ -1,5 +1,12 @@
 const CompressionPlugin = require("compression-webpack-plugin");
 const isproduction = process.env.NODE_ENV === "production";
+//px转换rem，适配不同尺寸
+// const px2rem = require("postcss-px2rem");
+
+// const postcss = px2rem({
+//   remUnit: 150 //基准大小 baseSize，需要和rem.js中相同
+// });
+
 const cdn = {
   css: [],
   js: [
@@ -66,6 +73,9 @@ module.exports = {
             @import "@/static/common.scss";
           `
       }
+      // postcss: {
+      //   plugins: [postcss]
+      // }
     }
   }
 };

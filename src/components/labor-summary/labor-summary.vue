@@ -131,7 +131,7 @@ export default {
       };
       apifirmLaborCost(data).then(res => {
         console.log(res);
-        this.total = this.total;
+        this.total = res.total;
         this.SummaryList = res.data;
       });
     }

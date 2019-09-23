@@ -80,6 +80,9 @@ export const apideleRole = data => post("deleRole", data);
 //新增角色
 export const apisaveRole = data => post("saveRole", data);
 
+//修改角色
+export const apieditRole = data => get("editRole", data);
+
 //批量删除用户
 export const apideleteUser = data => post("deleteUser", data);
 

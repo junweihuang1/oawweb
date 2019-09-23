@@ -662,6 +662,7 @@ export default {
     //双击选择材料，接收子组件回调的方法。赋值给点击的行
     getMaterialName(row) {
       //判断当前是否有选择该材料
+      console.log("row");
       console.log(row);
       if (
         this.f_entryList &&

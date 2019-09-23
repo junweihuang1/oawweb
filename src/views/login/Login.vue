@@ -543,12 +543,12 @@ export default {
                 {
                   id: "101",
                   title: "供应商劳动力汇总(建设)",
-                  route: "/Supplier-labor-summary-build"
+                  route: "/Labor-costs-summary-build"
                 },
                 {
                   id: "175",
                   title: "劳动力费用汇总(建设)",
-                  route: "/Labor-costs-summary-build"
+                  route: "/Supplier-labor-summary-build"
                 }
               ]
             }

@@ -31,6 +31,7 @@
       :DataList="goodsList"
       :header="header"
       :headle="headle"
+      style="width:90%"
       :columnIndex="8"
       field="own_purchase_status"
       :progressstatus="0"
@@ -78,15 +79,15 @@ export default {
       currentpage: 1,
       isopen: false,
       header: [
-        ["单据编号", "own_purchase_id"],
-        ["公司名称", "company_name"],
-        ["项目名称", "construct_project_name"],
-        ["建单时间", "own_purchase_time"],
-        ["计划时间", "own_purchase_planDate"],
-        ["希望送达时间", "own_purchase_arriveDate"],
-        ["计划员", "own_purchase_planMan"],
-        ["采购类型", "own_purchase_type"],
-        ["状态", "own_purchase_status2"]
+        ["单据编号", "own_purchase_id", 100],
+        ["公司名称", "company_name", 100],
+        ["项目名称", "construct_project_name", 130],
+        ["建单时间", "own_purchase_time", 100],
+        ["计划时间", "own_purchase_planDate", 100],
+        ["希望送达时间", "own_purchase_arriveDate", 120],
+        ["计划员", "own_purchase_planMan", 90],
+        ["采购类型", "own_purchase_type", 100],
+        ["状态", "own_purchase_status2", 100]
       ],
       headle: ["查看", "删除"],
       goodsList: [],
@@ -154,7 +155,7 @@ export default {
       this.hisComment = [];
       this.ownHead = {
         own_purchase_companyId: "", //(必填)公司编号
-        own_purchase_projectId: "16", //必填)项目编号
+        own_purchase_projectId: "", //必填)项目编号
         own_purchase_planDate: "", //必填)计划日期
         own_purchase_arriveDate: "", //必填)希望送达日期
         own_purchase_planMan: sessionStorage.getItem("username"), //必填)复核员
@@ -178,7 +179,13 @@ export default {
           item.own_purchase_type =
             item.own_purchase_type == 1 ? "普通采购" : "材料采购";
           item.own_purchase_status2 =
-            item.own_purchase_status == 0 ? "审核中" : "";
+            item.own_purchase_status == 0
+              ? "审核中"
+              : item.own_purchase_status == 1
+              ? "审核通过"
+              : item.own_purchase_status == 2
+              ? "审核不通过"
+              : "被驳回";
           return item;
         });
       });

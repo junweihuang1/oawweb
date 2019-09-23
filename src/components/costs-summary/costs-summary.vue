@@ -28,8 +28,6 @@
       :DataList="SummaryList"
       :header="header"
       :setsummary="true"
-      :headle="headle"
-      @checkleave="checkcard"
     ></Ca-rule-table>
     <paging
       :currentlimit="currentlimit"
@@ -85,7 +83,6 @@ export default {
         ["12月", "december", 75],
         ["累计付款", "totalLaborCost", 100]
       ],
-      headle: ["查看打卡"],
       departmentid: ""
     };
   },

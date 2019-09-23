@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-dialog v-dialogDrag      :visible.sync="myopen"
+    <el-dialog
+      v-dialogDrag
+      :visible.sync="myopen"
       top="8vh"
       width="85%"
       :append-to-body="true"

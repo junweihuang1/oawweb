@@ -9,7 +9,7 @@
       </el-form-item>
     </el-form>
     <Ca-rule-table
-    style="width:80%;"
+      style="width:80%;"
       :DataList="laborList"
       :header="header"
       :headle="headle"
@@ -22,7 +22,7 @@
       @setpage="getpage"
       @setlimit="getlimit"
     ></paging>
-    <el-dialog :visible.sync="isopen"  v-dialogDrag>      
+    <el-dialog :visible.sync="isopen" v-dialogDrag>
       <dialog-tabs :Inforlist="Inforlist" v-if="isopen"></dialog-tabs>
     </el-dialog>
   </div>
@@ -39,17 +39,17 @@ export default {
     return {
       projectName: "",
       laborList: [],
-      total:0,
-      isfull:false,
+      total: 0,
+      isfull: false,
       currentpage: 1,
       currentlimit: 15,
       header: [
-        ["项目名称", "construct_project_name",170],
-        ["工程地址", "construct_project_addr",170],
-        ["项目经理", "construct_project_leader",100],
-        ["项目经理联系方式", "construct_project_leaderTel",140],
-        ["施工项目", "construct_project_workTeam_category",100],
-        ["班组", "username",100]
+        ["项目名称", "construct_project_name", 170],
+        ["工程地址", "construct_project_addr", 170],
+        ["项目经理", "construct_project_leader", 100],
+        ["项目经理联系方式", "construct_project_leaderTel", 150],
+        ["施工项目", "construct_project_workTeam_category", 100],
+        ["班组", "username", 100]
       ],
       headle: ["查看班组"],
       isopen: false,
@@ -90,17 +90,20 @@ export default {
         construct_project_name: this.projectName
       }).then(res => {
         console.log(res);
-        this.total=res.total
+        this.total = res.total;
         this.laborList = res.rows.map(item => {
           item.construct_project_workTeam_category =
             item.construct_project_workTeam_category == 1
               ? "预埋"
               : item.construct_project_workTeam_category == 2
               ? "消防水"
-              : item.construct_project_workTeam_category==3?"消防电":item.construct_project_workTeam_category==4?"防排烟":"消防水电";
+              : item.construct_project_workTeam_category == 3
+              ? "消防电"
+              : item.construct_project_workTeam_category == 4
+              ? "防排烟"
+              : "消防水电";
           return item;
         });
-        
       });
     }
   }
@@ -108,7 +111,8 @@ export default {
 </script>
 
 <style lang="scss">
-.dialog-title{
+.dialog-title {
   position: absolute;
   right: 30px;
-}</style>
+}
+</style>

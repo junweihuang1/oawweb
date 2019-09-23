@@ -1,45 +1,43 @@
 <template>
   <div>
-    <el-dialog title="修改职位" :visible.sync="myNewRole" @close="closeNewRole" v-dialogDrag>
-      <el-row>
-        <el-col :span="12">
-          <div class="Tree-line">
-            <div class="Tree-line-label">职位名称</div>
-            <el-input
-              placeholder="请输入名称（必填）"
-              clearable
-              v-model="roleName"
-              class="Tree-line-input"
-            />
+    <el-row>
+      <el-col :span="12">
+        <div class="Tree-line">
+          <div class="Tree-line-label">职位名称</div>
+          <el-input
+            placeholder="请输入名称（必填）"
+            clearable
+            v-model="activeform.role_name"
+            class="Tree-line-input"
+          />
+        </div>
+        <div class="Tree-line">
+          <div class="Tree-line-label">状态</div>
+          <el-radio-group v-model="activeform.state">
+            <el-radio-button :label="1">启用</el-radio-button>
+            <el-radio-button :label="2">停用</el-radio-button>
+          </el-radio-group>
+        </div>
+        <div class="Tree-line">
+          <div class="Tree-line-button">
+            <el-button type="success" @click="getCheckedKeys">提交</el-button>
+            <el-button type="danger">取消</el-button>
           </div>
-          <div class="Tree-line">
-            <div class="Tree-line-label">状态</div>
-            <el-radio-group v-model="mystate">
-              <el-radio-button label="1">启用</el-radio-button>
-              <el-radio-button label="2">停用</el-radio-button>
-            </el-radio-group>
-          </div>
-          <div class="Tree-line">
-            <div class="Tree-line-button">
-              <el-button type="success" @click="getCheckedKeys">提交</el-button>
-              <el-button type="danger">取消</el-button>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          职称权限树：
-          <el-tree
-            :data="TreeList"
-            show-checkbox
-            node-key="id"
-            ref="tree"
-            :default-checked-keys="checkList"
-            :props="defaultProps"
-          >
-          </el-tree>
-        </el-col>
-      </el-row>
-    </el-dialog>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        职称权限树：
+        <el-tree
+          :data="TreeList"
+          show-checkbox
+          node-key="id"
+          ref="tree"
+          :default-checked-keys="checkList"
+          :props="defaultProps"
+        >
+        </el-tree>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -49,9 +47,6 @@ export default {
   name: "NewRole",
   data() {
     return {
-      mystate: this.state,
-      roleName: this.rule_name,
-      myNewRole: this.isNewRole,
       defaultProps: {
         children: "children",
         label: "name"
@@ -59,57 +54,52 @@ export default {
     };
   },
   props: {
-    isNewRole: {
-      type: Boolean,
-      default: false
-    },
     TreeList: {
       type: Array
     },
     checkList: {
       type: Array
     },
+    activeform: Object,
     rule_name: {
       type: String,
       default: ""
     },
-    state: {
-      type: String,
-      default: "1"
-    }
+    openType: String
   },
-  watch: {
-    isNewRole(newValue) {
-      this.myNewRole = newValue;
-    },
-    state(val) {
-      this.mystate = val;
-    },
-    rule_name(val) {
-      this.roleName = val;
-    }
-  },
+  watch: {},
   methods: {
     getCheckedKeys() {
-      let data = {
-        roleName: this.roleName,
-        mystate: this.mystate,
-        nodes: this.$refs.tree.getCheckedKeys(),
-        roleId: "",
-        menuId: ""
-      };
+      let data = {};
+      if (this.openType == "add") {
+        data = {
+          roleName: this.activeform.role_name,
+          state: this.activeform.state,
+          nodes: this.$refs.tree.getCheckedKeys().join(","),
+          roleId: "",
+          menuId: ""
+        };
+      } else {
+        data = {
+          roleName: this.activeform.role_name,
+          state: this.activeform.state,
+          nodes: this.$refs.tree.getCheckedKeys().join(","),
+          roleId: this.activeform.role_id,
+          menuId: ""
+        };
+      }
       console.log(data);
-      apisaveRole(data)
-        .then(res => {
-          console.log(res);
+      this.$confirm(
+        `确定要${this.openType == "add" ? "增加角色" : "修改角色"}吗？`
+      )
+        .then(() => {
+          apisaveRole(data).then(res => {
+            this.$message.success(res.msg);
+            this.$emit("close");
+            console.log(res);
+          });
         })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    closeNewRole() {
-      this.$emit("myNewRole", false);
-      this.myNewRole = false;
+        .catch(() => {});
     }
   }
 };
