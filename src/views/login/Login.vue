@@ -598,6 +598,7 @@ export default {
     },
     getTree() {
       apiuserMenuTree().then(res => {
+        console.log(res.data)
         let newTree = this.getNewTree(this.navList, res.data);
         // newTree
         newTree.splice(0, 0, {
@@ -658,45 +659,6 @@ export default {
     onRefresh() {
       this.msg = "";
     },
-    // submitForm() {
-    //   this.loading = true;
-    //   if (this.msg !== "验证成功") {
-    //     this.$message.error("图片验证失败，请重试");
-    //     this.loading = false;
-    //     return;
-    //   }
-    //   setTimeout(() => {
-    //     apiLogin({
-    //       pcOrApp: "pc",
-    //       username: this.username,
-    //       password: this.password
-    //     })
-    //       .then(res => {
-    //         sessionStorage.setItem("token", res.token);
-    //         sessionStorage.setItem("username", this.username);
-    //         this.loading = false;
-    //         this.$message({
-    //           message: "登录成功",
-    //           type: "success"
-    //         });
-    //         this.$store.commit("clearTabs");
-    //         apiUserInf().then(res2 => {
-    //           this.$router.replace("/");
-    //           sessionStorage.setItem("userid", res2.data.userid);
-    //           sessionStorage.setItem("role_name", res2.data.role_name);
-    //           sessionStorage.setItem("center_name", res2.data.center_name);
-    //           sessionStorage.setItem("company_name", res2.data.company_name);
-    //         });
-    //       })
-    //       .catch(err => {
-    //         this.loading = false;
-    //         this.$message({
-    //           message: err.msg,
-    //           type: "error"
-    //         });
-    //       });
-    //   }, 500);
-    // },
     handleEnter(e) {
       this.submitForm(e);
     }

@@ -99,11 +99,14 @@ export default {
         this.DataList = res.data.map(item => {
           switch (item.status) {
             case 0:
-              item.status2 = "待审批";
+              item.status2 = "审批中";
               break;
             case 1:
               item.status2 = "不通过";
               break;
+              // case 2:
+              // item.status2 = "初始录入";
+              // break;
             case 3:
               item.status2 = "审批通过";
               break;

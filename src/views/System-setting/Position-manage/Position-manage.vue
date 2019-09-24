@@ -84,6 +84,7 @@ export default {
     tarnsferValue(e) {
       this.isPerTree = false;
       this.isNewRole = false;
+      this.getroleLists()
     },
     //编辑
     edit(e) {
@@ -109,10 +110,15 @@ export default {
       this.getRoleTree("");
     },
     delRole(e) {
+      console.log(e)
       this.$confirm(`确定删除${e.role_name}吗？`)
         .then(() => {
-          apideleRole({ roleId: e }).then(res => {
+          apideleRole({ roleId: e.role_id }).then(res => {
             console.log(res);
+            this.$message.success(res.msg)
+            this.currentlimit=15
+            this.currentPage=1
+            this.getroleLists()
           });
         })
         .catch(() => {});
