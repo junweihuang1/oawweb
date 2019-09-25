@@ -22,10 +22,7 @@
         ><!--#409EFF-->
         <el-submenu index="1">
           <template slot="title">
-            <img
-              src="../../../assets/logo2.png"
-              style="width:30px;border-radius:50%;"
-            />
+            <img src="../../../assets/logo2.png" class="headpic" />
             <span style="margin-left:10px;"
               >{{ company_name }}{{ center_name }}{{ username }}</span
             >
@@ -112,6 +109,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.headpic {
+  width: 30px;
+  border-radius: 50%;
+}
 .left {
   height: 30px;
   width: 30px;

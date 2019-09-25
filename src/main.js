@@ -19,10 +19,10 @@ Vue.use(element, { size: "mini", zIndex: 3000 });
 // Vue.use(ELEMENT);
 
 new Vue({
-    router,
-    store,
-    common,
-    render: h => h(App)
+  router,
+  store,
+  common,
+  render: h => h(App)
 }).$mount("#app");
 // (function() {
 //   var rem = document.createElement("script");

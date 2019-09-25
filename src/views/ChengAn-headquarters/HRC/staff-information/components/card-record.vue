@@ -22,7 +22,7 @@
         <el-input placeholder="输入用户名" v-model="username"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getcardRecordList">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="exportToExcel">导出</el-button>
@@ -87,6 +87,11 @@ export default {
     this.getcardRecordList();
   },
   methods: {
+    query() {
+      this.currentpage = 1;
+      this.currentlimit = 15;
+      this.getcardRecordList();
+    },
     //excel数据导出
     exportToExcel() {
       console.log(

@@ -4,9 +4,7 @@
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div :style="{ height: cardHeight }">
           <!-- class="card-panel" -->
-          <div
-            style="padding:10px;font-weight: bold;font-size:16px;text-align:center;"
-          >
+          <div class="commonUse">
             常用功能
           </div>
           <div style="text-align:left;">
@@ -300,6 +298,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.commonUse {
+  padding: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
 .card-box {
   text-align: center;
   width: 100%;

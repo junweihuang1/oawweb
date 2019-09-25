@@ -26,7 +26,7 @@ export default new Vuex.Store({
       ) {
         state.commonUse.unshift(Tabs);
         //限制长度不能超过10个，超过则在尾部删除
-        if (state.commonUse.length > 10) {
+        if (state.commonUse.length > 5) {
           state.commonUse.pop();
         }
       } else {

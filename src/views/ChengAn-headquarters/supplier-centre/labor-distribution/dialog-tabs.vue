@@ -3,7 +3,7 @@
     <el-tabs tab-position="top" v-model="currentActive" type="card">
       <el-tab-pane label="班组人员" name="1">
         <team-infor
-        v-if="isreload"
+          v-if="isreload"
           :Inforlist="Inforlist"
           style="padding:10px;"
           @openadd="openadd"
@@ -43,9 +43,9 @@ export default {
       currentActive: "1",
       isopenadd: false,
       isopenmove: false,
+      isreload: true,
       idarr: [],
-      namearr: [],
-      isreload:true
+      namearr: []
     };
   },
   components: {
@@ -77,17 +77,25 @@ export default {
           .construct_project_workTeam_id,
         supplierMod_worker_userId: row.userid
       };
-        this.$confirm(`确定要添加<span style="color:red;">${row.username}</span>到<span style="color:red;">${this.Inforlist.construct_project_name}</span>吗？`,
+      this.$confirm(
+        `确定要添加<span style="color:red;">${
+          row.username
+        }</span>到<span style="color:red;">${
+          this.Inforlist.construct_project_name
+        }</span>吗？`,
         {
           dangerouslyUseHTMLString: true
-        }).then(()=>{
+        }
+      )
+        .then(() => {
           apisave_Worker(data).then(res => {
-          this.$message.success(res.msg)
-        this.isopenadd = false;
-        this.isopenmove = false;
-        this.currentActive = "1";
-      })
-        }).catch(()=>{})
+            this.$message.success(res.msg);
+            this.isopenadd = false;
+            this.isopenmove = false;
+            this.currentActive = "1";
+          });
+        })
+        .catch(() => {});
     },
     openmove([idarr, namearr]) {
       this.idarr = idarr;
@@ -116,11 +124,11 @@ export default {
             this.currentActive = "1";
             this.isopenadd = false;
             this.isopenmove = false;
-            this.isreload=false
-            this.$nextTick(()=>{
-              this.isreload=true
-            })
-          })
+            this.isreload = false;
+            this.$nextTick(() => {
+              this.isreload = true;
+            });
+          });
         })
         .catch(() => {});
     }

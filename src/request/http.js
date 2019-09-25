@@ -2,10 +2,11 @@ import axios from "axios";
 import QS from "qs";
 import { Message } from "element-ui";
 
+// const base_url = "http://39.108.184.20:8080/casd2/admin/";
 const base_url = "http://192.168.110.173:8080/casd2/admin/";
 
 // 默认请求地址
-axios.defaults.baseURL = base_url; //"http://192.168.110.195:8081/casd2/admin/";//39.108.184.20:8080
+axios.defaults.baseURL = base_url; //"http://192.168.110.173:8080/casd2/admin/";//39.108.184.20:8080
 
 // 请求超时时间
 axios.defaults.timeout = 10000;
