@@ -31,6 +31,7 @@
         :show-overflow-tooltip="true"
         align="center"
         :key="index"
+        :fixed="item[5]"
         :min-width="item[2]"
       >
         <template v-if="item[4] != ''">

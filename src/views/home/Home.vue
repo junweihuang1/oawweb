@@ -76,7 +76,7 @@ export default {
       this.$store.commit("addTabs", {
         route: "/main",
         title: "首页",
-        id: "1"
+        id: "0"
       });
       this.$router.push({
         path: "/main"
@@ -94,7 +94,7 @@ export default {
     if (this.$route.path !== "/" && this.$route.path !== "/main") {
       const navList = this.navList;
       var starttime = new Date();
-      navList.map((item, index) => {
+      navList.map(item => {
         if (item.route === currentRoute) {
           this.$store.commit("addTabs", {
             route: item.route,

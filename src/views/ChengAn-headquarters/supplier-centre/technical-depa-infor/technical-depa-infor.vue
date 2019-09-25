@@ -103,8 +103,29 @@ export default {
       }
     },
     //获取工人职位信息
-    getWorkerpost() {
-      apiworkerUserNew().then(res => {
+    getWorkerpost(cId, depId) {
+      this.roleList = [];
+      let data = {};
+      if (cId) {
+        data = {
+          cid: cId,
+          department: depId
+        };
+      }
+      apiworkerUserNew(data).then(res => {
+        console.log(res);
+        if (res.userDetail) {
+          this.userList = [res.userDetail];
+        } else {
+          this.userList = [
+            {
+              company_id: 17,
+              center_id: 40,
+              center_name: "劳动力分供方",
+              company_name: "分供方"
+            }
+          ];
+        }
         res.roles.forEach(item => {
           this.roleList.push([item.role_id, item.role_name]);
         });
@@ -112,25 +133,16 @@ export default {
     },
     editItem(row) {
       console.log(row);
-      this.userList = [row];
-      if (this.roleList == "") {
-        this.getWorkerpost();
-      }
-      this.isopen = true;
+      this.getWorkerpost(row.userid, row.department);
+      this.isopen = false;
+      this.$nextTick(() => {
+        this.isopen = true;
+      });
       this.submitType = "";
     },
     isopenwin() {
-      if (this.roleList == "") {
-        this.getWorkerpost();
-      }
-      this.userList = [
-        {
-          company_id: 17,
-          center_id: 40,
-          center_name: "劳动力分供方",
-          company_name: "分供方"
-        }
-      ];
+      this.getWorkerpost();
+
       this.isopen = false;
       this.$nextTick(() => {
         this.isopen = true;

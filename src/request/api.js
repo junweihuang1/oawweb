@@ -645,7 +645,7 @@ export const apiworkerUserTreeList = data => get("workerUserTreeList", data);
 export const apiworkerUserList = data => get("workerUserList", data);
 
 //供应商中心 --> 材料部信息-->获取工人职位信息列表
-export const apiworkerUserNew = () => get("workerUserNew");
+export const apiworkerUserNew = data => get("workerUserNew", data);
 
 //供应商中心 --> 材料部信息-->查询出所有中心信息
 export const apiorgChecks = data => get("orgChecks", data);
@@ -707,3 +707,6 @@ export const apicostappPrint = data => get("costappPrint", data);
 
 //打印采购单
 export const apipurchaseExcelprint = data => get("purchaseExcelprint", data);
+
+//导出打卡记录
+export const apihrattendExcel = data => get("hrattendExcel", data);

@@ -63,7 +63,13 @@
       </el-col>
     </el-row>
 
-    <el-dialog :visible.sync="isadd" width="75%" title="编辑职员信息" top="8vh" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isadd"
+      width="75%"
+      title="编辑职员信息"
+      top="8vh"
+      v-dialogDrag
+    >
       <modify-window
         v-if="isadd"
         :submitType="submitType"
@@ -73,13 +79,23 @@
         :userList="userList"
       ></modify-window>
     </el-dialog>
-    <el-dialog :visible.sync="isopenNoCor" title="未转正人员" top="8vh" v-dialogDrag>
+    <el-dialog
+      :visible.sync="isopenNoCor"
+      title="未转正人员"
+      top="8vh"
+      v-dialogDrag
+    >
       <corrented-Tabs v-if="isopenNoCor"></corrented-Tabs>
     </el-dialog>
     <el-dialog :visible.sync="isopenCard" width="70%" v-dialogDrag>
       <card-record v-if="isopenCard"></card-record>
     </el-dialog>
-    <el-dialog title="启动离职流程" :visible.sync="isstartQuit" width="25%" v-dialogDrag>
+    <el-dialog
+      title="启动离职流程"
+      :visible.sync="isstartQuit"
+      width="25%"
+      v-dialogDrag
+    >
       <el-form size="mini" label-width="110px">
         <el-form-item label="申请日期">
           <el-date-picker
@@ -152,13 +168,13 @@ export default {
         ["姓名", "username", 80],
         ["电话号码", "phone_number", 120],
         ["性别", "sex", 80],
-        ["邮箱", "email", 160],
+        // ["邮箱", "email", 160],
         ["公司", "company_name", 130],
         ["中心", "center_name", 130],
         ["部门", "department_name", 130],
         ["身份证号码", "user_card", 180],
         ["身份证地址", "card_address", 270],
-        ["状态", "status", 80]
+        ["状态", "status", 80, null, null, "right"]
       ],
       headle: ["编辑", "删除"],
       total: 400,

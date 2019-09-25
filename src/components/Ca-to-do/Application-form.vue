@@ -131,7 +131,7 @@
     </div>
     <div style="width:100%;text-align:center;">
       <el-form inline size="mini">
-        <el-form-item v-if="openType != 'check'">
+        <el-form-item v-if="openType != 'check' && userTaskName != '结束'">
           <el-select v-model="userid" placeholder="没绑定审核人">
             <el-option
               v-for="item in AuditorList"
@@ -253,6 +253,7 @@ export default {
       reasons: "",
       userid: 0,
       current: 1,
+      currentTask: {},
       userTaskName: ""
     };
   },
@@ -341,22 +342,33 @@ export default {
       console.log(data);
       apiReqfundsProcess(data).then(res => {
         //获取当前审批的最后一行
+        console.log(res);
         if (this.historyList != "") {
-          let currentTask = this.historyList[this.historyList.length - 1];
+          this.currentTask = this.historyList[this.historyList.length - 1];
           //遍历获取当前节点
           this.activityList = res.activityList.map((item, index) => {
-            if (item.name == currentTask.name_) {
-              this.current = currentTask.END_TIME_ == "" ? index : index + 1;
+            if (item.name == this.currentTask.name_) {
+              this.current =
+                this.currentTask.END_TIME_ == "" ? index : index + 1;
             }
             return item;
           });
         } else {
           this.activityList = res.activityList;
         }
+        this.userTaskName =
+          this.currentTask.name_ ==
+          this.activityList[this.activityList.length - 1].name
+            ? "结束"
+            : "";
         this.buttonList = res.startForm.split(",");
-        this.userid = res.userlist != "" ? res.userlist[0].userid : "";
+        this.userid =
+          this.userTaskName == "结束"
+            ? 0
+            : res.userlist != ""
+            ? res.userlist[0].userid
+            : "";
         this.AuditorList = res.userlist;
-        console.log(this.AuditorList);
       });
     },
     getView() {
