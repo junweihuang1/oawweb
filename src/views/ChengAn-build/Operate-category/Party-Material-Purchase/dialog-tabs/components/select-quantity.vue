@@ -24,6 +24,8 @@
       :header="header"
       :DataList="QuantityList"
       @dblclick="dblclick"
+      :headle="['选择']"
+      @checkleave="dblclick"
     ></Ca-rule-table>
     <paging
       :currentpage="currentpage"

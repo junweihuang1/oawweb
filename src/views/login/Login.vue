@@ -598,7 +598,7 @@ export default {
     },
     getTree() {
       apiuserMenuTree().then(res => {
-        console.log(res.data)
+        console.log(res.data);
         let newTree = this.getNewTree(this.navList, res.data);
         // newTree
         newTree.splice(0, 0, {

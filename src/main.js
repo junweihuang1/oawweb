@@ -16,7 +16,6 @@ Vue.use(SlideVerify);
 Vue.config.productionTip = false;
 Vue.prototype.$echarts = echarts;
 Vue.use(element, { size: "mini", zIndex: 3000 });
-// Vue.use(ELEMENT);
 
 new Vue({
   router,
@@ -24,8 +23,3 @@ new Vue({
   common,
   render: h => h(App)
 }).$mount("#app");
-// (function() {
-//   var rem = document.createElement("script");
-//   rem.src = "./rem.js";
-//   document.body.appendChild(rem);
-// })();

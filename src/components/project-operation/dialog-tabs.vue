@@ -224,7 +224,6 @@ export default {
     openeditPurchase(id) {
       this.pruchase_title = "修改采购申请";
       this.currentActive = "4";
-      this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
         // this.headform = res.projectInfo;
         console.log(res);
@@ -239,11 +238,13 @@ export default {
         this.headform2 = res.purchaseHead;
       });
       this.ApplyopenType = "edit";
+      this.isopen[2] = true;
     },
     //打开查看采购单
     opencheckPurchase(id) {
       this.pruchase_title = "查看采购申请";
       this.currentActive = "4";
+      this.ApplyopenType = "check";
       this.isopen[2] = true;
       apigetPurchase({ construct_purchase_id: id }).then(res => {
         this.Purchase_entryList = res.purchaseEntry;
@@ -253,12 +254,12 @@ export default {
         });
         this.headform2 = res.purchaseHead;
       });
-      this.ApplyopenType = "check";
     },
     //打開采购申请列表
     openaddPurchase() {
       this.pruchase_title = "新增采购申请";
       this.currentActive = "4";
+      this.ApplyopenType = "add";
       this.isopen[2] = true;
       this.Purchase_entryList = [];
       // this.headform = {};
@@ -274,7 +275,6 @@ export default {
         construct_purchase_materialSerId: "", //(必填)材料系列id
         construct_purchase_materialSerName: "" //(必填)材料系列}}
       };
-      this.ApplyopenType = "add";
     },
     openProject([type, val]) {
       switch (type) {

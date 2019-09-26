@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible="myopenSelect"
       title="选择中心名称"
       @close="closewin"
@@ -22,6 +22,8 @@
         :DataList="centerList"
         :header="header"
         @dblclick="dblclick"
+        :headle="['选择']"
+        @checkleave="dblclick"
       ></Ca-rule-table>
       <paging
         @setpage="getpage"

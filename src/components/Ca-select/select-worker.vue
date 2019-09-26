@@ -14,6 +14,8 @@
       :header="header"
       :DataList="workerList"
       @dblclick="dblclick"
+      :headle="['选择']"
+      @checkleave="dblclick"
     ></Ca-rule-table>
     <paging
       :currentpage="currentPage"
@@ -44,6 +46,7 @@ export default {
         ["性别", "sex2"],
         ["部门", "department_name", 110]
       ],
+      headle: ["添加"],
       workerName: ""
     };
   },

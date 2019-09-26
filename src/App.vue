@@ -18,6 +18,9 @@ export default {
       isRouterAlive: true
     };
   },
+  mounted() {
+    console.log(navigator.userAgent);
+  },
   methods: {
     reload() {
       this.isRouterAlive = false;

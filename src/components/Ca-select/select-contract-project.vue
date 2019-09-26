@@ -21,6 +21,8 @@
       :setheight="0.5"
       :DataList="projectList"
       :header="header"
+      :headle="['选择']"
+      @checkleave="dblclick"
       @dblclick="dblclick"
     ></Ca-rule-table>
     <paging

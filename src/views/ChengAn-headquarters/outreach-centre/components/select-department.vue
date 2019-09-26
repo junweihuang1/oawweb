@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="myopenSelect"
       title="部门信息"
       @close="closewin"
@@ -23,6 +23,8 @@
         :DataList="departmentList"
         :header="header"
         @dblclick="dblclick"
+        :headle="['选择']"
+        @checkleave="dblclick"
       ></Ca-rule-table>
       <paging
         @setpage="getpage"

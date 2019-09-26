@@ -171,7 +171,7 @@ export default {
     render() {
       this.isopenlist = false;
       //路由重定向到待办页
-      if (this.$store.openTabs.some(item => item.id != "51")) {
+      if (this.$store.state.openTabs.some(item => item.id != "51")) {
         this.$store.commit("addTabs", {
           route: "/to-do",
           title: "待办事项",

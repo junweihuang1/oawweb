@@ -192,7 +192,13 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="" width="80" align="center" fixed="right">
+      <el-table-column
+        label=""
+        width="80"
+        align="center"
+        fixed="right"
+        v-if="openType == 'add' || openType == 'edit'"
+      >
         <template slot-scope="{ row }">
           <el-button
             class="el-icon-delete-solid"
@@ -262,7 +268,7 @@
                   :key="index"
                   type="success"
                   size="mini"
-                  @click="headleprocess(true)"
+                  @click="headleprocess(true, 'again')"
                   >重新提交</el-button
                 >
                 <el-dropdown
@@ -521,6 +527,7 @@ export default {
           this.returnName = item.name;
         }
       });
+      console.log(this.returnName);
     },
     changeValue(row, filter) {
       if (
@@ -533,7 +540,7 @@ export default {
       }
     },
     //办理
-    headleprocess(type) {
+    headleprocess(type, re) {
       console.log(this.activeForm);
       if (this.reasons == "") {
         this.$message.error("请填写审核意见");
@@ -553,25 +560,31 @@ export default {
         this.$message.error("请选择供应商");
         return;
       }
+      let data = {
+        processInstanceId: this.active.PROC_INST_ID_
+          ? this.active.PROC_INST_ID_
+          : this.active.taskid, //(必填)运行时id
+        taskid: this.active.ID_, //(必填)实例id
+        sign: type, //(必填)是否同意
+        reason: this.reasons, //(必填)审核意见
+        usertask: this.usertask, //(必填)驳回节点
+        taskName: this.active.NAME_, //(必填)当前节点id
+        construct_purchase_id: this.active.BUSINESS_KEY_
+          ? this.active.BUSINESS_KEY_.split(".")[1]
+          : this.active.businessId, //(必填)材料单id
+        userid: this.userid //(必填)下一审批人id
+      };
+      console.log(data);
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
-          let data = {
-            processInstanceId: this.active.PROC_INST_ID_
-              ? this.active.PROC_INST_ID_
-              : this.active.taskid, //(必填)运行时id
-            taskid: this.active.ID_, //(必填)实例id
-            sign: type, //(必填)是否同意
-            reason: this.reasons, //(必填)审核意见
-            usertask: this.usertask, //(必填)驳回节点
-            taskName: this.active.NAME_, //(必填)当前节点id
-            construct_purchase_id: this.active.BUSINESS_KEY_
-              ? this.active.BUSINESS_KEY_.split(".")[1]
-              : this.active.businessId, //(必填)材料单id
-            userid: this.userid //(必填)下一审批人id
-          };
-          console.log(data);
+          if (
+            (re && this.currentTaskName == "项目助理") ||
+            this.currentTaskName == "项目经理"
+          ) {
+            this.save();
+          }
           apipassPurchase(data).then(res => {
             console.log(res);
             this.$message.success(res.msg);
@@ -782,7 +795,10 @@ export default {
           return;
         }
       }
-      console.log(this.f_entryList);
+      if (this.f_entryList == "") {
+        this.$message.error("请增加材料");
+        return;
+      }
       this.activeForm.entry = JSON.stringify(this.f_entryList);
       if (this.openType == "add") {
         this.$confirm(`确定保存吗？`)
@@ -794,14 +810,20 @@ export default {
             });
           })
           .catch(() => {});
+      } else if (this.openType == "headle") {
+        apimodPurchase(this.activeForm).then(res => {
+          console.log(res);
+        });
       } else {
         this.$confirm(`确定修改吗？`)
           .then(() => {
-            apimodPurchase(this.activeForm).then(res => {
-              console.log(res);
-              this.$message.success(res.msg);
-              this.$emit("close");
-            });
+            apimodPurchase(this.activeForm)
+              .then(res => {
+                console.log(res);
+                this.$message.success(res.msg);
+                this.$emit("close");
+              })
+              .catch(err => console.log(err));
           })
           .catch(() => {});
       }

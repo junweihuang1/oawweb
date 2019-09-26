@@ -13,6 +13,8 @@
       :DataList="teamList"
       :header="header"
       @dblclick="dblclick"
+      :headle="['选择']"
+      @checkleave="dblclick"
     ></Ca-rule-table>
     <paging
       @setpage="getpage"

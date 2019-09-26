@@ -71,31 +71,32 @@ export default {
       this.isopenadd = true;
     },
     getWorker(row) {
+      console.log("dbclick");
       let data = {
         construct_project_id: this.Inforlist.construct_project_id,
         construct_project_workTeam_id: this.Inforlist
           .construct_project_workTeam_id,
         supplierMod_worker_userId: row.userid
       };
-      this.$confirm(
-        `确定要添加<span style="color:red;">${
-          row.username
-        }</span>到<span style="color:red;">${
-          this.Inforlist.construct_project_name
-        }</span>吗？`,
-        {
-          dangerouslyUseHTMLString: true
-        }
-      )
-        .then(() => {
-          apisave_Worker(data).then(res => {
-            this.$message.success(res.msg);
-            this.isopenadd = false;
-            this.isopenmove = false;
-            this.currentActive = "1";
-          });
-        })
-        .catch(() => {});
+      // this.$confirm(
+      //   `确定要添加<span style="color:red;">${
+      //     row.username
+      //   }</span>到<span style="color:red;">${
+      //     this.Inforlist.construct_project_name
+      //   }</span>吗？`,
+      //   {
+      //     dangerouslyUseHTMLString: true
+      //   }
+      // )
+      //   .then(() => {
+      apisave_Worker(data).then(res => {
+        this.$message.success(res.msg);
+        this.isopenadd = false;
+        this.isopenmove = false;
+        this.currentActive = "1";
+      });
+      // })
+      // .catch(() => {});
     },
     openmove([idarr, namearr]) {
       this.idarr = idarr;

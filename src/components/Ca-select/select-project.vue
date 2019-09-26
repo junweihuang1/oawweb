@@ -13,6 +13,8 @@
       :DataList="projectList"
       :header="header"
       @dblclick="dblclick"
+      :headle="['选择']"
+      @checkleave="dblclick"
     ></Ca-rule-table>
     <paging
       @setpage="getpage"
@@ -94,7 +96,9 @@ export default {
               ? "消防水"
               : item.construct_project_workTeam_category == 3
               ? "消防电"
-              : item.construct_project_workTeam_category == 4?"防排烟":"消防水电";
+              : item.construct_project_workTeam_category == 4
+              ? "防排烟"
+              : "消防水电";
           return item;
         });
       });

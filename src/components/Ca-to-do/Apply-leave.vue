@@ -100,8 +100,8 @@
       <div v-if="openType == 'add'">
         <el-row> </el-row>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">申请</el-button>
-          <el-button type="danger" @click="resetForm('form')">重置</el-button>
+          <el-button type="success" @click="submitForm('form')">申请</el-button>
+          <!-- <el-button type="danger" @click="resetForm('form')">重置</el-button> -->
         </el-form-item>
       </div>
       <div v-else-if="openType == 'headle'">
@@ -380,10 +380,10 @@ export default {
     getApprover(e) {
       this.form.userid = e;
     },
-    resetForm(formName) {
-      this.reload();
-      this.$refs[formName].resetFields();
-    },
+    // resetForm(formName) {
+    //   this.reload();
+    //   this.$refs[formName].resetFields();
+    // },
     //提交
     submitForm() {
       if (this.form.start_time >= this.form.end_time) {

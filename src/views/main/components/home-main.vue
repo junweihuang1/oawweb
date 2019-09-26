@@ -30,7 +30,7 @@
         :lg="6"
         class="card-panel-col card-panel-col-right"
       >
-        <div>
+        <div style="font-size:16px;">
           <div class="panel-group-line panel-group-line-center">
             个人考勤表
             <el-tooltip
