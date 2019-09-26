@@ -214,7 +214,7 @@
       top="10vh"
       width="30%"
     >
-      <select-department @setSelectName="getSelectName"></select-department>
+      <select-department @setSelectName="getSelectName" v-if="isopenDep"></select-department>
     </el-dialog>
   </div>
 </template>

@@ -164,7 +164,7 @@
       :append-to-body="true"
       top="8vh"
     >
-      <select-department @setSelectName="getSelectName"></select-department>
+      <select-department @setSelectName="getSelectName" v-if="isopenselect"></select-department>
     </el-dialog>
   </div>
 </template>

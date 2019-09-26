@@ -186,7 +186,10 @@ export default {
     },
     checkTeam(row) {
       this.currentActive = "1";
-      this.isopen = true;
+      this.isopen=false
+      this.$nextTick(()=>{
+        this.isopen = true;
+      })
       this.Inforlist = row;
       console.log(row);
     },

@@ -234,6 +234,7 @@
       v-dialogDrag
     >
       <select-quantity
+      v-if="isopen"
         :projectList="projectList"
         @setQuantity="getQuantity"
       ></select-quantity>

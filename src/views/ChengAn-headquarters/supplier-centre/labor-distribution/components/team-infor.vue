@@ -59,7 +59,7 @@
       <select-project @setSelectName="getSelectName"></select-project>
     </el-dialog>
     <el-dialog :visible.sync="isopenRecord" :append-to-body="true" v-dialogDrag>
-      <remove-record :userId="userId"></remove-record>
+      <remove-record :userId="userId" v-if="isopenRecord"></remove-record>
     </el-dialog>
   </div>
 </template>
@@ -98,9 +98,7 @@ export default {
       isopenRecord: false,
       isopenselect: false,
       removeForm: {},
-      currentList: [],
       userId: 0,
-      activeform:{}
     };
   },
   components: {
@@ -149,17 +147,16 @@ export default {
             .then(res => {
               console.log(res);
               this.$message.success(res.msg);
+              this.removeForm={}
               this.isopen = false;
             })
-            .catch(err => {
-              console.log(err);
-            });
         })
-        .catch(() => {});
+        .catch(() => {
+          this.removeForm={}
+        });
     },
     //子組件回調双击选中的信息
     getSelectName(row) {
-      console.log(row);
       this.removeForm.leaderName = this.Inforlist.construct_project_leader;
       this.removeForm.projectName = row.construct_project_name;
       this.removeForm.suppliermod_worker_apply_proId = row.construct_project_id;
@@ -167,7 +164,6 @@ export default {
         row.construct_project_workTeam_id;
       this.removeForm.suppliermod_worker_apply_oldProId = this.Inforlist.construct_project_id;
       this.removeForm.suppliermod_worker_apply_id = 0;
-      this.removeForm.suppliermod_worker_apply_userId = this.activeform.userid
       this.isopenselect = false;
     },
     //打开选择项目
@@ -176,10 +172,8 @@ export default {
     },
     //单个调动
     remove(row) {
-      console.log(row);
-      this.activeform=row
+      this.removeForm.suppliermod_worker_apply_userId = row.userid
       this.isopen = true;
-      this.currentList = row;
     },
     //批量调动
     allremove() {
