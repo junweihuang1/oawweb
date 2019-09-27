@@ -122,9 +122,6 @@ export default {
         });
     },
     edit(e) {
-      this.openType = "check";
-      console.log(e);
-      this.isgoout = true;
       apigetField({ id: e.field_personnel_id }).then(res => {
         this.activeform = res.data;
         this.hisComment = res.hisComment
@@ -133,7 +130,8 @@ export default {
               return item;
             })
           : [];
-        console.log(res);
+        this.openType = "check";
+        this.isgoout = true;
       });
     },
     deleteitem(e) {

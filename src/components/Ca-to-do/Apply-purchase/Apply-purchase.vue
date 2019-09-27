@@ -800,6 +800,7 @@ export default {
         return;
       }
       this.activeForm.entry = JSON.stringify(this.f_entryList);
+      console.log(this.activeForm);
       if (this.openType == "add") {
         this.$confirm(`确定保存吗？`)
           .then(() => {

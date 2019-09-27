@@ -3,31 +3,32 @@
     <el-form ref="form" :model="form" label-width="80px" :rules="rules2">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="开始时间" v-if="form.start_time">
-            <el-input v-model="form.start_time" readonly></el-input>
-          </el-form-item>
-          <el-form-item label="开始时间" v-else>
+          <el-form-item label="开始时间" v-if="openType == 'add'">
             <date-time
               v-if="nextopen == true"
               :startstauts="true"
               @settime="getStartTime"
             ></date-time>
           </el-form-item>
+          <el-form-item label="开始时间" v-else>
+            <el-input v-model="form.start_time" readonly></el-input>
+          </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="结束时间" v-if="form.end_time">
-            <el-input v-model="form.end_time" readonly></el-input>
-          </el-form-item>
-          <el-form-item label="结束时间" v-else>
+          <el-form-item label="结束时间" v-if="openType == 'add'">
             <date-time
               v-if="nextopen == true"
               @settime="getEndTime"
             ></date-time>
           </el-form-item>
+          <el-form-item label="结束时间" v-else>
+            <el-input v-model="form.end_time" readonly></el-input>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-form-item label="是否用车">
         <el-switch
+          :disabled="openType !== 'add' ? true : false"
           v-model="form.field_personnel_car"
           :active-value="2"
           :inactive-value="1"
@@ -38,6 +39,7 @@
           <el-col :span="12">
             <el-form-item label="车牌号">
               <el-input
+                :readonly="openType !== 'add' ? true : false"
                 v-model="form.field_personnel_license"
                 placeholder="用车必填"
               ></el-input>
@@ -46,6 +48,7 @@
           <el-col :span="12">
             <el-form-item label="驾驶员">
               <el-input
+                :readonly="openType !== 'add' ? true : false"
                 v-model="form.field_personnel_driver"
                 placeholder="用车必填"
               ></el-input>
@@ -57,6 +60,7 @@
         ><el-col :span="12">
           <el-form-item label="外出地点" prop="field_personnel_place">
             <el-input
+              :readonly="openType !== 'add' ? true : false"
               v-model="form.field_personnel_place"
               placeholder="必填"
             ></el-input>
@@ -65,6 +69,7 @@
         <el-col :span="12">
           <el-form-item label="外出内容" prop="field_personnel_cause">
             <el-input
+              :readonly="openType !== 'add' ? true : false"
               v-model="form.field_personnel_cause"
               placeholder="必填"
             ></el-input>
@@ -186,7 +191,6 @@ export default {
       callback();
     };
     var validateaddress = (rule, value, callback) => {
-      console.log(value);
       if (value == "" || !value) {
         return callback("外出地点不能为空");
       }
@@ -222,18 +226,18 @@ export default {
   },
   props: {
     activeform: {
-      type: Object,
-      default: () => {
-        return {
-          field_personnel_cause: "",
-          field_personnel_place: "",
-          field_personnel_driver: "",
-          field_personnel_car: 1,
-          start_time: "",
-          end_time: "",
-          userid: ""
-        };
-      }
+      type: Object
+      // default: () => {
+      //   return {
+      //     field_personnel_cause: "",
+      //     field_personnel_place: "",
+      //     field_personnel_driver: "",
+      //     field_personnel_car: 1,
+      //     start_time: "",
+      //     end_time: "",
+      //     userid: ""
+      //   };
+      // }
     },
     openType: {
       type: String,
@@ -248,6 +252,7 @@ export default {
     //监听窗口状态
     activeform(val) {
       this.form = val;
+      console.log(this.form);
     }
   },
   mounted() {
