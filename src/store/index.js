@@ -11,9 +11,9 @@ export default new Vuex.Store({
     commonUse: localStorage.getItem("commonUse")
       ? JSON.parse(localStorage.getItem("commonUse"))
       : [],
-    theme: "#0190A0", //导航栏主题色
+    theme: "#F56C6C", //"#0190A0", //导航栏主题色
     fontColor: "#FFD700", //导航栏点击的字体颜色
-    tableColor: "#4DB2BD", //表头颜色
+    tableColor: "#E1A956", //"#4DB2BD", //表头颜色
     dialog_openTabs: [false, false, false]
   },
   mutations: {

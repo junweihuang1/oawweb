@@ -16,7 +16,7 @@
       :show-summary="issummary"
       @cell-click="cellClick"
       @row-click="rowClick"
-      @selection-change="handleSelectionChange"
+      @selection-change="handleSelect"
       @row-dblclick="dblclick"
     >
       <template v-if="isselect == true">
@@ -118,7 +118,8 @@ export default {
       isselect: this.setselect,
       issummary: this.setsummary,
       maxHeight: document.documentElement.scrollHeight * this.setheight,
-      isinput: false
+      isinput: false,
+      selectarr: []
     };
   },
   props: {
@@ -260,7 +261,7 @@ export default {
       }
     },
     //把选择的行返回给父组件
-    handleSelectionChange(val) {
+    handleSelect(val) {
       this.$emit("setselect", val);
     },
     //第一个按钮事件传递给父组件

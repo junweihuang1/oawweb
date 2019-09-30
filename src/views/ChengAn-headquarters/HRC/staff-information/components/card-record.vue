@@ -48,7 +48,7 @@ import selectCompany from "@/components/Ca-select/select-company.vue";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apiworkerAttendLists } from "@/request/api.js";
-import { changetime } from "@/components/global-fn/global-fn";
+import { getDates } from "@/components/global-fn/global-fn";
 import http from "@/request/http";
 export default {
   name: "cardRecord",
@@ -56,8 +56,8 @@ export default {
     return {
       currentlimit: 15,
       currentpage: 1,
-      start_time: changetime(new Date()),
-      end_time: changetime(new Date()),
+      start_time: getDates(new Date()),
+      end_time: getDates(new Date()),
       username: "",
       companyId: "",
       cardRecordList: [],
@@ -83,6 +83,7 @@ export default {
     };
   },
   components: { CaRuleTable, paging, selectCompany },
+
   mounted() {
     this.getcardRecordList();
   },

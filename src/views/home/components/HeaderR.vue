@@ -123,7 +123,7 @@ export default {
   background: #fff;
 }
 .left:hover {
-  background: #017380;
+  background: #f56c6c;
 }
 .main {
   display: flex;
@@ -150,6 +150,6 @@ export default {
 .elclick {
   font-size: 20px;
   font-weight: 700;
-  color: #0190a0;
+  color: #e1a956;
 }
 </style>

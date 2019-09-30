@@ -4,8 +4,8 @@
       class="upload-demo"
       ref="upload"
       :data="{ uploadPath: 'userfile/' }"
-      name="pic"
       :action="upload_url"
+      name="pic"
       :limit="1"
       :headers="{ token: token }"
       :on-success="handleSuccess"
@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     handleSuccess(res) {
-      console.log(res);
       this.$message.success(res.msg);
       this.$refs.upload.clearFiles();
       setTimeout(() => {

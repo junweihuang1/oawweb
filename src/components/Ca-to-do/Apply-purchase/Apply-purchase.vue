@@ -468,16 +468,12 @@ export default {
       }
     },
     entryList(val) {
-      console.log(val);
       this.f_entryList = val;
     }
   },
   methods: {
     deleteitem(row) {
-      this.f_entryList = this.f_entryList.filter(
-        item =>
-          item.construct_purchase_entryId !== row.construct_purchase_entryId
-      );
+      this.f_entryList = this.f_entryList.filter(item => item.id !== row.id);
     },
     //导出表格
     print() {
@@ -579,12 +575,6 @@ export default {
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
-          if (
-            (re && this.currentTaskName == "项目助理") ||
-            this.currentTaskName == "项目经理"
-          ) {
-            this.save();
-          }
           apipassPurchase(data).then(res => {
             console.log(res);
             this.$message.success(res.msg);
@@ -731,7 +721,8 @@ export default {
       }
       //construct_purchase_entryId
       this.f_entryList.push({
-        construct_purchase_entryId: this.maxid,
+        id: this.maxid,
+        construct_purchase_entryId: 0,
         construct_purchase_material: "", //(必填)材料名称
         construct_purchase_model: "", //(必填)型号规格
         construct_purchase_unit: "", //(必填)单位
@@ -799,6 +790,17 @@ export default {
         this.$message.error("请增加材料");
         return;
       }
+      // this.f_entryList = this.f_entryList.map(item => {
+      //   console.log()
+      //   return {
+      //     construct_project_workTeam_projectId: "", //(必填)项目id
+      //     construct_project_workTeam_category: "", //(必填)班组类型
+      //     construct_project_workTeam_amount: "", //(必填)合同金额
+      //     construct_project_workTeam_price: "", //(必填)单价
+      //     construct_project_workTeam_departmentId: "", //(必填)项目部id
+      //     construct_project_workTeam_userId: "" //(必填)人员id
+      //   };
+      // });
       this.activeForm.entry = JSON.stringify(this.f_entryList);
       console.log(this.activeForm);
       if (this.openType == "add") {
@@ -811,10 +813,6 @@ export default {
             });
           })
           .catch(() => {});
-      } else if (this.openType == "headle") {
-        apimodPurchase(this.activeForm).then(res => {
-          console.log(res);
-        });
       } else {
         this.$confirm(`确定修改吗？`)
           .then(() => {

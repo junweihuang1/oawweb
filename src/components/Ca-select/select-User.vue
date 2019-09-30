@@ -6,7 +6,7 @@
         <el-input v-model="username" placeholder="用户名" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getUserList">搜索</el-button>
+        <el-button type="primary" @click="query">搜索</el-button>
       </el-form-item>
       <el-form-item v-if="openType == 'checkbox'">
         <el-button type="primary" @click="save">保存</el-button>
@@ -69,6 +69,11 @@ export default {
     this.getUserList();
   },
   methods: {
+    query() {
+      this.currentlimit = 15;
+      this.currentPage = 1;
+      this.getUserList();
+    },
     save() {
       let name = this.selectForm.map(item => {
         return item.username;
