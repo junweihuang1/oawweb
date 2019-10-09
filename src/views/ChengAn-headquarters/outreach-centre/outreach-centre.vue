@@ -26,7 +26,7 @@
         <paging
           :currentpage="currentpage"
           :currentlimit="currentlimit"
-          :total="50"
+          :total="total"
           @setpage="getpage"
           @setlimit="getlimit"
         ></paging>
@@ -83,7 +83,8 @@ export default {
       userList: [],
       submitType: "",
       roleList: [],
-      isopenJoin: false
+      isopenJoin: false,
+      total: 0
     };
   },
   components: {
@@ -166,6 +167,7 @@ export default {
       };
       apiworkerUserList(data).then(res => {
         console.log(res);
+        this.total = res.total;
         this.WorkerList = res.rows.map(item => {
           item.sex2 = item.sex == 1 ? "男" : "女";
           return item;

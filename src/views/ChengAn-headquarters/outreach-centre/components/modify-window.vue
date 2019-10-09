@@ -29,6 +29,7 @@
                 size="mini"
                 @change="selectDate(item[1])"
                 format="yyyy.MM.dd"
+                value-format="yyyy-MM-dd"
                 placeholder="请选择时间"
                 style="width:100%;text-align:center;"
               >

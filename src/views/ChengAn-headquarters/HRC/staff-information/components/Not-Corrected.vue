@@ -21,6 +21,7 @@
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
 import { apibecomeList } from "@/request/api.js";
+import { getDates } from "@/components/global-fn/global-fn";
 export default {
   name: "NotCorrected",
   data() {
@@ -67,6 +68,9 @@ export default {
         console.log(res);
         this.total = res.total;
         this.NotCorList = res.data.map(item => {
+          item.close_time = item.close_time
+            ? getDates(item.close_time)
+            : item.close_time;
           switch (item.status) {
             case 3:
               item.status = "试用期";

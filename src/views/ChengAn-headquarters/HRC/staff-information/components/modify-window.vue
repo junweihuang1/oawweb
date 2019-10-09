@@ -37,6 +37,7 @@
                 v-model="row[item[1]]"
                 type="date"
                 size="mini"
+                value-format="yyyy-MM-dd"
                 @change="selectDate(item[1])"
                 format="yyyy.MM.dd"
                 placeholder="请选择时间"

@@ -71,9 +71,9 @@
               type="warning"
               size="mini"
               v-if="index == 1 && item != ''"
+              :key="index"
               @click="deleteflie(row)"
               plain
-              :key="index"
               >{{ item }}</el-button
             >
             <el-button

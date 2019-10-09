@@ -13,15 +13,16 @@
         ></el-select>
       </el-form-item>
       <el-form-item
-        ><el-input v-model="userName" placeholder="用户名"></el-input
+        ><el-input v-model="userName" placeholder="用户名" clearable></el-input
       ></el-form-item>
       <el-form-item
         ><el-button type="primary" @click="query">查询</el-button>
         <el-button type="primary" @click="openwin">历史</el-button>
         <el-button type="primary" @click="openprint">打印</el-button>
+        <el-button type="primary" @click="updata">更新</el-button>
       </el-form-item>
     </el-form>
-    <Ca-rule-table
+    <!-- <Ca-rule-table
       :DataList="CostsList"
       :header="header"
       :iscellCilck="true"
@@ -30,40 +31,59 @@
       @cellCilck="cellCilck"
       :headle="headle"
       @checkleave="file"
-    ></Ca-rule-table>
-    <paging
+    ></Ca-rule-table> -->
+    <print-table
+      :headle="headle"
+      field="userWagesLists"
+      :header="header2"
+      @cellCilck="cellCilck"
+      @checkleave="file"
+    ></print-table>
+    <!-- <paging
       :currentpage="currentpage"
       :currentlimit="currentlimit"
       @setpage="getpage"
       @setlimit="getlimit"
       :total="total"
-    ></paging>
-    <el-dialog :visible.sync="isopenEdit" title="编辑工资" width="30%" v-dialogDrag>
+    ></paging> -->
+    <el-dialog
+      :visible.sync="isopenEdit"
+      title="编辑工资"
+      width="30%"
+      v-dialogDrag
+    >
       <edit-wages
         v-if="isopenEdit"
         :wagesForm="wagesForm"
         @close="close"
       ></edit-wages>
     </el-dialog>
-    <el-dialog :visible.sync="isprint" :show-close="true" :fullscreen="true">
-    </el-dialog>
-    <div v-if="isprint" class="printTable">
+
+    <!-- <el-dialog :visible.sync="isprint" :show-close="true" :fullscreen="true">
+    </el-dialog> -->
+
+    <!-- <div v-if="isprint" class="printTable">
       <print-table
         @close="close"
         :CostsList="CostsList"
         v-if="isprint"
         :print_header="print_header"
       ></print-table>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import printTable from "./components/print-table";
+// import printTable from "./components/print-table";
 import editWages from "./components/edit-wages";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import { apiuserWagesLists, apisave_userWages } from "@/request/api.js";
+import printTable from "@/components/Ca-table/print-table.vue";
+import {
+  apiuserWagesLists,
+  apisave_userWages,
+  apiupdate_Wages
+} from "@/request/api.js";
 export default {
   name: "LaborCosts",
   data() {
@@ -80,6 +100,45 @@ export default {
         { company_id: 16, company_name: "诚安建设" }
       ],
       company_id: "",
+      header2: [
+        [
+          //表头
+          {
+            field: "center_name",
+            title: "中心名",
+            width: 110,
+            sort: true
+          },
+          { field: "username", title: "用户名", width: 90 },
+          { field: "finance_wages_attCount", title: "出勤天数", width: 90 },
+          { field: "finance_wages_vacaCount", title: "休假天数", width: 90 },
+          { field: "finance_wages_leaveCount", title: "请假天数", width: 90 },
+          { field: "usernuc_wage_actualDayame", title: "实际出勤", width: 90 },
+          {
+            field: "uc_wage_base",
+            title: "基本工资",
+            width: 90,
+            event: "click"
+          },
+          { field: "uc_wage_post", title: "岗位工资", width: 90 },
+          { field: "uc_wage_achieve", title: "绩效工资", width: 90 },
+          { field: "uc_wage_subsidy", title: "津贴补助", width: 90 },
+          { field: "uc_wages_dedu", title: "考勤扣除", width: 90 },
+          { field: "uc_wages_baseTotal", title: "应发小计", width: 90 },
+          { field: "uc_wage_socSec", title: "代扣社保", width: 90 },
+          { field: "uc_wage_accFund", title: "公积金", width: 90 },
+          { field: "", title: "扣除小计", width: 90 },
+          { field: "uc_wage_tax", title: "代扣个税", width: 90 },
+          { field: "uc_wage_realhair", title: "实发工资", width: 90 },
+          {
+            fixed: "right",
+            title: "操作",
+            toolbar: "#toolbarDemo",
+            width: 150,
+            align: "center"
+          }
+        ]
+      ],
       header: [
         ["中心名", "center_name", 110],
         ["用户名", "username", 90],
@@ -136,11 +195,18 @@ export default {
     this.getCostsList();
   },
   methods: {
+    updata() {
+      apiupdate_Wages().then(() => {
+        console.log("OK");
+        this.getCostsList();
+      });
+    },
     openprint() {
       this.isprint = true;
     },
     close() {
       this.isprint = false;
+      console.info("isprint", this.isprint);
       this.isopenEdit = false;
       this.getCostsList();
     },

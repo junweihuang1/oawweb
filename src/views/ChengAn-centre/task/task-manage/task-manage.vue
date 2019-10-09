@@ -4,6 +4,7 @@
       <el-form-item>
         <el-date-picker
           v-model="start_Date"
+          value-format="yyyy-MM-dd"
           type="date"
           placeholder="开始时间"
           clearable
@@ -12,6 +13,7 @@
       </el-form-item>
       <el-form-item>
         <el-date-picker
+          value-format="yyyy-MM-dd"
           v-model="end_Date"
           type="date"
           placeholder="结束时间"

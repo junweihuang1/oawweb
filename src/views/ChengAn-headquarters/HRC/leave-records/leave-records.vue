@@ -22,6 +22,7 @@
           v-model="start_time"
           type="date"
           placeholder="开始日期"
+          value-format="yyyy-MM-dd"
           style="width:30%;"
         >
         </el-date-picker
@@ -30,6 +31,7 @@
           v-model="end_time"
           type="date"
           placeholder="结束日期"
+          value-format="yyyy-MM-dd"
           style="width:30%;"
         >
         </el-date-picker>
@@ -55,7 +57,7 @@
     ></paging>
     <el-dialog :visible.sync="isopen" v-dialogDrag>
       <Apply-leave
-      v-if="isopen"
+        v-if="isopen"
         openType="check"
         @close="getclose"
         :form="activeform"

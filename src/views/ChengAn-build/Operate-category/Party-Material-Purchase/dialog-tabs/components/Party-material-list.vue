@@ -248,6 +248,7 @@ export default {
     isaddform() {
       this.diatitle = "新增合同工程量";
       this.isadd = true;
+      this.isedit = false;
       this.addform = {
         construct_Aparty_material_name: "",
         construct_Aparty_material_unit: "",
@@ -261,9 +262,10 @@ export default {
     },
     //删除多行
     deleteitem() {
+      console.log( JSON.stringify(this.idarr))
       this.$confirm(`确定删除吗(有问题未修复)？`)
         .then(() => {
-          apideleteAParty({ ids: this.idarr }).then(res => {
+          apideleteAParty({ ids: JSON.stringify(this.idarr) }).then(res => {
             console.log(res);
           });
         })

@@ -1,6 +1,6 @@
 <template>
   <div style="width:70%;margin:0 auto;">
-    <table class="Application_form" border="0" cellspacing="1" cellpadding="0">
+    <table class="Application_form" border="1" cellspacing="1" cellpadding="0">
       <tr align="center">
         <th colspan="4" align="center">开发票申请表</th>
       </tr>
@@ -57,14 +57,15 @@
       <tr>
         <td align="center">纳税人类别</td>
         <td align="center">
-          <el-radio-group v-model="manage_pay_taxes">
-            <el-radio :label="1">一般纳税</el-radio>
+          <el-radio-group v-model="ApplyForm.manage_pay_taxes">
+
+            <el-radio :label="1">一般纳税{{ApplyForm.manage_pay_taxes}}</el-radio>
             <el-radio :label="2">小规模纳税</el-radio></el-radio-group
           >
         </td>
         <td align="center">增值税类别</td>
         <td align="center">
-          <el-radio-group v-model="manage_vat_category">
+          <el-radio-group v-model="ApplyForm.manage_vat_category">
             <el-radio :label="1">增值税专票</el-radio>
             <el-radio :label="2">增值税普票</el-radio>
           </el-radio-group>
@@ -233,9 +234,8 @@ export default {
   name: "ApplicationForm",
   data() {
     return {
-      ApplyForm: {},
-      manage_pay_taxes: 1,
-      manage_vat_category: 1,
+      ApplyForm: {
+      },
       historyList: [],
       header: [
         ["序号"],
@@ -311,11 +311,12 @@ export default {
       this.isopenDep = true;
     },
     save() {
+      this.ApplyForm.userid = this.userid;
+      console.log(this.ApplyForm)
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
-          this.ApplyForm.manage_vat_category = this.manage_vat_category;
-          this.ApplyForm.userid = this.userid;
+          // this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
+          // this.ApplyForm.manage_vat_category = this.manage_vat_category;
           apistartReqfunds(this.ApplyForm).then(res => {
             console.log(res);
             this.$message.success(res.msg);
@@ -372,8 +373,11 @@ export default {
       });
     },
     getView() {
+      
       apigetreqfundsView({ manage_reqfunds_id: this.reqfundsId }).then(res => {
         this.ApplyForm = res.data[0];
+        this.ApplyForm.manage_pay_taxes=1,
+        this.ApplyForm.manage_vat_category=1,
         this.historyList = res.historyList
           ? res.historyList.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";

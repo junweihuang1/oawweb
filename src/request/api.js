@@ -377,6 +377,9 @@ export const apisettleConstructList = data => post("settleConstructList", data);
 //财务中心 --> 人员成本汇总-->查询付款单信息
 export const apisettlePayList = data => post("settlePayList", data);
 
+//财务中心 --> 人员成本汇总-->更新
+export const apiupdate_Wages = () => post("update_Wages");
+
 //财务中心 --> 支出合同管理-->查询出所有支出合同信息
 export const apicontractPayLists = data => get("contractPayLists", data);
 

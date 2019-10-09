@@ -431,7 +431,6 @@ export default {
       taskList: [],
       picitem: 2, //可以打开图片的节点
       returnName: "项目助理", //驳回节点名字
-      maxid: 0,
       f_entryList: this.entryList //从父组件传过来的材料列表不能删除，只能赋值后再删除
     };
   },
@@ -456,24 +455,46 @@ export default {
     this.getprossList();
   },
   watch: {
-    f_entryList(val) {
-      if (val != "") {
-        this.maxid = val[0].construct_purchase_entryId;
-        val.forEach(item => {
-          if (item.construct_purchase_entryId > this.maxid) {
-            this.maxid = item.construct_purchase_entryId;
-          }
-        });
-        this.maxid++;
-      }
-    },
+    // f_entryList(val) {
+    //   if (val != "") {
+    //     this.maxid = val[0].construct_purchase_entryId;
+    //     val.forEach(item => {
+    //       if (item.construct_purchase_entryId > this.maxid) {
+    //         this.maxid = item.construct_purchase_entryId;
+    //       }
+    //     });
+    //     this.maxid++;
+    //   }
+    // },
     entryList(val) {
       this.f_entryList = val;
     }
   },
+  computed: {
+    maxid() {
+      let id = this.f_entryList
+        ? this.f_entryList[0].construct_purchase_entryId
+        : 0;
+      this.f_entryList.forEach(item => {
+        if (item.construct_purchase_entryId > id) {
+          id = item.construct_purchase_entryId;
+        }
+      });
+      return id++;
+    }
+  },
   methods: {
     deleteitem(row) {
-      this.f_entryList = this.f_entryList.filter(item => item.id !== row.id);
+      console.log(this.f_entryList);
+      this.f_entryList = this.f_entryList.filter(item => {
+        if (item.id) {
+          return item.id !== row.id;
+        } else {
+          return (
+            item.construct_purchase_entryId !== row.construct_purchase_entryId
+          );
+        }
+      });
     },
     //导出表格
     print() {
@@ -542,7 +563,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid == "" && type) {
+      if (this.userid ===  "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }
@@ -685,7 +706,7 @@ export default {
       this.currentSelect.construct_purchase_model =
         row.construct_project_quantities_model;
       this.currentSelect.construct_purchase_unit =
-        row.construct_project_quantities_unit;
+        row.construct_material_model_unit;
       this.currentSelect.construct_purchase_quantities =
         row.construct_project_quantities_num;
       this.currentSelect.construct_purchase_approvalNum = row.sum;
@@ -720,6 +741,7 @@ export default {
         return;
       }
       //construct_purchase_entryId
+      this.maxid++;
       this.f_entryList.push({
         id: this.maxid,
         construct_purchase_entryId: 0,
@@ -736,7 +758,7 @@ export default {
         construct_purchase_brand: "", //(必填)品牌
         construct_purchase_quantitiesId: "" //(必填)合同工程量id
       });
-      this.maxid++;
+      console.log(this.f_entryList);
     },
     save() {
       if (this.activeForm.construct_purchase_planDate == "") {

@@ -30,6 +30,7 @@
               class="noneborder"
               style="width:100%;"
               format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               v-model="row[item[1]]"
               type="date"
               placeholder="选择日期"

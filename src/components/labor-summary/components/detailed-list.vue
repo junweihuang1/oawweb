@@ -102,7 +102,19 @@ export default {
       };
       apidetailedCard(data).then(res => {
         this.total = res.total;
-        this.teamList = res.data;
+        this.teamList = res.data.map(item => {
+          item.construct_project_workTeam_category =
+            item.construct_project_workTeam_category == 1
+              ? "预埋"
+              : item.construct_project_workTeam_category == 2
+              ? "消防水"
+              : item.construct_project_workTeam_category == 3
+              ? "消防电"
+              : item.construct_project_workTeam_category == 4
+              ? "防排烟"
+              : "消防水电";
+          return item;
+        });
       });
     }
   }
