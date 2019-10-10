@@ -6,7 +6,7 @@
       v-show="submitType !== 'new'"
       style="float:right;text-ailgn:center;"
     >
-      <div id="qrcode" style="margin:0 atuo;"></div>
+      <div id="qrcode"></div>
       <el-button slot="reference" type="success">二维码</el-button>
     </el-popover>
     <el-button
@@ -282,13 +282,13 @@ export default {
     submitType: String
   },
   mounted() {
-    console.log(this.userList);
+    console.log(this.recordList);
     let qrcode = new QRCode("qrcode", {
-      width: 100,
-      height: 100, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
+      width: 150,
+      height: 150, // 高度  [图片上传失败...(image-9ad77b-1525851843730)]
       text: `http://47.107.175.247:8080/qr?cid=${
         this.userList.userid
-      }&&department=` // 二维码内容
+      }&&department=${this.userList.department}` // 二维码内容
       //render: '11231' // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
       // background: '#f0f'
       // foreground: '#ff0'
@@ -368,7 +368,7 @@ export default {
     //提交
     submitForm() {
       let data = this.form[0];
-      console.log(this.recordList);
+      data.row1 = this.JobChanges;
       if (this.submitType == "new") {
         data.userid = 0;
         data.user_num = 0;

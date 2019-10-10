@@ -18,7 +18,6 @@
       <el-form-item
         ><el-button type="primary" @click="query">查询</el-button>
         <el-button type="primary" @click="openwin">历史</el-button>
-        <el-button type="primary" @click="openprint">打印</el-button>
         <el-button type="primary" @click="updata">更新</el-button>
       </el-form-item>
     </el-form>
@@ -33,9 +32,14 @@
       @checkleave="file"
     ></Ca-rule-table> -->
     <print-table
-      :headle="headle"
+      v-if="isreload"
+      :setdata="setdata"
       field="userWagesLists"
+      :Judge_field="Judge_field"
       :header="header2"
+      pageName="page"
+      limitName="limit"
+      totalName="count"
       @cellCilck="cellCilck"
       @checkleave="file"
     ></print-table>
@@ -58,18 +62,6 @@
         @close="close"
       ></edit-wages>
     </el-dialog>
-
-    <!-- <el-dialog :visible.sync="isprint" :show-close="true" :fullscreen="true">
-    </el-dialog> -->
-
-    <!-- <div v-if="isprint" class="printTable">
-      <print-table
-        @close="close"
-        :CostsList="CostsList"
-        v-if="isprint"
-        :print_header="print_header"
-      ></print-table>
-    </div> -->
   </div>
 </template>
 
@@ -88,6 +80,8 @@ export default {
   name: "LaborCosts",
   data() {
     return {
+      setdata: {},
+      isreload: true,
       currentpage: 1,
       currentlimit: 15,
       total: 0,
@@ -106,12 +100,24 @@ export default {
           {
             field: "center_name",
             title: "中心名",
-            width: 110,
+            width: 100,
             sort: true
           },
-          { field: "username", title: "用户名", width: 90 },
+          {
+            field: "username",
+            title: "用户名",
+            width: 100,
+            sort: true
+          },
           { field: "finance_wages_attCount", title: "出勤天数", width: 90 },
-          { field: "finance_wages_vacaCount", title: "休假天数", width: 90 },
+          {
+            field: "finance_wages_vacaCount",
+            title: "休假天数",
+            width: 90,
+            templet: d => {
+              return 31 - d.finance_wages_attCount - d.finance_wages_leaveCount;
+            }
+          },
           { field: "finance_wages_leaveCount", title: "请假天数", width: 90 },
           { field: "usernuc_wage_actualDayame", title: "实际出勤", width: 90 },
           {
@@ -123,19 +129,79 @@ export default {
           { field: "uc_wage_post", title: "岗位工资", width: 90 },
           { field: "uc_wage_achieve", title: "绩效工资", width: 90 },
           { field: "uc_wage_subsidy", title: "津贴补助", width: 90 },
-          { field: "uc_wages_dedu", title: "考勤扣除", width: 90 },
-          { field: "uc_wages_baseTotal", title: "应发小计", width: 90 },
+          {
+            field: "uc_wages_dedu",
+            title: "考勤扣除",
+            width: 90,
+            templet: d => {
+              d.uc_wages_dedu = (
+                ((d.uc_wage_base + d.uc_wage_post) / 31) *
+                (31 - d.finance_wages_attCount - d.finance_wages_leaveCount)
+              ).toFixed(2);
+              return d.uc_wages_dedu;
+            }
+          },
+          {
+            field: "uc_wages_baseTotal",
+            title: "应发小计",
+            width: 90,
+            templet: d => {
+              d.uc_wages_dedu = (
+                ((d.uc_wage_base + d.uc_wage_post) / 31) *
+                (31 - d.finance_wages_attCount - d.finance_wages_leaveCount)
+              ).toFixed(2);
+              d.uc_wages_baseTotal = (
+                d.uc_wage_post +
+                d.uc_wage_base +
+                d.uc_wage_subsidy -
+                d.uc_wages_dedu
+              ).toFixed(2);
+              return d.uc_wages_baseTotal;
+            }
+          },
           { field: "uc_wage_socSec", title: "代扣社保", width: 90 },
           { field: "uc_wage_accFund", title: "公积金", width: 90 },
           { field: "", title: "扣除小计", width: 90 },
           { field: "uc_wage_tax", title: "代扣个税", width: 90 },
-          { field: "uc_wage_realhair", title: "实发工资", width: 90 },
+          {
+            field: "uc_wage_realhair",
+            title: "实发工资",
+            width: 90,
+            templet: d => {
+              d.uc_wages_dedu = d.uc_wages_dedu ? d.uc_wages_dedu : 0;
+              d.uc_wages_baseTotal = (
+                d.uc_wage_post +
+                d.uc_wage_base +
+                d.uc_wage_subsidy -
+                d.uc_wages_dedu
+              ).toFixed(2);
+              d.uc_wage_realhair =
+                d.uc_wages_baseTotal - d.uc_wage_tax - d.uc_wage_socSec;
+              return d.uc_wage_realhair;
+            }
+          },
           {
             fixed: "right",
             title: "操作",
-            toolbar: "#toolbarDemo",
             width: 150,
-            align: "center"
+            align: "center",
+            templet: d => {
+              if (d.uc_wage_status === 1) {
+                return `<button
+          class="layui-btn layui-btn-sm layui-btn-disabled"
+          lay-event="add">
+          存档
+        </button>`;
+              } else {
+                return `<button
+          class="layui-btn layui-btn-sm"
+          lay-event="add"
+          @click="file"
+        >
+          存档
+        </button>`;
+              }
+            }
           }
         ]
       ],
@@ -158,30 +224,9 @@ export default {
         ["代扣个税", "uc_wage_tax", 100],
         ["实发工资", "uc_wage_realhair", 100]
       ],
-      print_header: [
-        ["中心名", "center_name", 2],
-        ["用户名", "username", 3],
-        ["出勤天数", "finance_wages_attCount", 2],
-        ["休假天数", "finance_wages_vacaCount", 2],
-        ["请假天数", "finance_wages_leaveCount", 2],
-        ["实际出勤", "uc_wage_actualDay", 2],
-        ["基本工资", "uc_wage_base", 4],
-        ["岗位工资", "uc_wage_post", 2],
-        ["绩效工资", "uc_wage_achieve", 2],
-        ["津贴补助", "uc_wage_subsidy", 2],
-        ["考勤扣除", "uc_wages_dedu", 2],
-        ["应发小计", "uc_wages_baseTotal", 2],
-        ["代扣社保", "uc_wage_socSec", 2],
-        ["公积金", "uc_wage_accFund", 2],
-        ["扣除小计", "", 2],
-        ["代扣个税", "uc_wage_tax", 2],
-        ["实发工资", "uc_wage_realhair", 2]
-      ],
       CostsList: [],
-      headle: ["存档"],
       wagesForm: {},
       isopenEdit: false,
-      isprint: false,
       Judge_field: "uc_wage_status" //判断是否禁用的字段
     };
   },
@@ -197,16 +242,14 @@ export default {
   methods: {
     updata() {
       apiupdate_Wages().then(() => {
-        console.log("OK");
         this.getCostsList();
+        this.isreload = false;
+        this.$nextTick(() => {
+          this.isreload = true;
+        });
       });
     },
-    openprint() {
-      this.isprint = true;
-    },
     close() {
-      this.isprint = false;
-      console.info("isprint", this.isprint);
       this.isopenEdit = false;
       this.getCostsList();
     },
@@ -258,15 +301,26 @@ export default {
         .then(() => {
           apisave_userWages(row).then(res => {
             console.log(res);
-            this.getCostsList();
+            this.isreload = false;
+            this.$nextTick(() => {
+              this.isreload = true;
+            });
           });
         })
         .catch(() => {});
     },
     query() {
-      this.currentlimit = 15;
-      this.currentpage = 1;
-      this.getCostsList();
+      this.setdata = {
+        username: this.userName,
+        company_id: this.company_id
+      };
+      this.isreload = false;
+      this.$nextTick(() => {
+        this.isreload = true;
+      });
+      // this.currentlimit = 15;
+      // this.currentpage = 1;
+      // this.getCostsList();
     },
     getCostsList() {
       let data = {

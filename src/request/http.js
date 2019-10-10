@@ -40,7 +40,7 @@ axios.interceptors.response.use(
   error => {
     if (error.response.data.errorCode === "10002") {
       setTimeout(() => {
-        Message.warning("登录失效，请重新登录");
+        Message.warning(error.response.data.msg);
       }, 1000);
       sessionStorage.removeItem("token");
       location.reload();

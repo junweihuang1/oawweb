@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="myopen"
       top="8vh"
       width="85%"
@@ -102,20 +102,29 @@ export default {
     },
     //打卡详情回调
     opendetaillist(row) {
-      this.$store.state.dialog_openTabs = [true, true, true];
+      this.$store.state.dialog_openTabs = [true, true, false];
+      this.$nextTick(() => {
+        this.$store.state.dialog_openTabs = [true, true, true];
+      });
       this.workTeamId = row.construct_project_workTeam_id.toString();
       this.userId = row.userid.toString();
       this.currentActive = "4";
     },
     //打卡列表回调的子组件方法
     opecardlist(row) {
-      this.$store.state.dialog_openTabs = [true, true, false];
+      this.$store.state.dialog_openTabs = [true, false, false];
+      this.$nextTick(() => {
+        this.$store.state.dialog_openTabs = [true, true, false];
+      });
       this.teamId = row.hr_attend_workTeamId.toString();
       this.currentActive = "3";
     },
     //班组列表回调的子组件方法
     openTeamList(row) {
-      this.$store.state.dialog_openTabs = [true, false, false];
+      this.$store.state.dialog_openTabs = [false, false, false];
+      this.$nextTick(() => {
+        this.$store.state.dialog_openTabs = [true, false, false];
+      });
       this.projectId = row.construct_project_id.toString();
       this.currentActive = "2";
     }

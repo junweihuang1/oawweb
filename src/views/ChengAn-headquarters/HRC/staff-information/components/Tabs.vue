@@ -1,12 +1,13 @@
 <template>
   <div style="margin-top:20px;border:1px solid #d5d5d5;">
-    <el-tabs v-model="activeName2" type="border-card" @tab-click="handleClick">
+    <!-- 变动记录 -->
+    <el-tabs v-model="activeName2" type="border-card">
       <el-tab-pane label="公司职位变动记录" name="first">
         <el-button-group>
           <el-button type="success" size="mini" @click="addline"
             >添加</el-button
           >
-          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="danger" size="mini" @click="delline">删除</el-button>
           <el-button type="warning" size="mini">修改</el-button>
         </el-button-group>
         <el-table
@@ -23,6 +24,7 @@
             :prop="item[1]"
             v-for="(item, index) in headerList"
             :key="index"
+            align="center"
           >
             <template slot-scope="{ row }">
               <input
@@ -36,15 +38,40 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
+      <!-- 转正 -->
       <el-tab-pane label="转正记录" name="second">
-        <el-table :data="bottomList.rows2.rows">
-          <el-table-column label="转正编号" prop="bc_id"></el-table-column>
-          <el-table-column label="用户编号" prop="user_id"></el-table-column>
-          <el-table-column label="转正人姓名" prop="username"></el-table-column>
-          <el-table-column label="职位" prop="role_name"></el-table-column>
-          <el-table-column label="试用期待遇" prop="on_trial"></el-table-column>
-          <el-table-column label="状态" prop="bc_status"></el-table-column>
-          <el-table-column label="操作">
+        <el-table :data="bottomList.rows2.rows" border>
+          <el-table-column
+            label="转正编号"
+            prop="bc_id"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="用户编号"
+            prop="user_id"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="转正人姓名"
+            prop="username"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="职位"
+            prop="role_name"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="试用期待遇"
+            prop="on_trial"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="状态"
+            prop="bc_status"
+            align="center"
+          ></el-table-column>
+          <el-table-column label="操作" align="center">
             <el-button type="text">查看</el-button>
           </el-table-column>
         </el-table>
@@ -131,11 +158,13 @@ export default {
       this.bottomList = val;
     }
   },
+  mounted() {
+    this.bottomList = this.DataList;
+  },
   methods: {
     inputVal() {
       this.$emit("setJobChanges", this.JobChanges);
     },
-    handleClick(e) {},
     addline() {
       let isadd = true;
       this.JobChanges.forEach(item => {
@@ -155,6 +184,9 @@ export default {
       } else {
         this.$message.warning("时间不能为空");
       }
+    },
+    delline() {
+      this.JobChanges.pop();
     }
   }
 };

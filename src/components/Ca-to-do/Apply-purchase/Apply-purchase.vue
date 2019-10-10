@@ -422,6 +422,7 @@ export default {
       userTaskName: "",
       currentTaskName: "",
       userid: 0,
+      maxid: 0,
       userList: [],
       current: 1,
       buttonList: [],
@@ -471,17 +472,19 @@ export default {
     }
   },
   computed: {
-    maxid() {
-      let id = this.f_entryList
-        ? this.f_entryList[0].construct_purchase_entryId
-        : 0;
-      this.f_entryList.forEach(item => {
-        if (item.construct_purchase_entryId > id) {
-          id = item.construct_purchase_entryId;
-        }
-      });
-      return id++;
-    }
+    // maxid() {
+    //   let id =
+    //     this.f_entryList && this.f_entryList != ""
+    //       ? this.f_entryList[0].construct_purchase_entryId
+    //       : 0;
+    //   this.f_entryList.forEach(item => {
+    //     if (item.construct_purchase_entryId > id) {
+    //       id = item.construct_purchase_entryId;
+    //     }
+    //   });
+    //   console.log(id);
+    //   return id++;
+    // }
   },
   methods: {
     deleteitem(row) {
@@ -563,7 +566,7 @@ export default {
         this.$message.error("请填写审核意见");
         return;
       }
-      if (this.userid ===  "" && type) {
+      if (this.userid === "" && type) {
         this.$message.error("审核人为空不能提交！");
         return;
       }

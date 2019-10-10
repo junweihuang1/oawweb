@@ -58,8 +58,9 @@
         <td align="center">纳税人类别</td>
         <td align="center">
           <el-radio-group v-model="ApplyForm.manage_pay_taxes">
-
-            <el-radio :label="1">一般纳税{{ApplyForm.manage_pay_taxes}}</el-radio>
+            <el-radio :label="1"
+              >一般纳税{{ ApplyForm.manage_pay_taxes }}</el-radio
+            >
             <el-radio :label="2">小规模纳税</el-radio></el-radio-group
           >
         </td>
@@ -215,7 +216,10 @@
       top="10vh"
       width="30%"
     >
-      <select-department @setSelectName="getSelectName" v-if="isopenDep"></select-department>
+      <select-department
+        @setSelectName="getSelectName"
+        v-if="isopenDep"
+      ></select-department>
     </el-dialog>
   </div>
 </template>
@@ -234,8 +238,7 @@ export default {
   name: "ApplicationForm",
   data() {
     return {
-      ApplyForm: {
-      },
+      ApplyForm: {},
       historyList: [],
       header: [
         ["序号"],
@@ -312,7 +315,7 @@ export default {
     },
     save() {
       this.ApplyForm.userid = this.userid;
-      console.log(this.ApplyForm)
+      console.log(this.ApplyForm);
       this.$confirm(`确定提交吗？`)
         .then(() => {
           // this.ApplyForm.manage_pay_taxes = this.manage_pay_taxes;
@@ -373,11 +376,8 @@ export default {
       });
     },
     getView() {
-      
       apigetreqfundsView({ manage_reqfunds_id: this.reqfundsId }).then(res => {
         this.ApplyForm = res.data[0];
-        this.ApplyForm.manage_pay_taxes=1,
-        this.ApplyForm.manage_vat_category=1,
         this.historyList = res.historyList
           ? res.historyList.map(item => {
               item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
