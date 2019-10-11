@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view v-if="isRouterAlive" />
+    <router-view v-if="isRouterAlive" :key="key" />
   </div>
 </template>
 
@@ -17,6 +17,13 @@ export default {
       winHeight: "100%",
       isRouterAlive: true
     };
+  },
+  computed: {
+    key() {
+      if (this.$store.state.openTabs != "") {
+        return this.$store.state.openTabs[0].id;
+      }
+    }
   },
   mounted() {
     console.log(navigator.userAgent);
