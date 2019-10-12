@@ -115,7 +115,7 @@ export default {
       this.isopenSelect = true;
     },
     getCompanyName(val) {
-      this.dialogForm.uc_framework_company = val;
+      this.dialogForm.uc_framework_company = val.company_id;
     },
     submit() {
       console.log(this.dialogForm);

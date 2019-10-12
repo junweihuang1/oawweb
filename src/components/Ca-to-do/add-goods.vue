@@ -411,8 +411,8 @@ export default {
       this.isselect = true;
     },
     //选择公司
-    getCompanyName(id) {
-      this.ownHead.own_purchase_companyId = id;
+    getCompanyName(e) {
+      this.ownHead.own_purchase_companyId = e.company_id;
     }
   }
 };

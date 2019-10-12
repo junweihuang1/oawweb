@@ -24,7 +24,13 @@ export default {
     setdata: Object,
     pageName: String,
     limitName: String,
-    totalName: String
+    totalName: String,
+    title: {
+      type: String,
+      default: () => {
+        return "";
+      }
+    }
   },
   beforeMount() {},
   mounted() {
@@ -40,6 +46,7 @@ export default {
         table.render({
           elem: "#demo",
           toolbar: "#demo",
+          title: that.title,
           height: document.documentElement.scrollHeight * that.setheight,
           page: true,
           totalRow: true,

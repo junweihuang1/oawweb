@@ -38,8 +38,10 @@
           name="3"
         >
           <worker-list
+          :print_title="print_title"
             style="padding:10px;"
             :teamId="teamId"
+            :table_id="table_id"
             @opendetaillist="opendetaillist"
           ></worker-list>
         </el-tab-pane>
@@ -73,7 +75,9 @@ export default {
       teamId: "",
       userId: "",
       workTeamId: "",
-      myopen: this.isopen
+      myopen: this.isopen,
+      print_title:"",
+      table_id:""
     };
   },
   components: {
@@ -89,6 +93,14 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  mounted() {
+    const now=new Date()
+    const month=now.getMonth()+1
+    //根据公司ID判断抬头
+    this.print_title=this.companyId==1?`建设公司劳动力分供方承包费用汇总表-${month}月份`:this.companyId==2?`科技公司劳动力分供方承包费用汇总表-${month}月份`:''
+    //根据公司ID分配layui的表格ID，防止无法加载
+    this.table_id= this.companyId==1?`build_table`:this.companyId==2?`science`:'demo'
   },
   watch: {
     isopen(val) {

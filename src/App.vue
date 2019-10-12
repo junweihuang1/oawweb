@@ -20,8 +20,12 @@ export default {
   },
   computed: {
     key() {
-      if (this.$store.state.openTabs != "") {
-        return this.$store.state.openTabs[0].id;
+      let Tabs = this.$store.state.openTabs;
+      if (Tabs != "") {
+        console.log(Tabs[Tabs.length - 1].id);
+        return Tabs[0].id;
+      } else {
+        return "";
       }
     }
   },

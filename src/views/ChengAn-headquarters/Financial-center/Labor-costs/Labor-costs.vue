@@ -2,15 +2,7 @@
   <div>
     <el-form size="mini" inline>
       <el-form-item>
-        <el-select v-model="company_id" placeholder="请选择公司">
-          <el-option
-            v-for="item in companyList"
-            :key="item.company_id"
-            :label="item.company_name"
-            :value="item.company_id"
-          >
-          </el-option
-        ></el-select>
+        <select-company @setCompanyName="getCompanyName"></select-company>
       </el-form-item>
       <el-form-item
         ><el-input v-model="userName" placeholder="用户名" clearable></el-input
@@ -37,6 +29,7 @@
       field="userWagesLists"
       :Judge_field="Judge_field"
       :header="header2"
+      :title="print_title"
       pageName="page"
       limitName="limit"
       totalName="count"
@@ -68,8 +61,9 @@
 <script>
 // import printTable from "./components/print-table";
 import editWages from "./components/edit-wages";
-import paging from "@/components/paging/paging";
-import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
+// import paging from "@/components/paging/paging";
+// import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
+import selectCompany from "@/components/Ca-select/select-company.vue";
 import printTable from "@/components/Ca-table/print-table.vue";
 import {
   apiuserWagesLists,
@@ -80,19 +74,14 @@ export default {
   name: "LaborCosts",
   data() {
     return {
+      // month: new Date().getMonth() + 1,
+      print_title: `员工工资表（${new Date().getMonth() + 1}月份）`,
       setdata: {},
       isreload: true,
       currentpage: 1,
       currentlimit: 15,
       total: 0,
       userName: "",
-      companyList: [
-        { company_id: 12, company_name: "诚安时代" },
-        { company_id: 13, company_name: "传诚管理" },
-        { company_id: 14, company_name: "诚安科技" },
-        { company_id: 15, company_name: "传诚教育" },
-        { company_id: 16, company_name: "诚安建设" }
-      ],
       company_id: "",
       header2: [
         [
@@ -231,12 +220,14 @@ export default {
     };
   },
   components: {
-    CaRuleTable,
-    paging,
+    // CaRuleTable,
+    // paging,
     editWages,
-    printTable
+    printTable,
+    selectCompany
   },
   mounted() {
+    
     this.getCostsList();
   },
   methods: {
@@ -308,6 +299,11 @@ export default {
           });
         })
         .catch(() => {});
+    },
+    //选择公司
+    getCompanyName(e) {
+      this.company_id = e.company_id;
+      this.print_title=`${e.company_name}员工工资表（${new Date().getMonth() + 1}月份）`
     },
     query() {
       this.setdata = {

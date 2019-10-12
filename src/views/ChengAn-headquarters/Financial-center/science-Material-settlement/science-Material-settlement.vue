@@ -39,6 +39,7 @@
         :DataList="detailList"
         :header="detailHeader"
         :headle="detailHeadle"
+        v-if="isreload"
         @checkleave="getList"
       ></Ca-rule-table>
       <paging
@@ -61,7 +62,7 @@ import {
   apisettlePayList
 } from "@/request/api.js";
 export default {
-  name: "scienceSettlement",
+  name: "buildSettlement",
   data() {
     return {
       currentlimit: 15,
@@ -96,7 +97,8 @@ export default {
       ],
       detailHeadle: ["付款列表"],
       projectName: "",
-      id: ""
+      id: "",
+      isreload: true
     };
   },
   components: {
@@ -105,6 +107,11 @@ export default {
   },
   mounted() {
     this.getsettlements();
+  },
+  watch: {
+    $route: function() {
+      this.getsettlements();
+    }
   },
   methods: {
     getList(row) {
@@ -119,6 +126,8 @@ export default {
       });
     },
     querygys() {
+      this.currentlimit = 15;
+      this.currentpage = 1;
       this.getsettlements();
     },
     queryproject() {
@@ -142,7 +151,7 @@ export default {
         page: this.currentpage,
         gysName: this.gysName
       }).then(res => {
-        console.log(res);
+        this.total = res.count;
         this.settlementList = res.data;
       });
     },
@@ -158,10 +167,10 @@ export default {
         construct_supplier_id: this.id,
         projectName: this.projectName
       }).then(res => {
+        this.total2 = res.total;
         if (res.rows[0]) {
           this.detailList = res.rows;
         }
-        console.log(this.detailList);
       });
     }
   }

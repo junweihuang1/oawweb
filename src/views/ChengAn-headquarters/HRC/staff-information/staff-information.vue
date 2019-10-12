@@ -269,6 +269,14 @@ export default {
           });
         }
         this.recordList = res.data;
+        if (this.recordList.rows2.rows != "") {
+          this.recordList.rows2.rows[0].bc_status =
+            this.recordList.rows2.rows[0].bc_status == 0
+              ? "驳回"
+              : this.recordList.rows2.rows[0].bc_status == 2
+              ? "审批中"
+              : "已结束";
+        }
       });
     },
     getlimit(e) {

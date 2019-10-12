@@ -271,7 +271,11 @@ export default {
     DataList: Array,
     form: {
       type: Object,
-      default: () => {}
+      default: () => {
+        return {
+          leave_category: 1
+        };
+      }
     },
     openType: String,
     active: Object

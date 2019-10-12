@@ -560,6 +560,9 @@ export const apigetTeamByProject = data => get("getTeamByProject", data);
 //运营类-->项目运营-->保存项目和班组
 export const apisaveProjectTeam = data => post("saveProjectTeam", data);
 
+//运营类-->项目运营-->修改项目和班组
+export const apimodProjectTeam = data => post("modProjectTeam", data);
+
 //运营类-->项目运营-->获取合同项目
 export const apigetContractItem = data => get("getContractItem", data);
 

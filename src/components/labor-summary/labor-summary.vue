@@ -215,7 +215,6 @@ export default {
         limit: this.currentpage
       };
       apifirmLaborCost(data).then(res => {
-        console.log(res);
         this.total = res.total;
         this.SummaryList = res.data;
       });

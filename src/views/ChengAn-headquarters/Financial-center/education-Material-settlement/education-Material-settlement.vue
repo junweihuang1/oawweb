@@ -61,7 +61,7 @@ import {
   apisettlePayList
 } from "@/request/api.js";
 export default {
-  name: "educationSettlement",
+  name: "buildSettlement",
   data() {
     return {
       currentlimit: 15,
@@ -142,7 +142,7 @@ export default {
         page: this.currentpage,
         gysName: this.gysName
       }).then(res => {
-        console.log(res);
+        this.total = res.count;
         this.settlementList = res.data;
       });
     },
@@ -158,10 +158,10 @@ export default {
         construct_supplier_id: this.id,
         projectName: this.projectName
       }).then(res => {
+        this.total2 = res.total
         if (res.rows[0]) {
           this.detailList = res.rows;
         }
-        console.log(this.detailList);
       });
     }
   }

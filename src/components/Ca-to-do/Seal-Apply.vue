@@ -408,7 +408,7 @@ export default {
       );
     },
     getCompanyName(val) {
-      this.form.own_seal_company = val;
+      this.form.own_seal_company = val.company_id;
     },
     handleChange(file, fileList) {
       this.fileList = fileList.map(item => {

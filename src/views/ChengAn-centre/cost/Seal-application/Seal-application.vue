@@ -145,7 +145,7 @@ export default {
   },
   methods: {
     getCompanyName(val) {
-      this.companyName = val;
+      this.companyName = val.company_id;
     },
     query() {
       this.currentlimit = 15;

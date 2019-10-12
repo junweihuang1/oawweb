@@ -118,7 +118,7 @@ export default {
       });
     },
     getCompanyName(val) {
-      this.form.manage_contract_payCompany = val;
+      this.form.manage_contract_payCompany = val.company_id;
     },
     //从子组件获取表格的数据
     getTableList(arr) {

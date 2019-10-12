@@ -137,8 +137,7 @@ export default {
       return jsonData.map(v => filterVal.map(j => v[j]));
     },
     getCompanyName(val) {
-      console.log(val);
-      this.companyId = val;
+      this.companyId = val.company_id;
     },
     getlimit(val) {
       this.currentlimit = val;

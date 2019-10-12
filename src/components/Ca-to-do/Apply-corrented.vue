@@ -118,14 +118,16 @@
         </template>
       </el-row>
     </el-form>
-    <el-divider content-position="left">流程线</el-divider>
-    <el-steps :active="current" align-center finish-status="success">
-      <el-step
-        v-for="(item, index) in processLine"
-        :title="item.name"
-        :key="index"
-      ></el-step>
-    </el-steps>
+    <div v-if="active.status !== '已结束'">
+      <el-divider content-position="left">流程线</el-divider>
+      <el-steps :active="current" align-center finish-status="success">
+        <el-step
+          v-for="(item, index) in processLine"
+          :title="item.name"
+          :key="index"
+        ></el-step>
+      </el-steps>
+    </div>
     <el-divider content-position="left">审核记录</el-divider>
     <el-table :data="Approvaltable" border>
       <el-table-column
@@ -176,7 +178,6 @@ export default {
     active: Object
   },
   mounted() {
-    this.getprossList();
     this.getCorrentDetail();
   },
   methods: {
@@ -192,23 +193,33 @@ export default {
         taskid: this.active.ID_, //(必填)：任务id;
         bcId: id //(必填)：转正申请id;
       };
-      console.log(data);
       apiBecome_for(data).then(res => {
-        console.log(res);
+        this.Approvaltable = res.history
+          ? res.history.map(item => {
+              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
+              return item;
+            })
+          : [];
         this.headform = res.mpaList;
+        if (this.active.status !== "已结束") {
+          this.getprossList();
+        }
       });
     },
     //获取审核流程信息
     getprossList() {
       let data = {};
+
       if (this.active) {
         data = {
-          taskid: this.active.ID_, //(必填)流程任务id
+          taskid: this.active.status == "已结束" ? "" : this.active.ID_, //(必填)流程任务id
           processInstanceId: this.active.PROC_INST_ID_
             ? this.active.PROC_INST_ID_
             : this.active.taskid, //(必填)流程实例id
           key: "Become_for", //(必填)流程定义key
-          position: this.active.role_name, //(必填)申请人角色
+          position: this.active.role_name
+            ? this.active.role_name
+            : this.active.roleName, //(必填)申请人角色
           type: "" //(必填)新增new/运行中
         };
       } else {
@@ -222,13 +233,6 @@ export default {
       }
       console.log(data);
       apigetProcessList(data).then(res => {
-        console.log(res);
-        this.Approvaltable = res.historyList
-          ? res.historyList.map(item => {
-              item.END_TIME_ = item.END_TIME_ ? changetime(item.END_TIME_) : "";
-              return item;
-            })
-          : [];
         if (this.Approvaltable != "") {
           let currentTask = this.Approvaltable[this.Approvaltable.length - 1];
           this.processLine = res.activityList.map((item, index) => {
@@ -240,8 +244,9 @@ export default {
         } else {
           this.processLine = res.activityList;
         }
+        console.log(res);
         this.userTaskName = res.userlist.userTaskName;
-        this.buttonList = res.startForm.split(",");
+        this.buttonList = res.startForm ? res.startForm.split(",") : "";
         // this.userid = res.userlist.userList
         //   ? res.userlist.userList[0].userid
         //   : "";
@@ -278,13 +283,11 @@ export default {
         personal: this.headform.bc_personal,
         bc_id: this.headform.bc_id
       };
-      console.log(data);
       this.$confirm(
         `确定${type === true ? "办理" : type === false ? "驳回" : "不同意"}吗？`
       )
         .then(() => {
           apibecome_pass(data).then(res => {
-            console.log(res);
             this.$message.success(res.msg);
             this.$emit("close");
           });

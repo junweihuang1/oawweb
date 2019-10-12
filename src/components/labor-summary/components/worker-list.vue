@@ -31,7 +31,7 @@
       :header="header2"
       @checkleave="opendetaillist"
     ></print-table> -->
-    <table id="demo2" lay-filter="test"></table>
+    <table :id="table_id" lay-filter="test2"></table>
     <!-- <Ca-rule-table
       style="width:70%;"
       :setheight="0.6"
@@ -146,7 +146,9 @@ export default {
   },
 
   props: {
-    teamId: String
+    print_title: String,
+    teamId: String,
+    table_id: String
   },
   watch: {
     teamId() {
@@ -179,10 +181,11 @@ export default {
         var table = layui.table;
         //第一个实例
         table.render({
-          elem: "#demo2",
-          toolbar: "#demo2",
+          elem: `#${that.table_id}`,
+          toolbar: `#${that.table_id}`,
           height: document.documentElement.scrollHeight * that.setheight,
           page: true,
+          title:that.print_title,
           totalRow: true,
           limit: 15,
           request: {
@@ -206,7 +209,7 @@ export default {
           },
           cols: that.header2
         });
-        table.on("tool(test)", function(obj) {
+        table.on("tool(test2)", function(obj) {
           switch (obj.event) {
             case "add":
               if (obj.data.uc_wage_status !== 1) {

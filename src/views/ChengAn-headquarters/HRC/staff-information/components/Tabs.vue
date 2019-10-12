@@ -72,7 +72,11 @@
             align="center"
           ></el-table-column>
           <el-table-column label="操作" align="center">
-            <el-button type="text">查看</el-button>
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="check_corrented(row)"
+                >查看</el-button
+              >
+            </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -104,23 +108,52 @@
       </el-tab-pane>
 
       <el-tab-pane label="离职记录" name="five">
-        <el-table>
-          <el-table-column label="申请时间"></el-table-column>
-          <el-table-column label="离职类型"></el-table-column>
-          <el-table-column label="实际离职时间"></el-table-column>
-          <el-table-column label="离职原因"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+        <el-table :data="bottomList.resignRows.rows" border>
+          <el-table-column
+            label="申请时间"
+            prop="hr_resign_applyDate"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="离职类型"
+            align="center"
+            prop="hr_resign_category"
+          ></el-table-column>
+          <el-table-column
+            prop="hr_resign_realLeave"
+            label="实际离职时间"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="离职原因"
+            align="center"
+            prop="hr_resign_reason"
+          ></el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="check_quit(row)">查看</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
+    <el-dialog :visible.sync="isopenCorrented" :append-to-body="true">
+      <Apply-corrented
+        openType="check"
+        :active="active"
+        v-if="isopenCorrented"
+      ></Apply-corrented>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import ApplyCorrented from "@/components/Ca-to-do/Apply-corrented";
 export default {
   name: "Tabs",
   data() {
     return {
+      active: {},
       start_time: "",
       activeName2: "first",
       JobChanges: [],
@@ -147,8 +180,12 @@ export default {
         rows4: {
           rows: []
         }
-      }
+      },
+      isopenCorrented: false
     };
+  },
+  components: {
+    ApplyCorrented
   },
   props: {
     DataList: Object
@@ -162,6 +199,16 @@ export default {
     this.bottomList = this.DataList;
   },
   methods: {
+    check_corrented(row) {
+      this.isopenCorrented = true;
+      this.active = {
+        businessId: this.bottomList.rows2.rows[0].bc_id,
+        status: this.bottomList.rows2.rows[0].bc_status
+      };
+    },
+    check_quit(row) {
+      console.log(row);
+    },
     inputVal() {
       this.$emit("setJobChanges", this.JobChanges);
     },

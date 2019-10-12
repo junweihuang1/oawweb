@@ -12,7 +12,7 @@
         v-for="item in companyList"
         :key="item.company_id"
         :label="item.company_name"
-        :value="item.company_id"
+        :value="item"
       >
       </el-option>
     </el-select>
