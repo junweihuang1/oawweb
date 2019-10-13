@@ -309,26 +309,7 @@ export default {
             this.getopenList();
             this.openType = "modify";
             this.currentActive = "2";
-            this.entryList = res.entry.map(item => {
-              switch (item.construct_project_workTeam_category) {
-                case 1:
-                  item.construct_project_workTeam_category = "预埋";
-                  break;
-                case 2:
-                  item.construct_project_workTeam_category = "消防水";
-                  break;
-                case 3:
-                  item.construct_project_workTeam_category = "消防电";
-                  break;
-                case 4:
-                  item.construct_project_workTeam_category = "防排烟";
-                  break;
-                case 5:
-                  item.construct_project_workTeam_category = "消防水电";
-                  break;
-              }
-              return item;
-            });
+            this.entryList = res.entry
             this.isopen[0] = true;
             this.headform = res.head[0];
           });
@@ -343,26 +324,7 @@ export default {
             this.isopen[0] = true;
             this.openType = "check";
             this.currentActive = "2";
-            this.entryList = res.entry.map(item => {
-              switch (item.construct_project_workTeam_category) {
-                case 1:
-                  item.construct_project_workTeam_category = "预埋";
-                  break;
-                case 2:
-                  item.construct_project_workTeam_category = "消防水";
-                  break;
-                case 3:
-                  item.construct_project_workTeam_category = "消防电";
-                  break;
-                case 4:
-                  item.construct_project_workTeam_category = "防排烟";
-                  break;
-                case 5:
-                  item.construct_project_workTeam_category = "消防水电";
-                  break;
-              }
-              return item;
-            });
+            this.entryList = res.entry
             this.headform = res.head[0];
           });
 

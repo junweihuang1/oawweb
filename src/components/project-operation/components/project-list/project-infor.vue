@@ -98,13 +98,14 @@
         </el-table-column>
       </el-table>
       <el-button
-        v-if="openType !== 'check'"
+        v-if="openType == 'add'"
         type="primary"
         size="mini"
         style="float:right;margin:20px 100px 20px 0;"
         @click="save"
         >保存</el-button
       >
+      <el-button v-else-if="openType=='modify'" type="primary" size="mini" style="float:right;margin:20px 100px 20px 0;" @click="modify">修改</el-button>
     </div>
     <el-dialog :visible.sync="isselect" :append-to-body="true" v-dialogDrag>
       <select-teams
@@ -122,7 +123,7 @@
         v-if="isselectProjectManager"
       ></select-teams>
     </el-dialog>
-    <el-dialog :visible.sync="isselectdep" :append-to-body="true" v-dialogDrag>
+    <el-dialog :visible.sync="isselectdep" :append-to-body="true" v-dialogDrag title="选择项目部">
       <select-project-dep
         @setSelectName="getProjectDepName"
         v-if="isselectdep"
@@ -132,6 +133,7 @@
       v-dialogDrag
       :visible.sync="isselectContract"
       :append-to-body="true"
+      title="选择合同"
       top="8vh"
     >
       <contract-manage
@@ -147,7 +149,7 @@
 import ContractManage from "@/views/ChengAn-headquarters/Financial-center/contract-manage/contract-manage";
 import selectProjectDep from "@/components/Ca-select/select-project-dep";
 import selectTeams from "@/components/Ca-select/select-teams";
-import { apisaveProjectTeam } from "@/request/api.js";
+import { apisaveProjectTeam,apimodProjectTeam } from "@/request/api.js";
 export default {
   name: "projectInfor",
   data() {
@@ -215,8 +217,6 @@ export default {
     },
     //获取项目部
     getProjectDepName(row) {
-      console.log(row);
-      this.headform.construct_project_dep = row.construct_project_dep;
       this.headform.depName = row.constuct_project_dep_name;
       this.headform.construct_project_dep = row.constuct_project_dep_id;
       this.isselectdep = false;
@@ -227,7 +227,6 @@ export default {
       this.active.construct_project_workTeam_projectId = this.activeForm.constuct_project_dep_id;
       this.active.construct_project_workTeam_departmentId = row.department_id;
       this.active.construct_project_workTeam_userId = row.userid;
-      console.log(this.active);
       this.isselect = false;
     },
     selectTeams(row, val) {
@@ -261,8 +260,6 @@ export default {
         construct_project_dep: this.headform.construct_project_dep, //(必填)项目部id
         entry: JSON.stringify(this.entryList)
       };
-      console.log(data);
-      if (this.openType == "add") {
         this.$confirm(`确定保存吗？`)
           .then(() => {
             apisaveProjectTeam(data).then(res => {
@@ -271,11 +268,35 @@ export default {
             });
           })
           .catch(() => {});
-      }
+    },
+    modify(){
+      let data = {
+        construct_project_id:this.headform.construct_project_id,
+        construct_project_name: this.headform.construct_project_name, //(必填)项目名
+        construct_project_contractId: this.headform
+          .construct_project_contractId, //(必填)合同id
+        construct_project_addr: this.headform.manage_contract_address, //(必填)项目地址
+        manage_contract_firstParty: this.headform.manage_contract_firstParty, //(必填)甲方
+        total: this.headform.manage_contract_amount, //(必填)合同总价
+        construct_project_startDate: this.headform.manage_contract_startTime, //(必填)合同开始时间
+        construct_project_endDate: this.headform.manage_contract_endTime, //(必填)合同结束时间
+        construct_project_leader: this.headform.construct_project_leader, //(必填)项目经理
+        construct_project_leaderTel: this.headform.construct_project_leaderTel, //(必填)项目经理电话
+        depName: this.activeForm.constuct_project_dep_name, //(必填)项目名名称
+        construct_project_dep: this.activeForm.constuct_project_dep_id, //(必填)项目部id
+        entry: JSON.stringify(this.entryList)
+      };
+      this.$confirm(`确定修改吗？`).then(()=>{
+        apimodProjectTeam(data).then(res=>{
+          this.$message.success(res.msg);
+              this.$emit("close");
+        })
+      }).catch(()=>{})
     },
     //添加行
     additem() {
       this.entryList.push({
+        construct_project_workTeam_id:"",
         construct_project_workTeam_category: "",
         construct_project_workTeam_amount: "",
         construct_project_workTeam_price: "",
