@@ -22,7 +22,7 @@
         ><!--#409EFF-->
         <el-submenu index="1">
           <template slot="title">
-            <img src="../../../assets/logo2.png" class="headpic" />
+            <img src="../../../assets/logo.png" class="headpic" />
             <span style="margin-left:10px;"
               >{{ company_name }}{{ center_name }}{{ username }}</span
             >
@@ -123,7 +123,7 @@ export default {
   background: #fff;
 }
 .left:hover {
-  background: #f56c6c;
+  background: #ddd;
 }
 .main {
   display: flex;
@@ -150,6 +150,6 @@ export default {
 .elclick {
   font-size: 20px;
   font-weight: 700;
-  color: #e1a956;
+  color: #0190a0;
 }
 </style>

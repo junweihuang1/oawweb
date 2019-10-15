@@ -5,7 +5,6 @@
     <el-table
       :data="DataList"
       border
-      :id="key"
       highlight-current-row
       :height="maxHeight"
       :header-cell-style="getRowClass"
@@ -172,15 +171,6 @@ export default {
     Judge_field: String //判断是否禁用的字段
   },
   computed: {
-    key() {
-      let Tabs = this.$store.state.openTabs;
-      if (Tabs != "") {
-        console.log(Tabs[Tabs.length - 1].id);
-        return Tabs[0].id;
-      } else {
-        return "";
-      }
-    },
     getwidth() {
       let width = this.headle.filter(item => item != "");
       return width.length == 3

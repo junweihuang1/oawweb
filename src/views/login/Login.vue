@@ -228,7 +228,7 @@ export default {
 
 <style lang="scss">
 .login {
-  background: url(../../assets/GQ.jpg);
+  background: url(../../assets/bg.jpg);
   background-size: 100% 100%;
   width: 100%;
   height: 100vh;
@@ -239,7 +239,7 @@ export default {
 }
 .el-form-login {
   // min-width: 350px;
-  background: rgba($color: #fff, $alpha: 0.7);
+  background: rgba($color: #fff, $alpha: 0.2);
   border-radius: 3px;
   text-align: center;
   padding: 50px 100px;

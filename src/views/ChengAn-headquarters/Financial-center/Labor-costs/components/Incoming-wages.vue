@@ -31,7 +31,7 @@
       </el-form-item>
     </el-form>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopenSelect"
       title="选择用户"
       :append-to-body="true"
@@ -106,6 +106,7 @@ export default {
       this.form.uc_wage_userid = row.userid;
       this.form.uc_wage_company_name = row.company_name;
       this.form.uc_wage_center_name = row.center_name;
+      this.form.uc_wage_company_id = row.company_id;
     },
     closewin() {
       this.isopenSelect = false;

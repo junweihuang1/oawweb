@@ -1,6 +1,17 @@
 import html2Canvas from "html2canvas";
 import JsPDF from "jspdf";
 
+//获取上个月的总天数
+export function lastmonth_num() {
+  //当前时间
+  var myDate = new Date();
+  var totalDay = new Date(
+    myDate.getFullYear(),
+    parseInt(myDate.getMonth()),
+    0
+  ).getDate();
+  return totalDay;
+}
 // 全局方法
 export function changetime(time) {
   let date = new Date(time);

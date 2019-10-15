@@ -11,6 +11,7 @@
         ><el-button type="primary" @click="query">查询</el-button>
         <el-button type="primary" @click="openwin">历史</el-button>
         <el-button type="primary" @click="updata">更新</el-button>
+        <el-button type="primary" @click="file">存档</el-button>
       </el-form-item>
     </el-form>
     <!-- <Ca-rule-table
@@ -26,13 +27,14 @@
     <print-table
       v-if="isreload"
       :setdata="setdata"
-      field="userWagesLists"
+      :url="url"
       :Judge_field="Judge_field"
       :header="header2"
       :title="print_title"
       pageName="page"
       limitName="limit"
       totalName="count"
+      @checkbox="checkbox"
       @cellCilck="cellCilck"
       @checkleave="file"
     ></print-table>
@@ -65,6 +67,7 @@ import editWages from "./components/edit-wages";
 // import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
 import selectCompany from "@/components/Ca-select/select-company.vue";
 import printTable from "@/components/Ca-table/print-table.vue";
+import { lastmonth_num } from "@/components/global-fn/global-fn";
 import {
   apiuserWagesLists,
   apisave_userWages,
@@ -74,7 +77,7 @@ export default {
   name: "LaborCosts",
   data() {
     return {
-      // month: new Date().getMonth() + 1,
+      url: "http://localhost:8081/userWagesLists",
       print_title: `员工工资表（${new Date().getMonth() + 1}月份）`,
       setdata: {},
       isreload: true,
@@ -87,6 +90,21 @@ export default {
         [
           //表头
           {
+            checkbox: true
+          },
+          {
+            field: "uc_wage_status",
+            title: "状态",
+            width: 100,
+            templet: d => {
+              if (d.uc_wage_status === 1) {
+                return `<span style="color:#ccc">已存档</span>`;
+              } else {
+                return `<span style="color:#0190A0">未存档</span>`;
+              }
+            }
+          },
+          {
             field: "center_name",
             title: "中心名",
             width: 100,
@@ -96,19 +114,17 @@ export default {
             field: "username",
             title: "用户名",
             width: 100,
-            sort: true
+            sort: true,
+            totalRowText: "合计"
           },
           { field: "finance_wages_attCount", title: "出勤天数", width: 90 },
           {
             field: "finance_wages_vacaCount",
             title: "休假天数",
-            width: 90,
-            templet: d => {
-              return 31 - d.finance_wages_attCount - d.finance_wages_leaveCount;
-            }
+            width: 90
           },
           { field: "finance_wages_leaveCount", title: "请假天数", width: 90 },
-          { field: "usernuc_wage_actualDayame", title: "实际出勤", width: 90 },
+          { field: "uc_wage_actualDay", title: "实际出勤", width: 90 },
           {
             field: "uc_wage_base",
             title: "基本工资",
@@ -122,76 +138,99 @@ export default {
             field: "uc_wages_dedu",
             title: "考勤扣除",
             width: 90,
-            templet: d => {
-              d.uc_wages_dedu = (
-                ((d.uc_wage_base + d.uc_wage_post) / 31) *
-                (31 - d.finance_wages_attCount - d.finance_wages_leaveCount)
-              ).toFixed(2);
-              return d.uc_wages_dedu;
-            }
+            totalRow: true
           },
           {
             field: "uc_wages_baseTotal",
             title: "应发小计",
             width: 90,
-            templet: d => {
-              d.uc_wages_dedu = (
-                ((d.uc_wage_base + d.uc_wage_post) / 31) *
-                (31 - d.finance_wages_attCount - d.finance_wages_leaveCount)
-              ).toFixed(2);
-              d.uc_wages_baseTotal = (
-                d.uc_wage_post +
-                d.uc_wage_base +
-                d.uc_wage_subsidy -
-                d.uc_wages_dedu
-              ).toFixed(2);
-              return d.uc_wages_baseTotal;
-            }
+            totalRow: true
+            // templet: d => {
+            //   if (d.uc_wage_actualDay === 0) {
+            //     d.uc_wages_dedu = (
+            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
+            //       d.finance_wages_leaveCount
+            //     ).toFixed(2);
+            //   } else {
+            //     d.uc_wages_dedu = (
+            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
+            //       (lastmonth_num() - d.uc_wage_actualDay)
+            //     ).toFixed(2);
+            //   }
+            //   d.uc_wages_baseTotal = (
+            //     d.uc_wage_post +
+            //     d.uc_wage_base +
+            //     d.uc_wage_subsidy -
+            //     d.uc_wages_dedu
+            //   ).toFixed(2);
+            //   return d.uc_wages_baseTotal;
+            // }
           },
-          { field: "uc_wage_socSec", title: "代扣社保", width: 90 },
+          {
+            field: "uc_wage_socSec",
+            title: "代扣社保",
+            width: 90,
+            totalRow: true
+          },
           { field: "uc_wage_accFund", title: "公积金", width: 90 },
           { field: "", title: "扣除小计", width: 90 },
-          { field: "uc_wage_tax", title: "代扣个税", width: 90 },
+          {
+            field: "uc_wage_tax",
+            title: "代扣个税",
+            width: 90
+          },
           {
             field: "uc_wage_realhair",
             title: "实发工资",
             width: 90,
-            templet: d => {
-              d.uc_wages_dedu = d.uc_wages_dedu ? d.uc_wages_dedu : 0;
-              d.uc_wages_baseTotal = (
-                d.uc_wage_post +
-                d.uc_wage_base +
-                d.uc_wage_subsidy -
-                d.uc_wages_dedu
-              ).toFixed(2);
-              d.uc_wage_realhair =
-                d.uc_wages_baseTotal - d.uc_wage_tax - d.uc_wage_socSec;
-              return d.uc_wage_realhair;
-            }
-          },
-          {
-            fixed: "right",
-            title: "操作",
-            width: 150,
-            align: "center",
-            templet: d => {
-              if (d.uc_wage_status === 1) {
-                return `<button
-          class="layui-btn layui-btn-sm layui-btn-disabled"
-          lay-event="add">
-          存档
-        </button>`;
-              } else {
-                return `<button
-          class="layui-btn layui-btn-sm"
-          lay-event="add"
-          @click="file"
-        >
-          存档
-        </button>`;
-              }
-            }
+            totalRow: true
+
+            // templet: d => {
+            //   if (d.uc_wage_actualDay === 0) {
+            //     d.uc_wages_dedu = (
+            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
+            //       d.finance_wages_leaveCount
+            //     ).toFixed(2);
+            //   } else {
+            //     d.uc_wages_dedu = (
+            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
+            //       (lastmonth_num() - d.uc_wage_actualDay)
+            //     ).toFixed(2);
+            //   }
+            //   d.uc_wages_baseTotal = (
+            //     d.uc_wage_post +
+            //     d.uc_wage_base +
+            //     d.uc_wage_subsidy -
+            //     d.uc_wages_dedu
+            //   ).toFixed(2);
+            //   d.uc_wage_realhair =
+            //     d.uc_wages_baseTotal - d.uc_wage_tax - d.uc_wage_socSec;
+            //   return d.uc_wage_realhair;
+            // }
           }
+          //   {
+          //     fixed: "right",
+          //     title: "操作",
+          //     width: 150,
+          //     align: "center",
+          //     templet: d => {
+          //       if (d.uc_wage_status === 1) {
+          //         return `<button
+          //   class="layui-btn layui-btn-sm layui-btn-disabled"
+          //   lay-event="add">
+          //   存档
+          // </button>`;
+          //       } else {
+          //         return `<button
+          //   class="layui-btn layui-btn-sm"
+          //   lay-event="add"
+          //   @click="file"
+          // >
+          //   存档
+          // </button>`;
+          //       }
+          //     }
+          //   }
         ]
       ],
       header: [
@@ -216,7 +255,8 @@ export default {
       CostsList: [],
       wagesForm: {},
       isopenEdit: false,
-      Judge_field: "uc_wage_status" //判断是否禁用的字段
+      Judge_field: "uc_wage_status", //判断是否禁用的字段
+      check_arr: []
     };
   },
   components: {
@@ -226,14 +266,21 @@ export default {
     printTable,
     selectCompany
   },
-  mounted() {
-    
-    this.getCostsList();
-  },
+  mounted() {},
   methods: {
+    checkbox(row) {
+      let repeat = this.check_arr.some(item => item.userid == row.userid);
+      if (repeat) {
+        this.check_arr = this.check_arr.filter(
+          item => item.userid !== row.userid
+        );
+      } else {
+        this.check_arr.push(row);
+      }
+    },
     updata() {
       apiupdate_Wages().then(() => {
-        this.getCostsList();
+        // this.getCostsList();
         this.isreload = false;
         this.$nextTick(() => {
           this.isreload = true;
@@ -242,13 +289,17 @@ export default {
     },
     close() {
       this.isopenEdit = false;
-      this.getCostsList();
+      // this.getCostsList();
+      this.isreload = false;
+      this.$nextTick(() => {
+        this.isreload = true;
+      });
     },
     cellCilck(row) {
       console.log(row);
       this.isopenEdit = true;
       this.wagesForm = {
-        uc_wage_userid: row.userid,
+        uc_wage_userId: row.userid,
         uc_wage_id: row.uc_wage_id ? row.uc_wage_id : 0,
         uc_wage_base: row.uc_wage_base,
         uc_wage_post: row.uc_wage_post,
@@ -283,14 +334,18 @@ export default {
       this.getCostsList();
     },
     //存档
-    file(row) {
-      row.uc_wage_userid = row.uc_wage_userId;
-      row.uc_wage_center_name = row.center_name;
-      row.uc_wage_company_name = row.company_name;
-      console.log(row);
+    file() {
+      this.check_arr.forEach(item => {
+        item.uc_wage_userid = item.uc_wage_userId;
+        item.uc_wage_center_name = item.center_name;
+        item.uc_wage_company_name = item.company_name;
+      });
+      // console.log(this.check_arr);
       this.$confirm(`是否存档?`)
         .then(() => {
-          apisave_userWages(row).then(res => {
+          apisave_userWages({
+            rows: JSON.stringify(this.check_arr)
+          }).then(res => {
             console.log(res);
             this.isreload = false;
             this.$nextTick(() => {
@@ -303,7 +358,8 @@ export default {
     //选择公司
     getCompanyName(e) {
       this.company_id = e.company_id;
-      this.print_title=`${e.company_name}员工工资表（${new Date().getMonth() + 1}月份）`
+      this.print_title = `${e.company_name}员工工资表（${new Date().getMonth() +
+        1}月份）`;
     },
     query() {
       this.setdata = {
@@ -326,6 +382,7 @@ export default {
         company_id: this.company_id
       };
       apiuserWagesLists(data).then(res => {
+        console.timeEnd("t1");
         console.log(res);
         this.total = res.count;
         this.CostsList = res.data.map(item => {

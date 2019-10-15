@@ -33,6 +33,7 @@
       :headle="headle"
       @checkleave="checkitem"
       @delete="deleteitem"
+      @modify="print"
       @edit="downfile"
       :columnIndex="8"
       field="manage_status"
@@ -55,10 +56,26 @@
         @closewin="closewin"
       ></add-contract-approve>
     </el-dialog>
+    <el-dialog
+      width="100%"
+      :visible.sync="isprint"
+      title="合同审批"
+      :fullscreen="true"
+      :show-close="false"
+      top="8vh"
+      v-dialogDrag
+    >
+      <contract-print
+        v-if="isprint"
+        :setform="setform"
+        :Approvaltable="Approvaltable"
+      ></contract-print>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import contractPrint from "./components/contract-print";
 import addContractApprove from "@/components/Ca-to-do/add-contract-approve";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table";
@@ -73,6 +90,9 @@ export default {
   name: "contractApprove",
   data() {
     return {
+      isprint: false,
+      setform: {},
+      Approvaltable: [],
       isopen: false,
       currentlimit: 15,
       currentpage: 1,
@@ -88,17 +108,17 @@ export default {
       projectName: "",
       approveList: [],
       header: [
-        ["项目名称", "manage_contractapprove_name"],
-        ["发包方（甲方）", "manage_contractapprove_firstParty"],
-        ["项目地址", "manage_contractapprove_address"],
-        ["合同开始时间", "manage_contractapprove_startTime", 120],
-        ["合同结束时间", "manage_contractapprove_endTime", 120],
+        ["项目名称", "manage_contractapprove_name", 90],
+        ["发包方（甲方）", "manage_contractapprove_firstParty", 120],
+        ["项目地址", "manage_contractapprove_address", 100],
+        ["合同开始时间", "manage_contractapprove_startTime", 100],
+        ["合同结束时间", "manage_contractapprove_endTime", 100],
         ["合同金额", "manage_contractapprove_amount", 100],
         ["附件地址", "manage_contractapprove_attachAddress", 100, true],
         ["备注", "manage_contractapprove_remark", 100, true],
         ["状态", "manage_status2", 80]
       ],
-      headle: ["查看", "删除", "下载"],
+      headle: ["查看", "删除", "下载", "打印"],
       contractapprove: {},
       history: []
     };
@@ -109,7 +129,8 @@ export default {
   components: {
     CaRuleTable,
     paging,
-    addContractApprove
+    addContractApprove,
+    contractPrint
   },
   methods: {
     closewin() {
@@ -147,6 +168,30 @@ export default {
       this.currentpage = e;
       this.getContractApprove();
     },
+    print(row) {
+      apicontractapproveNew({
+        manage_contractapprove_id: row.manage_contractapprove_id
+      }).then(res => {
+        console.log(res);
+        this.setform = res.contractapprove;
+        this.Approvaltable = res.history
+          ? res.history.map(item => {
+              item.START_TIME_ = item.START_TIME_
+                ? changetime(item.START_TIME_.time)
+                : "";
+              item.END_TIME_ = item.END_TIME_
+                ? changetime(item.END_TIME_.time)
+                : "";
+              return item;
+            })
+          : [];
+        this.isprint = true;
+        // setTimeout(() => {
+        //   this.isprint = false;
+        // }, 100);
+      });
+    },
+    //查看
     checkitem(row) {
       this.openType = "check";
       apicontractapproveNew({

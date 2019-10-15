@@ -23,7 +23,7 @@
     <print-table
       v-if="isreload"
       :setdata="setdata"
-      field="getLeaveList"
+      :url="url"
       :header="header2"
       pageName="limit"
       limitName="pageSize"
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import http from "@/request/http.js";
 import printTable from "@/components/Ca-table/print-table.vue";
 // import paging from "@/components/paging/paging";
 // import ruleTable from "@/components/Ca-table/Ca-rule-table.vue";
@@ -59,6 +60,7 @@ export default {
   name: "leavelist",
   data() {
     return {
+      url: http.base_url + "getLeaveList",
       isreload: true,
       DataList: [],
       setdata: {},
@@ -114,7 +116,7 @@ export default {
             title: "状态",
             width: 90,
             templet: d => {
-              console.log(d)
+              console.log(d);
               switch (d.status) {
                 case 0:
                   d.status2 = `<span style="color:#E6A23C;">审批中</span>`;

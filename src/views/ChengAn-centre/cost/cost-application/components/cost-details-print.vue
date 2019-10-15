@@ -58,15 +58,6 @@ export default {
     },
     Approvaltable: Array
   },
-  // watch: {
-  //   setform(val) {
-  //     this.form = val;
-  //     setTimeout(() => {
-  //       //打印
-  //       window.print();
-  //     }, 50);
-  //   }
-  // },
   mounted() {
     setTimeout(() => {
       //打印

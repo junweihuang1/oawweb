@@ -39,14 +39,12 @@ export default {
         headers: { token: sessionStorage.getItem("token") },
         url: http.base_url + "userWagesLists", //数据接口
         parseData: function(res) {
-          console.log(res);
           let data = {
             code: 0, //解析接口状态
             msg: res.msg, //解析提示文本
             count: res.count, //解析数据长度
             data: res.data //解析数据列表
           };
-          console.log(data);
           //res 即为原始返回的数据
           return data;
         },

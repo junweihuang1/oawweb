@@ -1,11 +1,10 @@
 <template>
   <div>
-    <table id="demo" lay-filter="test"></table>
+    <table :id="demo_id" :lay-filter="lay_filter"></table>
   </div>
 </template>
 
 <script>
-import http from "@/request/http.js";
 export default {
   name: "printTable",
   data() {
@@ -14,11 +13,19 @@ export default {
     };
   },
   props: {
+    lay_filter: {
+      type: String,
+      default: "test"
+    },
+    demo_id: {
+      type: String,
+      default: "demo"
+    },
     setheight: {
       type: Number,
       default: 0.78
     },
-    field: String,
+    url: String,
     header: Array,
     Judge_field: String,
     setdata: Object,
@@ -32,20 +39,19 @@ export default {
       }
     }
   },
-  beforeMount() {},
+  beforeMount() {}, //http://www.ca315189.com:89/test
   mounted() {
     this.getdata();
   },
   methods: {
     getdata() {
       var that = this;
-      console.log(that.setdata);
       layui.use("table", function() {
         var table = layui.table;
         //第一个实例
         table.render({
-          elem: "#demo",
-          toolbar: "#demo",
+          elem: `#${that.demo_id}`,
+          toolbar: `#${that.demo_id}`,
           title: that.title,
           height: document.documentElement.scrollHeight * that.setheight,
           page: true,
@@ -58,7 +64,7 @@ export default {
           where: that.setdata,
           limits: [15, 30, 50, 100],
           headers: { token: sessionStorage.getItem("token") },
-          url: http.base_url + that.field, //数据接口
+          url: that.url, //http.base_url + that.field, //数据接口//"http://localhost:8081/test", //
           parseData: function(res) {
             console.log(res);
             let data = {
@@ -72,7 +78,7 @@ export default {
           },
           cols: that.header
         });
-        table.on("tool(test)", function(obj) {
+        table.on(`tool(${that.lay_filter})`, function(obj) {
           switch (obj.event) {
             case "add":
               if (obj.data.uc_wage_status !== 1) {
@@ -83,12 +89,18 @@ export default {
               that.$emit("cellCilck", obj.data);
               break;
             case "delete":
-              layer.msg("删除");
+              that.$emit("delete", obj.data);
+              // layer.msg("删除");
               break;
             case "update":
               layer.msg("编辑");
               break;
           }
+        });
+        //复选
+        table.on(`checkbox(${that.lay_filter})`, function(obj) {
+          // console.log(obj);
+          that.$emit("checkbox", obj.data);
         });
       });
     }

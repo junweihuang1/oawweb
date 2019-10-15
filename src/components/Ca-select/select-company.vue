@@ -7,12 +7,13 @@
       clearable
       style="width:100%;"
       @change="selcompanyName"
+      @clear="clearselect"
     >
       <el-option
-        v-for="item in companyList"
-        :key="item.company_id"
+        v-for="(item, index) in companyList"
+        :key="index"
         :label="item.company_name"
-        :value="item"
+        :value="item.company_id"
       >
       </el-option>
     </el-select>
@@ -48,6 +49,14 @@ export default {
     }
   },
   methods: {
+    clearselect() {
+      // console.log(123);
+      const data = {
+        company_id: "",
+        company_name: ""
+      };
+      this.$emit("setCompanyName", data);
+    },
     getCompanyInf() {
       apicompanyList({
         rows: this.companyrows,
@@ -62,7 +71,11 @@ export default {
       });
     },
     selcompanyName(e) {
-      this.$emit("setCompanyName", e);
+      this.companyList.forEach(item => {
+        if (item.company_id == e) {
+          this.$emit("setCompanyName", item);
+        }
+      });
     }
   }
 };

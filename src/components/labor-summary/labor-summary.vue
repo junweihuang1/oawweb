@@ -40,7 +40,7 @@
     ></paging> -->
     <print-table
       :setdata="setdata"
-      field="firmLaborCost"
+      :url="url"
       v-if="isload"
       totalName="total"
       pageName="limit"
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import http from "@/request/http.js";
 import printTable from "@/components/Ca-table/print-table.vue";
 import dialogTabs from "./dialog-tabs";
 import paging from "@/components/paging/paging";
@@ -67,6 +68,7 @@ export default {
   name: "SupplierLaborSummary",
   data() {
     return {
+      url: http.base_url + "firmLaborCost",
       isload: true,
       queryYear: "",
       projectName: "",
@@ -104,13 +106,13 @@ export default {
           {
             field: "constuct_project_dep_name",
             title: "项目部",
-            width: 90,
+            width: 100,
             totalRowText: "合计"
           },
           {
             field: "constuct_project_dep_leader",
             title: "项目负责人",
-            width: 110
+            width: 120
           },
           {
             field: "conAmount",
@@ -121,7 +123,7 @@ export default {
           {
             field: "construct_project_workTeam_price",
             title: "单价(天/人)",
-            width: 120
+            width: 100
           },
           { field: "firmYear", title: "年度", width: 80 },
           { field: "january", title: "1月", width: 80, totalRow: true },
