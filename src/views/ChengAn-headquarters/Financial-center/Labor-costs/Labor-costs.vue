@@ -77,7 +77,7 @@ export default {
   name: "LaborCosts",
   data() {
     return {
-      url: "http://localhost:8081/userWagesLists",
+      url: "http://www.ca315189.com:89/userWagesLists", //localhost:8081
       print_title: `员工工资表（${new Date().getMonth() + 1}月份）`,
       setdata: {},
       isreload: true,
@@ -145,26 +145,6 @@ export default {
             title: "应发小计",
             width: 90,
             totalRow: true
-            // templet: d => {
-            //   if (d.uc_wage_actualDay === 0) {
-            //     d.uc_wages_dedu = (
-            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
-            //       d.finance_wages_leaveCount
-            //     ).toFixed(2);
-            //   } else {
-            //     d.uc_wages_dedu = (
-            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
-            //       (lastmonth_num() - d.uc_wage_actualDay)
-            //     ).toFixed(2);
-            //   }
-            //   d.uc_wages_baseTotal = (
-            //     d.uc_wage_post +
-            //     d.uc_wage_base +
-            //     d.uc_wage_subsidy -
-            //     d.uc_wages_dedu
-            //   ).toFixed(2);
-            //   return d.uc_wages_baseTotal;
-            // }
           },
           {
             field: "uc_wage_socSec",
@@ -184,53 +164,7 @@ export default {
             title: "实发工资",
             width: 90,
             totalRow: true
-
-            // templet: d => {
-            //   if (d.uc_wage_actualDay === 0) {
-            //     d.uc_wages_dedu = (
-            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
-            //       d.finance_wages_leaveCount
-            //     ).toFixed(2);
-            //   } else {
-            //     d.uc_wages_dedu = (
-            //       ((d.uc_wage_base + d.uc_wage_post) / lastmonth_num()) *
-            //       (lastmonth_num() - d.uc_wage_actualDay)
-            //     ).toFixed(2);
-            //   }
-            //   d.uc_wages_baseTotal = (
-            //     d.uc_wage_post +
-            //     d.uc_wage_base +
-            //     d.uc_wage_subsidy -
-            //     d.uc_wages_dedu
-            //   ).toFixed(2);
-            //   d.uc_wage_realhair =
-            //     d.uc_wages_baseTotal - d.uc_wage_tax - d.uc_wage_socSec;
-            //   return d.uc_wage_realhair;
-            // }
           }
-          //   {
-          //     fixed: "right",
-          //     title: "操作",
-          //     width: 150,
-          //     align: "center",
-          //     templet: d => {
-          //       if (d.uc_wage_status === 1) {
-          //         return `<button
-          //   class="layui-btn layui-btn-sm layui-btn-disabled"
-          //   lay-event="add">
-          //   存档
-          // </button>`;
-          //       } else {
-          //         return `<button
-          //   class="layui-btn layui-btn-sm"
-          //   lay-event="add"
-          //   @click="file"
-          // >
-          //   存档
-          // </button>`;
-          //       }
-          //     }
-          //   }
         ]
       ],
       header: [

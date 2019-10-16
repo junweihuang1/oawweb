@@ -5,7 +5,7 @@ import { Message } from "element-ui";
 let base_url = "";
 
 if (process.env.NODE_ENV === "development") {
-  base_url = "http://39.108.184.20:8080/casd2/admin/";
+  base_url = "http://192.168.110.173:8080/casd2/admin/";
   //测试环境连接
 } else {
   base_url = "http://39.108.184.20:8080/casd2/admin/"; //www.ca315189.com:89

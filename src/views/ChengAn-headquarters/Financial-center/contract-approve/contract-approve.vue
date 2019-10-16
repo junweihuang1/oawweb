@@ -56,21 +56,13 @@
         @closewin="closewin"
       ></add-contract-approve>
     </el-dialog>
-    <el-dialog
-      width="100%"
-      :visible.sync="isprint"
-      title="合同审批"
-      :fullscreen="true"
-      :show-close="false"
-      top="8vh"
-      v-dialogDrag
-    >
+    <div v-if="isprint" class="print_table">
       <contract-print
         v-if="isprint"
         :setform="setform"
         :Approvaltable="Approvaltable"
       ></contract-print>
-    </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -174,6 +166,19 @@ export default {
       }).then(res => {
         console.log(res);
         this.setform = res.contractapprove;
+        this.setform.manage_contractapprove_company = this.companyList[
+          this.setform.manage_contractapprove_company - 1
+        ][1];
+        this.setform.manage_contractapprove_taxIncluded =
+          this.setform.manage_contractapprove_taxIncluded == 1
+            ? "含税"
+            : "不含税";
+        this.setform.category =
+          this.setform.category == 1
+            ? "施工合同"
+            : this.setform.category == 2
+            ? "供应商合同"
+            : "合作合同";
         this.Approvaltable = res.history
           ? res.history.map(item => {
               item.START_TIME_ = item.START_TIME_
@@ -186,9 +191,9 @@ export default {
             })
           : [];
         this.isprint = true;
-        // setTimeout(() => {
-        //   this.isprint = false;
-        // }, 100);
+        setTimeout(() => {
+          this.isprint = false;
+        }, 100);
       });
     },
     //查看
@@ -271,4 +276,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.print_table {
+  position: absolute;
+  top: 0;
+  background: #fff;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+</style>
