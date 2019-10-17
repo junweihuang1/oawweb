@@ -45,8 +45,8 @@ export default {
       total: 130,
       header: [
         ["编号id", "construct_project_quantities_id", 90],
-        ["材料名称", "construct_project_quantities_name", 140],
-        ["规格型号", "construct_project_quantities_model", 100],
+        ["材料名称", "construct_material_name", 140],
+        ["规格型号", "construct_material_model_name", 100],
         ["单位", "construct_material_model_unit", 80],
         ["数量", "construct_project_quantities_num", 80],
         ["累计采购量", "sum", 120],

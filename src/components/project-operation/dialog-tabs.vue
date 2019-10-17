@@ -309,9 +309,10 @@ export default {
             this.getopenList();
             this.openType = "modify";
             this.currentActive = "2";
-            this.entryList = res.entry
+            this.entryList = res.entry;
             this.isopen[0] = true;
             this.headform = res.head[0];
+            this.headform.depName = this.activeForm.constuct_project_dep_name;
           });
 
           break;
@@ -324,8 +325,9 @@ export default {
             this.isopen[0] = true;
             this.openType = "check";
             this.currentActive = "2";
-            this.entryList = res.entry
+            this.entryList = res.entry;
             this.headform = res.head[0];
+            this.headform.depName = this.activeForm.constuct_project_dep_name;
           });
 
           break;

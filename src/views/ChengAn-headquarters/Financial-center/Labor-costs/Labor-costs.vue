@@ -65,6 +65,7 @@
 import editWages from "./components/edit-wages";
 // import paging from "@/components/paging/paging";
 // import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
+import { http } from "@/request/http.js";
 import selectCompany from "@/components/Ca-select/select-company.vue";
 import printTable from "@/components/Ca-table/print-table.vue";
 import { lastmonth_num } from "@/components/global-fn/global-fn";
@@ -78,7 +79,7 @@ export default {
   data() {
     return {
       url: "http://www.ca315189.com:89/userWagesLists", //localhost:8081
-      print_title: `员工工资表（${new Date().getMonth() + 1}月份）`,
+      print_title: `员工工资表（${new Date().getMonth()}月份）`,
       setdata: {},
       isreload: true,
       currentpage: 1,
@@ -292,8 +293,9 @@ export default {
     //选择公司
     getCompanyName(e) {
       this.company_id = e.company_id;
-      this.print_title = `${e.company_name}员工工资表（${new Date().getMonth() +
-        1}月份）`;
+      this.print_title = `${
+        e.company_name
+      }员工工资表（${new Date().getMonth()}月份）`;
     },
     query() {
       this.setdata = {

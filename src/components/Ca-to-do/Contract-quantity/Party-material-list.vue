@@ -71,6 +71,7 @@
             <el-form-item label="型号规格">
               <el-input
                 clearable
+                :readonly="opentype === 'modify' ? true : false"
                 v-model="addform.construct_project_quantities_model"
               ></el-input>
             </el-form-item>
@@ -96,6 +97,7 @@
             <el-form-item label="单位">
               <el-input
                 clearable
+                :readonly="opentype === 'modify' ? true : false"
                 v-model="addform.construct_project_quantities_unit"
               ></el-input>
             </el-form-item>
@@ -298,9 +300,10 @@ export default {
     //打开修改合同工程量窗口
     modifyParty(row) {
       console.log(row);
-      this.opentype = "";
+      this.opentype = "modify";
       this.diatitle = "修改合同工程量";
       this.isadd = true;
+      //当主材料不为O时禁止编辑
       this.isedit = row.construct_project_quantities_num === 0 ? false : true;
       this.addform = {
         construct_project_quantities_id: row.construct_project_quantities_id,

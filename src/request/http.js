@@ -3,13 +3,12 @@ import QS from "qs";
 import { Message } from "element-ui";
 
 let base_url = "";
+var middle_url = "";
 
 if (process.env.NODE_ENV === "development") {
-  base_url = "http://192.168.110.173:8080/casd2/admin/";
-  //测试环境连接
+  base_url = "http://192.168.110.173:8080/casd2/admin/"; //测试环境连接java环境地址
 } else {
-  base_url = "http://39.108.184.20:8080/casd2/admin/"; //www.ca315189.com:89
-  //生产环境连接
+  base_url = "http://39.108.184.20:8080/casd2/admin/"; //生产环境连接java环境地址
 }
 // 默认请求地址
 axios.defaults.baseURL = base_url; //"http://192.168.110.173:8080/casd2/admin/";//39.108.184.20:8080

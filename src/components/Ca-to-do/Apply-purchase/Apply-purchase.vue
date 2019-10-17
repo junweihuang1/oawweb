@@ -160,6 +160,7 @@
       :data="f_entryList"
       border
       :header-cell-style="getRowClass"
+      max-height="400px"
       show-summary
     >
       <el-table-column
@@ -689,7 +690,6 @@ export default {
     //双击选择材料，接收子组件回调的方法。赋值给点击的行
     getMaterialName(row) {
       //判断当前是否有选择该材料
-      console.log("row");
       console.log(row);
       if (
         this.f_entryList &&
@@ -705,9 +705,9 @@ export default {
       this.currentSelect.construct_purchase_quantitiesId =
         row.construct_project_quantities_id;
       this.currentSelect.construct_purchase_material =
-        row.construct_project_quantities_name;
+        row.construct_material_name;
       this.currentSelect.construct_purchase_model =
-        row.construct_project_quantities_model;
+        row.construct_material_model_name;
       this.currentSelect.construct_purchase_unit =
         row.construct_material_model_unit;
       this.currentSelect.construct_purchase_quantities =

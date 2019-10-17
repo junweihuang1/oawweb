@@ -196,7 +196,7 @@ export default {
       ],
       CostsList: [],
       headle: ["", "删除"],
-      print_title: `员工工资表（${new Date().getMonth() + 1}月份）`
+      print_title: `员工工资表（${new Date().getMonth()}月份）`
     };
   },
   components: {
@@ -260,8 +260,9 @@ export default {
     getCompanyName(e) {
       // console.log(e);
       this.company_id = e.company_id;
-      this.print_title = `${e.company_name}员工工资表（${new Date().getMonth() +
-        1}月份）`;
+      this.print_title = `${
+        e.company_name
+      }员工工资表（${new Date().getMonth()}月份）`;
       console.log(this.print_title);
     }
     // getCostsList() {

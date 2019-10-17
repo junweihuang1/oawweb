@@ -218,7 +218,7 @@
       v-dialogDrag
       :title="openTitle"
       :visible.sync="openaParty"
-      width="50%"
+      width="75%"
       top="8vh"
     >
       <aParty-apply-purchase
@@ -432,8 +432,9 @@ export default {
     },
     getToDoList() {
       let data = {
-        pdkey: this.selectType
+        processType: this.selectType
       };
+      console.log(data);
       apifindTaskLists(data).then(res => {
         console.log(res);
         this.todoList = res.map(item => {

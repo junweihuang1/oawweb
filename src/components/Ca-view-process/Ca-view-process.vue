@@ -1,7 +1,12 @@
 // form表单+流程table
 <template>
   <div>
-    <el-table :data="Approvaltable" border :header-cell-style="getRowClass">
+    <el-table
+      :data="Approvaltable"
+      border
+      :header-cell-style="getRowClass"
+      max-height="300px"
+    >
       <el-table-column
         v-for="(item, index) in ApprovalHeaderList"
         :key="index"
