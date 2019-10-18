@@ -344,7 +344,7 @@ export default {
   components: {
     CaViewProcess
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   methods: {

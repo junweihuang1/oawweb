@@ -55,7 +55,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getProjectList();
   },
   methods: {

@@ -221,7 +221,7 @@ export default {
       this.getMaterialList();
     }
   },
-  mounted() {
+  created() {
     this.getMaterialList();
   },
   methods: {

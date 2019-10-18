@@ -164,7 +164,10 @@
       :append-to-body="true"
       top="8vh"
     >
-      <select-department @setSelectName="getSelectName" v-if="isopenselect"></select-department>
+      <select-department
+        @setSelectName="getSelectName"
+        v-if="isopenselect"
+      ></select-department>
     </el-dialog>
   </div>
 </template>
@@ -218,7 +221,7 @@ export default {
       this.form = val;
     }
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   computed: {

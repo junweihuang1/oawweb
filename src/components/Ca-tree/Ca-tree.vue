@@ -36,7 +36,7 @@ export default {
   props: {
     centerName: String
   },
-  mounted() {
+  created() {
     this.getTreeList();
   },
   methods: {

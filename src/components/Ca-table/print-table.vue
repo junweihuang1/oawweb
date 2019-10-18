@@ -39,7 +39,6 @@ export default {
       }
     }
   },
-  beforeMount() {}, //http://www.ca315189.com:89/test
   mounted() {
     this.getdata();
   },

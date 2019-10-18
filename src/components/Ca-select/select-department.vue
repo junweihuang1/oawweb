@@ -52,7 +52,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getdepartmentList();
   },
   methods: {

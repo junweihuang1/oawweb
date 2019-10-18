@@ -268,7 +268,7 @@ export default {
     openType: String,
     active: Object
   },
-  mounted() {
+  created() {
     this.getView();
   },
   methods: {

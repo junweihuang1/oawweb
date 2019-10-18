@@ -34,7 +34,7 @@ export default {
       dissHeight: window.screen.height - document.body.clientHeight - 40
     };
   },
-  mounted() {
+  created() {
     var canvas = document.getElementById("canvas"); //检测浏览器是否支持canvas 该方法是否存在 取得上下文对象
     console.log(canvas);
     if (canvas.getContext) {

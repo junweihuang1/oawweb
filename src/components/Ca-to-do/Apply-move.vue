@@ -88,7 +88,7 @@ export default {
   props: {
     active: Object
   },
-  mounted() {
+  created() {
     this.getRemoveList();
   },
   methods: {

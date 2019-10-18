@@ -85,7 +85,7 @@ export default {
       this.getTeamList();
     }
   },
-  mounted() {
+  created() {
     this.getTeamList();
   },
   methods: {
@@ -121,7 +121,9 @@ export default {
               ? "消防水"
               : item.construct_project_workTeam_category == 3
               ? "消防电"
-              :item.construct_project_workTeam_category == 4?"防排烟":"消防水电";
+              : item.construct_project_workTeam_category == 4
+              ? "防排烟"
+              : "消防水电";
           return item;
         });
       });

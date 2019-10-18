@@ -228,7 +228,7 @@
       ></el-step>
     </el-steps>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopen"
       title="签字版"
       :append-to-body="true"
@@ -275,7 +275,7 @@ export default {
     active: Object,
     openType: String
   },
-  mounted() {
+  created() {
     this.getQuitdetail();
     this.getprossList();
   },

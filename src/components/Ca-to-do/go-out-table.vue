@@ -255,7 +255,7 @@ export default {
       console.log(this.form);
     }
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   methods: {

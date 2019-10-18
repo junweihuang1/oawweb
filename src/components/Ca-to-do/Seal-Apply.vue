@@ -217,7 +217,7 @@ export default {
     selectCompany,
     CaViewProcess
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   methods: {

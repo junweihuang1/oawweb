@@ -282,14 +282,13 @@ export default {
       console.log(data); //跳到了本月
     },
     getPunchInfo() {
-      this.markarr = [];
-      apiPunchInfo({
+      let data = {
         hr_attend_startWork: this.punchYear,
         hr_attend_knockOff: this.punchMonth
-      }).then(res => {
-        console.log(res);
-        res.data.forEach(element => {
-          this.markarr.push(element.date);
+      };
+      apiPunchInfo(data).then(res => {
+        this.markarr = res.data.map(item => {
+          return item.date;
         });
       });
     }

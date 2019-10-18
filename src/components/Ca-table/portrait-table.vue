@@ -88,7 +88,7 @@ export default {
       this.myopen = val;
     }
   },
-  mounted() {
+  created() {
     this.getNextAuditor();
   },
   methods: {

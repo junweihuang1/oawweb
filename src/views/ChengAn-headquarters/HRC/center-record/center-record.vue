@@ -26,34 +26,6 @@
       :setselect="isselect"
       @setselect="getselect"
     ></Ca-rule-table>
-    <el-dialog :visible.sync="isopen" title="中心信息" width="30%" v-dialogDrag>
-      <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="中心名称" prop="center_name">
-          <el-input v-model="form.center_name" autofocus="true"></el-input>
-        </el-form-item>
-        <el-form-item label="公司名称" prop="company_id">
-          <el-select
-            v-model="form.company_id"
-            placeholder="请选择"
-            style="width:100%;"
-          >
-            <el-option
-              v-for="item in companyList"
-              :key="item.company_id"
-              :label="item.company_name"
-              :value="item.company_id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="排序" prop="order">
-          <el-input v-model="form.order"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" @click="modify">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <paging
       @setlimit="getlimit"
       @setpage="getpage"
@@ -61,18 +33,33 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
+    <el-dialog :visible.sync="isopen" title="中心信息" width="25%" v-dialogDrag>
+      <el-form ref="form" :model="form" label-width="90px">
+        <el-form-item label="中心名称">
+          <el-input v-model="form.center_name" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="公司名称">
+          <select-company
+            @setCompanyName="getCompanyName"
+            :companyId="form.company_id"
+          ></select-company>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="form.order" clearable type="number"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="modify">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import selectCompany from "@/components/Ca-select/select-company";
 import paging from "@/components/paging/paging";
 import CaRuleTable from "@/components/Ca-table/Ca-rule-table.vue";
-import {
-  apicenterHome,
-  apisaveCenter,
-  apideleCenter,
-  apicompanyList
-} from "@/request/api.js";
+import { apicenterHome, apisaveCenter, apideleCenter } from "@/request/api.js";
 export default {
   name: "companyRecord",
   data() {
@@ -100,12 +87,16 @@ export default {
   },
   components: {
     CaRuleTable,
-    paging
+    paging,
+    selectCompany
   },
   mounted() {
     this.getCenterInf();
   },
   methods: {
+    getCompanyName(row) {
+      this.form.company_id = row.company_id;
+    },
     getpage(e) {
       this.currentpage = e;
       this.getCenterInf();
@@ -123,9 +114,6 @@ export default {
         center_id: ""
       };
       this.isopen = true;
-      if (this.companyList == "") {
-        this.getCompanyInf();
-      }
     },
     query() {
       this.currentlimit = 15;
@@ -144,39 +132,27 @@ export default {
       });
     },
     openwindow(e) {
+      console.log(e);
       this.form = {
         company_id: e.company_id,
         company_name: e.company_name,
         center_name: e.center_name,
-        center_id: e.center_id
+        center_id: e.center_id,
+        order: e.order
       };
       this.isopen = true;
-      if (this.companyList == "") {
-        this.getCompanyInf();
-      }
-    },
-    getCompanyInf() {
-      apicompanyList({
-        rows: this.companyrows,
-        page: this.companyPage,
-        companyname: ""
-      }).then(res => {
-        this.companyList = this.companyList.concat(res.data);
-        if (res.data.length == this.companyrows) {
-          this.companyPage++;
-          this.getCompanyInf();
-        }
-      });
     },
     modify() {
+      let data = {
+        center_id: this.form.center_id,
+        center_name: this.form.center_name,
+        center_companyId: this.form.company_id,
+        order: this.form.order
+      };
+      console.log(data);
       this.$confirm(`确定提交吗？`)
         .then(() => {
-          apisaveCenter({
-            center_id: this.form.center_id,
-            center_name: this.form.center_name,
-            center_companyId: this.form.company_id,
-            order: this.form.order
-          }).then(res => {
+          apisaveCenter(data).then(res => {
             this.$message.success(res.msg);
             this.getCenterInf();
             this.isopen = false;
@@ -190,15 +166,17 @@ export default {
         return;
       }
       console.log(JSON.stringify(this.selectList));
-      this.$confirm(`确定删除吗？`).then(res => {
-        apideleCenter({
-          ids: JSON.stringify(this.selectList)
-        }).then(res => {
-          this.$message.success(res.msg);
-          this.getCenterInf();
-          console.log(res);
-        });
-      });
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apideleCenter({
+            ids: JSON.stringify(this.selectList)
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.getCenterInf();
+            console.log(res);
+          });
+        })
+        .catch(() => {});
     },
     getselect(val) {
       this.selectList = val.map(item => item.center_id);

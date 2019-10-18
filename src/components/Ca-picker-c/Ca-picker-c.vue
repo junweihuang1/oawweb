@@ -44,7 +44,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     let newid = -1;
     apiLeaveData().then(res => {
       this.options = res.userListCheck.map(item => {

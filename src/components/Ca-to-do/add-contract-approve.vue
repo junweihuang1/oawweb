@@ -318,7 +318,7 @@ export default {
     history: Array,
     openType: String
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   methods: {

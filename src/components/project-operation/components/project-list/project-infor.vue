@@ -300,7 +300,7 @@ export default {
         construct_project_leader: this.headform.construct_project_leader, //(必填)项目经理
         construct_project_leaderTel: this.headform.construct_project_leaderTel, //(必填)项目经理电话
         depName: this.activeForm.constuct_project_dep_name, //(必填)项目名名称
-        construct_project_dep: this.activeForm.constuct_project_dep_id, //(必填)项目部id
+        construct_project_dep: this.headform.construct_project_dep, //(必填)项目部id
         entry: JSON.stringify(this.entryList)
       };
       console.log(data);

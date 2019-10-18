@@ -124,9 +124,6 @@ export default {
     VueUeditorWrap
   },
   Create() {
-    this.getCompanyList();
-  },
-  mounted() {
     this.getNoticeList();
   },
   methods: {
@@ -142,16 +139,6 @@ export default {
       this.checkAll = checkedCount === this.companylist.length;
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.companylist.length;
-    },
-    getCompanyList() {
-      apicompanyList({
-        rows: 15,
-        page: 1,
-        companyname: ""
-      }).then(res => {
-        this.companyList = res.data;
-        console.log(this.companyList);
-      });
     },
     //提交公告
     submit() {

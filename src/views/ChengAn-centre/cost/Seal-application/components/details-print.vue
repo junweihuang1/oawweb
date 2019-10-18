@@ -10,7 +10,7 @@
       <tr>
         <th>用章公司</th>
         <th>
-          {{ form.own_seal_company }}
+          {{ form.own_seal_companyName }}
         </th>
         <th>主送单位</th>
         <th>{{ form.own_seal_sender }}</th>
@@ -49,6 +49,7 @@ export default {
     Approvaltable: Array
   },
   mounted() {
+    console.log(this.setform);
     setTimeout(() => {
       //打印
       window.print();

@@ -26,19 +26,6 @@
       :setselect="isselect"
       @setselect="getselect"
     ></Ca-rule-table>
-    <el-dialog :visible.sync="isopen" title="公司信息" width="30%" v-dialogDrag>
-      <el-form ref="form" :model="form" label-width="90px">
-        <el-form-item label="新公司名称">
-          <el-input v-model="form.company_name"></el-input>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input v-model="form.order"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" @click="modify">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <paging
       @setlimit="getlimit"
       @setpage="getpage"
@@ -46,6 +33,19 @@
       :currentpage="currentpage"
       :currentlimit="currentlimit"
     ></paging>
+    <el-dialog :visible.sync="isopen" title="公司信息" width="30%" v-dialogDrag>
+      <el-form ref="form" :model="form" label-width="90px">
+        <el-form-item label="新公司名称">
+          <el-input v-model="form.company_name" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input v-model="form.order" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="submit">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -130,13 +130,16 @@ export default {
       };
       this.isopen = true;
     },
-    modify() {
-      console.log(this.form);
-      apisaveCompany(this.form).then(() => {
-        this.$message.success("办理成功");
-        this.isopen = false;
-        this.getCompanyInf();
-      });
+    submit() {
+      this.$confirm(`确定提交吗？`)
+        .then(() => {
+          apisaveCompany(this.form).then(res => {
+            this.$message.success(res.data);
+            this.isopen = false;
+            this.getCompanyInf();
+          });
+        })
+        .catch(() => {});
     },
     //删除
     deleteitem() {
@@ -144,13 +147,16 @@ export default {
         this.$message.error("请选择公司");
         return;
       }
-      console.log(JSON.stringify(this.selectList));
-      apideleCompany({
-        ids: JSON.stringify(this.selectList)
-      }).then(res => {
-        this.$message.success(res.msg);
-        this.getCompanyInf();
-      });
+      this.$confirm(`确定删除吗？`)
+        .then(() => {
+          apideleCompany({
+            ids: JSON.stringify(this.selectList)
+          }).then(() => {
+            this.$message.success("删除成功");
+            this.getCompanyInf();
+          });
+        })
+        .catch(() => {});
     },
     getselect(val) {
       this.selectList = val.map(item => item.company_id);

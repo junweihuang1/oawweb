@@ -27,16 +27,33 @@
               >{{ company_name }}{{ center_name }}{{ username }}</span
             >
           </template>
-          <el-menu-item index="1-1" @click="handleLoginOut"
+          <el-menu-item index="1-1" @click="handleChangePw"
+            >修改密码</el-menu-item
+          >
+          <el-menu-item index="1-2" @click="handleLoginOut"
             >退出登录</el-menu-item
           >
         </el-submenu>
       </el-menu>
     </div>
+    <el-dialog title="修改密码" :visible.sync="openChangePw" width="20%">
+      <el-form label-width="70px">
+        <el-form-item label="用户">
+          <el-input :value="username" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="newPw"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="modifyPw" type="primary">修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { apimodUserPwd } from "@/request/api.js";
 export default {
   name: "HeaderR",
   inject: ["reload"],
@@ -44,13 +61,14 @@ export default {
     return {
       fullscreen: "",
       activeIndex: "1",
-      username: "",
+      username: sessionStorage.getItem("username"),
       center_name: "",
-      company_name: ""
+      company_name: "",
+      openChangePw: false,
+      newPw: ""
     };
   },
   created() {
-    this.username = sessionStorage.getItem("username");
     this.company_name =
       sessionStorage.getItem("company_name") != "undefined"
         ? `${sessionStorage.getItem("company_name")}/`
@@ -61,8 +79,24 @@ export default {
         : "";
   },
   methods: {
+    //修改密码
+    modifyPw() {
+      this.$confirm("确定修改密码吗？")
+        .then(() => {
+          apimodUserPwd({
+            password: this.newPw
+          }).then(res => {
+            this.$message.success(res.msg);
+            this.openChangePw = false;
+          });
+        })
+        .catch(() => {});
+    },
     reloadPage() {
       this.reload();
+    },
+    handleChangePw() {
+      this.openChangePw = true;
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);

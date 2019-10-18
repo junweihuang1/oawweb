@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { apicompanyList } from "@/request/api.js";
 export default {
   name: "selectCompany",
   data() {
@@ -32,7 +31,7 @@ export default {
       companyrows: 15
     };
   },
-  mounted() {
+  created() {
     if (this.companyList == "") {
       this.getCompanyInf();
     }
@@ -50,7 +49,6 @@ export default {
   },
   methods: {
     clearselect() {
-      // console.log(123);
       const data = {
         company_id: "",
         company_name: ""
@@ -58,17 +56,7 @@ export default {
       this.$emit("setCompanyName", data);
     },
     getCompanyInf() {
-      apicompanyList({
-        rows: this.companyrows,
-        page: this.companyPage,
-        companyname: ""
-      }).then(res => {
-        this.companyList = this.companyList.concat(res.data);
-        if (res.data.length == this.companyrows) {
-          this.companyPage++;
-          this.getCompanyInf();
-        }
-      });
+      this.companyList = JSON.parse(sessionStorage.getItem("companyList"));
     },
     selcompanyName(e) {
       this.companyList.forEach(item => {

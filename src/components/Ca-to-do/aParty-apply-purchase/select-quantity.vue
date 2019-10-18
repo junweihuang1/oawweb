@@ -76,7 +76,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getQuantityList();
   },
   methods: {

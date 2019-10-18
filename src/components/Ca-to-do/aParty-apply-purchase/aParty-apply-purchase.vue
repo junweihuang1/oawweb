@@ -234,7 +234,7 @@
       v-dialogDrag
     >
       <select-quantity
-      v-if="isopen"
+        v-if="isopen"
         :projectList="projectList"
         @setQuantity="getQuantity"
       ></select-quantity>
@@ -329,7 +329,7 @@ export default {
       this.getApartyPur();
     }
   },
-  mounted() {
+  created() {
     this.getApartyPur();
   },
   methods: {

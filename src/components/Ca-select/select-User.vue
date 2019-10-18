@@ -60,12 +60,11 @@ export default {
   props: {
     openType: String
   },
-  watch: {},
   components: {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getUserList();
   },
   methods: {
@@ -84,7 +83,6 @@ export default {
       this.$emit("setsup", [name, id]);
     },
     getselect(row) {
-      console.log(row);
       this.selectForm = row;
     },
     getlimit(e) {
@@ -100,14 +98,12 @@ export default {
       this.$emit("setuser", row);
     },
     getUserList() {
-      console.log("res");
       apiuserListChecks({
         limit: this.currentlimit,
         page: this.currentPage,
         username: this.username
       }).then(res => {
         this.total = res.count;
-        console.log(res);
         this.userList = res.data;
       });
     }

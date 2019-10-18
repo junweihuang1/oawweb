@@ -75,7 +75,7 @@ export default {
       this.getTeamList();
     }
   },
-  mounted() {
+  created() {
     this.getTeamList();
   },
   methods: {

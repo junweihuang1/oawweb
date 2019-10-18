@@ -453,7 +453,7 @@ export default {
     CaViewProcess,
     selectSupplist
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   watch: {

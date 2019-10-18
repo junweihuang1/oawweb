@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view v-if="isRouterAlive" :key="key" />
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 
@@ -19,18 +19,15 @@ export default {
     };
   },
   computed: {
-    key() {
-      let Tabs = this.$store.state.openTabs;
-      if (Tabs != "") {
-        console.log(Tabs[Tabs.length - 1].id);
-        return Tabs[0].id;
-      } else {
-        return "";
-      }
-    }
-  },
-  mounted() {
-    console.log(navigator.userAgent);
+    // key() {
+    //   let Tabs = this.$store.state.openTabs;
+    //   if (Tabs != "") {
+    //     console.log(Tabs[Tabs.length - 1].id);
+    //     return Tabs[0].id;
+    //   } else {
+    //     return "";
+    //   }
+    // }
   },
   methods: {
     reload() {

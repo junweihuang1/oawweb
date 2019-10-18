@@ -283,7 +283,7 @@ export default {
     selectCompany,
     selectProject
   },
-  mounted() {
+  created() {
     this.getprossList();
   },
   methods: {

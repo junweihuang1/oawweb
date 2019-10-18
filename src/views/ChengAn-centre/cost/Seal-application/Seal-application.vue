@@ -83,6 +83,7 @@ export default {
   name: "Sealappliction",
   data() {
     return {
+      companyList: JSON.parse(sessionStorage.getItem("companyList")),
       dialogtitle: "盖章详情",
       fileName: "",
       companyName: "",
@@ -156,6 +157,7 @@ export default {
       apiSealById({
         own_seal_id: row.own_seal_id
       }).then(res => {
+        this.isprint = true;
         this.Approvaltable = res.hisComment.map(item => {
           item.START_TIME_ = changetime(item.START_TIME_);
           return item;
@@ -166,9 +168,12 @@ export default {
           .map(item => {
             return this.Seals[item - 1][1];
           });
+        this.companyList.forEach(item => {
+          if (item.company_id === this.setform.own_seal_company) {
+            this.setform.own_seal_companyName = item.company_name;
+          }
+        });
         this.setform.Category = this.setform.own_seal_chapCategory.join("、");
-        console.log(this.setform);
-        this.isprint = true;
         setTimeout(() => {
           this.isprint = false;
         }, 100);
@@ -190,35 +195,14 @@ export default {
         pageSize: this.currentlimit,
         limit: this.currentpage
       }).then(res => {
-        console.log(res);
         this.total = res.totalCount;
         this.DataList = res.data.map(item => {
           //遍历公司用对应的文字替换
-          switch (item.own_seal_company) {
-            case 12:
-              item.own_seal_company = "诚安时代（1）";
-              break;
-            case 13:
-              item.own_seal_company = "传诚管理（2）";
-              break;
-            case 14:
-              item.own_seal_company = "诚安科技（3）";
-              break;
-            case 15:
-              item.own_seal_company = "传诚教育（5）";
-              break;
-            case 16:
-              item.own_seal_company = "诚安建设（6）";
-              break;
-            case 17:
-              item.own_seal_company = "分供方";
-              break;
-            case 18:
-              item.own_seal_company = "诚安投资";
-              break;
-            default:
-              break;
-          }
+          this.companyList.forEach(item2 => {
+            if (item2.company_id === item.own_seal_company) {
+              item.own_seal_company = item2.company_name;
+            }
+          });
           //盖章类型由字符串转数组，遍历用对应的文字替换
           item.own_seal_chapCategory2 = item.own_seal_chapCategory
             .split(",")
@@ -240,7 +224,6 @@ export default {
                   item = "项目章";
                   break;
               }
-
               return item;
             });
           item.own_seal_chapCategory2 = item.own_seal_chapCategory2.join(",");

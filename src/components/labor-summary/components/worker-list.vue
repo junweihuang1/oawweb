@@ -21,8 +21,10 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <!-- <print-table
+    <print-table
       :setdata="setdata"
+      :demo_id="table_id"
+      :lay_filter="table_id"
       field="firmLaborCostPerson"
       v-if="isload"
       totalName="total"
@@ -30,8 +32,8 @@
       limitName="pageSize"
       :header="header2"
       @checkleave="opendetaillist"
-    ></print-table> -->
-    <table :id="table_id" lay-filter="test2"></table>
+    ></print-table>
+    <!-- <table :id="table_id" lay-filter="test2"></table> -->
     <!-- <Ca-rule-table
       style="width:70%;"
       :setheight="0.6"
@@ -142,7 +144,7 @@ export default {
   components: {
     // CaRuleTable,
     // paging,
-    // printTable
+    printTable
   },
 
   props: {
@@ -152,15 +154,15 @@ export default {
   },
   watch: {
     teamId() {
-      this.getdata();
+      // this.getdata();
       // this.isload = false;
       // this.$nextTick(() => {
       //   this.isload = true;
       // });
     }
   },
-  mounted() {
-    this.getdata();
+  created() {
+    // this.getdata();
   },
   methods: {
     query() {
@@ -185,7 +187,7 @@ export default {
           toolbar: `#${that.table_id}`,
           height: document.documentElement.scrollHeight * that.setheight,
           page: true,
-          title:that.print_title,
+          title: that.print_title,
           totalRow: true,
           limit: 15,
           request: {
@@ -228,11 +230,11 @@ export default {
           }
         });
       });
+    },
+    opendetaillist(row) {
+      console.log(row);
+      this.$emit("opendetaillist", row);
     }
-    // opendetaillist(row) {
-    //   console.log(row);
-    //   this.$emit("opendetaillist", row);
-    // },
     // getpage(val) {
     //   this.currentpage = val;
     //   this.getTeamList();

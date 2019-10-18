@@ -95,8 +95,7 @@ export default {
     process(e) {
       this.$emit("process", [e, this.reasons]);
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 

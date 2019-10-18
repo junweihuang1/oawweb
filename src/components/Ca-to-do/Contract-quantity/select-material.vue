@@ -59,7 +59,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getmaterialList();
   },
   methods: {

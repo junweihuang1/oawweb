@@ -93,7 +93,7 @@ export default {
       this.getCardList();
     }
   },
-  mounted() {
+  created() {
     this.getCardList();
   },
   methods: {

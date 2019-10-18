@@ -36,7 +36,7 @@
 import Nav from "./components/Nav";
 import Tabs from "./components/Tabs";
 import HeaderR from "./components/HeaderR";
-
+import { apicompanyList } from "@/request/api";
 export default {
   name: "Home",
   components: { Nav, Tabs, HeaderR },
@@ -46,11 +46,6 @@ export default {
       loading: true,
       navList: JSON.parse(sessionStorage.getItem("tree"))
     };
-  },
-  methods: {
-    // collapse(e) {
-    //   this.isCollapse = e;
-    // }
   },
   computed: {
     activeIndex() {
@@ -64,69 +59,81 @@ export default {
     setTimeout(() => {
       this.loading = false;
     }, 1000);
+    this.TabData();
+    this.getCompanyInf();
   },
-  mounted() {
-    // 刷新时以当前路由做为tab加入tabs
-    // 当前路由不是首页时，添加首页以及另一页到store里，并设置激活状态
-    // 当当前路由是首页时，添加首页到store，并设置激活状态
-    const currentRoute = this.$route.path;
-    const openTabs = this.$store.state.openTabs;
-    let flag = true;
-    if (openTabs.length === 0) {
-      this.$store.commit("addTabs", {
-        route: "/main",
-        title: "首页",
-        id: "0"
-      });
-      this.$router.push({
-        path: "/main"
-      });
-    }
-
-    openTabs.map((item, index) => {
-      if (item.route === currentRoute) {
-        this.$store.commit("changeActiveIndex", item.id);
-        flag = false;
+  methods: {
+    TabData() {
+      // 刷新时以当前路由做为tab加入tabs
+      // 当前路由不是首页时，添加首页以及另一页到store里，并设置激活状态
+      // 当当前路由是首页时，添加首页到store，并设置激活状态
+      const currentRoute = this.$route.path;
+      const openTabs = this.$store.state.openTabs;
+      let flag = true;
+      if (openTabs.length === 0) {
+        this.$store.commit("addTabs", {
+          route: "/main",
+          title: "首页",
+          id: "0"
+        });
+        this.$router.push({
+          path: "/main"
+        });
       }
-    });
-
-    if (!flag) return;
-    if (this.$route.path !== "/" && this.$route.path !== "/main") {
-      const navList = this.navList;
-      var starttime = new Date();
-      navList.map(item => {
+      openTabs.map((item, index) => {
         if (item.route === currentRoute) {
-          this.$store.commit("addTabs", {
-            route: item.route,
-            title: item.title,
-            id: item.id
-          });
           this.$store.commit("changeActiveIndex", item.id);
-        } else if (item.children.length > 0) {
-          item.children.map(item2 => {
-            if (item2.route === currentRoute) {
-              this.$store.commit("addTabs", {
-                route: item2.route,
-                title: item2.title,
-                id: item2.id
-              });
-              this.$store.commit("changeActiveIndex", item2.id);
-            } else if (item2.children.length > 0) {
-              item2.children.map(item3 => {
-                if (item3.route === currentRoute) {
-                  this.$store.commit("addTabs", {
-                    route: item3.route,
-                    title: item3.title,
-                    id: item3.id
-                  });
-                  this.$store.commit("changeActiveIndex", item3.id);
-                }
-              });
-            }
-          });
+          flag = false;
         }
       });
-      console.log(new Date() - starttime);
+
+      if (!flag) return;
+      if (this.$route.path !== "/" && this.$route.path !== "/main") {
+        const navList = this.navList;
+        navList.map(item => {
+          if (item.route === currentRoute) {
+            this.$store.commit("addTabs", {
+              route: item.route,
+              title: item.title,
+              id: item.id
+            });
+            this.$store.commit("changeActiveIndex", item.id);
+          } else if (item.children.length > 0) {
+            item.children.map(item2 => {
+              if (item2.route === currentRoute) {
+                this.$store.commit("addTabs", {
+                  route: item2.route,
+                  title: item2.title,
+                  id: item2.id
+                });
+                this.$store.commit("changeActiveIndex", item2.id);
+              } else if (item2.children.length > 0) {
+                item2.children.map(item3 => {
+                  if (item3.route === currentRoute) {
+                    this.$store.commit("addTabs", {
+                      route: item3.route,
+                      title: item3.title,
+                      id: item3.id
+                    });
+                    this.$store.commit("changeActiveIndex", item3.id);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    },
+    getCompanyInf() {
+      apicompanyList({
+        rows: 30,
+        page: 1,
+        companyname: ""
+      }).then(res => {
+        const companyList = res.data;
+        sessionStorage.setItem("companyList", JSON.stringify(companyList));
+        console.log(sessionStorage.getItem("companyList"));
+      });
     }
   }
 };

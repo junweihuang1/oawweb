@@ -54,7 +54,7 @@ export default {
     entryList: Array,
     activeform: Object
   },
-  mounted() {
+  created() {
     this.getSupplierList();
   },
   methods: {
