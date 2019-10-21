@@ -77,8 +77,7 @@ export default {
     closeopen() {
       this.$emit("setclose");
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 

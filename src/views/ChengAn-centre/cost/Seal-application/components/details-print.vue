@@ -48,7 +48,7 @@ export default {
     },
     Approvaltable: Array
   },
-  mounted() {
+  created() {
     console.log(this.setform);
     setTimeout(() => {
       //打印

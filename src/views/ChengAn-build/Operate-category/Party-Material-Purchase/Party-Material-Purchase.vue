@@ -81,7 +81,7 @@ export default {
     dialogTabs,
     dialogTabsRecord
   },
-  mounted() {
+  created() {
     this.getPartyConList();
   },
   methods: {

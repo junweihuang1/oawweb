@@ -47,7 +47,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getWagesList();
   },
   methods: {

@@ -83,7 +83,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getFieldList();
   },
   methods: {

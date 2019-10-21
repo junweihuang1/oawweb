@@ -68,6 +68,7 @@ export default {
     CaRuleTable,
     paging
   },
+
   created() {
     this.getroleList();
   },

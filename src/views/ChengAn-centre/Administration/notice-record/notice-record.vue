@@ -64,7 +64,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getNoticeList();
   },
   methods: {

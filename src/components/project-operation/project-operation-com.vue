@@ -154,7 +154,7 @@ export default {
       this.mycompanyId = val;
     }
   },
-  mounted() {
+  created() {
     this.getProjectList();
     let now = new Date();
     let nowYear = now.getFullYear();

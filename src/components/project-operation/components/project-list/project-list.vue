@@ -97,7 +97,7 @@ export default {
   props: {
     activeForm: Object
   },
-  mounted() {
+  created() {
     this.getdetails();
   },
   methods: {

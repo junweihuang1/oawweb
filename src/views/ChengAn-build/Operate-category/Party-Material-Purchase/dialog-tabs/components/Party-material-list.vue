@@ -47,7 +47,7 @@
       @setpage="getpage"
     ></paging>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       top="8vh"
       :title="diatitle"
       :visible.sync="isadd"
@@ -114,7 +114,7 @@
       </el-form>
     </el-dialog>
     <el-dialog
-    v-dialogDrag
+      v-dialogDrag
       :visible.sync="isopen_ContractRecord"
       title="新增合同工程量记录"
       :append-to-body="true"
@@ -196,7 +196,7 @@ export default {
       this.getMaterialList();
     }
   },
-  mounted() {
+  created() {
     this.getMaterialList();
   },
   methods: {
@@ -262,7 +262,7 @@ export default {
     },
     //删除多行
     deleteitem() {
-      console.log( JSON.stringify(this.idarr))
+      console.log(JSON.stringify(this.idarr));
       this.$confirm(`确定删除吗(有问题未修复)？`)
         .then(() => {
           apideleteAParty({ ids: JSON.stringify(this.idarr) }).then(res => {

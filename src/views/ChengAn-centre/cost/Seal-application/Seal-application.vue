@@ -141,7 +141,7 @@ export default {
     detailsPrint,
     selectCompany
   },
-  mounted() {
+  created() {
     this.getsealList();
   },
   methods: {

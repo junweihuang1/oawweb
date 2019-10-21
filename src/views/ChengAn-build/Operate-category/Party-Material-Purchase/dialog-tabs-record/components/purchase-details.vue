@@ -115,7 +115,7 @@ export default {
       this.getApartyPur();
     }
   },
-  mounted() {
+  created() {
     this.getApartyPur();
     this.getprocessList();
   },

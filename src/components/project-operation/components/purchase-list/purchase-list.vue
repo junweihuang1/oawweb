@@ -78,7 +78,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getPurchaseList();
   },
   methods: {

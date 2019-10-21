@@ -97,7 +97,7 @@ export default {
       openType: ""
     };
   },
-  mounted() {
+  created() {
     this.getGoodsList();
   },
   components: {

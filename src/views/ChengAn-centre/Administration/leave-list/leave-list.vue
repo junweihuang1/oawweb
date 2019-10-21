@@ -159,7 +159,7 @@ export default {
     // paging,
     printTable
   },
-  mounted() {
+  created() {
     // this.getleaveList();
   },
   methods: {

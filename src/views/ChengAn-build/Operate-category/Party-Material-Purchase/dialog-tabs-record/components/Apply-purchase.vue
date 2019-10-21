@@ -65,7 +65,7 @@ export default {
   props: {
     projectList: Object
   },
-  mounted() {
+  created() {
     this.getMaterialList();
   },
   methods: {

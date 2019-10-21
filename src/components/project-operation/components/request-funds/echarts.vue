@@ -98,8 +98,7 @@ export default {
   props: {
     projectList: Object
   },
-  watch: {},
-  mounted() {
+  created() {
     this.showecharts();
     this.getFundsList();
   },

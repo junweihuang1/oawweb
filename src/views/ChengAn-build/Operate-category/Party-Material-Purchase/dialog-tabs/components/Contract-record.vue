@@ -77,7 +77,7 @@ export default {
     type: String,
     projectid: Number
   },
-  mounted() {
+  created() {
     this.getQuantityRecord();
   },
   methods: {

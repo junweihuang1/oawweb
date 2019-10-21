@@ -96,7 +96,7 @@ export default {
     costDetails,
     costDetailsPrint
   },
-  mounted() {
+  created() {
     this.getCostList();
   },
   methods: {

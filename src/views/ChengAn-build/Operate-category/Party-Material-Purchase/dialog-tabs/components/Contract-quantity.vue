@@ -287,7 +287,7 @@ export default {
       console.log(this.myDataList);
     }
   },
-  mounted() {
+  created() {
     this.myDataList = this.DataList;
     console.log(this.myDataList);
     this.getprossList();

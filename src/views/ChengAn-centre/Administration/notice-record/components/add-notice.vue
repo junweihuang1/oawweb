@@ -23,7 +23,6 @@ export default {
   components: {
     VueUeditorWrap
   },
-  mounted() {},
   methods: {
     print() {
       console.log(this.msg);

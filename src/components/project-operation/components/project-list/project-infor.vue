@@ -194,7 +194,6 @@ export default {
     selectProjectDep,
     ContractManage
   },
-  mounted() {},
   methods: {
     //获取合同信息
     getContract(row) {

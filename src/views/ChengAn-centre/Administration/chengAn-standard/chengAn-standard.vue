@@ -154,7 +154,7 @@ export default {
     ruleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getStandardList();
   },
   methods: {
