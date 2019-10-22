@@ -68,7 +68,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getCompanyInf();
   },
   methods: {

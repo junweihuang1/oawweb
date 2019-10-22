@@ -72,7 +72,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     document.getElementById("table").style.height =
       document.body.scrollHeight * 0.77 + "px";
     this.getTaskList();

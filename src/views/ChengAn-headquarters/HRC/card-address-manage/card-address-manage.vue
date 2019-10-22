@@ -105,7 +105,7 @@ export default {
     paging,
     selectProject
   },
-  mounted() {
+  created() {
     this.getCardAddressInf();
   },
   methods: {

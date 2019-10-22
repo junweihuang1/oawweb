@@ -124,7 +124,7 @@ export default {
       this.getUserList();
     }
   },
-  mounted() {
+  created() {
     this.getUserList();
   }
 };

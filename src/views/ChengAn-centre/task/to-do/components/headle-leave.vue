@@ -29,7 +29,7 @@ export default {
     openType: String,
     active: Object
   },
-  mounted() {
+  mcreatedounted() {
     this.getGoOut();
   },
   methods: {

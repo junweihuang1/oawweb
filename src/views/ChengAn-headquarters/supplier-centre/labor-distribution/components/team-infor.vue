@@ -110,7 +110,7 @@ export default {
   props: {
     Inforlist: Object
   },
-  mounted() {
+  created() {
     this.getTeamList();
   },
   methods: {

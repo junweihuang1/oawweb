@@ -109,7 +109,7 @@ export default {
     paging,
     Echarts
   },
-  mounted() {
+  created() {
     this.getPayList();
     this.getyears();
   },

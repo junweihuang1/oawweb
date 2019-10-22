@@ -49,7 +49,7 @@ export default {
     paging
   },
 
-  mounted() {
+  created() {
     this.getDreamList();
   },
   methods: {

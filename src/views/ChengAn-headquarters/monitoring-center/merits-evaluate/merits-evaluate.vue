@@ -88,7 +88,7 @@ export default {
     paging,
     portraitTable
   },
-  mounted() {
+  created() {
     this.getevaluateList();
   },
   methods: {

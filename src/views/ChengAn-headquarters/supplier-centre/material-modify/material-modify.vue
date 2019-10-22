@@ -53,7 +53,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getModifyList();
   },
   methods: {

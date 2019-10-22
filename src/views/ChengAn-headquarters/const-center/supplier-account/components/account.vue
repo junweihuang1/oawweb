@@ -110,7 +110,7 @@ export default {
       this.getAccountList();
     }
   },
-  mounted() {
+  created() {
     this.getAccountList();
   },
   methods: {

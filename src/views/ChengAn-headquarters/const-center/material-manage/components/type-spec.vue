@@ -85,7 +85,7 @@ export default {
       this.getSpecList();
     }
   },
-  mounted() {
+  created() {
     this.getSpecList();
   },
   methods: {

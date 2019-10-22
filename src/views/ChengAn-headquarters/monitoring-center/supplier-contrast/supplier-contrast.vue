@@ -73,7 +73,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getevaluateList();
   },
   methods: {

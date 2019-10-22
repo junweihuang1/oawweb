@@ -96,7 +96,7 @@ export default {
     selectCompany,
     selectLevel
   },
-  mounted() {
+  created() {
     this.getDataList();
   },
   methods: {

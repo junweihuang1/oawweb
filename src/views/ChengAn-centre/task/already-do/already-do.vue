@@ -328,7 +328,7 @@ export default {
     ApplyMove,
     headlePayment
   },
-  mounted() {
+  created() {
     //获取待办类型
     apifindTaskType().then(res => {
       console.log(res);

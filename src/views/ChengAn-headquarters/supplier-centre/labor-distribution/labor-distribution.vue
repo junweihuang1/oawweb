@@ -105,7 +105,7 @@ export default {
     selectWorker,
     selectProject
   },
-  mounted() {
+  created() {
     this.getloborList();
   },
   methods: {

@@ -281,7 +281,7 @@ export default {
     recordList: Object,
     submitType: String
   },
-  mounted() {
+  created() {
     console.log(this.recordList);
     let qrcode = new QRCode("qrcode", {
       width: 150,

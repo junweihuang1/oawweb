@@ -88,7 +88,7 @@ export default {
       noApprovalList: []
     };
   },
-  mounted() {
+  created() {
     this.handleApiFindTaskList();
     this.handleApiNotAuditedCard();
   },
@@ -133,9 +133,8 @@ export default {
     },
     //代办任务
     handleApiFindTaskList() {
-      apiFindTaskList({})
+      apiFindTaskList({ processType: "" })
         .then(res => {
-          console.log(res);
           this.$store.state.todoList = res;
           this.processList = res;
         })

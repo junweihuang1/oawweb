@@ -325,7 +325,7 @@ export default {
     aPartyApplyPurchase,
     ApplyMove
   },
-  mounted() {
+  created() {
     //获取待办类型
     apifindTaskType().then(res => {
       console.log(res);

@@ -31,7 +31,7 @@ export default {
     active: Object,
     openGoods: Boolean
   },
-  mounted() {
+  created() {
     this.getGoodsList();
   },
   methods: {

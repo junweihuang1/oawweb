@@ -115,7 +115,7 @@ export default {
     selectUser,
     account
   },
-  mounted() {
+  created() {
     this.getSupplierList();
   },
   watch: {

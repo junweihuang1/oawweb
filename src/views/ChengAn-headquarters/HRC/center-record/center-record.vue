@@ -90,7 +90,7 @@ export default {
     paging,
     selectCompany
   },
-  mounted() {
+  created() {
     this.getCenterInf();
   },
   methods: {

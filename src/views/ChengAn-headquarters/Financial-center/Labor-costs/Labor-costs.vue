@@ -201,7 +201,6 @@ export default {
     printTable,
     selectCompany
   },
-  mounted() {},
   methods: {
     checkbox(row) {
       let repeat = this.check_arr.some(item => item.userid == row.userid);

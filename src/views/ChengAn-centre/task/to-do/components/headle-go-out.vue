@@ -30,7 +30,7 @@ export default {
     active: Object,
     openType: String
   },
-  mounted() {
+  created() {
     this.getGoOut();
   },
   methods: {

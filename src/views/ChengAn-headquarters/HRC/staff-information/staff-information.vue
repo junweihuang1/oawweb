@@ -201,7 +201,7 @@ export default {
     correntedTabs,
     cardRecord
   },
-  mounted() {
+  created() {
     this.getpmuserList();
     this.getuserTree();
   },

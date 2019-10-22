@@ -84,7 +84,7 @@ export default {
   },
   components: { CaRuleTable, paging, selectCompany },
 
-  mounted() {
+  created() {
     this.getcardRecordList();
   },
   methods: {

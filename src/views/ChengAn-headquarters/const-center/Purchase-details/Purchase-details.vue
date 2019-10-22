@@ -98,7 +98,7 @@ export default {
     paging,
     ApplyPurchase
   },
-  mounted() {
+  created() {
     this.getPurList();
   },
   methods: {

@@ -75,7 +75,7 @@ export default {
     },
     Approvaltable: Array
   },
-  mounted() {
+  created() {
     setTimeout(() => {
       //打印
       window.print();

@@ -94,7 +94,7 @@ export default {
     CaTree,
     projectOperationCom
   },
-  mounted() {
+  created() {
     this.getWorkerList();
   },
   methods: {

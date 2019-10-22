@@ -83,7 +83,7 @@ export default {
       this.getmaterialList();
     }
   },
-  mounted() {
+  created() {
     this.getmaterialList();
   },
   methods: {

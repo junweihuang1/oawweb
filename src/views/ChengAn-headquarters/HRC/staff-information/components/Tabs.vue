@@ -195,7 +195,7 @@ export default {
       this.bottomList = val;
     }
   },
-  mounted() {
+  created() {
     this.bottomList = this.DataList;
   },
   methods: {

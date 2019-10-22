@@ -120,7 +120,7 @@ export default {
     paging,
     selectCenter
   },
-  mounted() {
+  created() {
     this.getDepartmentInf();
   },
   methods: {

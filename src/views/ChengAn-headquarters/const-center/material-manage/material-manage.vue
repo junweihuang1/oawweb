@@ -75,7 +75,7 @@ export default {
       materialID: ""
     };
   },
-  mounted() {
+  created() {
     this.getmaterialList();
   },
   components: {

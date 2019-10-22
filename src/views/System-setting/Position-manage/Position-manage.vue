@@ -77,7 +77,7 @@ export default {
     NewRole,
     CaRuleTable
   },
-  mounted() {
+  created() {
     this.getroleLists();
   },
   methods: {

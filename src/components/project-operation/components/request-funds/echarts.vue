@@ -98,7 +98,7 @@ export default {
   props: {
     projectList: Object
   },
-  created() {
+  mounted() {
     this.showecharts();
     this.getFundsList();
   },

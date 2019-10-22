@@ -103,7 +103,7 @@ export default {
       this.form = value;
     }
   },
-  mounted() {
+  created() {
     this.showecharts();
   },
   methods: {

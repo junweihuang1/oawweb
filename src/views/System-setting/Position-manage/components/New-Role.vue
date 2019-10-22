@@ -67,9 +67,6 @@ export default {
     },
     openType: String
   },
-  mounted(){
-    console.log(this.checkList)
-  },
   methods: {
     getCheckedKeys() {
       let data = {};
@@ -90,7 +87,7 @@ export default {
           menuId: ""
         };
       }
-      console.log(this.TreeList)
+      console.log(this.TreeList);
       console.log(data);
       this.$confirm(
         `确定要${this.openType == "add" ? "增加角色" : "修改角色"}吗？`

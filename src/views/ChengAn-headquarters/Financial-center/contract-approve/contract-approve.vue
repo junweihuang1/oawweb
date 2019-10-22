@@ -115,7 +115,7 @@ export default {
       history: []
     };
   },
-  mounted() {
+  created() {
     this.getContractApprove();
   },
   components: {

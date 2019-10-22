@@ -125,7 +125,7 @@ export default {
     paging,
     ApplyLeave
   },
-  mounted() {
+  created() {
     this.getLeaveRecord();
   },
   methods: {

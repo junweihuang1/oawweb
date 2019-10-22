@@ -98,7 +98,7 @@ export default {
     paging,
     selectProject
   },
-  mounted() {
+  created() {
     this.getPurdetails();
   },
   methods: {

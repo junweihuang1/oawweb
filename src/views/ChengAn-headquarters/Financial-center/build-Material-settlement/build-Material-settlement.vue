@@ -105,7 +105,7 @@ export default {
     CaRuleTable,
     paging
   },
-  mounted() {
+  created() {
     this.getsettlements();
   },
   watch: {

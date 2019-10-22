@@ -142,7 +142,7 @@ export default {
     paging,
     Echarts
   },
-  mounted() {
+  created() {
     this.getContractList();
   },
   methods: {

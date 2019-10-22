@@ -96,7 +96,6 @@ export default {
       }
     };
   },
-  mounted() {},
   methods: {
     sendemail(formName) {
       this.$refs[formName].validate(valid => {

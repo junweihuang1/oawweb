@@ -206,9 +206,6 @@ export default {
     selectCompany,
     printTable
   },
-  mounted() {
-    // this.getCostsList();
-  },
   methods: {
     closewin() {
       this.isadd = false;

@@ -72,7 +72,7 @@ export default {
   props: {
     userid: Number
   },
-  mounted() {
+  created() {
     this.getDetailList();
   },
   methods: {

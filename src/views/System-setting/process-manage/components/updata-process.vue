@@ -99,7 +99,7 @@ export default {
     paging,
     selectRole
   },
-  mounted() {
+  created() {
     this.getProcessdetail();
   },
   methods: {

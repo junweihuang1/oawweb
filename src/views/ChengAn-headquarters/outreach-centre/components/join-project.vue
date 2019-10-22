@@ -94,7 +94,7 @@ export default {
     };
   },
   components: { CaRuleTable, paging, dialogTabs },
-  mounted() {
+  created() {
     this.getWorkerList();
   },
   methods: {

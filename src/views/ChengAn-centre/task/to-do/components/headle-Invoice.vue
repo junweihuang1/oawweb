@@ -37,7 +37,7 @@ export default {
       this.isopen = val;
     }
   },
-  mounted() {
+  created() {
     this.getGoOut();
   },
   methods: {

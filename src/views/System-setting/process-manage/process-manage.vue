@@ -96,7 +96,7 @@ export default {
     paging,
     UpdataProcess
   },
-  mounted() {
+  created() {
     this.getProcessList();
   },
   methods: {

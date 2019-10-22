@@ -80,7 +80,7 @@ export default {
     ModifyWindow,
     CaTree
   },
-  mounted() {
+  created() {
     this.getWorkerList();
   },
   methods: {

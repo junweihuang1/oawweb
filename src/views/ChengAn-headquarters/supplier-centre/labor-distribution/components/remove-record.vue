@@ -57,7 +57,7 @@ export default {
   props: {
     userId: Number
   },
-  mounted() {
+  created() {
     this.getRemoveRecord();
   },
   methods: {

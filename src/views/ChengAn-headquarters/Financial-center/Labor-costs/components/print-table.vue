@@ -25,7 +25,7 @@ export default {
     CostsList: Array,
     print_header: Array
   },
-  mounted() {
+  created() {
     layui.use("table", function() {
       var table = layui.table;
       //第一个实例
