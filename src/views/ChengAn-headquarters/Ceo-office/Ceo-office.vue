@@ -82,8 +82,8 @@ export default {
       header: [
         ["公司", "company_name", 120],
         ["名字", "uc_framework_name", 120],
-        ["上一级", "lastLev", 120],
-        ["描述", "uc_framework_describe"]
+        // ["上一级", "lastLev", 120],
+        // ["描述", "uc_framework_describe"]
       ],
       headle: ["修改", "删除"],
       companyList: [],
