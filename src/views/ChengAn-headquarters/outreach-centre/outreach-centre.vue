@@ -75,7 +75,8 @@ export default {
         ["公司", "company_name", 130],
         ["中心", "center_name", 130],
         ["部门", "department_name", 130],
-        
+        ["身份证号码", "user_card", 180],
+        ["身份证地址", "card_address", 270]
       ],
       headle: ["编辑"],
       isopen: false,
