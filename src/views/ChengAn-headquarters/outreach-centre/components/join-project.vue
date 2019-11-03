@@ -83,7 +83,7 @@ export default {
         ["项目负责人", "constuct_project_dep_leader"],
         ["合同总金额", "total", 110],
         ["采购成本", "purchaseCost", 110],
-        ["人工成本", "laborCost", 110]
+        ["人工成本", "laborCost", 110], ["人工成本", "laborCost", 110], ["人工成本", "laborCost", 110]
       ],
       headle: ["项目列表", "", "修改"],
       categoryList: ["建设项目"],
