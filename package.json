@@ -41,7 +41,7 @@
         "eslint-plugin-vue": "^5.2.3",
         "html2canvas": "^1.0.0-rc.3",
         "image-webpack-loader": "^5.1.0",
-        "node-sass": "^4.9.0",
+        "node-sass": "^4.13.1",
         "px2rem-loader": "^0.1.9",
         "sass-loader": "^7.3.1",
         "script-loader": "^0.7.2",
